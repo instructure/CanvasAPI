@@ -1,4 +1,3 @@
-
 # WORK IN PROGRESS. Check back SOON!
 
 ## CanvasKit by Instructure Android
@@ -36,7 +35,7 @@ CanvasKit is mainly structured around the notion of CanvasContexts. We currently
 ###Error Handling
 First and foremost, all logging that our library does uses the tag _canvas-kit_, which can be found in `APIHelpers.java` 
 
-We also provided an interface entitled `ErrorDelegate` that gives you callbacks when an error occurs during an API call. We specify which type of error occurred, so you can handle each of the cases however it makes the most sense for your project. You can set up a _default_ ErrorDelegate inside of `CanvasCallback.java` which will be used whenever one isn't provided as a constructor argument when creating a new CanvasCallback.
+We also provided an interface entitled `ErrorDelegate` that gives you callbacks when an error occurs during an API call. We specify which type of error occurred, so you can handle each of the cases however it makes the most sense for your project. You can set up a _default_ ErrorDelegate inside of `CanvasCallback.java` which will be used whenever one isn't provided as a constructor argument when creating a new CanvasCallback. If the server returns an HTTP200 or a HTTP401, we also return a `CanvasError` object that contains the exact error the server returned.
 
 You can also handle errors manually by overriding `public boolean onFailure(RetrofitError RetrofitError)`. This callback allows you to handle errors in API calls before the error delegate methods are called. Returning true from this method means you have successfully handled the error and the error delegate will NOT be called; return false otherwise.
 
