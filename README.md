@@ -1,3 +1,6 @@
+
+# WORK IN PROGRESS. Check back SOON!
+
 ## CanvasKit by Instructure Android
 
 CanvasKit is a library that will help you integrate your own third party app with [Canvas by Instructure](https://instructure.com/).
