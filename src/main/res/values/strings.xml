@@ -1,0 +1,19 @@
+<resources>
+
+    <!--Modules-->
+    <string name="mustComplete">You must first complete:</string>
+    <string name="unlockedAt">It will be unlocked at:</string>
+    <string name="goToModules">Go To Modules</string>
+
+    <!--Events-->
+    <string name="Starts">Starts</string>
+    <string name="Ends">Ends</string>
+    <string name="allDayEvent">All Day Event</string>
+    <string name="at">at</string>
+    <string name="to">to</string>
+
+    <!--StreamItems-->
+    <string name="Message">Message</string>
+    <string name="Loading">Loading...</string>
+    <string name="Deleted">Deleted</string>
+</resources>
