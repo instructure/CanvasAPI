@@ -1,6 +1,20 @@
+# Java Files#
 *.class
 
 # Package Files #
 *.jar
 *.war
 *.ear
+
+# Project Files #
+.gitconfig
+.DS_Store
+.idea/workspace.xml
+.gradle/1.6/taskArtifacts/
+.gradle/1.8/taskArtifacts/
+.gradle/1.10/taskArtifacts/
+/local.properties
+bin
+gen
+build
+release_build/.gradle/1.8/taskArtifacts

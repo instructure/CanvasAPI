@@ -1,0 +1,142 @@
+package com.instructure.canvasapi.utilities;
+
+import android.content.Context;
+
+import java.io.*;
+
+/**
+ * Created by Josh Ruesch
+ *
+ * Copyright (c) 2014 Instructure. All rights reserved.
+ */
+
+public class FileUtilities {
+
+    public final static String FILE_SUFFIX = ".serializable";
+    public final static String FILE_DIRECTORY = "cache";
+
+    /**
+     * Converts a serializable object to the specified file.
+     * @param context
+     * @param cacheFileName
+     * @param serializable
+     * @return
+     */
+    public static boolean SerializableToFile(Context context, String cacheFileName, Serializable serializable) {
+
+        if (context == null || cacheFileName == null || serializable == null) {
+            return false;
+        }
+        try {
+            cacheFileName += FILE_SUFFIX;
+
+            File f = new File(context.getFilesDir(), FILE_DIRECTORY);
+            File file = new File(f, cacheFileName);
+
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+
+
+            //Write to file.
+            OutputStream outputStream = new FileOutputStream(file);
+            OutputStream buffer = new BufferedOutputStream(outputStream);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+
+            output.writeObject(serializable);
+
+            output.flush();
+            output.close();
+            return true;
+        } catch (Exception E) {
+            return false;
+        }
+    }
+
+    /**
+     * Converts a specified file to a serializable object.
+     * @param context
+     * @param cacheFileName
+     * @return
+     */
+    public static Serializable FileToSerializable(Context context, String cacheFileName) {
+
+        try {
+            cacheFileName += FILE_SUFFIX;
+
+            //use buffering
+            File f = new File(context.getFilesDir(), FILE_DIRECTORY);
+            f.mkdirs();
+            File file = new File(f, cacheFileName);
+
+            InputStream fileInputStream = new FileInputStream(file);
+            InputStream buffer = new BufferedInputStream(fileInputStream);
+            ObjectInput input = new ObjectInputStream(buffer);
+            try {
+                //deserialize
+                return (Serializable)input.readObject();
+            } finally {
+                input.close();
+            }
+        } catch (Exception E) {
+            return null;
+        }
+    }
+
+
+    /**
+     * deleteAllFilesInDirectory will RECURSIVELY delete all files/folders in a directory
+     * @param startFile
+     * @return
+     */
+    public static boolean deleteAllFilesInDirectory(File startFile)
+    {
+        try
+        {
+            //If it's a directory.
+            if(startFile.isDirectory())
+            {
+                //Delete all files inside of it.
+                String[] files = startFile.list();
+                for(String fileName: files){
+                    File file = new File(startFile, fileName);
+                    //If it's a directory. recursive.
+                    if(file.isDirectory()){
+                        deleteAllFilesInDirectory(file);
+                    }
+                    //It's a file. Delete it.
+                    else{
+                        file.delete();
+                    }
+                }
+                //Now delete the parent folder.
+                startFile.delete();
+            }
+            //If it's not a directory, delete the file.
+            else{
+                startFile.delete();
+            }
+            return true;
+        }
+        catch(Exception E)
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * getFileExtensionFromMimetype returns what's after the /.
+     * For example : image/png returns png.
+     *
+     * @param mimetype
+     * @return
+     */
+    public static String getFileExtensionFromMimetype(String mimetype) {
+        if (mimetype == null) {
+            return "";
+        } else {
+            String[] split = mimetype.split("/");
+            return split[split.length - 1];
+        }
+    }
+}

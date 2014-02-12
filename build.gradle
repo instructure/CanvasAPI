@@ -1,0 +1,30 @@
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+}
+apply plugin: 'android-library'
+
+dependencies {
+    compile 'com.squareup.retrofit:retrofit:1.2.2'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.httpcomponents:httpcore:4.3'
+    compile 'org.apache.httpcomponents:httpmime:4.3.1'
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "19.0.1"
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 16
+    }
+}
