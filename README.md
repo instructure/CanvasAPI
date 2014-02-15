@@ -8,7 +8,7 @@ CanvasAPI is built on the [Canvas API](https://canvas.instructure.com/doc/api/in
 
 ## How To Get Started
 
-- [Download CanvasAPI](https://github.com/instructure/linkhere) 
+- [Download CanvasAPI](https://github.com/instructure/CanvasAPI) 
 - Become familiar with [Retrofit by Square](http://square.github.io/retrofit/)
 - Take a look at the [Canvas API](https://canvas.instructure.com/doc/api/index.html) for a complete list of endpoints
 
@@ -93,6 +93,16 @@ You can also handle errors manually by overriding `public boolean onFailure(Retr
         };
     }
 
+    //APIStatusDelegate Overrides.
+    @Override
+    public void onCallbackFinished(){
+    }
+
+    @Override
+    public Context getContext(){
+        return this;
+    }
+
     //Actually fetch data from the API.
     public void getFirstPageFromAPI(){
         //Notice we can use the same Callback for both API calls.   
@@ -103,3 +113,5 @@ You can also handle errors manually by overriding `public boolean onFailure(Retr
         //Notice we can use the same Callback for both API calls.   
         Conversations.getNextPageConversations(conversationCanvasCallback,nextURL);
     }
+
+
