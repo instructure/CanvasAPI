@@ -100,20 +100,22 @@
     <version>2.2.4</version>
     <scope>provided</scope>
   </dependency>
-    <dependency>
-      <groupId>com.squareup.retrofit</groupId>
-      <artifactId>retrofit</artifactId>
-      <version>1.2.2</version>
-    </dependency>
-    <dependency>
+      <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
       <version>4.3.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.retrofit</groupId>
+      <artifactId>retrofit</artifactId>
+      <version>1.2.2</version>
     </dependency>
 </dependencies>
 </project>
