@@ -117,6 +117,7 @@
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
       <version>1.2.2</version>
+      <scope>provided</scope>
     </dependency>
 </dependencies>
 </project>
