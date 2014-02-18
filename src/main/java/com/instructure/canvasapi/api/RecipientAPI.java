@@ -19,10 +19,10 @@ public class RecipientAPI {
 
     interface RecipientsInterface {
         @GET("/search/recipients?synthetic_contexts=1")
-        void getFirstPageRecipientsList(@EncodedQuery("search") String searchTerm, @EncodedQuery("context")String context, Callback<Recipient[]> callback);
+        void getFirstPageRecipientsList(@Query("search") String searchTerm, @EncodedQuery("context")String context, Callback<Recipient[]> callback);
 
         @GET("/search/recipients?synthetic_contexts=1")
-        void getFirstPageRecipientsListNoContext(@EncodedQuery("search") String searchTerm, Callback<Recipient[]> callback);
+        void getFirstPageRecipientsListNoContext(@Query("search") String searchTerm, Callback<Recipient[]> callback);
 
         @GET("/{next}")
         void getNextPageRecipientsList(@EncodedPath("next") String nextURL, Callback<Recipient[]> callback);
