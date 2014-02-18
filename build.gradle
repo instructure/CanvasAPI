@@ -27,3 +27,79 @@ android {
         targetSdkVersion 16
     }
 }
+
+//Do some maven stuff
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+version = "1.0.5"
+group = "com.instructure"
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+signing {
+    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: sonatypeRepo) {
+            authentication(userName: sonatypeUsername,
+                    password: sonatypePassword)
+        }
+
+        pom.project {
+            name 'CanvasAPI'
+            packaging 'aar'
+            description 'CanvasAPI is a library that will help you integrate your own third party app with Canvas by Instructure.'
+            url 'https://github.com/instructure/CanvasAPI'
+
+            scm {
+                url 'git@github.com:instructure/CanvasAPI.git'
+                connection 'scm:git:git@github.com:instructure/CanvasAPI.git'
+                developerConnection 'scm:git:git@github.com:instructure/CanvasAPI.git'
+            }
+
+            licenses {
+                license {
+                    name 'MIT License'
+                    url 'http://opensource.org/licenses/MIT'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'joshr'
+                    name 'Josh Ruesch'
+                    email 'joshr@instructure.com'
+                }
+                developer {
+                    id 'nbutton'
+                    name 'Nathan Button'
+                    email 'nbutton@instructure.com'
+                }
+                developer {
+                    id 'brady'
+                    name 'Brady Larson'
+                    email 'brady@instructure.com'
+                }
+                developer {
+                    id 'hhoang'
+                    name 'Hoa Hoang'
+                    email 'hhoang@instructure.com'
+                }
+            }
+        }
+    }
+}
+
+

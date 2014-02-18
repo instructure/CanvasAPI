@@ -14,7 +14,7 @@
   </parent>
 
   <name>CanvasAPI</name>
-  <description>CanvasKit is a library that will help you integrate your own third party app with Canvas by Instructure. </description>
+  <description>CanvasAPI is a library that will help you integrate your own third party app with Canvas by Instructure. </description>
   <url>https://github.com/instructure/CanvasAPI</url>
 
   <licenses>
@@ -105,19 +105,16 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
       <version>4.3.1</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
       <version>1.2.2</version>
-      <scope>provided</scope>
     </dependency>
 </dependencies>
 </project>
