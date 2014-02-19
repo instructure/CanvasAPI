@@ -8,6 +8,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.EncodedPath;
 import retrofit.http.EncodedQuery;
+import retrofit.http.Query;
 import retrofit.http.GET;
 
 /**
