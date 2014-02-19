@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.instructure.example.MainActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <Button
+            android:layout_margin="5dip"
+            android:id="@+id/loadNextPage"
+            android:enabled="false"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/loadNextPage"/>
+
+    <ScrollView
+            android:layout_margin="10dip"
+            android:id="@+id/scrollview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loadNextPage"
+            android:layout_alignParentBottom="true">
+    <TextView
+            android:id="@+id/output"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+
+</RelativeLayout>
