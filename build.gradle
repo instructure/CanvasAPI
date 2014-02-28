@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 apply plugin: 'android-library'
@@ -25,6 +25,12 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 16
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 
