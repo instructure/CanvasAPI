@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.instructure.canvasapi.model.UnreadConversationCount;
 import com.instructure.canvasapi.model.UnreadNotificationCount;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -29,10 +32,17 @@ public class UnreadCountAPI {
 
         @GET("/users/self/activity_stream/summary")
         void getNotificationsCount(Callback<UnreadNotificationCount[]> callback);
+
+        @GET("/conversations/unread_count")
+        UnreadConversationCount getUnreadConversationCountSynchronous();
     }
 
     private static UnreadCountsInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+
+        return buildInterface(callback.getContext());
+    }
+    private static UnreadCountsInterface buildInterface(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
         return restAdapter.create(UnreadCountsInterface.class);
     }
 
@@ -43,10 +53,20 @@ public class UnreadCountAPI {
         buildInterface(callback).getUnreadConversationCount(callback);
     }
 
+    public static String getUnreadConversationsCountSynchronous(Context context){
+
+        try{
+             return  buildInterface(context).getUnreadConversationCountSynchronous().getUnreadCount();
+        } catch (Exception E){
+            return null;
+        }
+    }
+
     public static void getUnreadNotificationsCount(CanvasCallback<UnreadNotificationCount[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
         callback.readFromCache(getNotificationsCountCacheFilename());
         buildInterface(callback).getNotificationsCount(callback);
     }
+
 }

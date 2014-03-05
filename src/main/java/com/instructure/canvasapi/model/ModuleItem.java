@@ -57,6 +57,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     private String html_url;
     private String url;
     private CompletionRequirement completion_requirement;
+
     public class CompletionRequirement implements Serializable {
 
         private static final long serialVersionUID = 1L;

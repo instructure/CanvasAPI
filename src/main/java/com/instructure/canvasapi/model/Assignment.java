@@ -32,7 +32,12 @@ public class Assignment extends CanvasModel<Assignment> {
 	private String[] allowed_extensions = new String[0];
     private Submission submission;
     private long assignment_group_id;
+
+    //Module lock info
     private LockInfo lock_info;
+
+    //Date the teacher no longer accepts submissions.
+    private String lock_at;
 
     private DiscussionTopicHeader discussion_topic;
 
@@ -65,9 +70,18 @@ public class Assignment extends CanvasModel<Assignment> {
         }
 		return APIHelpers.stringToDate(due_at);
 	}
+    public Date getlockAtDate(){
+        if(lock_at == null){
+            return null;
+        }
+        return APIHelpers.stringToDate(lock_at);
+    }
 	public void setDueDate(String dueDate) {
 		this.due_at = dueDate;
 	}
+    public void setLockAtDate(String lockAtDate){
+        this.lock_at = lockAtDate;
+    }
 	public List<String> getSubmissionTypes() {
         if(submission_types == null) {
             return new ArrayList<String>();

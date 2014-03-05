@@ -64,6 +64,7 @@ public class GroupAPI {
 
     public static Group[] getAllGroupsSynchronous(Context context) {
 
+
         try {
             return buildInterface(context).getAllGroupsSynchronous();
         } catch (Exception E) {
