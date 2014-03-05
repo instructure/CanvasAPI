@@ -458,6 +458,34 @@ public class APIHelpers {
         return formatted.substring(0, 22) + ":" + formatted.substring(22);
     }
 
+
+
+
+    /**
+     * simpleDateFormat("MMMM d, yyyy", Locale.US)
+     */
+    public static SimpleDateFormat getDateToDayMonthYearDateFormat(){
+        return new SimpleDateFormat("MMMM d, yyyy", Locale.US);
+    }
+
+
+    /**
+     * Transform Calendar to ISO 8601 string.
+     */
+    public static String dateToDayMonthYearString(final Date date) {
+        if (date == null){
+            return null;
+        }
+
+        return getDateToDayMonthYearDateFormat().format(date);
+    }
+
+    /**
+     * Helper methods for handling ISO 8601 strings of the following format:
+     * "2008-03-01T13:00:00+01:00". It also supports parsing the "Z" timezone.
+     */
+
+
     /**
      * Transform ISO 8601 string to Calendar.
      */

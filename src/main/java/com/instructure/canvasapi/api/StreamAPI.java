@@ -1,17 +1,21 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.HiddenStreamItem;
 import com.instructure.canvasapi.model.StreamItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.DELETE;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Joshua Dutton on 10/22/13.
@@ -39,6 +43,9 @@ public class StreamAPI {
 
         @GET("/{next}")
         void getNextPageStream(@EncodedPath("next") String nextURL, Callback<StreamItem[]> callback);
+
+        @GET("/users/self/activity_stream")
+        StreamItem[] getUserStreamSynchronous(@Query("per_page") int number);
     }
 
 
@@ -47,7 +54,16 @@ public class StreamAPI {
         return restAdapter.create(StreamInterface.class);
     }
 
+    public static StreamItem[] getUserStreamSynchronous(Context context, int numberToReturn) {
+        //If not able to parse (no network for example), this will crash. Handle that case.
+        try {
+            RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
 
+            return restAdapter.create(StreamInterface.class).getUserStreamSynchronous(numberToReturn);
+        } catch (Exception E){
+            return null;
+        }
+    }
     public static void getFirstPageUserStream(CanvasCallback<StreamItem[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 

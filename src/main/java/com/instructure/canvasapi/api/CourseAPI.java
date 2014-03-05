@@ -7,8 +7,11 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
+import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +21,8 @@ import java.util.Map;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 public class CourseAPI {
+
+
 
     private static String getCourseCacheFilename(long courseId) {
         return "/courses/" + courseId;
@@ -36,23 +41,31 @@ public class CourseAPI {
     }
 
     interface CoursesInterface {
-        @GET("/courses/{courseid}?include[]=term&include[]=permissions")
+
+        @PUT("/courses/{courseid}")
+        void updateCourse(@Path("courseid") long courseID,
+                          @Query("course[name]") String name, @Query("course[course_code]") String courseCode,
+                          @Query("course[start_at]")String startAt, @Query("course[end_at]")String endAt,
+                          @Query("course[license]") String license, @Query("course[is_public]") Integer isPublic,
+                          CanvasCallback<Course> callback);
+
+        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public")
         void getCourse(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
-        @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term")
+        @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public")
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/courses?include[]=term&include[]=total_scores")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         Course[] getCourses();
 
-        @GET("/courses?include[]=term&include[]=total_scores&enrollment_type=student")
+        @GET("/courses?include[]=term&include[]=total_scores&enrollment_type=student&include[]=license&include[]=is_public")
         void getStudentCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores")
+        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
     }
 
@@ -110,6 +123,28 @@ public class CourseAPI {
         callback.readFromCache(getFavoriteCoursesCacheFilename());
         buildInterface(callback).getFavoriteCourses(callback);
     }
+
+    /**
+     *
+     * @param newCourseName (Optional)
+     * @param newCourseCode (Optional)
+     * @param newStartAt    (Optional)
+     * @param newEndAt      (Optional)
+     * @param license       (Optional)
+     * @param newIsPublic   (Optional)
+     * @param course        (Required)
+     * @param callback      (Required)
+     */
+    public static void updateCourse(String newCourseName, String newCourseCode, Date newStartAt, Date newEndAt, Course.LICENSE license, Boolean newIsPublic,Course course, CanvasCallback<Course>callback){
+        if(APIHelpers.paramIsNull(callback, course)) {return;}
+
+        String newStartAtString = APIHelpers.dateToString(newStartAt);
+        String newEndAtString = APIHelpers.dateToString(newEndAt);
+        Integer newIsPublicInteger = (newIsPublic == null) ? null : APIHelpers.booleanToInt(newIsPublic);
+
+        buildInterface(callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, callback);
+    }
+
 
     public static Map<Long, Course> createCourseMap(Course[] courses) {
         Map<Long, Course> courseMap = new HashMap<Long, Course>();

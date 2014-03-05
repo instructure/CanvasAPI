@@ -67,6 +67,9 @@ public class FileFolderAPI {
         Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
             @Override
             public void success(FileFolder fileFolder, Response response) {
+                //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
+                if(callback == null || callback.getContext() == null) {return;}
+
                 callback.readFromCache(getFirstPageFoldersCacheFilename(fileFolder.getId()));
                 buildInterface(callback, null).getFirstPageFolders(fileFolder.getId(), callback);
             }
@@ -89,6 +92,9 @@ public class FileFolderAPI {
         Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
             @Override
             public void success(FileFolder fileFolder, Response response) {
+                //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
+                if(callback == null || callback.getContext() == null) {return;}
+
                 callback.readFromCache(getFirstPageFilesCacheFilename(fileFolder.getId()));
                 buildInterface(callback, null).getFirstPageFiles(fileFolder.getId(), callback);
             }

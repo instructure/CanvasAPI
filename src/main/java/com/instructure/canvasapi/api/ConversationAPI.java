@@ -46,13 +46,17 @@ public class ConversationAPI {
         void getFirstPageConversationList(@Query("scope") String scope, Callback<Conversation[]> callback);
 
         @GET("/conversations/?interleave_submissions=1")
-        Conversation[] getFirstPageConversationList(@Query("scope") String scope);
+        Conversation[] getFirstPageConversationList(@Query("scope") String scope, @Query("per_page") int number);
 
         @GET("/{next}")
         void getNextPageConversationList(@EncodedPath("next") String nextURL, Callback<Conversation[]>callback);
 
         @GET("/conversations/{id}/?interleave_submissions=1")
         void getDetailedConversation(@Path("id") long conversation_id, @Query("auto_mark_as_read") int markAsRead, Callback<Conversation> callback);
+
+        @GET("/conversations/{id}/?interleave_submissions=1")
+        Conversation getDetailedConversationSynchronous(@Path("id") long conversation_id);
+
 
         @POST("/conversations/{id}/add_message")
         void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
@@ -89,6 +93,15 @@ public class ConversationAPI {
         callback.readFromCache(getDetailedConversationCacheFilename(conversation_id));
         buildInterface(callback).getDetailedConversation(conversation_id, APIHelpers.booleanToInt(markAsRead), callback);
     }
+    public static Conversation getDetailedConversationSynchronous(Context context, long conversation_id){
+        //If not able to parse (no network for example), this will crash. Handle that case.
+        try {
+            return buildInterface(context).getDetailedConversationSynchronous(conversation_id);
+        } catch (Exception E){
+            return null;
+        }
+
+    }
 
     public static void getFirstPageConversations(CanvasCallback<Conversation[]> callback, ConversationScope scope) {
         if (APIHelpers.paramIsNull(callback)) return;
@@ -97,9 +110,15 @@ public class ConversationAPI {
         buildInterface(callback).getFirstPageConversationList(conversationScopeToString(scope), callback);
     }
 
-    public static Conversation[] getFirstPageConversationsSynchronous(ConversationScope scope, Context context) {
+    public static Conversation[] getFirstPageConversationsSynchronous(ConversationScope scope, Context context, int numberToReturn) {
 
-       return buildInterface(context).getFirstPageConversationList(conversationScopeToString(scope));
+        try{
+            return buildInterface(context).getFirstPageConversationList(conversationScopeToString(scope), numberToReturn);
+        } catch (Exception E){
+            return null;
+        }
+
+
     }
 
     public static void getNextPageConversations(CanvasCallback<Conversation[]> callback, String nextURL){
