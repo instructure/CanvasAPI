@@ -55,7 +55,7 @@ public class DiscussionAPI {
     }
 
     private static DiscussionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback.getContext(), canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(DiscussionsInterface.class);
     }
 

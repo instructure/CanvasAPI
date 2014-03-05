@@ -1,6 +1,5 @@
 package com.instructure.canvasapi.api;
 
-import android.content.Context;
 import android.util.Log;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Enrollment;
@@ -60,8 +59,8 @@ public class UserAPI {
     }
 
 
-    private static UsersInterface buildInterface(Context context, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, canvasContext);
+    private static UsersInterface buildInterface(CanvasCallback callback, CanvasContext canvasContext) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(UsersInterface.class);
     }
 
@@ -78,21 +77,21 @@ public class UserAPI {
             return;
         }
 
-        buildInterface(callback.getContext(), null).getSelf(callback);
+        buildInterface(callback, null).getSelf(callback);
     }
 
     public static void getSelfEnrollments(CanvasCallback<Enrollment[]> callback) {
         if(APIHelpers.paramIsNull(callback)) return;
 
         callback.readFromCache(getSelfEnrollmentsCacheFilename());
-        buildInterface(callback.getContext(), null).getSelfEnrollments(callback);
+        buildInterface(callback, null).getSelfEnrollments(callback);
     }
 
 
     public static void updateShortName(String shortName, CanvasCallback<User> callback) {
         if (APIHelpers.paramIsNull(callback, shortName)) { return; }
 
-        buildInterface(callback.getContext(), null).updateShortName(shortName, callback);
+        buildInterface(callback, null).updateShortName(shortName, callback);
     }
 
     public static void getUserById(long userId, CanvasCallback<User> userCanvasCallback){
@@ -106,21 +105,21 @@ public class UserAPI {
             return;
         }
 
-        buildInterface(userCanvasCallback.getContext(), null).getUserById(userId,userCanvasCallback);
+        buildInterface(userCanvasCallback, null).getUserById(userId,userCanvasCallback);
     }
 
     public static void getFirstPagePeople(CanvasContext canvasContext, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         callback.readFromCache(getFirstPagePeopleCacheFilename(canvasContext));
-        buildInterface(callback.getContext(), canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        buildInterface(callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
     }
 
     public static void getNextPagePeople(String nextURL, CanvasCallback<User[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback.getContext(), null).getNextPagePeopleList(nextURL, callback);
+        buildInterface(callback, null).getNextPagePeopleList(nextURL, callback);
     }
 
     public static void getFirstPagePeople(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, CanvasCallback<User[]> callback) {
@@ -149,6 +148,6 @@ public class UserAPI {
                 return;
         }
 
-        buildInterface(callback.getContext(), canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), enrollmentType, callback);
+        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), enrollmentType, callback);
     }
 }

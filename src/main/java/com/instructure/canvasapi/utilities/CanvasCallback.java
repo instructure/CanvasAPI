@@ -21,10 +21,30 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     private String cacheFileName;
     private boolean isNextPage = false;
     private boolean isCancelled = false;
-    private boolean isFinished;
+    private boolean isFinished = true;
 
     public static ErrorDelegate defaultErrorDelegate;
     private ErrorDelegate errorDelegate;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Getters and Setters
+    ///////////////////////////////////////////////////////////////////////////
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean isFinished) {
+        this.isFinished = isFinished;
+    }
+
+    /**
+     * setIsNextPage sets whether you're on the NextPages (2 or more) of pagination.
+     * @param nextPage
+     */
+    public void setIsNextPage(boolean nextPage){
+        isNextPage = nextPage;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -83,21 +103,12 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         statusDelegate.onCallbackFinished();
     }
 
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(boolean isFinished) {
-        this.isFinished = isFinished;
-    }
-
     /**
      * @return Current context, can be null
      */
     public Context getContext(){
         return statusDelegate.getContext();
     }
-
 
     /**
      * setShouldCache sets whether or not a call should be cached and the filename where it'll be cached to.
@@ -113,14 +124,6 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      */
     public boolean shouldCache() {
         return cacheFileName != null;
-    }
-
-    /**
-     * setIsNextPage sets whether you're on the NextPages (2 or more) of pagination.
-     * @param nextPage
-     */
-    public void setIsNextPage(boolean nextPage){
-        isNextPage = nextPage;
     }
 
     /**
@@ -221,7 +224,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
         if(isNextPage){
             nextPage(t, linkHeaders, response);
-        }else{
+        }else {
             firstPage(t, linkHeaders, response);
         }
 
@@ -256,6 +259,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             if (retrofitError.getMessage() != null && retrofitError.getMessage().contains("authentication challenges")) {
                 errorDelegate.notAuthorizedError(retrofitError, null, getContext());
             } else {
+                statusDelegate.onNoNetwork();
                 errorDelegate.noNetworkError(retrofitError, getContext());
             }
         }

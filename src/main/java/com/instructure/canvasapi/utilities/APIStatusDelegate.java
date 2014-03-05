@@ -9,5 +9,6 @@ import android.content.Context;
  */
 public interface APIStatusDelegate {
     public void onCallbackFinished();
+    public void onNoNetwork();
     public Context getContext();
 }

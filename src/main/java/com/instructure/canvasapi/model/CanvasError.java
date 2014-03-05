@@ -2,6 +2,8 @@ package com.instructure.canvasapi.model;
 
 /**
  * Created by Nathan Button on 1/21/14.
+ *
+ * Copyright (c) 2014 Instructure. All rights reserved.
  */
 public class CanvasError {
     private String status;
