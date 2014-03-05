@@ -1,4 +1,4 @@
-package com.instructure.canvasapi.api.synchronous;
+package com.instructure.canvasapi.api.compatibility_synchronous;
 
 import android.annotation.TargetApi;
 import android.content.Context;

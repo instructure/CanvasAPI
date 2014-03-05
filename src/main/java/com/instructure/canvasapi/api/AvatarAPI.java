@@ -27,10 +27,18 @@ public class AvatarAPI {
         void updateAvatar(@Query("user[avatar][url]") String avatarURL, Callback<User> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static AvatarsInterface buildInterface(CanvasCallback<?> callback){
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(AvatarsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageOfAvatarList(CanvasCallback<Avatar[]> callback){
         if(APIHelpers.paramIsNull(callback)) { return; }

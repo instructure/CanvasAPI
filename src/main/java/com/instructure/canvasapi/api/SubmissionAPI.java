@@ -68,11 +68,18 @@ public class SubmissionAPI {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static SubmissionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(SubmissionsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getSubmissionsWithComments(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }

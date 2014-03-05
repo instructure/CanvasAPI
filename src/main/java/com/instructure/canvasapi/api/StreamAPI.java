@@ -44,26 +44,27 @@ public class StreamAPI {
         @GET("/{next}")
         void getNextPageStream(@EncodedPath("next") String nextURL, Callback<StreamItem[]> callback);
 
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+
         @GET("/users/self/activity_stream")
         StreamItem[] getUserStreamSynchronous(@Query("per_page") int number);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static StreamInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(StreamInterface.class);
     }
 
-    public static StreamItem[] getUserStreamSynchronous(Context context, int numberToReturn) {
-        //If not able to parse (no network for example), this will crash. Handle that case.
-        try {
-            RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
-            return restAdapter.create(StreamInterface.class).getUserStreamSynchronous(numberToReturn);
-        } catch (Exception E){
-            return null;
-        }
-    }
     public static void getFirstPageUserStream(CanvasCallback<StreamItem[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
@@ -88,5 +89,23 @@ public class StreamAPI {
     public static void hideStreamItem(long streamId, final CanvasCallback<HiddenStreamItem> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
         buildInterface(callback, null).hideStreamItem(streamId,callback);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
+
+    public static StreamItem[] getUserStreamSynchronous(Context context, int numberToReturn) {
+        try {
+            RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+
+            return restAdapter.create(StreamInterface.class).getUserStreamSynchronous(numberToReturn);
+        } catch (Exception E){
+            return null;
+        }
     }
 }

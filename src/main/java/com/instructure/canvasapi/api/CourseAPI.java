@@ -59,20 +59,31 @@ public class CourseAPI {
         @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
-        Course[] getCourses();
-
         @GET("/courses?include[]=term&include[]=total_scores&enrollment_type=student&include[]=license&include[]=is_public")
         void getStudentCourses(CanvasCallback<Course[]> callback);
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
+
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
+        Course[] getCourses();
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static CoursesInterface buildInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(CoursesInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getCourse(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
@@ -93,21 +104,6 @@ public class CourseAPI {
 
         callback.readFromCache(getCoursesCacheFilename());
         buildInterface(callback).getCourses(callback);
-    }
-
-    public static Course[] getCoursesSynchronous(Context context) {
-        if(context == null){
-            return null;
-        }
-        
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-
-        //If not able to parse (no network for example), this will crash. Handle that case.
-        try {
-            return restAdapter.create(CoursesInterface.class).getCourses();
-        } catch (Exception E){
-            return null;
-        }
     }
 
     public static void getStudentCourses(CanvasCallback<Course[]> callback) {
@@ -146,11 +142,33 @@ public class CourseAPI {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    ////////////////////////////////////////////////////////////////////////////
     public static Map<Long, Course> createCourseMap(Course[] courses) {
         Map<Long, Course> courseMap = new HashMap<Long, Course>();
         for (Course course : courses) {
             courseMap.put(course.getId(), course);
         }
         return courseMap;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
+
+    public static Course[] getCoursesSynchronous(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+
+        //If not able to parse (no network for example), this will crash. Handle that case.
+        try {
+            return restAdapter.create(CoursesInterface.class).getCourses();
+        } catch (Exception E){
+            return null;
+        }
     }
 }
