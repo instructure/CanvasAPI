@@ -41,7 +41,7 @@ public class APIHelpers {
     /**
      * Log Tag
      */
-    public final static String LOG_TAG = "canvas-kit";
+    public final static String LOG_TAG = "canvas-api";
 
     /**
      *
