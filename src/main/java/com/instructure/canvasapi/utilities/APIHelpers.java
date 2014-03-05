@@ -25,9 +25,17 @@ public class APIHelpers {
     /**
      * SharedPreferences tags
      */
+
+    //We would need migration code to update NAME and MASQUERADED_USER to snake case, so we will leave them as is for now.
     private final static String SHARED_PREFERENCES_NAME = "canvas-kit-sp";
-    private final static String SHARED_PREFERENCES_USER = "user";
     private final static String SHARED_PREFERENCES_MASQUERADED_USER = "masq-user";
+
+    private final static String SHARED_PREFERENCES_USER = "user";
+    private final static String SHARED_PREFERENCES_DOMAIN = "domain";
+    private final static String SHARED_PREFERENCES_TOKEN = "token";
+    private final static String SHARED_PREFERENCES_USER_AGENT = "user_agent";
+    private final static String SHARED_PREFERENCES_API_PROTOCOL = "api_protocol";
+    private final static String SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME = "error_delegate_class_name";
 
 
     /**
@@ -84,7 +92,7 @@ public class APIHelpers {
         boolean sharedPreferencesDeleted =  editor.commit();
 
         //Delete cache.
-        File cacheDir = new File(context.getFilesDir(), "cache");
+        File cacheDir = new File(context.getFilesDir(), FileUtilities.FILE_DIRECTORY);
         boolean cacheDeleted = FileUtilities.deleteAllFilesInDirectory(cacheDir);
 
         return sharedPreferencesDeleted && cacheDeleted;
@@ -232,7 +240,7 @@ public class APIHelpers {
         }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("useragent", "");
+        return sharedPreferences.getString(SHARED_PREFERENCES_USER_AGENT, "");
 
     }
 
@@ -250,7 +258,7 @@ public class APIHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("useragent", userAgent);
+        editor.putString(SHARED_PREFERENCES_USER_AGENT, userAgent);
         return editor.commit();
     }
 
@@ -284,7 +292,7 @@ public class APIHelpers {
         }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String domain =  sharedPreferences.getString("domain", "");
+        String domain =  sharedPreferences.getString(SHARED_PREFERENCES_DOMAIN, "");
 
         while (domain != null && domain.endsWith("/")) {
             domain = domain.substring(0, domain.length() - 1);
@@ -317,7 +325,7 @@ public class APIHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("domain", domain);
+        editor.putString(SHARED_PREFERENCES_DOMAIN, domain);
         return editor.commit();
     }
 
@@ -328,7 +336,7 @@ public class APIHelpers {
      */
     public static String getToken(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("token", "");
+        return sharedPreferences.getString(SHARED_PREFERENCES_TOKEN, "");
     }
 
     /**
@@ -344,7 +352,7 @@ public class APIHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("token", token);
+        editor.putString(SHARED_PREFERENCES_TOKEN, token);
         return editor.commit();
     }
 
@@ -360,7 +368,7 @@ public class APIHelpers {
         }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("api_protocol", "https");
+        return sharedPreferences.getString(SHARED_PREFERENCES_API_PROTOCOL, "https");
     }
 
     /**
@@ -377,7 +385,7 @@ public class APIHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("api_protocol", protocol);
+        editor.putString(SHARED_PREFERENCES_API_PROTOCOL, protocol);
         return editor.commit();
     }
 
@@ -390,7 +398,7 @@ public class APIHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("errorDelegateClassName", errorDelegateClassName);
+        editor.putString(SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME, errorDelegateClassName);
         editor.commit();
     }
 
@@ -401,7 +409,7 @@ public class APIHelpers {
      */
     public static String getDefaultErrorDelegateClass(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("errorDelegateClassName", null);
+        return sharedPreferences.getString(SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME, null);
 
     }
     /**
