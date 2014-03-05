@@ -38,7 +38,7 @@ public class PageAPI {
     }
 
     private static PagesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback.getContext(), canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(PagesInterface.class);
     }
 

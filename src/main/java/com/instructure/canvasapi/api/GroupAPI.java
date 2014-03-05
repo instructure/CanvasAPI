@@ -39,7 +39,6 @@ public class GroupAPI {
         @GET("/users/self/groups")
         Group[] getAllGroupsSynchronous();
 
-
         @GET("/courses/{courseid}/groups")
         void getAllGroupsInCourse(@Path("courseid") long courseId, CanvasCallback<Group[]> callback);
 
@@ -64,9 +63,10 @@ public class GroupAPI {
     }
 
     public static Group[] getAllGroupsSynchronous(Context context) {
+
         try {
             return buildInterface(context).getAllGroupsSynchronous();
-        } catch (Exception E){
+        } catch (Exception E) {
             return null;
         }
     }

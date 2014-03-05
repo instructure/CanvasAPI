@@ -24,6 +24,14 @@ public class DateHelpers {
         return new SimpleDateFormat("MMMM d, yyyy", Locale.US).format(date);
     }
 
+    public static String createShortDateString(final Date date) {
+        if (date == null){
+            return null;
+        }
+
+        return new SimpleDateFormat("MMM d, yyyy", Locale.US).format(date);
+    }
+
     public static String createDateTimeString(Context context, String prefix, Date date) {
         return prefix + ": " +
                 DateFormat.format("MMM d, yyyy", date) + " " +

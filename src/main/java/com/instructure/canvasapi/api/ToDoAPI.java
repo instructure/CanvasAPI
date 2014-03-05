@@ -48,9 +48,9 @@ public class ToDoAPI {
         void dismissTodo(@EncodedPath("path")String path, CanvasCallback<Response>responseCallback);
     }
 
-
     private static ToDosInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        return buildInterface(callback.getContext(), canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        return restAdapter.create(ToDosInterface.class);
     }
 
     private static ToDosInterface buildInterface(Context context, CanvasContext canvasContext) {

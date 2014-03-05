@@ -33,7 +33,7 @@ public class APIHelpers {
     /**
      * Log Tag
      */
-    public final static String LOG_TAG = "canvas-api";
+    public final static String LOG_TAG = "canvas-kit";
 
     /**
      *
@@ -420,6 +420,10 @@ public class APIHelpers {
      * @return
      */
     public static String removeDomainFromUrl(String url) {
+        if(url == null){
+            return null;
+        }
+
         String prefix = "/api/v1/";
         int index = url.indexOf(prefix);
         if (index != -1) {
@@ -499,15 +503,14 @@ public class APIHelpers {
 
     public static APIStatusDelegate statusDelegateWithContext(final Context context) {
         return new APIStatusDelegate() {
-            @Override
-            public void onCallbackFinished() {
-
-            }
+            @Override public void onCallbackFinished() { }
 
             @Override
             public Context getContext() {
                 return context;
             }
+
+            @Override public void onNoNetwork() { }
         };
     }
 

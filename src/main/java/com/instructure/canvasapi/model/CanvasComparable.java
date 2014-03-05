@@ -1,5 +1,6 @@
 package com.instructure.canvasapi.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,9 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T> {
+public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T>, Serializable {
+
+    public static final long serialVersionUID = 1L;
 
     public long getId() {
         return -1;

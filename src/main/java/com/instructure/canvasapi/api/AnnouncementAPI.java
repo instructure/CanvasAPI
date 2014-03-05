@@ -32,7 +32,7 @@ public class AnnouncementAPI {
 
 
     private static AnnouncementsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback.getContext(), canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(AnnouncementsInterface.class);
     }
 

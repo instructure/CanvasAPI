@@ -54,11 +54,7 @@ public class FileFolderAPI {
     }
 
     private static FilesFoldersInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        return buildInterface(callback.getContext(), canvasContext);
-    }
-
-    private static FilesFoldersInterface buildInterface(Context context, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(FilesFoldersInterface.class);
     }
 
@@ -81,7 +77,7 @@ public class FileFolderAPI {
             }
         };
 
-        getRootFolder(canvasContext, callback.getContext(), bridgeCallback);
+        getRootFolder(canvasContext, callback, bridgeCallback);
     }
 
     public static void getFirstPageFilesRoot(CanvasContext canvasContext, final CanvasCallback<FileFolder[]> callback) {
@@ -103,11 +99,11 @@ public class FileFolderAPI {
             }
         };
 
-        getRootFolder(canvasContext, callback.getContext(), bridgeCallback);
+        getRootFolder(canvasContext, callback, bridgeCallback);
     }
 
-    private static void getRootFolder(CanvasContext canvasContext, Context context, Callback<FileFolder> bridgeCallback) {
-        FilesFoldersInterface foldersInterface = buildInterface(context, canvasContext);
+    private static void getRootFolder(CanvasContext canvasContext, CanvasCallback callback, Callback<FileFolder> bridgeCallback) {
+        FilesFoldersInterface foldersInterface = buildInterface(callback, canvasContext);
 
         if (canvasContext.getType() == CanvasContext.Type.USER) {
             foldersInterface.getRootUserFolder(bridgeCallback);

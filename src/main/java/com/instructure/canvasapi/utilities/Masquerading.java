@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.instructure.canvasapi.api.UserAPI;
 import com.instructure.canvasapi.model.User;
 
+import java.io.File;
+
 /**
  * Created by Josh Ruesch on 10/16/13.
  *
@@ -45,6 +47,9 @@ public class Masquerading {
         return isMasquerading;
     }
     public static void stopMasquerading(Context context) {
+        File cacheDir = new File(context.getFilesDir(), "cache");
+        FileUtilities.deleteAllFilesInDirectory(cacheDir);
+
         SharedPreferences settings = context.getSharedPreferences(MASQ_PREF_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(IS_MASQUERADING, false);
@@ -52,6 +57,9 @@ public class Masquerading {
         editor.commit();
     }
     public static void startMasquerading(long masqueradeId, Context context, CanvasCallback<User> masqueradeUser) {
+
+        File cacheDir = new File(context.getFilesDir(), "cache");
+        FileUtilities.deleteAllFilesInDirectory(cacheDir);
 
         SharedPreferences settings = context.getSharedPreferences(MASQ_PREF_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();

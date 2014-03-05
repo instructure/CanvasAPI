@@ -27,7 +27,7 @@ public class TabAPI {
     }
 
     private static TabsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback.getContext(), canvasContext);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(TabsInterface.class);
     }
 

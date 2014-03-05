@@ -1,15 +1,11 @@
 package com.instructure.canvasapi.model;
 
-import java.io.Serializable;
-
 /**
  * Created by Joshua Dutton on 11/20/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public abstract class CanvasModel<T extends CanvasComparable> extends CanvasComparable<T> implements Serializable {
-
-    public static final long serialVersionUID = 1L;
+public abstract class CanvasModel<T extends CanvasComparable> extends CanvasComparable<T> {
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides

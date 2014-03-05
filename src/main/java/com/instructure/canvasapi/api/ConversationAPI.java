@@ -63,6 +63,9 @@ public class ConversationAPI {
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
 
+        @PUT("/conversations/{conversationid}?conversation[workflow_state]=unread")
+        void markConversationAsUnread(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
+
         @PUT("/conversations/{conversationid}?conversation[workflow_state]=archived")
         void archiveConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
 
@@ -138,6 +141,13 @@ public class ConversationAPI {
 
         buildInterface(responseCanvasCallback).deleteConversation(conversationId,responseCanvasCallback);
     }
+
+    public static void markConversationAsUnread(CanvasCallback<Response>responseCanvasCallback, long conversationId){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).markConversationAsUnread(conversationId,responseCanvasCallback);
+    }
+
 
     public static void archiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}

@@ -320,12 +320,12 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         return "";
     }
 
-    public String getShortStartString(Context context) {
+    public String getStartDateString() {
         if (isAllDay() && getAllDayDate() != null) {
-            return DateFormat.format("MMM d", getAllDayDate()).toString();
+            return DateHelpers.createShortDateString(getAllDayDate());
         }
         if (getStartDate() != null) {
-            return DateHelpers.createShortDateTimeString(context, getStartDate());
+            return DateHelpers.createShortDateString(getStartDate());
         }
         return "";
     }

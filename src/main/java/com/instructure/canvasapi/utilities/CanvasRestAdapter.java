@@ -60,6 +60,19 @@ public class CanvasRestAdapter {
 
     }
 
+    /**
+     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
+     *
+     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
+     *
+     * @param  callback A Canvas Callback
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext) {
+        callback.setFinished(false);
+        return buildAdapter(callback.getContext(), canvasContext);
+    }
+
 
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
@@ -70,7 +83,6 @@ public class CanvasRestAdapter {
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext) {
-
         //If not return an adapter with no context.
         if(canvasContext == null){
             return buildAdapter(context);
@@ -136,7 +148,6 @@ public class CanvasRestAdapter {
      *
      * Used ONLY in the login flow!
      *
-     * @param  context An Android context.
      */
     public static RestAdapter buildTokenRestAdapter(final String token, final String protocol, final String domain){
 
