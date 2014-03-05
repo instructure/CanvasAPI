@@ -58,11 +58,18 @@ public class UserAPI {
         void getNextPagePeopleList(@EncodedPath("next") String nextURL, Callback<User[]> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static UsersInterface buildInterface(CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(UsersInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getSelf(UserCallback callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }

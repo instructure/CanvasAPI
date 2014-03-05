@@ -37,10 +37,18 @@ public class PageAPI {
         void getDetailedPage(@Path("context_id") long context_id, @Path("pageid") String page_id, Callback<Page> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static PagesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(PagesInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPagePages(CanvasContext canvasContext, CanvasCallback<Page[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }

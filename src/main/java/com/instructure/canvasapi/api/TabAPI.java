@@ -31,10 +31,18 @@ public class TabAPI {
         void getTabs(@Path("context_id") long context_id, CanvasCallback<Tab[]> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static TabsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(TabsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getTabs(CanvasContext canvasContext, CanvasCallback<Tab[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) return;

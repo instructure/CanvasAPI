@@ -1,4 +1,4 @@
-package com.instructure.canvasapi.api.synchronous;
+package com.instructure.canvasapi.api.compatibility_synchronous;
 
 import android.content.Context;
 import com.instructure.canvasapi.model.CanvasContext;

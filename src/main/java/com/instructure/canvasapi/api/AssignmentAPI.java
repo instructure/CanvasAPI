@@ -52,11 +52,18 @@ public class AssignmentAPI {
         void getCalendarEvents(@Query("context_codes[]") String context_id, Callback<ScheduleItem[]> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static AssignmentsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(AssignmentsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getAssignment(long courseID, long assignmentID, final CanvasCallback<Assignment> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }

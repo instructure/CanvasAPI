@@ -36,16 +36,23 @@ public class GroupAPI {
         @GET("/users/self/groups")
         void getAllGroups(CanvasCallback<Group[]> callback);
 
-        @GET("/users/self/groups")
-        Group[] getAllGroupsSynchronous();
-
         @GET("/courses/{courseid}/groups")
         void getAllGroupsInCourse(@Path("courseid") long courseId, CanvasCallback<Group[]> callback);
 
         @GET("/groups/{groupid}?include[]=permissions")
         void getDetailedGroup(@Path("groupid") long groupId, CanvasCallback<Group> callback);
+
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+
+        @GET("/users/self/groups")
+        Group[] getAllGroupsSynchronous();
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static GroupsInterface buildInterface(CanvasCallback<?> callback) {
         return buildInterface(callback.getContext());
@@ -55,21 +62,15 @@ public class GroupAPI {
         return restAdapter.create(GroupsInterface.class);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
+
     public static void getAllGroups(CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
         callback.readFromCache(getAllGroupsCacheFilename());
         buildInterface(callback).getAllGroups(callback);
-    }
-
-    public static Group[] getAllGroupsSynchronous(Context context) {
-
-
-        try {
-            return buildInterface(context).getAllGroupsSynchronous();
-        } catch (Exception E) {
-            return null;
-        }
     }
 
     public static void getAllGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
@@ -86,6 +87,9 @@ public class GroupAPI {
         buildInterface(callback).getDetailedGroup(groupId,callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    ////////////////////////////////////////////////////////////////////////////
 
     public static Map<Long, Group> createGroupMap(Group[] groups) {
         Map<Long, Group> groupMap = new HashMap<Long, Group>();
@@ -94,4 +98,21 @@ public class GroupAPI {
         }
         return groupMap;
     }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
+
+    public static Group[] getAllGroupsSynchronous(Context context) {
+        try {
+            return buildInterface(context).getAllGroupsSynchronous();
+        } catch (Exception E) {
+            return null;
+        }
+    }
+
 }

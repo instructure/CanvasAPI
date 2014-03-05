@@ -41,9 +41,17 @@ public class CalendarEventAPI {
         @GET("/users/self/upcoming_events")
         void getUpcomingEvents(Callback<ScheduleItem[]> callback);
 
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+
         @GET("/users/self/upcoming_events")
         ScheduleItem[] getUpcomingEvents();
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static CalendarEventsInterface buildInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
@@ -54,6 +62,10 @@ public class CalendarEventAPI {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
         return restAdapter.create(CalendarEventsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getCalendarEvent(long calendarEventId, final CanvasCallback<ScheduleItem> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
@@ -76,13 +88,17 @@ public class CalendarEventAPI {
         buildInterface(callback).getUpcomingEvents(callback);
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
+
+
     public static ScheduleItem[] getUpcomingEventsSynchronous(Context context) {
-        if (context == null) {
-            return null;
-        }
-
-
-        //If not able to parse (no network for example), this will crash. Handle that case.
         try {
             return buildInterface(context).getUpcomingEvents();
         } catch (Exception E){

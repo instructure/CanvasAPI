@@ -53,10 +53,18 @@ public class FileFolderAPI {
         void deleteFile(@Path("fileid")long fileId, Callback<Response> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static FilesFoldersInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(FilesFoldersInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageFoldersRoot(CanvasContext canvasContext, final CanvasCallback<FileFolder[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) {

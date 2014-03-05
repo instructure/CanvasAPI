@@ -29,10 +29,18 @@ public class RecipientAPI {
         void getNextPageRecipientsList(@EncodedPath("next") String nextURL, Callback<Recipient[]> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static RecipientsInterface buildInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(RecipientsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageRecipients(String search, String context, CanvasCallback<Recipient[]> callback) {
         if (APIHelpers.paramIsNull(callback, search, context)) { return; }

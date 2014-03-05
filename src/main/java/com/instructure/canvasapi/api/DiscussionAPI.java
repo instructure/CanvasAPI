@@ -54,10 +54,18 @@ public class DiscussionAPI {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     private static DiscussionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(DiscussionsInterface.class);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageDiscussions(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }

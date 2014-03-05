@@ -33,9 +33,17 @@ public class UnreadCountAPI {
         @GET("/users/self/activity_stream/summary")
         void getNotificationsCount(Callback<UnreadNotificationCount[]> callback);
 
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+
         @GET("/conversations/unread_count")
         UnreadConversationCount getUnreadConversationCountSynchronous();
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
 
     private static UnreadCountsInterface buildInterface(CanvasCallback<?> callback) {
 
@@ -46,20 +54,15 @@ public class UnreadCountAPI {
         return restAdapter.create(UnreadCountsInterface.class);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
+
     public static void getUnreadConversationCount(CanvasCallback<UnreadConversationCount> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
         callback.readFromCache(getUnreadConversationCountCacheFilename());
         buildInterface(callback).getUnreadConversationCount(callback);
-    }
-
-    public static String getUnreadConversationsCountSynchronous(Context context){
-
-        try{
-             return  buildInterface(context).getUnreadConversationCountSynchronous().getUnreadCount();
-        } catch (Exception E){
-            return null;
-        }
     }
 
     public static void getUnreadNotificationsCount(CanvasCallback<UnreadNotificationCount[]> callback) {
@@ -69,4 +72,20 @@ public class UnreadCountAPI {
         buildInterface(callback).getNotificationsCount(callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
+
+    public static String getUnreadConversationsCountSynchronous(Context context){
+
+        try{
+            return  buildInterface(context).getUnreadConversationCountSynchronous().getUnreadCount();
+        } catch (Exception E){
+            return null;
+        }
+    }
 }

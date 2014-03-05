@@ -29,6 +29,10 @@ public class OAuthAPI {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
+
     public static void deleteToken(CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
