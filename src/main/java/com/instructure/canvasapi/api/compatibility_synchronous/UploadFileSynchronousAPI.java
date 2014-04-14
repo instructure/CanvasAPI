@@ -108,17 +108,17 @@ public class UploadFileSynchronousAPI {
     }
 
     public static Attachment uploadSubmissionFile(long courseId, long assignmentId, String name, long size, String path, String contentType, Activity activity, UploadFilesErrorHandler uploadFilesErrorHandler){
-        String url = String.format(Locale.US, "/api/v1/courses/%d/assignments/%d/submissions/self/files?name=%s&size=%d",  courseId, assignmentId, name, size);
+        String url = String.format(Locale.US, "/api/v1/courses/%d/assignments/%d/submissions/self/files?name=%s&size=%d&on_duplicate=rename",  courseId, assignmentId, name, size);
         return uploadFile(url, null, path, contentType, activity, uploadFilesErrorHandler);
     }
 
     public static Attachment uploadPersonalFile(String name, Long parentFolderID, String path, long size, String contentType, Activity activity, UploadFilesErrorHandler uploadFilesErrorHandler){
-        String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d",name, size);
+        String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&on_duplicate=rename",name, size);
         return uploadFile(url, parentFolderID, path, contentType, activity, uploadFilesErrorHandler);
     }
 
     public static Attachment uploadCourseFile(long courseId, String name, Long parentFolderID, long size, String path, String contentType, Activity activity, UploadFilesErrorHandler uploadFilesErrorHandler){
-        String url = String.format(Locale.US, "/api/v1/courses/"+courseId+"/files?name=%s&size=%d",name, size);
+        String url = String.format(Locale.US, "/api/v1/courses/"+courseId+"/files?name=%s&size=%d&on_duplicate=rename",name, size);
         return uploadFile(url, parentFolderID, path, contentType, activity, uploadFilesErrorHandler);
     }
 

@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Enrollment extends CanvasModel<Enrollment> {
+public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
 
     // grades object when the enrollment is from a user
     private class Grades implements Serializable {
@@ -151,6 +154,13 @@ public class Enrollment extends CanvasModel<Enrollment> {
         return false;
     }
 
+    public boolean isTA() {
+        if (type.equalsIgnoreCase("ta") || type.equalsIgnoreCase("taenrollment")) {
+            return true;
+        }
+        return false;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -183,4 +193,51 @@ public class Enrollment extends CanvasModel<Enrollment> {
         result = 31 * result + type.hashCode();
         return result;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.role);
+        dest.writeString(this.type);
+        dest.writeLong(this.id);
+        dest.writeLong(this.course_id);
+        dest.writeLong(this.course_section_id);
+        dest.writeString(this.enrollment_state);
+        dest.writeLong(this.user_id);
+        dest.writeSerializable(this.grades);
+        dest.writeDouble(this.computed_current_score);
+        dest.writeDouble(this.computed_final_score);
+        dest.writeString(this.computed_current_grade);
+        dest.writeString(this.computed_final_grade);
+    }
+
+    private Enrollment(Parcel in) {
+        this.role = in.readString();
+        this.type = in.readString();
+        this.id = in.readLong();
+        this.course_id = in.readLong();
+        this.course_section_id = in.readLong();
+        this.enrollment_state = in.readString();
+        this.user_id = in.readLong();
+        this.grades = (Grades) in.readSerializable();
+        this.computed_current_score = in.readDouble();
+        this.computed_final_score = in.readDouble();
+        this.computed_current_grade = in.readString();
+        this.computed_final_grade = in.readString();
+    }
+
+    public static Parcelable.Creator<Enrollment> CREATOR = new Parcelable.Creator<Enrollment>() {
+        public Enrollment createFromParcel(Parcel source) {
+            return new Enrollment(source);
+        }
+
+        public Enrollment[] newArray(int size) {
+            return new Enrollment[size];
+        }
+    };
 }

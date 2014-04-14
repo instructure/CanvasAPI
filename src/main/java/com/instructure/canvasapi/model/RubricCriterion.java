@@ -10,7 +10,7 @@ import java.util.List;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class RubricCriterion implements Serializable {
+public class RubricCriterion implements Serializable , Comparable<RubricCriterion> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -75,6 +75,23 @@ public class RubricCriterion implements Serializable {
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RubricCriterion that = (RubricCriterion) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     public void markGrade(RubricCriterionRating rating) {
         for (RubricCriterionRating criterionRating : ratings) {
             if (criterionRating.getPoints() == rating.getPoints()) {
@@ -86,6 +103,7 @@ public class RubricCriterion implements Serializable {
             rating.setRatingDescription(rating.getComments());
             ratings.add(rating);
         }
+
     }
 
 
@@ -102,5 +120,14 @@ public class RubricCriterion implements Serializable {
                 }
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Overrides
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public int compareTo(RubricCriterion rubricCriterion) {
+        return this.getId().compareTo(rubricCriterion.getId());
     }
 }

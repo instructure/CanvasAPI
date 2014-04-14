@@ -9,10 +9,10 @@ import java.io.Serializable;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class RubricCriterionRating implements Serializable {
+public class RubricCriterionRating implements Serializable , Comparable<RubricCriterionRating>{
 
-	private static final long serialVersionUID = 1L;
-	
+    public static final long serialVersionUID = 1L;
+
 	private String id;
     private String criterionId;
 	private String description;
@@ -72,16 +72,16 @@ public class RubricCriterionRating implements Serializable {
 
         RubricCriterionRating rating = (RubricCriterionRating) o;
 
-        if (criterionId != null ? !criterionId.equals(rating.criterionId) : rating.criterionId != null)
-            return false;
+        if (id != null ? !id.equals(rating.id) : rating.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return criterionId != null ? criterionId.hashCode() : 0;
+        return id != null ? id.hashCode() : 0;
     }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -105,5 +105,15 @@ public class RubricCriterionRating implements Serializable {
 
     public boolean isComment() {
         return getComments() != null && !getComments().equals("");
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Overrides
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public int compareTo(RubricCriterionRating rubricCriterionRating) {
+        return this.getId().compareTo(rubricCriterionRating.getId());
     }
 }

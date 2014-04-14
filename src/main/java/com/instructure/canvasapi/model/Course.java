@@ -142,6 +142,20 @@ public class Course extends CanvasContext implements Comparable<CanvasContext> {
         return false;
     }
 
+    public boolean isTA() {
+
+        if (enrollments == null){
+            return false;
+        }
+
+        for(Enrollment enrollment : enrollments) {
+            if(enrollment.isTA()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isObserver()
     {
         for(Enrollment enrollment : enrollments) {
