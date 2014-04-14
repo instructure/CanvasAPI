@@ -55,6 +55,10 @@ public class Message extends CanvasModel<Message> {
         return submission;
     }
 
+    public Date getMessageDate() {
+        return APIHelpers.stringToDate(created_at);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////

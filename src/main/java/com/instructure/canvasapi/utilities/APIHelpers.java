@@ -2,6 +2,7 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.format.DateFormat;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
@@ -107,6 +108,7 @@ public class APIHelpers {
      */
 
     public static boolean setCacheUser(Context context, User user) {
+
         if (user == null) {
             return false;
         } else {
@@ -458,17 +460,6 @@ public class APIHelpers {
         return formatted.substring(0, 22) + ":" + formatted.substring(22);
     }
 
-
-
-
-    /**
-     * simpleDateFormat("MMMM d, yyyy", Locale.US)
-     */
-    public static SimpleDateFormat getDateToDayMonthYearDateFormat(){
-        return new SimpleDateFormat("MMMM d, yyyy", Locale.US);
-    }
-
-
     /**
      * Transform Calendar to ISO 8601 string.
      */
@@ -477,7 +468,7 @@ public class APIHelpers {
             return null;
         }
 
-        return getDateToDayMonthYearDateFormat().format(date);
+        return DateHelpers.getDateToDayMonthYearDateFormat().format(date);
     }
 
     /**
