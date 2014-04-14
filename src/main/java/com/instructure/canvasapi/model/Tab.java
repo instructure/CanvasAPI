@@ -38,23 +38,12 @@ public class Tab implements Serializable {
     public static final String CHAT_ID = "chat";
     public static final String SETTINGS_ID = "settings";
 
-    public static final String[][] TAB_GROUPS = {
-            {HOME_ID, GRADES_ID, NOTIFICATIONS_ID},
-            {SYLLABUS_ID, AGENDA_ID, MODULES_ID},
-            {ASSIGNMENTS_ID, QUIZZES_ID, PAGES_ID, FILES_ID},
-            {ANNOUNCEMENTS_ID, COLLABORATIONS_ID, CONFERENCES_ID, PEOPLE_ID, DISCUSSIONS_ID, OUTCOMES_ID, CHAT_ID, SETTINGS_ID}
-    };
-    public static final int LTI_GROUP_INDEX = TAB_GROUPS.length;
-
     // API Variables
     private String id;
     private String label;
     private String type;
     private String html_url;    // internal url
     private String url;         // external url
-
-    // helper variables
-    private int groupId;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -85,12 +74,6 @@ public class Tab implements Serializable {
 
     public String getExternalUrl() {
         return url;
-    }
-    public int getGroupId() {
-        return groupId;
-    }
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
     }
 
     ///////////////////////////////////////////////////////////////////////////

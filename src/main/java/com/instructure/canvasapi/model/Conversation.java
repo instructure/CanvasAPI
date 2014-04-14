@@ -105,6 +105,7 @@ public class Conversation extends CanvasModel<Conversation> {
     public int getMessageCount() {
         return message_count;
     }
+    public String getLastMessageAt(){return last_message_at;}
     public boolean isSubscribed() {
         return subscribed;
     }

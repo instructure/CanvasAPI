@@ -87,9 +87,6 @@ public class ToDo extends CanvasComparable<ToDo> {
 	public void setHtmlUrl(String html_url) {
 		this.html_url = html_url;
 	}
-	public long getCourseId() {
-		return course_id;
-	}
 	public void setCourseId(long courseId) {
 		this.course_id = courseId;
 	}

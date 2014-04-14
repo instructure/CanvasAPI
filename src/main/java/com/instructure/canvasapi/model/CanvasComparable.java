@@ -53,4 +53,15 @@ public abstract class CanvasComparable<T extends CanvasComparable> implements Co
         }
         return a.compareTo(b);
     }
+
+    public static <C extends Comparable> boolean equals(C a, C b) {
+        if (a == null && b == null) {
+            return true;
+        } else if (a == null) {
+            return false;
+        } else if (b == null) {
+            return false;
+        }
+        return a.equals(b);
+    }
 }

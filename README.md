@@ -1,6 +1,6 @@
 ## CanvasAPI by Instructure for Android
 
-CanvasAPI is an Android library that will help you integrate your own third party app with [Canvas by Instructure](https://instructure.com/). CanvasAPI adds support for Android 2.2 (Froyo) and up.
+CanvasAPI is an Android library that will help you integrate your own third party app with [Canvas by Instructure](https://instructure.com/). CanvasAPI adds support for Android 2.3 (Gingerbread) and up.
 
 CanvasAPI is built on the [Canvas API](https://canvas.instructure.com/doc/api/index.html). CanvasAPI is designed to allow for great flexibility while providing an easy to use interface. You can use CanvasAPI to build apps for open source versions of Canvas as well as instances hosted by Instructure.
 

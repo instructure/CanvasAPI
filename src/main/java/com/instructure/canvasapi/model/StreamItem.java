@@ -139,6 +139,12 @@ public class StreamItem extends CanvasModel<StreamItem> {
     public boolean isReadState() {
         return read_state;
     }
+
+    //helper method to show that the stream item has been read without having to reload all the data.
+    //this method does not get the data from the server, so make sure item is actually read.
+    public void setReadState(boolean readState) {
+        read_state = readState;
+    }
     public String getUrl() {
         return url;
     }
