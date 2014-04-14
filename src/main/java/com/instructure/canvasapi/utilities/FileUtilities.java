@@ -53,6 +53,34 @@ public class FileUtilities {
     }
 
     /**
+     * Delets the cache file with the given name
+     * @param context
+     * @param cacheFileName
+     * @return
+     */
+    public static boolean DeleteFile(Context context, String cacheFileName){
+        if(context == null || cacheFileName == null){
+            return false;
+        }
+
+        try {
+            cacheFileName += FILE_SUFFIX;
+
+            //use buffering
+            File f = new File(context.getFilesDir(), FILE_DIRECTORY);
+            f.mkdirs();
+            File file = new File(f, cacheFileName);
+
+            try {
+              return file.delete();
+            } finally {
+            }
+        } catch (Exception E) {
+            return false;
+        }
+    }
+
+    /**
      * Converts a specified file to a serializable object.
      * @param context
      * @param cacheFileName

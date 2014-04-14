@@ -1,6 +1,9 @@
 package com.instructure.canvasapi.model;
 
 
+import android.content.Context;
+
+import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ public class Assignment extends CanvasModel<Assignment> {
 	private String due_at;
 	private double points_possible;
 	private long course_id;
+
+    private String grading_type;
 
 	private String html_url;
     private String url;
@@ -82,11 +87,18 @@ public class Assignment extends CanvasModel<Assignment> {
     public void setLockAtDate(String lockAtDate){
         this.lock_at = lockAtDate;
     }
-	public List<String> getSubmissionTypes() {
+	public List<SUBMISSION_TYPE> getSubmissionTypes() {
         if(submission_types == null) {
-            return new ArrayList<String>();
+            return new ArrayList<SUBMISSION_TYPE>();
         }
-		return Arrays.asList(submission_types);
+
+        ArrayList<SUBMISSION_TYPE>   submissionTypeList = new ArrayList<SUBMISSION_TYPE>();
+
+        for(String submissionType : submission_types){
+            submissionTypeList.add(getSubmissionTypeFromAPIString(submissionType));
+        }
+
+		return submissionTypeList;
 	}
 	public void setSubmissionTypes(String[] submissionTypes) {
 		this.submission_types = submissionTypes;
@@ -164,6 +176,21 @@ public class Assignment extends CanvasModel<Assignment> {
     public void setLockInfo(LockInfo lockInfo) {
         this.lock_info = lockInfo;
     }
+    public GRADING_TYPE getGradingType(Context context){return getGradingTypeFromString(grading_type, context);}
+    public TURN_IN_TYPE getTurnInType(){return turnInTypeFromSubmissionType(getSubmissionTypes());}
+
+    public Submission getLastActualSubmission() {
+        if(submission == null) {
+            return null;
+        }
+        if(submission.getWorkflowState() != null && submission.getWorkflowState().equals("submitted")) {
+            return submission;
+        }
+        else {
+            return null;
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -189,6 +216,78 @@ public class Assignment extends CanvasModel<Assignment> {
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
+    public static final SUBMISSION_TYPE[] ONLINE_SUBMISSIONS = {SUBMISSION_TYPE.ONLINE_UPLOAD, SUBMISSION_TYPE.ONLINE_URL, SUBMISSION_TYPE.ONLINE_TEXT_ENTRY, SUBMISSION_TYPE.MEDIA_RECORDING};
+
+
+    public enum TURN_IN_TYPE {ONLINE, ON_PAPER, NONE, DISCUSSION, QUIZ, EXTERNAL_TOOL}
+
+    public static TURN_IN_TYPE stringToTurnInType(String turnInType, Context context){
+        if(turnInType == null){
+            return null;
+        }
+
+        if(turnInType.equals(context.getString(R.string.canvasAPI_online))){
+            return TURN_IN_TYPE.ONLINE;
+        } else if(turnInType.equals(context.getString(R.string.canvasAPI_onPaper))){
+            return TURN_IN_TYPE.ON_PAPER;
+        } else if(turnInType.equals(context.getString(R.string.canvasAPI_discussion))){
+            return TURN_IN_TYPE.DISCUSSION;
+        } else if(turnInType.equals(context.getString(R.string.canvasAPI_quiz))){
+            return TURN_IN_TYPE.QUIZ;
+        } else if(turnInType.equals(context.getString(R.string.canvasAPI_externalTool))){
+            return TURN_IN_TYPE.EXTERNAL_TOOL;
+        } else{
+            return TURN_IN_TYPE.NONE;
+        }
+
+    }
+
+    public static String turnInTypeToPrettyPrintString(TURN_IN_TYPE turnInType, Context context){
+        if(turnInType == null){
+            return null;
+        }
+
+        switch (turnInType){
+            case ONLINE:
+                return context.getString(R.string.canvasAPI_online);
+            case ON_PAPER:
+                return context.getString(R.string.canvasAPI_onPaper);
+            case NONE:
+                return context.getString(R.string.canvasAPI_none);
+            case DISCUSSION:
+                return context.getString(R.string.canvasAPI_discussion);
+            case QUIZ:
+                return context.getString(R.string.canvasAPI_quiz);
+            case EXTERNAL_TOOL:
+                return context.getString(R.string.canvasAPI_externalTool);
+            default:
+                return null;
+        }
+    }
+
+    private TURN_IN_TYPE turnInTypeFromSubmissionType(List<SUBMISSION_TYPE> submissionTypes){
+
+        if(submissionTypes == null || submissionTypes.size() == 0){
+            return TURN_IN_TYPE.NONE;
+        }
+
+        SUBMISSION_TYPE submissionType = submissionTypes.get(0);
+
+        if(submissionType == SUBMISSION_TYPE.MEDIA_RECORDING || submissionType == SUBMISSION_TYPE.ONLINE_TEXT_ENTRY ||
+                submissionType == SUBMISSION_TYPE.ONLINE_URL || submissionType == SUBMISSION_TYPE.ONLINE_UPLOAD ){
+            return TURN_IN_TYPE.ONLINE;
+        }else if(submissionType == SUBMISSION_TYPE.ONLINE_QUIZ){
+            return TURN_IN_TYPE.QUIZ;
+        }else if(submissionType == SUBMISSION_TYPE.DISCUSSION_TOPIC){
+            return TURN_IN_TYPE.DISCUSSION;
+        }else if(submissionType == SUBMISSION_TYPE.ON_PAPER){
+            return TURN_IN_TYPE.ON_PAPER;
+        }else if(submissionType == SUBMISSION_TYPE.EXTERNAL_TOOL){
+            return TURN_IN_TYPE.EXTERNAL_TOOL;
+        }
+
+        return TURN_IN_TYPE.NONE;
+    }
 
     public boolean isLocked() {
         Date currentDate = new Date();
@@ -233,5 +332,139 @@ public class Assignment extends CanvasModel<Assignment> {
             return false;
         }
         return rubric.length > 0;
+    }
+
+    public enum SUBMISSION_TYPE {ONLINE_QUIZ, NONE, ON_PAPER, DISCUSSION_TOPIC, EXTERNAL_TOOL, ONLINE_UPLOAD, ONLINE_TEXT_ENTRY, ONLINE_URL, MEDIA_RECORDING}
+
+    private SUBMISSION_TYPE getSubmissionTypeFromAPIString(String submissionType){
+        if(submissionType.equals("online_quiz")){
+            return SUBMISSION_TYPE.ONLINE_QUIZ;
+        } else if(submissionType.equals("none")){
+            return SUBMISSION_TYPE.NONE;
+        } else if(submissionType.equals("on_paper")){
+            return SUBMISSION_TYPE.ON_PAPER;
+        } else if(submissionType.equals("discussion_topic")){
+            return SUBMISSION_TYPE.DISCUSSION_TOPIC;
+        } else if(submissionType.equals("external_tool")){
+            return SUBMISSION_TYPE.EXTERNAL_TOOL;
+        } else if(submissionType.equals("online_upload")){
+            return SUBMISSION_TYPE.ONLINE_UPLOAD;
+        } else if(submissionType.equals("online_text_entry")){
+            return SUBMISSION_TYPE.ONLINE_TEXT_ENTRY;
+        } else if(submissionType.equals("online_url")){
+            return SUBMISSION_TYPE.ONLINE_URL;
+        } else if(submissionType.equals("media_recording")){
+            return SUBMISSION_TYPE.MEDIA_RECORDING;
+        } else {
+            return null;
+        }
+    }
+    public static String submissionTypeToAPIString(SUBMISSION_TYPE submissionType){
+
+        if(submissionType == null){
+            return null;
+        }
+
+        switch (submissionType){
+            case  ONLINE_QUIZ:
+                return "online_quiz";
+            case NONE:
+                return "none";
+            case ON_PAPER:
+                return "on_paper";
+            case DISCUSSION_TOPIC:
+                return "discussion_topic";
+            case EXTERNAL_TOOL:
+                return "external_tool";
+            case ONLINE_UPLOAD:
+                return "online_upload";
+            case ONLINE_TEXT_ENTRY:
+                return "online_text_entry";
+            case ONLINE_URL:
+                return "online_url";
+            case MEDIA_RECORDING:
+                return "media_recording";
+            default:
+                return "";
+        }
+    }
+    public static String submissionTypeToPrettyPrintString(SUBMISSION_TYPE submissionType, Context context){
+
+        if(submissionType == null){
+            return null;
+        }
+
+        switch (submissionType){
+            case  ONLINE_QUIZ:
+                return context.getString(R.string.canvasAPI_onlineQuiz);
+            case NONE:
+                return context.getString(R.string.canvasAPI_none);
+            case ON_PAPER:
+                return context.getString(R.string.canvasAPI_onPaper);
+            case DISCUSSION_TOPIC:
+                return context.getString(R.string.canvasAPI_discussionTopic);
+            case EXTERNAL_TOOL:
+                return context.getString(R.string.canvasAPI_externalTool);
+            case ONLINE_UPLOAD:
+                return context.getString(R.string.canvasAPI_onlineUpload);
+            case ONLINE_TEXT_ENTRY:
+                return context.getString(R.string.canvasAPI_onlineTextEntry);
+            case ONLINE_URL:
+                return context.getString(R.string.canvasAPI_onlineURL);
+            case MEDIA_RECORDING:
+                return context.getString(R.string.canvasAPI_mediaRecording);
+            default:
+                return "";
+        }
+    }
+
+    public enum GRADING_TYPE {PASS_FAIL, PERCENT, LETTER_GRADE, POINTS}
+
+    public static GRADING_TYPE getGradingTypeFromString(String gradingType, Context context){
+        if(gradingType.equals("pass_fail") || gradingType.equals(context.getString(R.string.canvasAPI_passFail))){
+            return GRADING_TYPE.PASS_FAIL;
+        } else if(gradingType.equals("percent") || gradingType.equals(context.getString(R.string.canvasAPI_percent))){
+            return GRADING_TYPE.PERCENT;
+        } else if(gradingType.equals("letter_grade") || gradingType.equals(context.getString(R.string.canvasAPI_letterGrade))){
+            return GRADING_TYPE.LETTER_GRADE;
+        } else if (gradingType.equals("points") || gradingType.equals(context.getString(R.string.canvasAPI_points))){
+            return GRADING_TYPE.POINTS;
+        } else {
+            return null;
+        }
+    }
+
+    public  static String gradingTypeToAPIString(GRADING_TYPE gradingType){
+        if(gradingType == null){ return null;}
+
+        switch (gradingType){
+            case PASS_FAIL:
+                return "pass_fail";
+            case PERCENT:
+                return "percent";
+            case LETTER_GRADE:
+                return "letter_grade";
+            case POINTS:
+                return "points";
+            default:
+                return "";
+        }
+    }
+
+    public  static String gradingTypeToPrettyPrintString(GRADING_TYPE gradingType, Context context){
+        if(gradingType == null){ return null;}
+
+        switch (gradingType){
+            case PASS_FAIL:
+                return context.getString(R.string.canvasAPI_passFail);
+            case PERCENT:
+                return context.getString(R.string.canvasAPI_percent);
+            case LETTER_GRADE:
+                return context.getString(R.string.canvasAPI_letterGrade);
+            case POINTS:
+                return context.getString(R.string.canvasAPI_points);
+            default:
+                return "";
+        }
     }
 }

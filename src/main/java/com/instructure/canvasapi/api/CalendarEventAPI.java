@@ -8,6 +8,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -40,6 +41,9 @@ public class CalendarEventAPI {
 
         @GET("/users/self/upcoming_events")
         void getUpcomingEvents(Callback<ScheduleItem[]> callback);
+
+        @GET("/{next}")
+        void getNextPageCalendarEvents(@EncodedPath("next") String nextURL, Callback<ScheduleItem[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -86,6 +90,13 @@ public class CalendarEventAPI {
 
         callback.readFromCache(getUpcomingEventsCacheFilename());
         buildInterface(callback).getUpcomingEvents(callback);
+    }
+
+    public static void getNextPageCalendarEvents(String nextURL, CanvasCallback<ScheduleItem[]> callback){
+        if(APIHelpers.paramIsNull(callback, nextURL)){ return;}
+
+        callback.setIsNextPage(true);
+        buildInterface(callback).getNextPageCalendarEvents(nextURL, callback);
     }
 
 

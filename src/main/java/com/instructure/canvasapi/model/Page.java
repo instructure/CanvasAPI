@@ -48,6 +48,7 @@ public class Page extends CanvasComparable<Page> implements Serializable {
     private String status;
 	private String body;
     private LockInfo lock_info;
+    private boolean front_page;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -107,18 +108,34 @@ public class Page extends CanvasComparable<Page> implements Serializable {
         this.lock_info = lockInfo;
     }
 
+    public boolean isFrontPage(){
+        return front_page;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
+    public Date getComparisonDate() { return null; }
+    public String getComparisonString() { return null; }
+    //we want the front page to appear on top, but the rest should be alphabetical
+    //Note: there will be a future API change where any page can be a front page. We'll
+    //have to check the api to see what value the front page is. It might just change the
+    //url to be "front-page"
     @Override
-    public Date getComparisonDate() {
-        return null;
-    }
-
-    @Override
-    public String getComparisonString() {
-        return getTitle();
+    public int compareTo(Page page) {
+        if(page.isFrontPage() && this.isFrontPage()) {
+            return 0;
+        }
+        else if(page.isFrontPage()) {
+            return 1;
+        }
+        else if(this.isFrontPage()) {
+            return -1;
+        }
+        else {
+            return CanvasComparable.compare(this.getTitle(),page.getTitle());
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     /**
      * @param apiStatusDelegate Delegate to get the context
      */
+
     public CanvasCallback(APIStatusDelegate apiStatusDelegate) {
         statusDelegate = apiStatusDelegate;
 
@@ -151,8 +152,11 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         } catch (Exception E) {
             Log.e(APIHelpers.LOG_TAG,"NO CACHE: " + path);
         }
-
         setShouldCache(path);
+    }
+
+    public boolean deleteCache(){
+        return FileUtilities.DeleteFile(getContext(), cacheFileName);
     }
 
     ///////////////////////////////////////////////////////////////////////////

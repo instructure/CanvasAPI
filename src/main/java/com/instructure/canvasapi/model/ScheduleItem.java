@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Joshua Dutton
@@ -44,17 +45,16 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     private long groupId = -1;
 	private Type type = Type.TYPE_CALENDAR;
 
-	private List<String> submissionTypes = new ArrayList<String>();
+	private List<Assignment.SUBMISSION_TYPE> submissionTypes = new ArrayList<Assignment.SUBMISSION_TYPE>();
 	private double pointsPossible;
 	private long quizId = 0;
 	private DiscussionTopicHeader discussionTopicHeader;
 	private String lockedModuleName;
     private Assignment assignment;
 
-
-    // helper variables
     Date startDate;
 
+ 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -202,10 +202,10 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     public void setEndDate(String endDate) {
         this.end_at = endDate;
     }
-	public List<String> getSubmissionTypes() {
+	public List<Assignment.SUBMISSION_TYPE> getSubmissionTypes() {
 		return submissionTypes;
 	}
-	public void setSubmissionTypes(List<String> submissionTypes) {
+	public void setSubmissionTypes(List<Assignment.SUBMISSION_TYPE> submissionTypes) {
 		this.submissionTypes = submissionTypes;
 	}
 	public double getPointsPossible() {
@@ -336,9 +336,19 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         }
         if (getStartDate() != null) {
             if (getEndDate() != null && !getStartDate().equals(getEndDate())) {
-                return DateHelpers.createTimeString(getStartDate()) + " " + context.getString(R.string.to) +  " " + DateHelpers.createTimeString(getEndDate());
+                return DateHelpers.createTimeString(context, getStartDate()) + " " + context.getString(R.string.to) +  " " + DateHelpers.createTimeString(context, getEndDate());
             }
-            return DateHelpers.createTimeString(getStartDate());
+            return DateHelpers.createTimeString(context, getStartDate());
+        }
+        return "";
+    }
+
+    public String getShortStartString(Context context) {
+        if (isAllDay() && getAllDayDate() != null) {
+            return DateHelpers.getDateToShortDayMonthDateFormat().format(getAllDayDate()).toString();
+        }
+        if (getStartDate() != null) {
+            return DateHelpers.createShortDateTimeString(context, getStartDate());
         }
         return "";
     }
@@ -346,9 +356,9 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     public String getEndString(Context context) {
         if (isAllDay()) {
             if (getAllDayDate() != null) {
-                return DateFormat.format("MMM d, yyyy", getAllDayDate()).toString();
+                return DateHelpers.getDateToDayMonthYearDateFormat().format(getAllDayDate()).toString();
             } else if (getStartDate() != null) {
-                return DateFormat.format("MMM d, yyyy", getStartDate()).toString();
+                return DateHelpers.getDateToDayMonthYearDateFormat().format(getStartDate()).toString();
             }
         }
         if (getEndDate() != null) {
@@ -372,5 +382,23 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         syllabus.setId(Long.MIN_VALUE);
 
         return syllabus;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Overrides
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public int compareTo(ScheduleItem scheduleItem) {
+        if (getStartDate() == null && scheduleItem.getStartDate() == null) {
+            return getTitle().compareTo(scheduleItem.getTitle());
+        } else if (getStartDate() == null) {
+            return 1;
+        } else if (scheduleItem.getStartDate() == null) {
+            return -1;
+        } else if (getStartDate().equals(scheduleItem.getStartDate())) {
+            return getTitle().compareTo(scheduleItem.getTitle());
+        }
+        return getStartDate().compareTo(scheduleItem.getStartDate());
     }
 }
