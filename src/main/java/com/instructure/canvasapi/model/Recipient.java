@@ -9,7 +9,7 @@ import android.os.Parcelable;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Recipient implements Parcelable {
+public class Recipient implements Parcelable, Comparable<Recipient> {
 
     public enum Type {group, metagroup, person};
 
@@ -17,11 +17,11 @@ public class Recipient implements Parcelable {
     private int user_count;
     private int item_count;
     private String name;
+    private String avatar_url;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters
     ///////////////////////////////////////////////////////////////////////////
-
 	public String getId() {
 		return id;
 	}
@@ -49,6 +49,12 @@ public class Recipient implements Parcelable {
 		return item_count;
 	}
 
+    public String getAvatarURL() {
+        return avatar_url;
+    }
+    public void setAvatarURL(String avatar) {
+        this.avatar_url = avatar;
+    }
 
 	///////////////////////////////////////////////////////////////////////////
 	// Parcelable
@@ -154,4 +160,15 @@ public class Recipient implements Parcelable {
             return false;
         return true;
     }
+
+    @Override
+    public int compareTo(Recipient recipient) {
+        return name.compareTo(recipient.getName());
+    }
+
+    @Override
+    public String toString(){
+        return name;
+    }
+
 }
