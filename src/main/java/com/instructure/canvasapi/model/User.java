@@ -1,5 +1,9 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -8,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class User extends CanvasModel<User> {
+public class User extends CanvasModel<User> implements Parcelable {
 
     private long id;
     private String name;
@@ -130,4 +134,49 @@ public class User extends CanvasModel<User> {
         }
         return true;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.short_name);
+        dest.writeString(this.login_id);
+        dest.writeString(this.avatar_url);
+        dest.writeString(this.primary_email);
+        dest.writeParcelableArray(this.enrollments, flags);
+        dest.writeInt(this.enrollmentIndex);
+    }
+
+    private User(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.short_name = in.readString();
+        this.login_id = in.readString();
+        this.avatar_url = in.readString();
+        this.primary_email = in.readString();
+
+        Parcelable[] parcelableArray = in.readParcelableArray(Enrollment[].class.getClassLoader());
+        if (parcelableArray != null) {
+            this.enrollments = null;
+            this.enrollments = Arrays.copyOf(parcelableArray, parcelableArray.length, Enrollment[].class);
+        }
+
+        this.enrollmentIndex = in.readInt();
+    }
+
+    public static Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

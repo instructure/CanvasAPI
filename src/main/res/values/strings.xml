@@ -16,4 +16,26 @@
     <string name="Message">Message</string>
     <string name="Loading">Loading...</string>
     <string name="Deleted">Deleted</string>
+
+    <!-- Assignment Module -->
+    <string name="canvasAPI_online">Online</string>
+    <string name="canvasAPI_onPaper">On Paper</string>
+    <string name="canvasAPI_discussion">Discussion</string>
+    <string name="canvasAPI_quiz">Quiz</string>
+    <string name="canvasAPI_externalTool">External Tool</string>
+    <string name="canvasAPI_none">None</string>
+
+    <string name="canvasAPI_passFail">Pass Fail</string>
+    <string name="canvasAPI_percent">Percent</string>
+    <string name="canvasAPI_letterGrade">Letter Grade</string>
+    <string name="canvasAPI_points">Points</string>
+
+    <string name="canvasAPI_onlineQuiz">Online Quiz</string>
+    <string name="canvasAPI_discussionTopic">Discussion Topic</string>
+    <string name="canvasAPI_onlineUpload">Online Upload</string>
+    <string name="canvasAPI_onlineTextEntry">Online Text Entry</string>
+    <string name="canvasAPI_onlineURL">Online URL</string>
+    <string name="canvasAPI_mediaRecording">Media Recording</string>
+
+
 </resources>
