@@ -3,13 +3,15 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 /**
  * Created by Josh Ruesch
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Recipient implements Parcelable, Comparable<Recipient> {
+public class Recipient extends CanvasComparable<Recipient> implements Parcelable {
 
     public enum Type {group, metagroup, person};
 
@@ -22,10 +24,20 @@ public class Recipient implements Parcelable, Comparable<Recipient> {
     ///////////////////////////////////////////////////////////////////////////
     // Getters
     ///////////////////////////////////////////////////////////////////////////
-	public String getId() {
-		return id;
-	}
-	public int getUser_count() {
+    public String getStringId(){
+        return id;
+    }
+    @Override
+    public Date getComparisonDate() {
+        return null;
+    }
+
+    @Override
+    public String getComparisonString() {
+        return id;
+    }
+
+    public int getUser_count() {
 		return user_count;
 	}
 	public String getName() {
@@ -146,24 +158,12 @@ public class Recipient implements Parcelable, Comparable<Recipient> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+        if (getClass() != obj.getClass()) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         Recipient other = (Recipient) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
 
-    @Override
-    public int compareTo(Recipient recipient) {
-        return name.compareTo(recipient.getName());
+        return compareTo(other) == 0;
     }
 
     @Override
