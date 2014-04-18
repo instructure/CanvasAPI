@@ -51,7 +51,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> {
     private DiscussionAttachment[] attachments;
 
     public boolean unauthorized;
-    private Permission permission;
+    private DiscussionTopicPermission permission;
     private Assignment assignment;
     private LockInfo lock_info;
 
@@ -209,10 +209,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> {
             this.attachments = (DiscussionAttachment[])attachments.toArray();
         }
 	}
-	public Permission getPermission() {
+	public DiscussionTopicPermission getPermission() {
 		return permission;
 	}
-	public void setPermission(Permission permission) {
+	public void setPermission(DiscussionTopicPermission permission) {
 		this.permission = permission;
 	}
 

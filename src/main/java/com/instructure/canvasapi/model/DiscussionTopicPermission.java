@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Permission implements Serializable {
+public class DiscussionTopicPermission implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

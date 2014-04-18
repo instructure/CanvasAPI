@@ -31,17 +31,17 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
 
     protected String default_view;
 
-    protected Permission permissions;
+    protected CanvasContextPermission permissions;
 
-    public class Permission implements Serializable {
+    public class CanvasContextPermission implements Serializable {
         boolean create_discussion_topic;
     }
 
-    public void setPermissions(Permission permissions) {
+    public void setPermissions(CanvasContextPermission permissions) {
         this.permissions = permissions;
     }
 
-    public Permission getPermissions(){
+    public CanvasContextPermission getPermissions(){
         return permissions;
     }
 
