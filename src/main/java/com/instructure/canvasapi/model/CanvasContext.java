@@ -17,8 +17,14 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
     public static final String HOME_ASSIGNMENTS = "assignments";
     public static final String HOME_SYLLABUS = "syllabus";
 
-    public static enum Type {GROUP, COURSE, USER, UNKNOWN};
-
+    public static enum Type {
+        GROUP, COURSE, USER, UNKNOWN;
+        public static boolean isGroup(CanvasContext canvasContext) {return canvasContext.getType() == GROUP;}
+        public static boolean isCourse(CanvasContext canvasContext) {return canvasContext.getType() == COURSE;}
+        public static boolean isUser(CanvasContext canvasContext) {return canvasContext.getType() == USER;}
+        public static boolean isUnknown(CanvasContext canvasContext) {return canvasContext.getType() == UNKNOWN;}
+    };
+    
     public abstract String getName();
     public abstract Type getType();
     public abstract long getId();
