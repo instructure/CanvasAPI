@@ -15,7 +15,18 @@ import java.util.Map;
  */
 public class StreamItem extends CanvasModel<StreamItem> {
 
-    public enum Type { DISCUSSION_TOPIC, SUBMISSION, ANNOUNCEMENT, CONVERSATION, MESSAGE, CONFERENCE, COLLABORATION, COLLECTION_ITEM, UNKNOWN, NOT_SET }
+    public enum Type { DISCUSSION_TOPIC, SUBMISSION, ANNOUNCEMENT, CONVERSATION, MESSAGE, CONFERENCE, COLLABORATION, COLLECTION_ITEM, UNKNOWN, NOT_SET;
+        public static boolean isDiscussionTopic(StreamItem streamItem) {return streamItem.getType() == DISCUSSION_TOPIC;}
+        public static boolean isSubmission(StreamItem streamItem) {return streamItem.getType() == SUBMISSION;}
+        public static boolean isAnnouncement(StreamItem streamItem) {return streamItem.getType() == ANNOUNCEMENT;}
+        public static boolean isConversation(StreamItem streamItem) {return streamItem.getType() == CONVERSATION;}
+        public static boolean isMessage(StreamItem streamItem) {return streamItem.getType() == MESSAGE;}
+        public static boolean isConference(StreamItem streamItem) {return streamItem.getType() == CONFERENCE;}
+        public static boolean isCollaboration(StreamItem streamItem) {return streamItem.getType() == COLLABORATION;}
+        public static boolean isCollectionItem(StreamItem streamItem) {return streamItem.getType() == COLLECTION_ITEM;}
+        public static boolean isUnknown(StreamItem streamItem) {return streamItem.getType() == UNKNOWN;}
+        public static boolean isNotSet(StreamItem streamItem) {return streamItem.getType() == NOT_SET;}
+    };
 
     // general info returned by the API
     private String updated_at;
