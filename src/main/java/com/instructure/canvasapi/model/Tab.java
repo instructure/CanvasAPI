@@ -94,6 +94,17 @@ public class Tab implements Serializable {
     // Overrides
     ///////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public String toString(){
+        if(this.getId() == null || this.getLabel() == null){
+            return "";
+        }
+
+        return this.getId()+":"+this.getLabel();
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
