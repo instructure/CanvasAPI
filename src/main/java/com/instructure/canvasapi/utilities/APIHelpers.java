@@ -552,6 +552,15 @@ public class APIHelpers {
             logParamsNull();
             return true;
         }
+        return paramIsNull(args);
+    }
+
+    /**
+     * paramIsNull is a helper function for determining if callbacks/other objects are null;
+     * @param args
+     * @return
+     */
+    public static boolean paramIsNull(Object... args) {
 
         for (Object arg : args) {
             if (arg == null) {
@@ -561,6 +570,7 @@ public class APIHelpers {
         }
         return false;
     }
+
 
     /**
      * logParamsNull is a logging function helper

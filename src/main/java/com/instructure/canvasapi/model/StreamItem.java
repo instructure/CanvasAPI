@@ -318,6 +318,11 @@ public class StreamItem extends CanvasModel<StreamItem> {
     }
 
     public void setConversation(Context context, Conversation conversation, long myUserId, String monologueDefault) {
+
+        if(APIHelpers.paramIsNull(context, conversation,monologueDefault)){
+            return;
+        }
+
         this.conversation = conversation;
         title = conversation.getMessageTitle(myUserId,monologueDefault);
         message = createMessage(context);
