@@ -19,10 +19,30 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
 
     public static enum Type {
         GROUP, COURSE, USER, UNKNOWN;
-        public static boolean isGroup(CanvasContext canvasContext) {return canvasContext.getType() == GROUP;}
-        public static boolean isCourse(CanvasContext canvasContext) {return canvasContext.getType() == COURSE;}
-        public static boolean isUser(CanvasContext canvasContext) {return canvasContext.getType() == USER;}
-        public static boolean isUnknown(CanvasContext canvasContext) {return canvasContext.getType() == UNKNOWN;}
+        public static boolean isGroup(CanvasContext canvasContext) {
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == GROUP;
+        }
+        public static boolean isCourse(CanvasContext canvasContext) {
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == COURSE;
+        }
+        public static boolean isUser(CanvasContext canvasContext) {
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == USER;
+        }
+        public static boolean isUnknown(CanvasContext canvasContext) {
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == UNKNOWN;
+        }
     };
     
     public abstract String getName();
