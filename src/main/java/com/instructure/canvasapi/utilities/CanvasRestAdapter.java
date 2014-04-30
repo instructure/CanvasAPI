@@ -186,6 +186,7 @@ public class CanvasRestAdapter {
 
             final String token = APIHelpers.getToken(context);
             final String userAgent = APIHelpers.getUserAgent(context);
+            final String domain = APIHelpers.loadProtocol(context) + "://" + APIHelpers.getDomain(context);
 
             //Set the UserAgent
             if(userAgent != null && !userAgent.equals(""))
@@ -195,6 +196,11 @@ public class CanvasRestAdapter {
             if(token != null && !token.equals("")){
                 requestFacade.addHeader("Authorization", "Bearer " + token);
             }
+            //HTTP referer (originally a misspelling of referrer) is an HTTP header field that identifies the address of the webpage that linked to the resource being requested
+            //Source: https://en.wikipedia.org/wiki/HTTP_referer
+            //Some schools use an LTI tool called SlideShare that whitelists domains to be able to inject content into assignments
+            //They check the referrer in order to do this. 	203
+            requestFacade.addHeader("Referer", domain);
 
             //Masquerade if necessary
             if (Masquerading.isMasquerading(context)) {
