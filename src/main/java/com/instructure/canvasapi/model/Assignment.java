@@ -37,12 +37,14 @@ public class Assignment extends CanvasModel<Assignment> {
 	private String[] allowed_extensions = new String[0];
     private Submission submission;
     private long assignment_group_id;
+    private boolean peer_reviews;
 
     //Module lock info
     private LockInfo lock_info;
 
     //Date the teacher no longer accepts submissions.
     private String lock_at;
+    private String unlock_at;
 
     private DiscussionTopicHeader discussion_topic;
 
@@ -176,7 +178,11 @@ public class Assignment extends CanvasModel<Assignment> {
     public void setLockInfo(LockInfo lockInfo) {
         this.lock_info = lockInfo;
     }
-    public GRADING_TYPE getGradingType(Context context){return getGradingTypeFromString(grading_type, context);}
+    public GRADING_TYPE getGradingType(){return getGradingTypeFromAPIString(grading_type);}
+    @Deprecated
+    public GRADING_TYPE getGradingType(Context context){
+      return  getGradingTypeFromString(grading_type, context);
+    }
     public TURN_IN_TYPE getTurnInType(){return turnInTypeFromSubmissionType(getSubmissionTypes());}
 
     public Submission getLastActualSubmission() {
@@ -191,7 +197,24 @@ public class Assignment extends CanvasModel<Assignment> {
         }
     }
 
+    public Date getUnlock_at() {
+        if(unlock_at == null){
+            return null;
+        }
+        return APIHelpers.stringToDate(unlock_at);
+    }
 
+    public void setUnlock_at(Date unlockAt){
+        unlock_at = APIHelpers.dateToString(unlockAt);
+    }
+
+    public boolean hasPeer_reviews() {
+        return peer_reviews;
+    }
+
+    public void setPeer_reviews(boolean peerReviews) {
+        this.peer_reviews = peer_reviews;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -428,6 +451,19 @@ public class Assignment extends CanvasModel<Assignment> {
         } else if(gradingType.equals("letter_grade") || gradingType.equals(context.getString(R.string.canvasAPI_letterGrade))){
             return GRADING_TYPE.LETTER_GRADE;
         } else if (gradingType.equals("points") || gradingType.equals(context.getString(R.string.canvasAPI_points))){
+            return GRADING_TYPE.POINTS;
+        } else {
+            return null;
+        }
+    }
+    public static GRADING_TYPE getGradingTypeFromAPIString(String gradingType){
+        if(gradingType.equals("pass_fail")){
+            return GRADING_TYPE.PASS_FAIL;
+        } else if(gradingType.equals("percent")){
+            return GRADING_TYPE.PERCENT;
+        } else if(gradingType.equals("letter_grade")){
+            return GRADING_TYPE.LETTER_GRADE;
+        } else if (gradingType.equals("points")){
             return GRADING_TYPE.POINTS;
         } else {
             return null;
