@@ -86,6 +86,9 @@ public class Assignment extends CanvasModel<Assignment> {
 	public void setDueDate(String dueDate) {
 		this.due_at = dueDate;
 	}
+    public void setDueDate(Date dueDate){
+        setDueDate(APIHelpers.dateToString(dueDate));
+    }
     public void setLockAtDate(String lockAtDate){
         this.lock_at = lockAtDate;
     }
@@ -105,10 +108,20 @@ public class Assignment extends CanvasModel<Assignment> {
 	public void setSubmissionTypes(String[] submissionTypes) {
 		this.submission_types = submissionTypes;
 	}
+
+    public void setSubmissionTypes(SUBMISSION_TYPE[] submissionTypes){
+        ArrayList<String> listSubmissionTypes = new ArrayList<String>();
+
+        for(SUBMISSION_TYPE submissionType: submissionTypes){
+            listSubmissionTypes.add(submissionTypeToAPIString(submissionType));
+        }
+
+        setSubmissionTypes(listSubmissionTypes.toArray(new String[listSubmissionTypes.size()]));
+    }
 	public double getPointsPossible() {
 		return points_possible;
 	}
-	public void setPointsPossible(int pointsPossible) {
+	public void setPointsPossible(double pointsPossible) {
 		this.points_possible = pointsPossible;
 	}
 	public long getCourseId() {
@@ -168,8 +181,8 @@ public class Assignment extends CanvasModel<Assignment> {
     public long getAssignmentGroupId() {
         return assignment_group_id;
     }
-    public void setAssignmentGroupId(long assignmentGroupId) {
-        this.assignment_group_id = assignmentGroupId;
+    public void setAssignmentGroupId(Long assignmentGroupId) {
+        this.assignment_group_id = assignmentGroupId == null ?0:assignmentGroupId;
     }
     public LockInfo getLockInfo() {
         return lock_info;
@@ -183,6 +196,11 @@ public class Assignment extends CanvasModel<Assignment> {
     public GRADING_TYPE getGradingType(Context context){
       return  getGradingTypeFromString(grading_type, context);
     }
+
+    public void setGradingType(GRADING_TYPE grading_type) {
+        this.grading_type = gradingTypeToAPIString(grading_type);
+    }
+
     public TURN_IN_TYPE getTurnInType(){return turnInTypeFromSubmissionType(getSubmissionTypes());}
 
     public Submission getLastActualSubmission() {
@@ -197,22 +215,22 @@ public class Assignment extends CanvasModel<Assignment> {
         }
     }
 
-    public Date getUnlock_at() {
+    public Date getUnlockAt() {
         if(unlock_at == null){
             return null;
         }
         return APIHelpers.stringToDate(unlock_at);
     }
 
-    public void setUnlock_at(Date unlockAt){
+    public void setUnlockAt(Date unlockAt){
         unlock_at = APIHelpers.dateToString(unlockAt);
     }
 
-    public boolean hasPeer_reviews() {
+    public boolean hasPeerReviews() {
         return peer_reviews;
     }
 
-    public void setPeer_reviews(boolean peerReviews) {
+    public void setPeerReviews(boolean peerReviews) {
         this.peer_reviews = peer_reviews;
     }
     ///////////////////////////////////////////////////////////////////////////

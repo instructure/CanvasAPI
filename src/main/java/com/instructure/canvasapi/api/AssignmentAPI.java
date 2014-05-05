@@ -1,7 +1,5 @@
 package com.instructure.canvasapi.api;
 
-import android.util.Log;
-
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.model.CanvasContext;
@@ -59,24 +57,12 @@ public class AssignmentAPI {
         void getCalendarEvents(@Query("context_codes[]") String context_id, Callback<ScheduleItem[]> callback);
 
         @PUT("/courses/{course_id}/assignments/{assignment_id}")
-        void editAssignment(@Path("course_id") long courseId,
-                            @Path("assignment_id") long assignmentId,
-                            @Query("assignment[name]") String assignmentName,
-                            @Query("assignment[assignment_group_id]") Long assignmentGroupId,
-                            @EncodedQuery("assignment[submission_types][]") String submissionTypes,
-                            @Query("assignment[peer_reviews]") Integer hasPeerReviews,
-                            @Query("assignment[group_category_id]") Long groupId,
-                            @Query("assignment[points_possible]") Double pointsPossible,
-                            @Query("assignment[grading_type]") String gradingType,
-                            @Query("assignment[due_at]") String dueAt,
-                            @Query("assignment[description]") String description,
-                            @Query("assignment[notify_of_update]") Integer notifyOfUpdate,
-                            @Query("assignment[unlock_at]")String unlockAt,
-                            @Query("assignment[lock_at]") String lockAt,
-                            @EncodedQuery("assignment[html_url]") String htmlUrl,
-                            @EncodedQuery("assignment[url]") String url,
-                            @Query("assingment[quiz_id]") Long quizzId,
-                            Callback<Assignment> callback);
+        void editAssignment(@Path("course_id") long courseId, @Path("assignment_id") long assignmentId, @Query("assignment[name]") String assignmentName,
+                            @Query("assignment[assignment_group_id]") Long assignmentGroupId, @EncodedQuery("assignment[submission_types][]") String submissionTypes,
+                            @Query("assignment[peer_reviews]") Integer hasPeerReviews, @Query("assignment[group_category_id]") Long groupId, @Query("assignment[points_possible]") Double pointsPossible,
+                            @Query("assignment[grading_type]") String gradingType, @Query("assignment[due_at]") String dueAt, @Query("assignment[description]") String description,
+                            @Query("assignment[notify_of_update]") Integer notifyOfUpdate, @Query("assignment[unlock_at]")String unlockAt, @Query("assignment[lock_at]") String lockAt,
+                            @EncodedQuery("assignment[html_url]") String htmlUrl, @EncodedQuery("assignment[url]") String url, @Query("assingment[quiz_id]") Long quizzId, Callback<Assignment> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -158,8 +144,8 @@ public class AssignmentAPI {
       String[] arrayOfAllowedExtensions = editedAssignment.getAllowedExtensions().toArray(new String[editedAssignment.getAllowedExtensions().size()]);
         editAssignment(editedAssignment.getCourseId(), editedAssignment.getId(), editedAssignment.getName(), editedAssignment.getDescription(), arrayOfSubmissionTypes,
                 editedAssignment.getDueDate(), editedAssignment.getPointsPossible(), editedAssignment.getGradingType(), editedAssignment.getHtmlUrl(), editedAssignment.getUrl(),
-                editedAssignment.getQuizId(), editedAssignment.getRubric(), arrayOfAllowedExtensions, editedAssignment.getAssignmentGroupId(), editedAssignment.hasPeer_reviews(),
-                editedAssignment.getlockAtDate(), editedAssignment.getUnlock_at(), null, notifyOfUpdate, callback);
+                editedAssignment.getQuizId(), editedAssignment.getRubric(), arrayOfAllowedExtensions, editedAssignment.getAssignmentGroupId(), editedAssignment.hasPeerReviews(),
+                editedAssignment.getlockAtDate(), editedAssignment.getUnlockAt(), null, notifyOfUpdate, callback);
     }
     private static void editAssignment(long courseId, long assignmentId, String name, String description, Assignment.SUBMISSION_TYPE[] submissionTypes,
                                        Date dueAt, double pointsPossible, Assignment.GRADING_TYPE gradingType, String htmlUrl, String url,
