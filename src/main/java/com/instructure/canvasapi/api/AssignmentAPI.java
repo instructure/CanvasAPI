@@ -63,6 +63,7 @@ public class AssignmentAPI {
                             @Query("assignment[grading_type]") String gradingType, @Query("assignment[due_at]") String dueAt, @Query("assignment[description]") String description,
                             @Query("assignment[notify_of_update]") Integer notifyOfUpdate, @Query("assignment[unlock_at]")String unlockAt, @Query("assignment[lock_at]") String lockAt,
                             @EncodedQuery("assignment[html_url]") String htmlUrl, @EncodedQuery("assignment[url]") String url, @Query("assingment[quiz_id]") Long quizzId, Callback<Assignment> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
