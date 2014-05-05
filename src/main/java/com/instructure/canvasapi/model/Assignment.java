@@ -37,12 +37,14 @@ public class Assignment extends CanvasModel<Assignment> {
 	private String[] allowed_extensions = new String[0];
     private Submission submission;
     private long assignment_group_id;
+    private boolean peer_reviews;
 
     //Module lock info
     private LockInfo lock_info;
 
     //Date the teacher no longer accepts submissions.
     private String lock_at;
+    private String unlock_at;
 
     private DiscussionTopicHeader discussion_topic;
 
@@ -84,6 +86,9 @@ public class Assignment extends CanvasModel<Assignment> {
 	public void setDueDate(String dueDate) {
 		this.due_at = dueDate;
 	}
+    public void setDueDate(Date dueDate){
+        setDueDate(APIHelpers.dateToString(dueDate));
+    }
     public void setLockAtDate(String lockAtDate){
         this.lock_at = lockAtDate;
     }
@@ -103,10 +108,20 @@ public class Assignment extends CanvasModel<Assignment> {
 	public void setSubmissionTypes(String[] submissionTypes) {
 		this.submission_types = submissionTypes;
 	}
+
+    public void setSubmissionTypes(SUBMISSION_TYPE[] submissionTypes){
+        ArrayList<String> listSubmissionTypes = new ArrayList<String>();
+
+        for(SUBMISSION_TYPE submissionType: submissionTypes){
+            listSubmissionTypes.add(submissionTypeToAPIString(submissionType));
+        }
+
+        setSubmissionTypes(listSubmissionTypes.toArray(new String[listSubmissionTypes.size()]));
+    }
 	public double getPointsPossible() {
 		return points_possible;
 	}
-	public void setPointsPossible(int pointsPossible) {
+	public void setPointsPossible(double pointsPossible) {
 		this.points_possible = pointsPossible;
 	}
 	public long getCourseId() {
@@ -166,8 +181,8 @@ public class Assignment extends CanvasModel<Assignment> {
     public long getAssignmentGroupId() {
         return assignment_group_id;
     }
-    public void setAssignmentGroupId(long assignmentGroupId) {
-        this.assignment_group_id = assignmentGroupId;
+    public void setAssignmentGroupId(Long assignmentGroupId) {
+        this.assignment_group_id = assignmentGroupId == null ?0:assignmentGroupId;
     }
     public LockInfo getLockInfo() {
         return lock_info;
@@ -176,7 +191,16 @@ public class Assignment extends CanvasModel<Assignment> {
     public void setLockInfo(LockInfo lockInfo) {
         this.lock_info = lockInfo;
     }
-    public GRADING_TYPE getGradingType(Context context){return getGradingTypeFromString(grading_type, context);}
+    public GRADING_TYPE getGradingType(){return getGradingTypeFromAPIString(grading_type);}
+    @Deprecated
+    public GRADING_TYPE getGradingType(Context context){
+      return  getGradingTypeFromString(grading_type, context);
+    }
+
+    public void setGradingType(GRADING_TYPE grading_type) {
+        this.grading_type = gradingTypeToAPIString(grading_type);
+    }
+
     public TURN_IN_TYPE getTurnInType(){return turnInTypeFromSubmissionType(getSubmissionTypes());}
 
     public Submission getLastActualSubmission() {
@@ -191,7 +215,24 @@ public class Assignment extends CanvasModel<Assignment> {
         }
     }
 
+    public Date getUnlockAt() {
+        if(unlock_at == null){
+            return null;
+        }
+        return APIHelpers.stringToDate(unlock_at);
+    }
 
+    public void setUnlockAt(Date unlockAt){
+        unlock_at = APIHelpers.dateToString(unlockAt);
+    }
+
+    public boolean hasPeerReviews() {
+        return peer_reviews;
+    }
+
+    public void setPeerReviews(boolean peerReviews) {
+        this.peer_reviews = peer_reviews;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -428,6 +469,19 @@ public class Assignment extends CanvasModel<Assignment> {
         } else if(gradingType.equals("letter_grade") || gradingType.equals(context.getString(R.string.canvasAPI_letterGrade))){
             return GRADING_TYPE.LETTER_GRADE;
         } else if (gradingType.equals("points") || gradingType.equals(context.getString(R.string.canvasAPI_points))){
+            return GRADING_TYPE.POINTS;
+        } else {
+            return null;
+        }
+    }
+    public static GRADING_TYPE getGradingTypeFromAPIString(String gradingType){
+        if(gradingType.equals("pass_fail")){
+            return GRADING_TYPE.PASS_FAIL;
+        } else if(gradingType.equals("percent")){
+            return GRADING_TYPE.PERCENT;
+        } else if(gradingType.equals("letter_grade")){
+            return GRADING_TYPE.LETTER_GRADE;
+        } else if (gradingType.equals("points")){
             return GRADING_TYPE.POINTS;
         } else {
             return null;
