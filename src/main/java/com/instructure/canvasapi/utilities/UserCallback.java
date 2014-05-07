@@ -51,7 +51,7 @@ public abstract class UserCallback extends CanvasCallback<User> {
             return;
         }
 
-        statusDelegate.onCallbackFinished();
+        statusDelegate.onCallbackFinished(SOURCE.API);
 
         try {
             APIHelpers.setCacheUser(getContext(), user);

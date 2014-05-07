@@ -110,7 +110,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     private void finishLoading() {
         isFinished = true;
-        statusDelegate.onCallbackFinished();
+        statusDelegate.onCallbackFinished(SOURCE.API);
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         }
         setHasReadFromCache(true);
         setShouldCache(path);
-        statusDelegate.onCallbackReadFromCache();
+        statusDelegate.onCallbackFinished(SOURCE.CACHE);
     }
 
     public boolean deleteCache(){
@@ -305,6 +305,18 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             errorDelegate.invalidUrlError(retrofitError, getContext());
         } else if (response.getStatus() >= 500 && response.getStatus() < 600) {
             errorDelegate.serverError(retrofitError, getContext());
+        }
+    }
+
+    public static enum SOURCE{
+        API, CACHE;
+
+        public boolean isAPI(){
+            return this == API;
+        }
+
+        public boolean isCache(){
+            return this == CACHE;
         }
     }
 }
