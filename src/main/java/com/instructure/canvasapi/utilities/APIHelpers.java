@@ -538,6 +538,8 @@ public class APIHelpers {
             }
 
             @Override public void onNoNetwork() { }
+
+            @Override public void onCallbackReadFromCache(){}
         };
     }
 

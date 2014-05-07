@@ -22,6 +22,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     private boolean isNextPage = false;
     private boolean isCancelled = false;
     private boolean isFinished = true;
+    private boolean hasReadFromCache = false;
 
     public static ErrorDelegate defaultErrorDelegate;
     private ErrorDelegate errorDelegate;
@@ -36,6 +37,14 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
+    }
+
+    public boolean hasReadFromCache(){
+        return hasReadFromCache;
+    }
+
+    public void setHasReadFromCache(boolean hasReadFromCache){
+        this.hasReadFromCache = hasReadFromCache;
     }
 
     /**
@@ -152,7 +161,9 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         } catch (Exception E) {
             Log.e(APIHelpers.LOG_TAG,"NO CACHE: " + path);
         }
+        setHasReadFromCache(true);
         setShouldCache(path);
+        statusDelegate.onCallbackReadFromCache();
     }
 
     public boolean deleteCache(){

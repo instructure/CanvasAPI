@@ -11,4 +11,5 @@ public interface APIStatusDelegate {
     public void onCallbackFinished();
     public void onNoNetwork();
     public Context getContext();
+    public void onCallbackReadFromCache();
 }
