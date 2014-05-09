@@ -315,17 +315,17 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
             return context.getString(R.string.allDayEvent);
         }
         if (getStartDate() != null) {
-            return DateHelpers.createDateTimeString(context, context.getString(R.string.Starts), getStartDate());
+            return DateHelpers.createPrefixedDateString(context, R.string.Starts, getStartDate());
         }
         return "";
     }
 
-    public String getStartDateString() {
+    public String getStartDateString(Context context) {
         if (isAllDay() && getAllDayDate() != null) {
-            return DateHelpers.createShortDateString(getAllDayDate());
+            return DateHelpers.getFormattedDate(context, getAllDayDate());
         }
         if (getStartDate() != null) {
-            return DateHelpers.createShortDateString(getStartDate());
+            return DateHelpers.getFormattedDate(context, getAllDayDate());
         }
         return "";
     }
@@ -336,19 +336,19 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         }
         if (getStartDate() != null) {
             if (getEndDate() != null && !getStartDate().equals(getEndDate())) {
-                return DateHelpers.createTimeString(context, getStartDate()) + " " + context.getString(R.string.to) +  " " + DateHelpers.createTimeString(context, getEndDate());
+                return DateHelpers.getFormattedTime(context, getStartDate()) + " " + context.getResources().getString(R.string.to) + " " + DateHelpers.getFormattedTime(context, getEndDate());
             }
-            return DateHelpers.createTimeString(context, getStartDate());
+            return DateHelpers.getFormattedTime(context, getStartDate());
         }
         return "";
     }
 
     public String getShortStartString(Context context) {
         if (isAllDay() && getAllDayDate() != null) {
-            return DateHelpers.getDateToShortDayMonthDateFormat().format(getAllDayDate()).toString();
+            return DateHelpers.getFormattedDate(context, getAllDayDate());
         }
         if (getStartDate() != null) {
-            return DateHelpers.createShortDateTimeString(context, getStartDate());
+            return DateHelpers.getFormattedDate(context, getStartDate());
         }
         return "";
     }
@@ -356,13 +356,13 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     public String getEndString(Context context) {
         if (isAllDay()) {
             if (getAllDayDate() != null) {
-                return DateHelpers.getDateToDayMonthYearDateFormat().format(getAllDayDate()).toString();
+                return DateHelpers.getFormattedDate(context, getAllDayDate());
             } else if (getStartDate() != null) {
-                return DateHelpers.getDateToDayMonthYearDateFormat().format(getStartDate()).toString();
+                return DateHelpers.getFormattedDate(context, getStartDate());
             }
         }
         if (getEndDate() != null) {
-            return DateHelpers.createDateTimeString(context, context.getString(R.string.Ends), getEndDate());
+            return DateHelpers.createPrefixedDateTimeString(context, R.string.Ends, getEndDate());
         }
         return "";
     }

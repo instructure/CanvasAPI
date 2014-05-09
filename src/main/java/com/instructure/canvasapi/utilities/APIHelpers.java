@@ -2,7 +2,6 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.format.DateFormat;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
@@ -463,12 +462,12 @@ public class APIHelpers {
     /**
      * Transform Calendar to ISO 8601 string.
      */
-    public static String dateToDayMonthYearString(final Date date) {
+    public static String dateToDayMonthYearString(Context context, final Date date) {
         if (date == null){
             return null;
         }
 
-        return DateHelpers.getDateToDayMonthYearDateFormat().format(date);
+        return DateHelpers.getFormattedDate(context, date);
     }
 
     /**
