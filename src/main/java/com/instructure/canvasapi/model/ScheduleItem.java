@@ -325,7 +325,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
             return DateHelpers.getFormattedDate(context, getAllDayDate());
         }
         if (getStartDate() != null) {
-            return DateHelpers.getFormattedDate(context, getAllDayDate());
+            return DateHelpers.getFormattedDate(context, getStartDate());
         }
         return "";
     }
