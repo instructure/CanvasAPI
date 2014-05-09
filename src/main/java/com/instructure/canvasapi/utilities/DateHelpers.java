@@ -4,62 +4,36 @@ import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
+
 import com.instructure.canvasapi.R;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Joshua Dutton on 1/15/14.
- *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 public class DateHelpers {
 
-    public enum DATE_FORMAT {MEDIUM, LONG}
+    /**
+     * Date Format Standards for Android
+     * SHORT: 12/31/2000 or 1/3/2000
+     * MEDIUM: Jan 3, 2000
+     * LONG: Monday, January 3, 2000
+     */
 
-
-
-    public static String createDateString(final Date date) {
-        if (date == null){
-            return null;
-        }
-
-        return new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date);
+    public static Format getPreferredDateFormat(Context context) {
+        return android.text.format.DateFormat.getMediumDateFormat(context);
     }
 
-    public static String createShortDateString(final Date date) {
-        if (date == null){
-            return null;
-        }
-
-        return new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(date);
-    }
-
-    public static String createDateTimeString(Context context, String prefix, Date date) {
-        return prefix + ": " +
-                DateHelpers.getDateToDayMonthYearDateFormat().format(date) + " " +
-                context.getString(R.string.at) + " " +
-                createTimeString(context, date);
-    }
-
-    public static String createShortDateTimeString(Context context, Date date) {
-        return DateHelpers.getDateToShortDayMonthDateFormat().format(date) + " " +
-                context.getString(R.string.at) + " " +
-                createTimeString(context, date);
-    }
-
-    public static String createTimeString(Context context, Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        if (calendar.get(Calendar.MINUTE) == 0) {
-            return DateHelpers.getPreferredTimeFormatHourOnly(context).format(date).toString();
-        }
-
-        return DateHelpers.getPreferredTimeFormat(context).format(date).toString();
+    public static String getFormattedDate(Context context, Date date) {
+        Format format = getPreferredDateFormat(context);
+        String sFormat = format.format(date.getTime());
+        return sFormat;
     }
 
     public static SimpleDateFormat getPreferredTimeFormat(Context context) {
@@ -69,46 +43,35 @@ public class DateHelpers {
         return new SimpleDateFormat("hh:mm a", Locale.getDefault());
     }
 
-    public static SimpleDateFormat getPreferredTimeFormatHourOnly(Context context) {
-        if(DateFormat.is24HourFormat(context)) {
-            return new SimpleDateFormat("HH:mm", Locale.getDefault());
-        }
-        return new SimpleDateFormat("h aa", Locale.getDefault());
+    public static String getFormattedTime(Context context, Date date) {
+        return DateHelpers.getPreferredTimeFormat(context).format(date).toString();
     }
 
-    public static java.text.DateFormat getPreferredNumericalDateFormat(Context context, DATE_FORMAT dateFormat) {
-        final String format = Settings.System.getString(context.getContentResolver(), Settings.System.DATE_FORMAT);
-        if (TextUtils.isEmpty(format)) {
-            if(dateFormat == DATE_FORMAT.LONG) {
-                return android.text.format.DateFormat.getLongDateFormat(context);
-            } else {
-                return android.text.format.DateFormat.getMediumDateFormat(context);
-            }
-        } else {
-            return new SimpleDateFormat(format);
-        }
+    public static String createPrefixedDateString(Context context, String prefix, Date date) {
+        return prefix + ": " + getFormattedDate(context, date);
     }
 
-    public static SimpleDateFormat getDateToDayMonthYearDateFormat(){
-        return new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+    public static String createPrefixedDateString(Context context, int prefixResId,Date date) {
+        return createPrefixedDateString(context, context.getResources().getString(prefixResId), date);
     }
 
-    public static SimpleDateFormat getDateToShortDayMonthDateFormat(){
-        return new SimpleDateFormat("MMM d", Locale.getDefault());
+    public static String createPrefixedTimeString(Context context, String prefix, Date date) {
+        return prefix + ": " + getFormattedTime(context, date);
     }
 
-    public static SimpleDateFormat getDateToDayMonthDateFormat(){
-        return new SimpleDateFormat("MMM dd", Locale.getDefault());
+    public static String createPrefixedTimeString(Context context, int prefixResId, Date date) {
+        return createPrefixedTimeString(context, context.getResources().getString(prefixResId), date);
     }
 
-    public static SimpleDateFormat getDateToMonthDayYearHourMinute(Context context){
-        if(DateFormat.is24HourFormat(context)) {
-            return new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
-        }
-        return new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+    public static String createPrefixedDateTimeString(Context context, String prefix, Date date) {
+        return prefix + ": " + DateHelpers.getFormattedDate(context, date) + " " + getFormattedTime(context, date);
     }
 
-    public static SimpleDateFormat getMonthFormat() {
-        return new SimpleDateFormat("MMM", Locale.getDefault());
+    public static String createPrefixedDateTimeString(Context context, int prefixResId, Date date) {
+        return createPrefixedDateTimeString(context, context.getResources().getString(prefixResId), date);
+    }
+
+    public static String getDateTimeString(Context context, Date date) {
+        return getFormattedDate(context, date) + " " + getFormattedTime(context, date);
     }
 }

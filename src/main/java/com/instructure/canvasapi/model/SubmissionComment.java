@@ -1,8 +1,8 @@
 package com.instructure.canvasapi.model;
 
 import android.content.Context;
-import android.text.format.DateFormat;
 import com.instructure.canvasapi.utilities.APIHelpers;
+import com.instructure.canvasapi.utilities.DateHelpers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -103,7 +103,6 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
     ///////////////////////////////////////////////////////////////////////////
 
     public static String getFormattedDate(Context context, String date) {
-        return DateFormat.getMediumDateFormat(context).format(APIHelpers.stringToDate(date)) + " "
-                + DateFormat.getTimeFormat(context).format(APIHelpers.stringToDate(date));
+        return DateHelpers.getDateTimeString(context, APIHelpers.stringToDate(date));
     }
 }
