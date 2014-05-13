@@ -6,11 +6,16 @@ import com.instructure.canvasapi.model.Section;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.http.*;
 
 import java.util.Date;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.http.EncodedPath;
+import retrofit.http.GET;
+import retrofit.http.PUT;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Josh Ruesch on 2/10/14.
@@ -33,7 +38,7 @@ public class SectionAPI {
         );
 
         @GET("/{courseid}/sections")
-        void getFirstPageSectionsList(@Path("context_id") long courseID, Callback<Section[]> callback);
+        void getFirstPageSectionsList(@Path("courseid") long courseID, Callback<Section[]> callback);
 
         @GET("/{next}")
         void getNextPageSectionsList(@EncodedPath("next") String nextURL, Callback<Section[]> callback);

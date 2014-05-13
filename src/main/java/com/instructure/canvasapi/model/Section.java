@@ -48,6 +48,13 @@ public class Section extends CanvasComparable<Section> implements Serializable {
         return APIHelpers.stringToDate(end_at);
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
