@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
@@ -11,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class FileFolder extends CanvasModel<FileFolder> {
+public class FileFolder extends CanvasModel<FileFolder>{
 
 	/**
 	 * {
@@ -281,4 +283,74 @@ public class FileFolder extends CanvasModel<FileFolder> {
         // both are files
         return getDisplayName().compareTo(other.getDisplayName());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.size);
+        dest.writeString(this.content_type);
+        dest.writeString(this.url);
+        dest.writeString(this.display_name);
+        dest.writeString(this.context_type);
+        dest.writeLong(this.context_id);
+        dest.writeInt(this.files_count);
+        dest.writeInt(this.position);
+        dest.writeInt(this.folders_count);
+        dest.writeString(this.name);
+        dest.writeLong(this.parent_folder_id);
+        dest.writeString(this.folders_url);
+        dest.writeString(this.files_url);
+        dest.writeString(this.full_name);
+        dest.writeLong(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.unlock_at);
+        dest.writeByte(locked ? (byte) 1 : (byte) 0);
+        dest.writeByte(hidden ? (byte) 1 : (byte) 0);
+        dest.writeString(this.lock_at);
+        dest.writeByte(locked_for_user ? (byte) 1 : (byte) 0);
+        dest.writeByte(hidden_for_user ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.lock_info);
+    }
+
+    private FileFolder(Parcel in) {
+        this.size = in.readLong();
+        this.content_type = in.readString();
+        this.url = in.readString();
+        this.display_name = in.readString();
+        this.context_type = in.readString();
+        this.context_id = in.readLong();
+        this.files_count = in.readInt();
+        this.position = in.readInt();
+        this.folders_count = in.readInt();
+        this.name = in.readString();
+        this.parent_folder_id = in.readLong();
+        this.folders_url = in.readString();
+        this.files_url = in.readString();
+        this.full_name = in.readString();
+        this.id = in.readLong();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.unlock_at = in.readString();
+        this.locked = in.readByte() != 0;
+        this.hidden = in.readByte() != 0;
+        this.lock_at = in.readString();
+        this.locked_for_user = in.readByte() != 0;
+        this.hidden_for_user = in.readByte() != 0;
+        this.lock_info = (LockInfo) in.readSerializable();
+    }
+
+    public static Creator<FileFolder> CREATOR = new Creator<FileFolder>() {
+        public FileFolder createFromParcel(Parcel source) {
+            return new FileFolder(source);
+        }
+
+        public FileFolder[] newArray(int size) {
+            return new FileFolder[size];
+        }
+    };
 }

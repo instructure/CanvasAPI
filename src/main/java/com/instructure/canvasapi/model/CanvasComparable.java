@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,7 +10,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T>, Serializable {
+public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T>, Parcelable {
 
     public static final long serialVersionUID = 1L;
 

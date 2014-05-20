@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public abstract class CanvasContext extends CanvasModel<CanvasContext> implements Serializable{
+public abstract class CanvasContext extends CanvasModel<CanvasContext> implements Serializable, Parcelable{
 
     public static final String HOME_FEED = "feed";
     public static final String HOME_WIKI = "wiki";
@@ -202,6 +205,19 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
             public int compareTo(CanvasContext canvasContext) {
                 return 0;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel parcel, int i) {
+                parcel.writeSerializable(type);
+                parcel.writeLong(id);
+                parcel.writeString(name);
+
+            }
         };
 
         return canvasContext;
@@ -214,5 +230,6 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
     public static CanvasContext emptyUserContext() {
         return getGenericContext(Type.USER, 0, "");
     }
+
 
 }

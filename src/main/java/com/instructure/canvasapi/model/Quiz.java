@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -101,4 +103,45 @@ public class Quiz extends CanvasModel<Quiz> {
         }
         return getTitle();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.mobile_url);
+        dest.writeString(this.html_url);
+        dest.writeString(this.description);
+        dest.writeString(this.quiz_type);
+        dest.writeSerializable(this.lock_info);
+        dest.writeParcelable(this.assignment, flags);
+    }
+
+    public Quiz() {
+    }
+
+    private Quiz(Parcel in) {
+        this.id = in.readLong();
+        this.title = in.readString();
+        this.mobile_url = in.readString();
+        this.html_url = in.readString();
+        this.description = in.readString();
+        this.quiz_type = in.readString();
+        this.lock_info = (LockInfo) in.readSerializable();
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+    }
+
+    public static Creator<Quiz> CREATOR = new Creator<Quiz>() {
+        public Quiz createFromParcel(Parcel source) {
+            return new Quiz(source);
+        }
+
+        public Quiz[] newArray(int size) {
+            return new Quiz[size];
+        }
+    };
 }

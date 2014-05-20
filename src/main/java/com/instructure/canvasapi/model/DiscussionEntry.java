@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.*;
@@ -9,7 +11,7 @@ import java.util.*;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionEntry extends CanvasModel<DiscussionEntry> {
+public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
 
     private long id;                      //Entry id.
     private boolean unread = false;
@@ -237,4 +239,56 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry> {
 
         return depth;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeByte(unread ? (byte) 1 : (byte) 0);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.created_at);
+        dest.writeParcelable(this.parent, flags);
+        dest.writeParcelable(this.author, 0);
+        dest.writeString(this.description);
+        dest.writeLong(this.user_id);
+        dest.writeLong(this.parent_id);
+        dest.writeString(this.message);
+        dest.writeByte(deleted ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.totalChildren);
+        dest.writeInt(this.unreadChildren);
+        dest.writeSerializable(this.replies);
+        dest.writeSerializable(this.attachments);
+    }
+
+    private DiscussionEntry(Parcel in) {
+        this.id = in.readLong();
+        this.unread = in.readByte() != 0;
+        this.updated_at = in.readString();
+        this.created_at = in.readString();
+        this.parent = in.readParcelable(DiscussionEntry.class.getClassLoader());
+        this.author = in.readParcelable(((Object) author).getClass().getClassLoader());
+        this.description = in.readString();
+        this.user_id = in.readLong();
+        this.parent_id = in.readLong();
+        this.message = in.readString();
+        this.deleted = in.readByte() != 0;
+        this.totalChildren = in.readInt();
+        this.unreadChildren = in.readInt();
+        this.replies = (DiscussionEntry[])in.readSerializable();
+        this.attachments = (DiscussionAttachment[])in.readSerializable();
+    }
+
+    public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {
+        public DiscussionEntry createFromParcel(Parcel source) {
+            return new DiscussionEntry(source);
+        }
+
+        public DiscussionEntry[] newArray(int size) {
+            return new DiscussionEntry[size];
+        }
+    };
 }

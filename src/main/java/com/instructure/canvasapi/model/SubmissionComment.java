@@ -1,6 +1,9 @@
 package com.instructure.canvasapi.model;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.util.AttributeSet;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.DateHelpers;
 
@@ -16,7 +19,7 @@ import java.util.List;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class SubmissionComment extends CanvasComparable<SubmissionComment> implements Serializable {
+public class SubmissionComment extends CanvasComparable<SubmissionComment> implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private long author_id;
@@ -105,4 +108,40 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
     public static String getFormattedDate(Context context, String date) {
         return DateHelpers.getDateTimeString(context, APIHelpers.stringToDate(date));
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.author_id);
+        dest.writeString(this.author_name);
+        dest.writeString(this.comment);
+        dest.writeString(this.created_at);
+        dest.writeParcelable(this.media_comment, flags);
+        dest.writeTypedArray(this.attachments, flags);
+        dest.writeParcelable(this.author, flags);
+    }
+
+    private SubmissionComment(Parcel in) {
+        this.author_id = in.readLong();
+        this.author_name = in.readString();
+        this.comment = in.readString();
+        this.created_at = in.readString();
+        this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
+        in.readTypedArray(this.attachments, Attachment.CREATOR);
+        this.author = in.readParcelable(Author.class.getClassLoader());
+    }
+
+    public static Creator<SubmissionComment> CREATOR = new Creator<SubmissionComment>() {
+        public SubmissionComment createFromParcel(Parcel source) {
+            return new SubmissionComment(source);
+        }
+
+        public SubmissionComment[] newArray(int size) {
+            return new SubmissionComment[size];
+        }
+    };
 }

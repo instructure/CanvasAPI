@@ -1,6 +1,8 @@
 package com.instructure.canvasapi.model;
 
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class Group extends CanvasContext {
+public class Group extends CanvasContext{
 
     private long id;
 
@@ -155,4 +157,61 @@ public class Group extends CanvasContext {
     public long getStorageQuotaMB() {
         return storage_quota_mb;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeString(this.avatar_url);
+        dest.writeByte(is_public ? (byte) 1 : (byte) 0);
+        dest.writeByte(followed_by_user ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.members_count);
+        dest.writeString(this.join_level);
+        dest.writeString(this.context_type);
+        dest.writeLong(this.course_id);
+        dest.writeLong(this.account_id);
+        dest.writeString(this.role);
+        dest.writeLong(this.group_category_id);
+        dest.writeLong(this.storage_quota_mb);
+        dest.writeString(this.default_view);
+        dest.writeSerializable(this.permissions);
+    }
+
+    public Group() {
+    }
+
+    private Group(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.avatar_url = in.readString();
+        this.is_public = in.readByte() != 0;
+        this.followed_by_user = in.readByte() != 0;
+        this.members_count = in.readInt();
+        this.join_level = in.readString();
+        this.context_type = in.readString();
+        this.course_id = in.readLong();
+        this.account_id = in.readLong();
+        this.role = in.readString();
+        this.group_category_id = in.readLong();
+        this.storage_quota_mb = in.readLong();
+        this.default_view = in.readString();
+        this.permissions = (CanvasContextPermission) in.readSerializable();
+    }
+
+    public static Creator<Group> CREATOR = new Creator<Group>() {
+        public Group createFromParcel(Parcel source) {
+            return new Group(source);
+        }
+
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
 }

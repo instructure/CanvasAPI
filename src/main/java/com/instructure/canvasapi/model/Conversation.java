@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
@@ -230,4 +232,59 @@ public class Conversation extends CanvasModel<Conversation> {
             return  participants;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.workflow_state);
+        dest.writeString(this.last_message);
+        dest.writeString(this.last_message_at);
+        dest.writeInt(this.message_count);
+        dest.writeByte(subscribed ? (byte) 1 : (byte) 0);
+        dest.writeByte(starred ? (byte) 1 : (byte) 0);
+        dest.writeStringArray(this.properties);
+        dest.writeString(this.avatar_url);
+        dest.writeByte(visible ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.audience);
+        dest.writeSerializable(this.participants);
+        dest.writeSerializable(this.messages);
+        dest.writeLong(lastMessageDate != null ? lastMessageDate.getTime() : -1);
+        dest.writeByte(deleted ? (byte) 1 : (byte) 0);
+        dest.writeString(this.deletedString);
+    }
+
+    private Conversation(Parcel in) {
+        this.id = in.readLong();
+        this.workflow_state = in.readString();
+        this.last_message = in.readString();
+        this.last_message_at = in.readString();
+        this.message_count = in.readInt();
+        this.subscribed = in.readByte() != 0;
+        this.starred = in.readByte() != 0;
+        this.properties = in.createStringArray();
+        this.avatar_url = in.readString();
+        this.visible = in.readByte() != 0;
+        this.audience = (Long[]) in.readSerializable();
+        this.participants = (BasicUser[])in.readSerializable();
+        this.messages = (Message[])in.readSerializable();
+        long tmpLastMessageDate = in.readLong();
+        this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
+        this.deleted = in.readByte() != 0;
+        this.deletedString = in.readString();
+    }
+
+    public static Creator<Conversation> CREATOR = new Creator<Conversation>() {
+        public Conversation createFromParcel(Parcel source) {
+            return new Conversation(source);
+        }
+
+        public Conversation[] newArray(int size) {
+            return new Conversation[size];
+        }
+    };
 }

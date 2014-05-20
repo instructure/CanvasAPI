@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +11,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Avatar extends CanvasComparable<Avatar> implements Serializable {
+public class Avatar extends CanvasComparable<Avatar> {
 
     public static final long serialVersionUID = 1L;
 
@@ -60,4 +62,37 @@ public class Avatar extends CanvasComparable<Avatar> implements Serializable {
     public String getComparisonString() {
         return getDisplayName();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.url);
+        dest.writeString(this.token);
+        dest.writeString(this.display_name);
+    }
+
+    public Avatar() {
+    }
+
+    private Avatar(Parcel in) {
+        this.type = in.readString();
+        this.url = in.readString();
+        this.token = in.readString();
+        this.display_name = in.readString();
+    }
+
+    public static Creator<Avatar> CREATOR = new Creator<Avatar>() {
+        public Avatar createFromParcel(Parcel source) {
+            return new Avatar(source);
+        }
+
+        public Avatar[] newArray(int size) {
+            return new Avatar[size];
+        }
+    };
 }

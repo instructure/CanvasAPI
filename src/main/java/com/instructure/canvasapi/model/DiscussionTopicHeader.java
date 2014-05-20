@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> {
+public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> implements android.os.Parcelable {
 
     public enum ReadState { READ, UNREAD }
     public enum DiscussionType { UNKNOWN, SIDE_COMMENT, THREADED }
@@ -295,4 +297,73 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> {
         return discussionEntry;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.discussion_type);
+        dest.writeString(this.title);
+        dest.writeString(this.message);
+        dest.writeString(this.html_url);
+        dest.writeString(this.posted_at);
+        dest.writeString(this.delayed_post_at);
+        dest.writeString(this.last_reply_at);
+        dest.writeByte(require_initial_post ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.discussion_subentry_count);
+        dest.writeString(this.read_state);
+        dest.writeInt(this.unread_count);
+        dest.writeLong(this.assignment_id);
+        dest.writeByte(locked ? (byte) 1 : (byte) 0);
+        dest.writeByte(pinned ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.author, flags);
+        dest.writeString(this.podcast_url);
+        dest.writeLong(this.root_topic_id);
+        dest.writeSerializable(this.topic_children);
+        dest.writeSerializable(this.attachments); //TODO: Make parcelable using writeTypedArray (I believe min API 17)
+        dest.writeByte(unauthorized ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.permission);
+        dest.writeParcelable(this.assignment, 0);
+        dest.writeSerializable(this.lock_info);
+    }
+
+    private DiscussionTopicHeader(Parcel in) {
+        this.id = in.readLong();
+        this.discussion_type = in.readString();
+        this.title = in.readString();
+        this.message = in.readString();
+        this.html_url = in.readString();
+        this.posted_at = in.readString();
+        this.delayed_post_at = in.readString();
+        this.last_reply_at = in.readString();
+        this.require_initial_post = in.readByte() != 0;
+        this.discussion_subentry_count = in.readInt();
+        this.read_state = in.readString();
+        this.unread_count = in.readInt();
+        this.assignment_id = in.readLong();
+        this.locked = in.readByte() != 0;
+        this.pinned = in.readByte() != 0;
+        this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
+        this.podcast_url = in.readString();
+        this.root_topic_id = in.readLong();
+        this.topic_children = (Long [])in.readSerializable();
+        this.attachments = (DiscussionAttachment[])in.readSerializable();
+        this.unauthorized = in.readByte() != 0;
+        this.permission = (DiscussionTopicPermission) in.readSerializable();
+        this.assignment = in.readParcelable(((Object) assignment).getClass().getClassLoader());
+        this.lock_info = (LockInfo) in.readSerializable();
+    }
+
+    public static Creator<DiscussionTopicHeader> CREATOR = new Creator<DiscussionTopicHeader>() {
+        public DiscussionTopicHeader createFromParcel(Parcel source) {
+            return new DiscussionTopicHeader(source);
+        }
+
+        public DiscussionTopicHeader[] newArray(int size) {
+            return new DiscussionTopicHeader[size];
+        }
+    };
 }

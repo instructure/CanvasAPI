@@ -1,6 +1,8 @@
 package com.instructure.canvasapi.model;
 
 import android.content.Context;
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -432,4 +434,130 @@ public class StreamItem extends CanvasModel<StreamItem> {
         }
         return 0;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.updated_at);
+        dest.writeLong(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.message);
+        dest.writeString(this.type);
+        dest.writeString(this.context_type);
+        dest.writeByte(read_state ? (byte) 1 : (byte) 0);
+        dest.writeString(this.url);
+        dest.writeString(this.html_url);
+        dest.writeLong(this.course_id);
+        dest.writeLong(this.group_id);
+        dest.writeLong(this.assignment_id);
+        dest.writeLong(this.message_id);
+        dest.writeString(this.notification_category);
+        dest.writeLong(this.conversation_id);
+        dest.writeByte(isPrivate ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.participant_count);
+        dest.writeLong(this.discussion_topic_id);
+        dest.writeLong(this.announcement_id);
+        dest.writeInt(this.total_root_discussion_entries);
+        dest.writeByte(require_initial_post ? (byte) 1 : (byte) 0);
+        dest.writeByte(user_has_posted ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.root_discussion_entries);
+        dest.writeInt(this.attempt);
+        dest.writeString(this.body);
+        dest.writeString(this.grade);
+        dest.writeByte(grade_matches_current_submission ? (byte) 1 : (byte) 0);
+        dest.writeString(this.graded_at);
+        dest.writeLong(this.grader_id);
+        dest.writeDouble(this.score);
+        dest.writeString(this.submission_type);
+        dest.writeString(this.submitted_at);
+        dest.writeString(this.workflow_state);
+        dest.writeByte(late ? (byte) 1 : (byte) 0);
+        dest.writeString(this.preview_url);
+        dest.writeSerializable(this.submission_comments);
+        dest.writeParcelable(this.canvasContext, 0);
+        dest.writeParcelable(this.assignment, flags);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.user, 0);
+        dest.writeInt(this.enumType == null ? -1 : this.enumType.ordinal());
+        dest.writeInt(this.canvasContextType == null ? -1 : this.canvasContextType.ordinal());
+        dest.writeByte(hasSetContextType ? (byte) 1 : (byte) 0);
+        dest.writeLong(updatedAtDate != null ? updatedAtDate.getTime() : -1);
+        dest.writeLong(gradedAtDate != null ? gradedAtDate.getTime() : -1);
+        dest.writeLong(submittedAtDate != null ? submittedAtDate.getTime() : -1);
+        dest.writeParcelable(this.conversation, flags);
+        dest.writeByte(isChecked ? (byte) 1 : (byte) 0);
+    }
+
+    public StreamItem() {
+    }
+
+    private StreamItem(Parcel in) {
+        this.updated_at = in.readString();
+        this.id = in.readLong();
+        this.title = in.readString();
+        this.message = in.readString();
+        this.type = in.readString();
+        this.context_type = in.readString();
+        this.read_state = in.readByte() != 0;
+        this.url = in.readString();
+        this.html_url = in.readString();
+        this.course_id = in.readLong();
+        this.group_id = in.readLong();
+        this.assignment_id = in.readLong();
+        this.message_id = in.readLong();
+        this.notification_category = in.readString();
+        this.conversation_id = in.readLong();
+        this.isPrivate = in.readByte() != 0;
+        this.participant_count = in.readInt();
+        this.discussion_topic_id = in.readLong();
+        this.announcement_id = in.readLong();
+        this.total_root_discussion_entries = in.readInt();
+        this.require_initial_post = in.readByte() != 0;
+        this.user_has_posted = in.readByte() != 0;
+        this.root_discussion_entries =(DiscussionEntry[]) in.readSerializable();
+        this.attempt = in.readInt();
+        this.body = in.readString();
+        this.grade = in.readString();
+        this.grade_matches_current_submission = in.readByte() != 0;
+        this.graded_at = in.readString();
+        this.grader_id = in.readLong();
+        this.score = in.readDouble();
+        this.submission_type = in.readString();
+        this.submitted_at = in.readString();
+        this.workflow_state = in.readString();
+        this.late = in.readByte() != 0;
+        this.preview_url = in.readString();
+        this.submission_comments = (SubmissionComment[])in.readSerializable();
+        this.canvasContext = in.readParcelable(((Object) canvasContext).getClass().getClassLoader());
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        this.user_id = in.readLong();
+        this.user = in.readParcelable(((Object) user).getClass().getClassLoader());
+        int tmpEnumType = in.readInt();
+        this.enumType = tmpEnumType == -1 ? null : Type.values()[tmpEnumType];
+        int tmpCanvasContextType = in.readInt();
+        this.canvasContextType = tmpCanvasContextType == -1 ? null : CanvasContext.Type.values()[tmpCanvasContextType];
+        this.hasSetContextType = in.readByte() != 0;
+        long tmpUpdatedAtDate = in.readLong();
+        this.updatedAtDate = tmpUpdatedAtDate == -1 ? null : new Date(tmpUpdatedAtDate);
+        long tmpGradedAtDate = in.readLong();
+        this.gradedAtDate = tmpGradedAtDate == -1 ? null : new Date(tmpGradedAtDate);
+        long tmpSubmittedAtDate = in.readLong();
+        this.submittedAtDate = tmpSubmittedAtDate == -1 ? null : new Date(tmpSubmittedAtDate);
+        this.conversation = in.readParcelable(Conversation.class.getClassLoader());
+        this.isChecked = in.readByte() != 0;
+    }
+
+    public static Creator<StreamItem> CREATOR = new Creator<StreamItem>() {
+        public StreamItem createFromParcel(Parcel source) {
+            return new StreamItem(source);
+        }
+
+        public StreamItem[] newArray(int size) {
+            return new StreamItem[size];
+        }
+    };
 }

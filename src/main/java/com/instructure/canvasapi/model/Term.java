@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class Term extends CanvasModel<Term> {
+public class Term extends CanvasModel<Term>{
 
     //currently only part of a course
 	/*
@@ -103,4 +105,41 @@ public class Term extends CanvasModel<Term> {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.start_at);
+        dest.writeString(this.end_at);
+        dest.writeLong(startDate != null ? startDate.getTime() : -1);
+        dest.writeLong(endDate != null ? endDate.getTime() : -1);
+        dest.writeByte(isGroupTerm ? (byte) 1 : (byte) 0);
+    }
+
+    private Term(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.start_at = in.readString();
+        this.end_at = in.readString();
+        long tmpStartDate = in.readLong();
+        this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
+        long tmpEndDate = in.readLong();
+        this.endDate = tmpEndDate == -1 ? null : new Date(tmpEndDate);
+        this.isGroupTerm = in.readByte() != 0;
+    }
+
+    public static Creator<Term> CREATOR = new Creator<Term>() {
+        public Term createFromParcel(Parcel source) {
+            return new Term(source);
+        }
+
+        public Term[] newArray(int size) {
+            return new Term[size];
+        }
+    };
 }

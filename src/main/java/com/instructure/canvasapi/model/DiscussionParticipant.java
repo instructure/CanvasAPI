@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionParticipant extends CanvasModel<DiscussionParticipant> {
+public class DiscussionParticipant extends CanvasModel<DiscussionParticipant> implements android.os.Parcelable {
 
     private long id;
     private String display_name;
@@ -74,4 +76,34 @@ public class DiscussionParticipant extends CanvasModel<DiscussionParticipant> {
     public String toString() {
         return display_name+":"+id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.display_name);
+        dest.writeString(this.avatar_image_url);
+        dest.writeString(this.html_url);
+    }
+
+    private DiscussionParticipant(Parcel in) {
+        this.id = in.readLong();
+        this.display_name = in.readString();
+        this.avatar_image_url = in.readString();
+        this.html_url = in.readString();
+    }
+
+    public static Creator<DiscussionParticipant> CREATOR = new Creator<DiscussionParticipant>() {
+        public DiscussionParticipant createFromParcel(Parcel source) {
+            return new DiscussionParticipant(source);
+        }
+
+        public DiscussionParticipant[] newArray(int size) {
+            return new DiscussionParticipant[size];
+        }
+    };
 }

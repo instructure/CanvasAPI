@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.io.Serializable;
@@ -11,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Page extends CanvasComparable<Page> implements Serializable {
+public class Page extends CanvasComparable<Page> {
 
     private static final long serialVersionUID = 1L;
 
@@ -160,4 +162,44 @@ public class Page extends CanvasComparable<Page> implements Serializable {
     public int hashCode() {
         return url != null ? url.hashCode() : 0;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.url);
+        dest.writeString(this.title);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeByte(hide_from_students ? (byte) 1 : (byte) 0);
+        dest.writeString(this.status);
+        dest.writeString(this.body);
+        dest.writeSerializable(this.lock_info);
+        dest.writeByte(front_page ? (byte) 1 : (byte) 0);
+    }
+
+    private Page(Parcel in) {
+        this.url = in.readString();
+        this.title = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.hide_from_students = in.readByte() != 0;
+        this.status = in.readString();
+        this.body = in.readString();
+        this.lock_info = (LockInfo) in.readSerializable();
+        this.front_page = in.readByte() != 0;
+    }
+
+    public static Creator<Page> CREATOR = new Creator<Page>() {
+        public Page createFromParcel(Parcel source) {
+            return new Page(source);
+        }
+
+        public Page[] newArray(int size) {
+            return new Page[size];
+        }
+    };
 }

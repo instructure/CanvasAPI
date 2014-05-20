@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -74,4 +76,33 @@ public class Author extends CanvasModel<Author> {
     public Author() {
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.display_name);
+        dest.writeString(this.avatar_image_url);
+        dest.writeString(this.html_url);
+    }
+
+    private Author(Parcel in) {
+        this.id = in.readLong();
+        this.display_name = in.readString();
+        this.avatar_image_url = in.readString();
+        this.html_url = in.readString();
+    }
+
+    public static Creator<Author> CREATOR = new Creator<Author>() {
+        public Author createFromParcel(Parcel source) {
+            return new Author(source);
+        }
+
+        public Author[] newArray(int size) {
+            return new Author[size];
+        }
+    };
 }

@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class LockInfo extends CanvasComparable<LockInfo> implements Serializable {
+public class LockInfo extends CanvasComparable<LockInfo> implements Serializable{
     private static final long serialVersionUID = 1L;
     private ArrayList<String> modulePrerequisiteNames = new ArrayList<String>();
     private String lockedModuleName;
@@ -90,4 +92,33 @@ public class LockInfo extends CanvasComparable<LockInfo> implements Serializable
 
     public LockInfo() {}
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this.modulePrerequisiteNames);
+        dest.writeString(this.lockedModuleName);
+        dest.writeSerializable(this.context_module);
+        dest.writeString(this.unlock_at);
+    }
+
+    private LockInfo(Parcel in) {
+        this.modulePrerequisiteNames = (ArrayList<String>) in.readSerializable();
+        this.lockedModuleName = in.readString();
+        this.context_module = (LockedModule) in.readSerializable();
+        this.unlock_at = in.readString();
+    }
+
+    public static Creator<LockInfo> CREATOR = new Creator<LockInfo>() {
+        public LockInfo createFromParcel(Parcel source) {
+            return new LockInfo(source);
+        }
+
+        public LockInfo[] newArray(int size) {
+            return new LockInfo[size];
+        }
+    };
 }

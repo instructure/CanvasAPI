@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -64,4 +66,34 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
     ///////////////////////////////////////////////////////////////////////////
 
     public AssignmentGroup() {}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.position);
+        dest.writeSerializable(this.assignments);
+    }
+
+    private AssignmentGroup(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.position = in.readInt();
+        this.assignments = (ArrayList<Assignment>) in.readSerializable();
+    }
+
+    public static Creator<AssignmentGroup> CREATOR = new Creator<AssignmentGroup>() {
+        public AssignmentGroup createFromParcel(Parcel source) {
+            return new AssignmentGroup(source);
+        }
+
+        public AssignmentGroup[] newArray(int size) {
+            return new AssignmentGroup[size];
+        }
+    };
 }
