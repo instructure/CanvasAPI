@@ -96,11 +96,6 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(this.prerequisites);
         dest.writeString(this.unlock_at);

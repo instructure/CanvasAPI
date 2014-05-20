@@ -285,11 +285,6 @@ public class FileFolder extends CanvasModel<FileFolder>{
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.size);
         dest.writeString(this.content_type);

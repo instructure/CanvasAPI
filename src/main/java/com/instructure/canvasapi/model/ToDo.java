@@ -239,11 +239,6 @@ public class ToDo extends CanvasComparable<ToDo>{
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.start_date);
         dest.writeString(this.type);

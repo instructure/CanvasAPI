@@ -72,11 +72,6 @@ public class MediaComment extends CanvasComparable<MediaComment>{
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.media_id);
         dest.writeString(this.display_name);

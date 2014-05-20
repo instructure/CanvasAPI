@@ -12,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class User extends CanvasModel<User> implements Parcelable {
+public class User extends CanvasModel<User>{
 
     private long id;
     private String name;
@@ -133,12 +133,6 @@ public class User extends CanvasModel<User> implements Parcelable {
             return false;
         }
         return true;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override

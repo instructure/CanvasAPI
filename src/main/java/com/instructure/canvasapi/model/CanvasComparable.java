@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T>, Parcelable {
+public abstract class CanvasComparable<T extends CanvasComparable> implements Comparable<T>, Parcelable, Serializable {
 
     public static final long serialVersionUID = 1L;
 
@@ -65,5 +65,10 @@ public abstract class CanvasComparable<T extends CanvasComparable> implements Co
             return false;
         }
         return a.equals(b);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

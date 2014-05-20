@@ -12,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public abstract class CanvasContext extends CanvasModel<CanvasContext> implements Serializable, Parcelable{
+public abstract class CanvasContext extends CanvasModel<CanvasContext>{
 
     public static final String HOME_FEED = "feed";
     public static final String HOME_WIKI = "wiki";
@@ -203,11 +203,6 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
 
             @Override
             public int compareTo(CanvasContext canvasContext) {
-                return 0;
-            }
-
-            @Override
-            public int describeContents() {
                 return 0;
             }
 

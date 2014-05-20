@@ -155,11 +155,6 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeInt(this.position);

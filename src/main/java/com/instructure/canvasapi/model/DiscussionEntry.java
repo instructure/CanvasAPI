@@ -241,11 +241,6 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeByte(unread ? (byte) 1 : (byte) 0);

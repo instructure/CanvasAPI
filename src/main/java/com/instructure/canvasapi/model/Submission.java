@@ -241,11 +241,6 @@ public class Submission extends CanvasModel<Submission>{
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.grade);

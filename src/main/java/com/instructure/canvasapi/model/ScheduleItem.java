@@ -406,10 +406,6 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable Overrides
     ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

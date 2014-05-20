@@ -110,11 +110,6 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.author_id);
         dest.writeString(this.author_name);
