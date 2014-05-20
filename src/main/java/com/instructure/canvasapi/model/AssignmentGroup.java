@@ -77,14 +77,14 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
         dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeInt(this.position);
-        dest.writeSerializable(this.assignments);
+        dest.writeTypedList(this.assignments);
     }
 
     private AssignmentGroup(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
         this.position = in.readInt();
-        this.assignments = (ArrayList<Assignment>) in.readSerializable();
+        in.readTypedList(this.assignments, Assignment.CREATOR);
     }
 
     public static Creator<AssignmentGroup> CREATOR = new Creator<AssignmentGroup>() {

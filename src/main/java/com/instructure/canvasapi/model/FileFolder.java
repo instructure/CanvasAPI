@@ -314,7 +314,7 @@ public class FileFolder extends CanvasModel<FileFolder>{
         dest.writeString(this.lock_at);
         dest.writeByte(locked_for_user ? (byte) 1 : (byte) 0);
         dest.writeByte(hidden_for_user ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.lock_info);
+        dest. writeParcelable(this.lock_info,flags);
     }
 
     private FileFolder(Parcel in) {
@@ -341,7 +341,7 @@ public class FileFolder extends CanvasModel<FileFolder>{
         this.lock_at = in.readString();
         this.locked_for_user = in.readByte() != 0;
         this.hidden_for_user = in.readByte() != 0;
-        this.lock_info = (LockInfo) in.readSerializable();
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
     }
 
     public static Creator<FileFolder> CREATOR = new Creator<FileFolder>() {

@@ -322,12 +322,12 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> im
         dest.writeParcelable(this.author, flags);
         dest.writeString(this.podcast_url);
         dest.writeLong(this.root_topic_id);
-        dest.writeSerializable(this.topic_children);
-        dest.writeSerializable(this.attachments); //TODO: Make parcelable using writeTypedArray (I believe min API 17)
+        dest.writeArray(this.topic_children);
+        dest.writeParcelableArray(this.attachments, flags);
         dest.writeByte(unauthorized ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.permission);
+        dest.writeParcelable(this.permission, flags);
         dest.writeParcelable(this.assignment, 0);
-        dest.writeSerializable(this.lock_info);
+        dest.writeParcelable(this.lock_info, flags);
     }
 
     private DiscussionTopicHeader(Parcel in) {
@@ -349,12 +349,12 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> im
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.podcast_url = in.readString();
         this.root_topic_id = in.readLong();
-        this.topic_children = (Long [])in.readSerializable();
-        this.attachments = (DiscussionAttachment[])in.readSerializable();
+        this.topic_children = (Long [])in.readArray(Long.class.getClassLoader());
+        this.attachments = (DiscussionAttachment[])in.readParcelableArray(DiscussionAttachment.class.getClassLoader());
         this.unauthorized = in.readByte() != 0;
-        this.permission = (DiscussionTopicPermission) in.readSerializable();
+        this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
         this.assignment = in.readParcelable(((Object) assignment).getClass().getClassLoader());
-        this.lock_info = (LockInfo) in.readSerializable();
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
     }
 
     public static Creator<DiscussionTopicHeader> CREATOR = new Creator<DiscussionTopicHeader>() {

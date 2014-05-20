@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class RubricCriterion implements Serializable , Comparable<RubricCriterion> {
+public class RubricCriterion implements Serializable , Comparable<RubricCriterion>, Parcelable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -130,4 +133,38 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
     public int compareTo(RubricCriterion rubricCriterion) {
         return this.getId().compareTo(rubricCriterion.getId());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeParcelable(this.rubric, flags);
+        dest.writeString(this.description);
+        dest.writeString(this.long_description);
+        dest.writeDouble(this.points);
+        dest.writeTypedList(ratings);
+    }
+
+    private RubricCriterion(Parcel in) {
+        this.id = in.readString();
+        this.rubric =  in.readParcelable(Rubric.class.getClassLoader());
+        this.description = in.readString();
+        this.long_description = in.readString();
+        this.points = in.readDouble();
+        in.readTypedList(ratings, RubricCriterionRating.CREATOR);
+    }
+
+    public static Parcelable.Creator<RubricCriterion> CREATOR = new Parcelable.Creator<RubricCriterion>() {
+        public RubricCriterion createFromParcel(Parcel source) {
+            return new RubricCriterion(source);
+        }
+
+        public RubricCriterion[] newArray(int size) {
+            return new RubricCriterion[size];
+        }
+    };
 }

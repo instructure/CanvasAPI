@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -85,9 +86,9 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         public void setType(String type) {
             this.type = type;
         }
-    }
+        }
 
-    @Override
+        @Override
     public long getId() {
         return id;
     }

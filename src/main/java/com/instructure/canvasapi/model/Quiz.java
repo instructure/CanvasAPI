@@ -117,7 +117,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.html_url);
         dest.writeString(this.description);
         dest.writeString(this.quiz_type);
-        dest.writeSerializable(this.lock_info);
+        dest.writeParcelable(this.lock_info, flags);
         dest.writeParcelable(this.assignment, flags);
     }
 
@@ -131,7 +131,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.html_url = in.readString();
         this.description = in.readString();
         this.quiz_type = in.readString();
-        this.lock_info = (LockInfo) in.readSerializable();
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
     }
 

@@ -464,7 +464,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         dest.writeInt(this.total_root_discussion_entries);
         dest.writeByte(require_initial_post ? (byte) 1 : (byte) 0);
         dest.writeByte(user_has_posted ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.root_discussion_entries);
+        dest.writeParcelableArray(this.root_discussion_entries, flags);
         dest.writeInt(this.attempt);
         dest.writeString(this.body);
         dest.writeString(this.grade);
@@ -477,7 +477,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         dest.writeString(this.workflow_state);
         dest.writeByte(late ? (byte) 1 : (byte) 0);
         dest.writeString(this.preview_url);
-        dest.writeSerializable(this.submission_comments);
+        dest.writeParcelableArray(this.submission_comments, flags);
         dest.writeParcelable(this.canvasContext, 0);
         dest.writeParcelable(this.assignment, flags);
         dest.writeLong(this.user_id);
@@ -518,7 +518,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.total_root_discussion_entries = in.readInt();
         this.require_initial_post = in.readByte() != 0;
         this.user_has_posted = in.readByte() != 0;
-        this.root_discussion_entries =(DiscussionEntry[]) in.readSerializable();
+        this.root_discussion_entries =(DiscussionEntry[]) in.readParcelableArray(DiscussionEntry.class.getClassLoader());
         this.attempt = in.readInt();
         this.body = in.readString();
         this.grade = in.readString();
@@ -531,7 +531,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.workflow_state = in.readString();
         this.late = in.readByte() != 0;
         this.preview_url = in.readString();
-        this.submission_comments = (SubmissionComment[])in.readSerializable();
+        this.submission_comments = (SubmissionComment[])in.readParcelableArray(SubmissionComment.class.getClassLoader());
         this.canvasContext = in.readParcelable(((Object) canvasContext).getClass().getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();

@@ -260,8 +260,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.totalChildren);
         dest.writeInt(this.unreadChildren);
-        dest.writeSerializable(this.replies);
-        dest.writeSerializable(this.attachments);
+        dest.writeParcelableArray(this.replies, flags);
+        dest.writeParcelableArray(this.attachments, flags);
     }
 
     private DiscussionEntry(Parcel in) {
@@ -278,8 +278,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.deleted = in.readByte() != 0;
         this.totalChildren = in.readInt();
         this.unreadChildren = in.readInt();
-        this.replies = (DiscussionEntry[])in.readSerializable();
-        this.attachments = (DiscussionAttachment[])in.readSerializable();
+        this.replies = (DiscussionEntry[])in.readParcelableArray(DiscussionEntry.class.getClassLoader());
+        this.attachments = (DiscussionAttachment[])in.readParcelableArray(Attachment.class.getClassLoader());
     }
 
     public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {

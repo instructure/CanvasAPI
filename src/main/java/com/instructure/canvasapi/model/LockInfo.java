@@ -101,14 +101,14 @@ public class LockInfo extends CanvasComparable<LockInfo> implements Serializable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(this.modulePrerequisiteNames);
         dest.writeString(this.lockedModuleName);
-        dest.writeSerializable(this.context_module);
+        dest.writeParcelable(this.context_module, flags);
         dest.writeString(this.unlock_at);
     }
 
     private LockInfo(Parcel in) {
         this.modulePrerequisiteNames = (ArrayList<String>) in.readSerializable();
         this.lockedModuleName = in.readString();
-        this.context_module = (LockedModule) in.readSerializable();
+        this.context_module = in.readParcelable(LockedModule.class.getClassLoader());
         this.unlock_at = in.readString();
     }
 

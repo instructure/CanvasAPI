@@ -25,7 +25,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         private double final_score;
         private String current_grade;
         private String final_grade;
-    }
+        }
 
     private static final long serialVersionUID = 1L;
 

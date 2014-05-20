@@ -87,10 +87,10 @@ public class Message extends CanvasModel<Message> {
         dest.writeString(this.body);
         dest.writeLong(this.author_id);
         dest.writeByte(generated ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.attachments);
+        dest.writeParcelableArray(this.attachments, flags);
         dest.writeParcelable(this.media_comment, flags);
         dest.writeParcelable(this.submission, flags);
-        dest.writeSerializable(this.forwarded_messages);
+        dest.writeParcelableArray(this.forwarded_messages, flags);
     }
 
     public Message() {
@@ -102,10 +102,10 @@ public class Message extends CanvasModel<Message> {
         this.body = in.readString();
         this.author_id = in.readLong();
         this.generated = in.readByte() != 0;
-        this.attachments =(Attachment[]) in.readSerializable();
+        this.attachments =(Attachment[]) in.readParcelableArray(Attachment.class.getClassLoader());
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         this.submission = in.readParcelable(Submission.class.getClassLoader());
-        this.forwarded_messages =(Message[]) in.readSerializable();
+        this.forwarded_messages =(Message[]) in.readParcelableArray(Message.class.getClassLoader());
     }
 
     public static Creator<Message> CREATOR = new Creator<Message>() {

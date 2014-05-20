@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -8,7 +11,7 @@ import java.util.HashMap;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionTopic implements Serializable {
+public class DiscussionTopic implements Parcelable {
 
     private static final long serialVersionUID = 1L;
 
@@ -103,4 +106,38 @@ public class DiscussionTopic implements Serializable {
         //https://mobiledev.instructure.com/api/v1/courses/24219/discussion_topics/1129998/
         return api_protocol + "://" + domain + "/courses/"+courseId+"/discussion_topics/"+topicId;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(forbidden ? (byte) 1 : (byte) 0);
+        dest.writeArray(this.unread_entries);
+        dest.writeParcelableArray(this.participants, flags);
+        dest.writeSerializable(this.participantsMap);
+        dest.writeSerializable(this.unread_entriesMap);
+        dest.writeParcelableArray(this.view, flags);
+    }
+
+    private DiscussionTopic(Parcel in) {
+        this.forbidden = in.readByte() != 0;
+        this.unread_entries =(Long[]) in.readArray(Long.class.getClassLoader());
+        this.participants = (DiscussionParticipant[])in.readParcelableArray(DiscussionParticipant.class.getClassLoader());
+        this.participantsMap = (HashMap<Long, DiscussionParticipant>) in.readSerializable();
+        this.unread_entriesMap = (HashMap<Long, Boolean>) in.readSerializable();
+        this.view = (DiscussionEntry[]) in.readParcelableArray(DiscussionEntry.class.getClassLoader());
+    }
+
+    public static Creator<DiscussionTopic> CREATOR = new Creator<DiscussionTopic>() {
+        public DiscussionTopic createFromParcel(Parcel source) {
+            return new DiscussionTopic(source);
+        }
+
+        public DiscussionTopic[] newArray(int size) {
+            return new DiscussionTopic[size];
+        }
+    };
 }

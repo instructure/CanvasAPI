@@ -177,7 +177,7 @@ public class Page extends CanvasComparable<Page> {
         dest.writeByte(hide_from_students ? (byte) 1 : (byte) 0);
         dest.writeString(this.status);
         dest.writeString(this.body);
-        dest.writeSerializable(this.lock_info);
+        dest.writeParcelable(this.lock_info, flags);
         dest.writeByte(front_page ? (byte) 1 : (byte) 0);
     }
 
@@ -189,7 +189,7 @@ public class Page extends CanvasComparable<Page> {
         this.hide_from_students = in.readByte() != 0;
         this.status = in.readString();
         this.body = in.readString();
-        this.lock_info = (LockInfo) in.readSerializable();
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.front_page = in.readByte() != 0;
     }
 
