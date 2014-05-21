@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 
@@ -9,7 +12,7 @@ import java.io.Serializable;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class RubricCriterionRating implements Serializable , Comparable<RubricCriterionRating>{
+public class RubricCriterionRating implements Parcelable,  Serializable , Comparable<RubricCriterionRating>{
 
     public static final long serialVersionUID = 1L;
 
@@ -116,4 +119,38 @@ public class RubricCriterionRating implements Serializable , Comparable<RubricCr
     public int compareTo(RubricCriterionRating rubricCriterionRating) {
         return this.getId().compareTo(rubricCriterionRating.getId());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.criterionId);
+        dest.writeString(this.description);
+        dest.writeDouble(this.points);
+        dest.writeString(this.comments);
+        dest.writeByte(isGrade ? (byte) 1 : (byte) 0);
+    }
+
+    private RubricCriterionRating(Parcel in) {
+        this.id = in.readString();
+        this.criterionId = in.readString();
+        this.description = in.readString();
+        this.points = in.readDouble();
+        this.comments = in.readString();
+        this.isGrade = in.readByte() != 0;
+    }
+
+    public static Creator<RubricCriterionRating> CREATOR = new Creator<RubricCriterionRating>() {
+        public RubricCriterionRating createFromParcel(Parcel source) {
+            return new RubricCriterionRating(source);
+        }
+
+        public RubricCriterionRating[] newArray(int size) {
+            return new RubricCriterionRating[size];
+        }
+    };
 }

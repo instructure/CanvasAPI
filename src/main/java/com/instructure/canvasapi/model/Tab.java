@@ -1,6 +1,9 @@
 package com.instructure.canvasapi.model;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.io.Serializable;
@@ -11,9 +14,7 @@ import java.io.Serializable;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Tab implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Tab implements Parcelable {
 
     public static final String TYPE_INTERNAL = "internal";
     public static final String TYPE_EXTERNAL = "external";
@@ -117,4 +118,36 @@ public class Tab implements Serializable {
 
         return true;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.label);
+        dest.writeString(this.type);
+        dest.writeString(this.html_url);
+        dest.writeString(this.url);
+    }
+
+    private Tab(Parcel in) {
+        this.id = in.readString();
+        this.label = in.readString();
+        this.type = in.readString();
+        this.html_url = in.readString();
+        this.url = in.readString();
+    }
+
+    public static Parcelable.Creator<Tab> CREATOR = new Parcelable.Creator<Tab>() {
+        public Tab createFromParcel(Parcel source) {
+            return new Tab(source);
+        }
+
+        public Tab[] newArray(int size) {
+            return new Tab[size];
+        }
+    };
 }

@@ -25,7 +25,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         private double final_score;
         private String current_grade;
         private String final_grade;
-    }
+        }
 
     private static final long serialVersionUID = 1L;
 
@@ -192,12 +192,6 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         int result = 1;
         result = 31 * result + type.hashCode();
         return result;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
@@ -158,4 +160,49 @@ public class DiscussionAttachment extends CanvasModel<DiscussionAttachment> {
             return true;
         }
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeByte(locked ? (byte) 1 : (byte) 0);
+        dest.writeByte(hidden ? (byte) 1 : (byte) 0);
+        dest.writeByte(locked_for_user ? (byte) 1 : (byte) 0);
+        dest.writeByte(hidden_for_user ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.size);
+        dest.writeString(this.lock_at);
+        dest.writeString(this.unlock_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.created_at);
+        dest.writeString(this.display_name);
+        dest.writeString(this.filename);
+        dest.writeString(this.url);
+        dest.writeString(this.content_type);
+    }
+
+    private DiscussionAttachment(Parcel in) {
+        this.id = in.readLong();
+        this.locked = in.readByte() != 0;
+        this.hidden = in.readByte() != 0;
+        this.locked_for_user = in.readByte() != 0;
+        this.hidden_for_user = in.readByte() != 0;
+        this.size = in.readInt();
+        this.lock_at = in.readString();
+        this.unlock_at = in.readString();
+        this.updated_at = in.readString();
+        this.created_at = in.readString();
+        this.display_name = in.readString();
+        this.filename = in.readString();
+        this.url = in.readString();
+        this.content_type = in.readString();
+    }
+
+    public static Creator<DiscussionAttachment> CREATOR = new Creator<DiscussionAttachment>() {
+        public DiscussionAttachment createFromParcel(Parcel source) {
+            return new DiscussionAttachment(source);
+        }
+
+        public DiscussionAttachment[] newArray(int size) {
+            return new DiscussionAttachment[size];
+        }
+    };
 }

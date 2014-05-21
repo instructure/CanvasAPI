@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -7,9 +10,7 @@ import java.io.Serializable;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class UnreadNotificationCount implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class UnreadNotificationCount implements Parcelable {
 
     private String type;
     private int count;
@@ -52,5 +53,37 @@ public class UnreadNotificationCount implements Serializable {
         this.notification_category = notification_category;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeInt(this.count);
+        dest.writeInt(this.unread_count);
+        dest.writeString(this.notification_category);
+    }
+
+    public UnreadNotificationCount() {
+    }
+
+    private UnreadNotificationCount(Parcel in) {
+        this.type = in.readString();
+        this.count = in.readInt();
+        this.unread_count = in.readInt();
+        this.notification_category = in.readString();
+    }
+
+    public static Creator<UnreadNotificationCount> CREATOR = new Creator<UnreadNotificationCount>() {
+        public UnreadNotificationCount createFromParcel(Parcel source) {
+            return new UnreadNotificationCount(source);
+        }
+
+        public UnreadNotificationCount[] newArray(int size) {
+            return new UnreadNotificationCount[size];
+        }
+    };
 }
 

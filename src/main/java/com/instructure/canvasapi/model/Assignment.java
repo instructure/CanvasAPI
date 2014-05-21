@@ -2,6 +2,7 @@ package com.instructure.canvasapi.model;
 
 
 import android.content.Context;
+import android.os.Parcel;
 
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class Assignment extends CanvasModel<Assignment> {
+public class Assignment extends CanvasModel<Assignment>{
 
 	private long id;
 	private String name;
@@ -521,4 +522,65 @@ public class Assignment extends CanvasModel<Assignment> {
                 return "";
         }
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeStringArray(this.submission_types);
+        dest.writeString(this.due_at);
+        dest.writeDouble(this.points_possible);
+        dest.writeLong(this.course_id);
+        dest.writeString(this.grading_type);
+        dest.writeString(this.html_url);
+        dest.writeString(this.url);
+        dest.writeLong(this.quiz_id);
+        dest.writeParcelableArray(this.rubric, flags);
+        dest.writeByte(use_rubric_for_grading ? (byte) 1 : (byte) 0);
+        dest.writeStringArray(this.allowed_extensions);
+        dest.writeParcelable(this.submission, flags);
+        dest.writeLong(this.assignment_group_id);
+        dest.writeByte(peer_reviews ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.lock_info, flags);
+        dest.writeString(this.lock_at);
+        dest.writeString(this.unlock_at);
+        dest.writeParcelable(this.discussion_topic, flags);
+
+
+    }
+
+    private Assignment(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.submission_types = in.createStringArray();
+        this.due_at = in.readString();
+        this.points_possible = in.readDouble();
+        this.course_id = in.readLong();
+        this.grading_type = in.readString();
+        this.html_url = in.readString();
+        this.url = in.readString();
+        this.quiz_id = in.readLong();
+        this.rubric = (RubricCriterion[])in.readParcelableArray(RubricCriterion.class.getClassLoader());
+        this.use_rubric_for_grading = in.readByte() != 0;
+        this.allowed_extensions = in.createStringArray();
+        this.submission = in.readParcelable(Submission.class.getClassLoader());
+        this.assignment_group_id = in.readLong();
+        this.peer_reviews = in.readByte() != 0;
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
+        this.lock_at = in.readString();
+        this.unlock_at = in.readString();
+        this.discussion_topic = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
+    }
+
+    public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
+        public Assignment createFromParcel(Parcel source) {
+            return new Assignment(source);
+        }
+
+        public Assignment[] newArray(int size) {
+            return new Assignment[size];
+        }
+    };
 }

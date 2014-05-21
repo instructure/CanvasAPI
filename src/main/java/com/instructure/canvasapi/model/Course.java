@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Course extends CanvasContext implements Comparable<CanvasContext> {
+public class Course extends CanvasContext implements Comparable<CanvasContext>{
 
     // Variables from API
     private long id;
@@ -338,4 +340,60 @@ public class Course extends CanvasContext implements Comparable<CanvasContext> {
         }
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.course_code);
+        dest.writeString(this.start_at);
+        dest.writeString(this.end_at);
+        dest.writeString(this.syllabus_body);
+        dest.writeByte(hide_final_grades ? (byte) 1 : (byte) 0);
+        dest.writeByte(is_public ? (byte) 1 : (byte) 0);
+        dest.writeString(this.license);
+        dest.writeParcelable(this.term, flags);
+        dest.writeParcelableArray(this.enrollments,flags);
+        dest.writeValue(this.currentScore);
+        dest.writeValue(this.finalScore);
+        dest.writeByte(checkedCurrentGrade ? (byte) 1 : (byte) 0);
+        dest.writeByte(checkedFinalGrade ? (byte) 1 : (byte) 0);
+        dest.writeString(this.currentGrade);
+        dest.writeString(this.finalGrade);
+        dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
+        dest.writeString(this.default_view);
+        dest.writeSerializable(this.permissions);
+    }
+
+    private Course(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.course_code = in.readString();
+        this.start_at = in.readString();
+        this.end_at = in.readString();
+        this.syllabus_body = in.readString();
+        this.hide_final_grades = in.readByte() != 0;
+        this.is_public = in.readByte() != 0;
+        this.license = in.readString();
+        this.term = in.readParcelable(Term.class.getClassLoader());
+        this.enrollments = (Enrollment[])in.readParcelableArray(Enrollment.class.getClassLoader());
+        this.currentScore = (Double) in.readValue(Double.class.getClassLoader());
+        this.finalScore = (Double) in.readValue(Double.class.getClassLoader());
+        this.checkedCurrentGrade = in.readByte() != 0;
+        this.checkedFinalGrade = in.readByte() != 0;
+        this.currentGrade = in.readString();
+        this.finalGrade = in.readString();
+        this.isFavorite = in.readByte() != 0;
+        this.default_view = in.readString();
+        this.permissions = (CanvasContextPermission) in.readSerializable();
+    }
+
+    public static Creator<Course> CREATOR = new Creator<Course>() {
+        public Course createFromParcel(Parcel source) {
+            return new Course(source);
+        }
+
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 }

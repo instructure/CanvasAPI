@@ -1,5 +1,6 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
 import android.util.Log;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -14,7 +15,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class LockedModule extends CanvasComparable<LockedModule> implements Serializable {
+public class LockedModule extends CanvasComparable<LockedModule> implements Serializable{
     private static final long serialVersionUID = 1L;
     private ArrayList<ModuleName> prerequisites = new ArrayList<ModuleName>();
     private String unlock_at;
@@ -93,4 +94,32 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
         }
         return true;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this.prerequisites);
+        dest.writeString(this.unlock_at);
+        dest.writeString(this.name);
+        dest.writeLong(this.context_id);
+    }
+
+    public LockedModule() {
+    }
+
+    private LockedModule(Parcel in) {
+        this.prerequisites = (ArrayList<ModuleName>) in.readSerializable();
+        this.unlock_at = in.readString();
+        this.name = in.readString();
+        this.context_id = in.readLong();
+    }
+
+    public static Creator<LockedModule> CREATOR = new Creator<LockedModule>() {
+        public LockedModule createFromParcel(Parcel source) {
+            return new LockedModule(source);
+        }
+
+        public LockedModule[] newArray(int size) {
+            return new LockedModule[size];
+        }
+    };
 }

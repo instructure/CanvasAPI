@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.FileUtilities;
 
@@ -12,7 +14,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class MediaComment extends CanvasComparable<MediaComment> implements Serializable {
+public class MediaComment extends CanvasComparable<MediaComment>{
 
     private static final long serialVersionUID = 1L;
 
@@ -68,4 +70,34 @@ public class MediaComment extends CanvasComparable<MediaComment> implements Seri
     public String getComparisonString() {
         return display_name;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.media_id);
+        dest.writeString(this.display_name);
+        dest.writeString(this.url);
+        dest.writeString(this.media_type);
+        dest.writeString(this.content_type);
+    }
+
+    public MediaComment() {
+    }
+
+    private MediaComment(Parcel in) {
+        this.media_id = in.readString();
+        this.display_name = in.readString();
+        this.url = in.readString();
+        this.media_type = in.readString();
+        this.content_type = in.readString();
+    }
+
+    public static Creator<MediaComment> CREATOR = new Creator<MediaComment>() {
+        public MediaComment createFromParcel(Parcel source) {
+            return new MediaComment(source);
+        }
+
+        public MediaComment[] newArray(int size) {
+            return new MediaComment[size];
+        }
+    };
 }

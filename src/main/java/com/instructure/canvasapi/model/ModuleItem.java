@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -83,9 +86,9 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         public void setType(String type) {
             this.type = type;
         }
-    }
+        }
 
-    @Override
+        @Override
     public long getId() {
         return id;
     }
@@ -150,5 +153,38 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     public String getComparisonString() {
         return title;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeInt(this.position);
+        dest.writeString(this.title);
+        dest.writeInt(this.indent);
+        dest.writeString(this.type);
+        dest.writeString(this.html_url);
+        dest.writeString(this.url);
+        dest.writeSerializable(this.completion_requirement);
+    }
+
+    private ModuleItem(Parcel in) {
+        this.id = in.readLong();
+        this.position = in.readInt();
+        this.title = in.readString();
+        this.indent = in.readInt();
+        this.type = in.readString();
+        this.html_url = in.readString();
+        this.url = in.readString();
+        this.completion_requirement = (CompletionRequirement) in.readSerializable();
+    }
+
+    public static Creator<ModuleItem> CREATOR = new Creator<ModuleItem>() {
+        public ModuleItem createFromParcel(Parcel source) {
+            return new ModuleItem(source);
+        }
+
+        public ModuleItem[] newArray(int size) {
+            return new ModuleItem[size];
+        }
+    };
 }
 

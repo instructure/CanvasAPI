@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.model;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.text.format.DateFormat;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -401,4 +402,94 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         }
         return getStartDate().compareTo(scheduleItem.getStartDate());
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable Overrides
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.description);
+        dest.writeString(this.start_at);
+        dest.writeString(this.end_at);
+        dest.writeByte(all_day ? (byte) 1 : (byte) 0);
+        dest.writeString(this.all_day_date);
+        dest.writeString(this.location_address);
+        dest.writeString(this.location_name);
+        dest.writeString(this.html_url);
+        dest.writeString(this.context_code);
+        dest.writeString(this.effective_context_code);
+        dest.writeInt(this.contextType == null ? -1 : this.contextType.ordinal());
+        dest.writeLong(this.userId);
+        dest.writeString(this.userName);
+        dest.writeLong(this.courseId);
+        dest.writeLong(this.groupId);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+
+        //Hack to make ENUMS list parcelable
+        //http://stackoverflow.com/questions/15016259/how-to-make-a-listenum-parcelable
+        List<String> submissionTypeStrings = new ArrayList<String>();
+        for(Assignment.SUBMISSION_TYPE submissionType: this.submissionTypes){
+            submissionTypeStrings.add(submissionType.name());
+        }
+        dest.writeList(submissionTypeStrings);
+
+        dest.writeDouble(this.pointsPossible);
+        dest.writeLong(this.quizId);
+        dest.writeParcelable(this.discussionTopicHeader, 0);
+        dest.writeString(this.lockedModuleName);
+        dest.writeParcelable(this.assignment, flags);
+        dest.writeLong(startDate != null ? startDate.getTime() : -1);
+    }
+
+    private ScheduleItem(Parcel in) {
+        this.id = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.start_at = in.readString();
+        this.end_at = in.readString();
+        this.all_day = in.readByte() != 0;
+        this.all_day_date = in.readString();
+        this.location_address = in.readString();
+        this.location_name = in.readString();
+        this.html_url = in.readString();
+        this.context_code = in.readString();
+        this.effective_context_code = in.readString();
+        int tmpContextType = in.readInt();
+        this.contextType = tmpContextType == -1 ? null : CanvasContext.Type.values()[tmpContextType];
+        this.userId = in.readLong();
+        this.userName = in.readString();
+        this.courseId = in.readLong();
+        this.groupId = in.readLong();
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : Type.values()[tmpType];
+
+        //Hack to make ENUMS list parcelable
+        //http://stackoverflow.com/questions/15016259/how-to-make-a-listenum-parcelable
+        List<String> submissionTypeStrings = new ArrayList<String>();
+        in.readList(submissionTypeStrings, null);
+        for(String submissionTypeString: submissionTypeStrings){
+            this.submissionTypes.add(Assignment.SUBMISSION_TYPE.valueOf(submissionTypeString));
+        }
+
+        this.pointsPossible = in.readDouble();
+        this.quizId = in.readLong();
+        this.discussionTopicHeader = in.readParcelable(((Object) discussionTopicHeader).getClass().getClassLoader());
+        this.lockedModuleName = in.readString();
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        long tmpStartDate = in.readLong();
+        this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
+    }
+
+    public static Creator<ScheduleItem> CREATOR = new Creator<ScheduleItem>() {
+        public ScheduleItem createFromParcel(Parcel source) {
+            return new ScheduleItem(source);
+        }
+
+        public ScheduleItem[] newArray(int size) {
+            return new ScheduleItem[size];
+        }
+    };
 }
