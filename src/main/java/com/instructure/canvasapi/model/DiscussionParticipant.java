@@ -9,7 +9,7 @@ import java.util.Date;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionParticipant extends CanvasModel<DiscussionParticipant> implements android.os.Parcelable {
+public class DiscussionParticipant extends CanvasModel<DiscussionParticipant>{
 
     private long id;
     private String display_name;

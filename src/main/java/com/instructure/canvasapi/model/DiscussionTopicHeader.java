@@ -13,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader> implements android.os.Parcelable {
+public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 
     public enum ReadState { READ, UNREAD }
     public enum DiscussionType { UNKNOWN, SIDE_COMMENT, THREADED }
