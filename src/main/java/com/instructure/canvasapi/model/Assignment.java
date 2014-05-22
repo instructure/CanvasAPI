@@ -536,7 +536,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeString(this.html_url);
         dest.writeString(this.url);
         dest.writeLong(this.quiz_id);
-        dest.writeParcelableArray(this.rubric, flags);
+        dest.writeTypedArray(this.rubric, flags);
         dest.writeByte(use_rubric_for_grading ? (byte) 1 : (byte) 0);
         dest.writeStringArray(this.allowed_extensions);
         dest.writeParcelable(this.submission, flags);
@@ -562,7 +562,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.html_url = in.readString();
         this.url = in.readString();
         this.quiz_id = in.readLong();
-        this.rubric = (RubricCriterion[])in.readParcelableArray(RubricCriterion.class.getClassLoader());
+        this.rubric = in.createTypedArray(RubricCriterion.CREATOR);
         this.use_rubric_for_grading = in.readByte() != 0;
         this.allowed_extensions = in.createStringArray();
         this.submission = in.readParcelable(Submission.class.getClassLoader());
