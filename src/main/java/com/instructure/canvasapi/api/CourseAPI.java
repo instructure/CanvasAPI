@@ -2,6 +2,7 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import com.instructure.canvasapi.model.Course;
+import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -27,11 +28,9 @@ public class CourseAPI {
         return "/allcourses";
     }
 
-
     private static String getCoursesCacheFilename() {
         return "/courses";
     }
-
 
     private static String getAllFavoriteCoursesCacheFilename() {
         return "/users/self/favorites/allcourses";
@@ -65,6 +64,12 @@ public class CourseAPI {
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
+
+        @POST("/users/self/favorites/courses/{courseId}")
+        void addCourseToFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
+
+        @DELETE("/users/self/favorites/courses/{courseId}")
+        void removeCourseFromFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -131,6 +136,18 @@ public class CourseAPI {
         //This should handle caching of ALL elements automatically.
         callback.readFromCache(getAllFavoriteCoursesCacheFilename());
         getFirstPageFavoriteCourses(bridge);
+    }
+
+    public static void addCourseToFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(callback).addCourseToFavorites(courseId, callback);
+    }
+
+    public static void removeCourseFromFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(callback).removeCourseFromFavorites(courseId, callback);
     }
 
     public static void getAllCourses(final CanvasCallback<Course[]> callback) {

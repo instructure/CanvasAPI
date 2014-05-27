@@ -48,7 +48,7 @@ public class Group extends CanvasContext {
     public enum JoinLevel {Automatic, Request, Invitation, Unknown}
     public enum GroupRole {Community, Student, Imported, Course}
     public enum GroupContext {Course,  Account, Other}
-
+    private boolean isFacingForward = true;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -92,6 +92,21 @@ public class Group extends CanvasContext {
 
     public int getMembersCount() {
         return members_count;
+    }
+
+    /**
+     * Not linked or updated from the API, internal use only.
+     * @return
+     */
+    public boolean isFacingForward() {
+        return isFacingForward;
+    }
+    /**
+     * Not linked or updated from the API, internal use only.
+     * @return
+     */
+    public void setFacingForward(boolean isFacingForward) {
+        this.isFacingForward = isFacingForward;
     }
 
     public JoinLevel getJoinLevel() {
