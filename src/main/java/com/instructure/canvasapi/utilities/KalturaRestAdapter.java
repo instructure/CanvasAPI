@@ -56,7 +56,7 @@ public class KalturaRestAdapter {
 
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
-                .setServer(domain + "/Media_server/api_v3//") // The base API endpoint.
+                .setServer(domain + "/api_v3/") // The base API endpoint.
                 .setConverter(new SimpleXmlConverter())
                 .build();
 

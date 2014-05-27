@@ -10,7 +10,7 @@ public class KalturaMediaEntry {
     /*
     <?xml version="1.0" encoding="UTF-8"?>
 <xml>
-   <result>
+   <xml>
       <objectType>KalturaMediaEntry</objectType>
       <id>0_e3ropkdb</id>
       <name>zach test 3</name>
@@ -55,7 +55,7 @@ public class KalturaMediaEntry {
       <mediaDate />
       <dataUrl>http://cdnbakmi.kaltura.com/p/156652/sp/15665200/flvclipper/entry_id/0_e3ropkdb/version/0</dataUrl>
       <flavorParamsIds />
-   </result>
+   </xml>
    <executionTime>6.2773299217224</executionTime>
 </xml>
      */

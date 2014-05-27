@@ -313,7 +313,7 @@ public class APIHelpers {
      */
     public static String getFullKalturaDomain(Context context){
         String protocol = loadProtocol(context);
-        String domain = getDomain(context);
+        String domain = getKalturaDomain(context);
 
         if (protocol == null || domain == null || protocol.equals("") || domain.equals("") ){
             return "";
