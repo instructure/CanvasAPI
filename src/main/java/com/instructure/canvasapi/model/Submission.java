@@ -260,7 +260,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeString(this.submission_type);
         dest.writeString(this.preview_url);
         dest.writeString(this.url);
-        dest.writeParcelable(this.assignment, 0);
+        dest.writeParcelable(this.assignment, flags);
         dest.writeLong(this.user_id);
         dest.writeLong(this.grader_id);
     }
@@ -285,7 +285,7 @@ public class Submission extends CanvasModel<Submission>{
         this.submission_type = in.readString();
         this.preview_url = in.readString();
         this.url = in.readString();
-        this.assignment = in.readParcelable(((Object) assignment).getClass().getClassLoader());
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();
         this.grader_id = in.readLong();
     }
