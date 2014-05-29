@@ -1,7 +1,6 @@
 package com.instructure.canvasapi.model.kaltura;
 
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
 
 /**
@@ -9,13 +8,6 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class xml {
-    public Result getResult() {
-        return result;
-    }
-
-    public void setResult(Result result) {
-        this.result = result;
-    }
 
     /*
             <?xml version="1.0" encoding="UTF-8"?>
@@ -40,6 +32,15 @@ public class xml {
 
     @Element(required = false)
     private float executionTime;
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
 
 
 }

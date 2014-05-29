@@ -55,7 +55,7 @@ public class Result {
       <flavorParamsIds />
      */
 
-    @Element
+    @Element(required = false)
     private String objectType;
 
     @Element(required = false)
@@ -197,39 +197,22 @@ public class Result {
     @Element(required = false)
     private String flavorParamsIds;
 
+    @Element(required = false)
+    private String categoriesIds;
 
-    public Result() {
+    @Element(required = false)
+    private long msDuration;
+
+    public Error getKalturaError() {
+        return KalturaError;
     }
 
-    public Result(String objectType, String id, long partnerId, String userId, String status, String fileName, String fileSize, long uploadedFileSize, long createdAt, long updatedAt, float executionTime) {
-        this.objectType = objectType;
-        this.id = id;
-        this.partnerId = partnerId;
-        this.userId = userId;
-        this.status = status;
-        this.fileName = fileName;
-        this.fileSize = fileSize;
-        this.uploadedFileSize = uploadedFileSize;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public void setKalturaError(Error kalturaError) {
+        this.KalturaError = kalturaError;
     }
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+    @Element(required = false)
+    private Error KalturaError;
 
     public String getObjectType() {
         return objectType;
@@ -237,6 +220,14 @@ public class Result {
 
     public void setObjectType(String objectType) {
         this.objectType = objectType;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public long getPartnerId() {
@@ -263,12 +254,28 @@ public class Result {
         this.status = status;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public String getFileSize() {
         return fileSize;
     }
 
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public long getUploadedFileSize() {
+        return uploadedFileSize;
+    }
+
+    public void setUploadedFileSize(long uploadedFileSize) {
+        this.uploadedFileSize = uploadedFileSize;
     }
 
     public long getCreatedAt() {
@@ -286,15 +293,6 @@ public class Result {
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    public long getUploadedFileSize() {
-        return uploadedFileSize;
-    }
-
-    public void setUploadedFileSize(long uploadedFileSize) {
-        this.uploadedFileSize = uploadedFileSize;
-    }
-
 
     public String getName() {
         return name;
@@ -464,6 +462,150 @@ public class Result {
         this.endDate = endDate;
     }
 
+    public long getPlays() {
+        return plays;
+    }
+
+    public void setPlays(long plays) {
+        this.plays = plays;
+    }
+
+    public long getViews() {
+        return views;
+    }
+
+    public void setViews(long views) {
+        this.views = views;
+    }
+
+    public long getWidth() {
+        return width;
+    }
+
+    public void setWidth(long width) {
+        this.width = width;
+    }
+
+    public long getHeight() {
+        return height;
+    }
+
+    public void setHeight(long height) {
+        this.height = height;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getDurationType() {
+        return durationType;
+    }
+
+    public void setDurationType(long durationType) {
+        this.durationType = durationType;
+    }
+
+    public long getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(long mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public long getConversionQuality() {
+        return conversionQuality;
+    }
+
+    public void setConversionQuality(long conversionQuality) {
+        this.conversionQuality = conversionQuality;
+    }
+
+    public long getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(long sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public long getSearchProviderType() {
+        return searchProviderType;
+    }
+
+    public void setSearchProviderType(long searchProviderType) {
+        this.searchProviderType = searchProviderType;
+    }
+
+    public long getSearchProviderId() {
+        return searchProviderId;
+    }
+
+    public void setSearchProviderId(long searchProviderId) {
+        this.searchProviderId = searchProviderId;
+    }
+
+    public String getCreditUserName() {
+        return creditUserName;
+    }
+
+    public void setCreditUserName(String creditUserName) {
+        this.creditUserName = creditUserName;
+    }
+
+    public String getCreditUrl() {
+        return creditUrl;
+    }
+
+    public void setCreditUrl(String creditUrl) {
+        this.creditUrl = creditUrl;
+    }
+
+    public String getMediaDate() {
+        return mediaDate;
+    }
+
+    public void setMediaDate(String mediaDate) {
+        this.mediaDate = mediaDate;
+    }
+
+    public String getDataUrl() {
+        return dataUrl;
+    }
+
+    public void setDataUrl(String dataUrl) {
+        this.dataUrl = dataUrl;
+    }
+
+    public String getFlavorParamsIds() {
+        return flavorParamsIds;
+    }
+
+    public void setFlavorParamsIds(String flavorParamsIds) {
+        this.flavorParamsIds = flavorParamsIds;
+    }
+
+    public String getCategoriesIds() {
+        return categoriesIds;
+    }
+
+    public void setCategoriesIds(String categoriesIds) {
+        this.categoriesIds = categoriesIds;
+    }
+
+    public long getMsDuration() {
+        return msDuration;
+    }
+
+    public void setMsDuration(long msDuration) {
+        this.msDuration = msDuration;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
@@ -514,6 +656,9 @@ public class Result {
                 ", mediaDate='" + mediaDate + '\'' +
                 ", dataUrl='" + dataUrl + '\'' +
                 ", flavorParamsIds='" + flavorParamsIds + '\'' +
+                ", categoriesIds='" + categoriesIds + '\'' +
+                ", msDuration=" + msDuration +
+                ", KalturaError=" + KalturaError +
                 '}';
     }
 }
