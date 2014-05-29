@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model.kaltura;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -7,7 +10,7 @@ import org.simpleframework.xml.Root;
  * Created by nbutton on 5/22/14.
  */
 @Root
-public class xml {
+public class xml implements Parcelable {
 
     /*
             <?xml version="1.0" encoding="UTF-8"?>
@@ -42,6 +45,33 @@ public class xml {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.result, flags);
+        dest.writeFloat(this.executionTime);
+    }
+
+    public xml() {
+    }
+
+    private xml(Parcel in) {
+        this.result = in.readParcelable(Result.class.getClassLoader());
+        this.executionTime = in.readFloat();
+    }
+
+    public static Parcelable.Creator<xml> CREATOR = new Parcelable.Creator<xml>() {
+        public xml createFromParcel(Parcel source) {
+            return new xml(source);
+        }
+
+        public xml[] newArray(int size) {
+            return new xml[size];
+        }
+    };
 }
 

@@ -358,7 +358,7 @@ public class APIHelpers {
             return false;
         }
 
-       domain = removeProtical(domain);
+       domain = removeProtocol(domain);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -381,7 +381,7 @@ public class APIHelpers {
             return false;
         }
 
-        kalturaDomain = removeProtical(kalturaDomain);
+        kalturaDomain = removeProtocol(kalturaDomain);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -700,14 +700,14 @@ public class APIHelpers {
         Log.d(APIHelpers.LOG_TAG, "One or more parameters is null");
     }
 
-    private static String removeProtical(String domain){
+    private static String removeProtocol(String domain){
         if (domain.contains("https://")) {
           return domain.substring(8);
         }
         if (domain.startsWith("http://")) {
             return domain.substring(7);
         }
-        else domain
+        else return domain;
     }
 
 }

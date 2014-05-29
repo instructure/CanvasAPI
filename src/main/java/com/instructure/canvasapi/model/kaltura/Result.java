@@ -1,12 +1,15 @@
 package com.instructure.canvasapi.model.kaltura;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.simpleframework.xml.Element;
 
 /**
  * Created by nbutton on 5/23/14.
  */
 @Element
-public class Result {
+public class Result implements Parcelable {
 
     /*
     <objectType>KalturaMediaEntry</objectType>
@@ -55,164 +58,179 @@ public class Result {
       <flavorParamsIds />
      */
 
+    public static Parcelable.Creator<Result> CREATOR = new Parcelable.Creator<Result>() {
+        public Result createFromParcel(Parcel source) {
+            return new Result(source);
+        }
+
+        public Result[] newArray(int size) {
+            return new Result[size];
+        }
+    };
     @Element(required = false)
     private String objectType;
-
     @Element(required = false)
     private String id;
-
     @Element(required = false)
     private long partnerId;
-
     @Element(required = false)
     private String userId;
-
     @Element(required = false)
     private String status;
-
     @Element(required = false)
     private String fileName;
-
     @Element(required = false)
     private String fileSize;
-
     @Element(required = false)
     private long uploadedFileSize;
-
     @Element(required = false)
     private long createdAt;
-
     @Element(required = false)
     private long updatedAt;
-
-
     @Element(required = false)
     private String name;
-
     @Element(required = false)
     private String description;
-
     @Element(required = false)
     private String tags;
-
     @Element(required = false)
     private String adminTags;
-
     @Element(required = false)
     private String categories;
-
     @Element(required = false)
     private String partnerData;
-
     @Element(required = false)
     private String downloadUrl;
-
     @Element(required = false)
     private long moderationStatus;
-
     @Element(required = false)
     private long moderationCount;
-
     @Element(required = false)
     private long type;
-
     @Element(required = false)
     private long totalRank;
-
     @Element(required = false)
     private long rank;
-
     @Element(required = false)
     private long votes;
-
     @Element(required = false)
     private long groupId;
-
     @Element(required = false)
     private String searchText;
-
     @Element(required = false)
     private long licenseType;
-
     @Element(required = false)
     private long version;
-
     @Element(required = false)
     private String thumbnailUrl;
-
     @Element(required = false)
     private long accessControlId;
-
     @Element(required = false)
     private long startDate;
-
     @Element(required = false)
     private long endDate;
-
     @Element(required = false)
     private long plays;
-
     @Element(required = false)
     private long views;
-
     @Element(required = false)
     private long width;
-
     @Element(required = false)
     private long height;
-
     @Element(required = false)
     private long duration;
-
     @Element(required = false)
     private long durationType;
-
     @Element(required = false)
     private long mediaType;
-
     @Element(required = false)
     private long conversionQuality;
-
     @Element(required = false)
     private long sourceType;
-
     @Element(required = false)
     private long searchProviderType;
-
     @Element(required = false)
     private long searchProviderId;
-
     @Element(required = false)
     private String creditUserName;
-
     @Element(required = false)
     private String creditUrl;
-
     @Element(required = false)
     private String mediaDate;
-
     @Element(required = false)
     private String dataUrl;
-
     @Element(required = false)
     private String flavorParamsIds;
-
     @Element(required = false)
     private String categoriesIds;
-
     @Element(required = false)
     private long msDuration;
+    @Element(required = false)
+    private Error error;
+
+    public Result() {
+    }
+
+    private Result(Parcel in) {
+        this.objectType = in.readString();
+        this.id = in.readString();
+        this.partnerId = in.readLong();
+        this.userId = in.readString();
+        this.status = in.readString();
+        this.fileName = in.readString();
+        this.fileSize = in.readString();
+        this.uploadedFileSize = in.readLong();
+        this.createdAt = in.readLong();
+        this.updatedAt = in.readLong();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.tags = in.readString();
+        this.adminTags = in.readString();
+        this.categories = in.readString();
+        this.partnerData = in.readString();
+        this.downloadUrl = in.readString();
+        this.moderationStatus = in.readLong();
+        this.moderationCount = in.readLong();
+        this.type = in.readLong();
+        this.totalRank = in.readLong();
+        this.rank = in.readLong();
+        this.votes = in.readLong();
+        this.groupId = in.readLong();
+        this.searchText = in.readString();
+        this.licenseType = in.readLong();
+        this.version = in.readLong();
+        this.thumbnailUrl = in.readString();
+        this.accessControlId = in.readLong();
+        this.startDate = in.readLong();
+        this.endDate = in.readLong();
+        this.plays = in.readLong();
+        this.views = in.readLong();
+        this.width = in.readLong();
+        this.height = in.readLong();
+        this.duration = in.readLong();
+        this.durationType = in.readLong();
+        this.mediaType = in.readLong();
+        this.conversionQuality = in.readLong();
+        this.sourceType = in.readLong();
+        this.searchProviderType = in.readLong();
+        this.searchProviderId = in.readLong();
+        this.creditUserName = in.readString();
+        this.creditUrl = in.readString();
+        this.mediaDate = in.readString();
+        this.dataUrl = in.readString();
+        this.flavorParamsIds = in.readString();
+        this.categoriesIds = in.readString();
+        this.msDuration = in.readLong();
+        this.error = in.readParcelable(Error.class.getClassLoader());
+    }
 
     public Error getKalturaError() {
-        return KalturaError;
+        return error;
     }
 
     public void setKalturaError(Error kalturaError) {
-        this.KalturaError = kalturaError;
+        this.error = kalturaError;
     }
-
-    @Element(required = false)
-    private Error KalturaError;
 
     public String getObjectType() {
         return objectType;
@@ -658,8 +676,67 @@ public class Result {
                 ", flavorParamsIds='" + flavorParamsIds + '\'' +
                 ", categoriesIds='" + categoriesIds + '\'' +
                 ", msDuration=" + msDuration +
-                ", KalturaError=" + KalturaError +
+                ", error=" + error +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.objectType);
+        dest.writeString(this.id);
+        dest.writeLong(this.partnerId);
+        dest.writeString(this.userId);
+        dest.writeString(this.status);
+        dest.writeString(this.fileName);
+        dest.writeString(this.fileSize);
+        dest.writeLong(this.uploadedFileSize);
+        dest.writeLong(this.createdAt);
+        dest.writeLong(this.updatedAt);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeString(this.tags);
+        dest.writeString(this.adminTags);
+        dest.writeString(this.categories);
+        dest.writeString(this.partnerData);
+        dest.writeString(this.downloadUrl);
+        dest.writeLong(this.moderationStatus);
+        dest.writeLong(this.moderationCount);
+        dest.writeLong(this.type);
+        dest.writeLong(this.totalRank);
+        dest.writeLong(this.rank);
+        dest.writeLong(this.votes);
+        dest.writeLong(this.groupId);
+        dest.writeString(this.searchText);
+        dest.writeLong(this.licenseType);
+        dest.writeLong(this.version);
+        dest.writeString(this.thumbnailUrl);
+        dest.writeLong(this.accessControlId);
+        dest.writeLong(this.startDate);
+        dest.writeLong(this.endDate);
+        dest.writeLong(this.plays);
+        dest.writeLong(this.views);
+        dest.writeLong(this.width);
+        dest.writeLong(this.height);
+        dest.writeLong(this.duration);
+        dest.writeLong(this.durationType);
+        dest.writeLong(this.mediaType);
+        dest.writeLong(this.conversionQuality);
+        dest.writeLong(this.sourceType);
+        dest.writeLong(this.searchProviderType);
+        dest.writeLong(this.searchProviderId);
+        dest.writeString(this.creditUserName);
+        dest.writeString(this.creditUrl);
+        dest.writeString(this.mediaDate);
+        dest.writeString(this.dataUrl);
+        dest.writeString(this.flavorParamsIds);
+        dest.writeString(this.categoriesIds);
+        dest.writeLong(this.msDuration);
+        dest.writeParcelable(this.error, flags);
     }
 }
 

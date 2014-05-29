@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model.kaltura;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.simpleframework.xml.Element;
 
 /**
@@ -7,7 +10,7 @@ import org.simpleframework.xml.Element;
  */
 
 @Element
-public class Error {
+public class Error implements Parcelable {
     @Element (required = false)
     private String code;
     @Element (required = false)
@@ -36,4 +39,33 @@ public class Error {
                 ", message='" + message + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.code);
+        dest.writeString(this.message);
+    }
+
+    public Error() {
+    }
+
+    private Error(Parcel in) {
+        this.code = in.readString();
+        this.message = in.readString();
+    }
+
+    public static Parcelable.Creator<Error> CREATOR = new Parcelable.Creator<Error>() {
+        public Error createFromParcel(Parcel source) {
+            return new Error(source);
+        }
+
+        public Error[] newArray(int size) {
+            return new Error[size];
+        }
+    };
 }
