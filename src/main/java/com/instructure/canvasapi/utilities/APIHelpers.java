@@ -358,12 +358,7 @@ public class APIHelpers {
             return false;
         }
 
-        if (domain.contains("https://")) {
-            domain = domain.substring(8);
-        }
-        if (domain.startsWith("http://")) {
-            domain = domain.substring(7);
-        }
+       domain = removeProtical(domain);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -386,12 +381,7 @@ public class APIHelpers {
             return false;
         }
 
-        if (kalturaDomain.contains("https://")) {
-            kalturaDomain = kalturaDomain.substring(8);
-        }
-        if (kalturaDomain.startsWith("http://")) {
-            kalturaDomain = kalturaDomain.substring(7);
-        }
+        kalturaDomain = removeProtical(kalturaDomain);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -708,6 +698,16 @@ public class APIHelpers {
      */
     private static void logParamsNull() {
         Log.d(APIHelpers.LOG_TAG, "One or more parameters is null");
+    }
+
+    private static String removeProtical(String domain){
+        if (domain.contains("https://")) {
+          return domain.substring(8);
+        }
+        if (domain.startsWith("http://")) {
+            return domain.substring(7);
+        }
+        else domain
     }
 
 }

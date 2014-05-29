@@ -49,7 +49,7 @@ public class KalturaRestAdapter {
 
         //Can make this check as we KNOW that the setter doesn't allow empty strings.
         if (domain == null || domain.equals("")) {
-            Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
+            Log.d(APIHelpers.LOG_TAG, "The KalturaRestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
             return new RestAdapter.Builder().setServer("http://invalid.domain.com").build();
         }
 
@@ -110,65 +110,10 @@ public class KalturaRestAdapter {
     }
 
 
-//    /**
-//     * Class that's used as to inject the user agent, token, and handles masquerading.
-//     */
-//
-//    public static class CanvasRequestInterceptor implements RequestInterceptor{
-//
-//        Context context;
-//
-//        CanvasRequestInterceptor(Context context){
-//            this.context = context;
-//        }
-//
-//        @Override
-//        public void intercept(RequestFacade requestFacade) {
-//
-//            final String token = APIHelpers.getToken(context);
-//            final String userAgent = APIHelpers.getUserAgent(context);
-//            final String domain = APIHelpers.loadProtocol(context) + "://" + APIHelpers.getDomain(context);
-//
-//            //Set the UserAgent
-//            if(userAgent != null && !userAgent.equals(""))
-//                requestFacade.addHeader("User-Agent", userAgent);
-//
-//            //Authenticate if possible
-//            if(token != null && !token.equals("")){
-//                requestFacade.addHeader("Authorization", "Bearer " + token);
-//            }
-//            //HTTP referer (originally a misspelling of referrer) is an HTTP header field that identifies the address of the webpage that linked to the resource being requested
-//            //Source: https://en.wikipedia.org/wiki/HTTP_referer
-//            //Some schools use an LTI tool called SlideShare that whitelists domains to be able to inject content into assignments
-//            //They check the referrer in order to do this. 	203
-//            requestFacade.addHeader("Referer", domain);
-//
-//            //Masquerade if necessary
-//            if (Masquerading.isMasquerading(context)) {
-//                requestFacade.addQueryParam("as_user_id", Long.toString(Masquerading.getMasqueradingId(context)));
-//            }
-//        }
-//    }
-
-
-
     /**
-     * Gets our custom GSON parser.
+     * Sets up the KalturaRestAdapter.
      *
-     * @return Our custom GSON parser with custom deserializers.
-     */
-
-    public static Gson getGSONParser(){
-        GsonBuilder b = new GsonBuilder();
-        //TODO:Register custom parsers here!
-        return b.create();
-    }
-
-
-    /**
-     * Sets up the CanvasRestAdapter.
-     *
-     * Short hand for setdomain, setToken, and setProtocol.
+     * Short hand for setdomain and setToken.
      *
      * Clears out any old data before setting the new data.
      *
