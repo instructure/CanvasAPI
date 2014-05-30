@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
+import android.webkit.MimeTypeMap;
 
 import java.io.*;
 
@@ -165,6 +166,32 @@ public class FileUtilities {
         } else {
             String[] split = mimetype.split("/");
             return split[split.length - 1];
+        }
+    }
+
+    public static String getMimeType(String url)
+    {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            type = mime.getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
+    public static String kalturaCodeFromMimeType(String mimetype){
+        if (mimetype == null) {
+            return "0";
+        } else {
+            String[] split = mimetype.split("/");
+            if(split[0].equals("video")){
+                return "1";
+            } else if(split[0].equals("audio")){
+                return "5";
+            } else {
+                return "0";
+            }
         }
     }
 }

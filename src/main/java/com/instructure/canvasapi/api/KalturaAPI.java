@@ -11,6 +11,7 @@ import com.instructure.canvasapi.model.kaltura.xml;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.FileUtilities;
 import com.instructure.canvasapi.utilities.KalturaRestAdapter;
 
 import org.apache.http.HttpResponse;
@@ -22,6 +23,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 
@@ -38,8 +40,11 @@ import retrofit.http.Query;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-//TODO: Make caching work
+//Make caching work
 public class KalturaAPI {
+    private static String getKalturaConfigCache() {
+        return "/services/kaltura";
+    }
     //Interface talking to Canvas servers
     public interface KalturaConfigInterface {
         @GET("/services/kaltura")
@@ -75,7 +80,7 @@ public class KalturaAPI {
             return;
         }
 
-        //callback.readFromCache(getAssignmentCacheFilename(courseID, assignmentID));
+        callback.readFromCache(getKalturaConfigCache());
         buildKalturaConfigInterface(callback, null).getKalturaConfigaration(callback);
     }
 
@@ -99,17 +104,19 @@ public class KalturaAPI {
         buildKalturaAPIInterface(callback).getKalturaUploadToken(kalturaToken, callback);
     }
 
-    public static xml uploadFileAtPathSynchronous(String uploadToken, String fileType, Uri fileUri, Context context) {
+    public static xml uploadFileAtPathSynchronous(String uploadToken, Uri fileUri, Context context) {
 
         if (context == null) {
             return null;
         }
+
 
         try {
             //Get needed vars
             String kalturaToken = APIHelpers.getKalturaToken(context);
             String baseUrl = APIHelpers.getFullKalturaDomain(context);
             File file = new File(fileUri.getPath());
+            String fileType = FileUtilities.getMimeType(fileUri.getPath());
             String boundary = "---------------------------3klfenalksjflkjoi9auf89eshajsnl3kjnwal";
 
             //Build URL
@@ -130,27 +137,28 @@ public class KalturaAPI {
 
             HttpResponse response = httpClient.execute(post);
 
-            //TODO: Check that It worked.
-
-
+            //Check that It worked.
+            String stringResponse = EntityUtils.toString(response.getEntity());
+            if(stringResponse.contains("error")){
+                return null;
+            }
             return getMediaIdForUploadedFileTokenSynchronous(context, kalturaToken, uploadToken, file.getName(), fileType);
 
         } catch (Exception e) {
             //Log.e(APIHelpers.LOG_TAG,E.getMessage());
-            Log.e("Nathan", e.toString());
-            e.printStackTrace();
+            Log.e(APIHelpers.LOG_TAG, e.toString());
             return null;
         }
 
     }
 
-    private static xml getMediaIdForUploadedFileTokenSynchronous(Context context, String ks, String uploadTocken, String fileName, String mediaType) {
+    private static xml getMediaIdForUploadedFileTokenSynchronous(Context context, String ks, String uploadTocken, String fileName, String mimetype) {
         try {
             RestAdapter restAdapter = KalturaRestAdapter.buildAdapter(context);
-            String mediaTypeConverted = mediaType.equals("video/mp4") ? "1" : "5";
+            String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype);
             return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadTocken, fileName, mediaTypeConverted);
         } catch (Exception E) {
-            Log.d(APIHelpers.LOG_TAG, E.getMessage());
+            Log.e(APIHelpers.LOG_TAG, E.getMessage());
             return null;
         }
     }

@@ -3,6 +3,8 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
 import retrofit.client.Header;
@@ -709,5 +711,7 @@ public class APIHelpers {
         }
         else return domain;
     }
+
+
 
 }
