@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Section;
+import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -28,6 +29,10 @@ public class SectionAPI {
         return "/courses/" + courseID +"/sections";
     }
 
+    private static String getAssignmentSubmissionForSectionCacheFilename(long section_id, long assignment_id){
+        return "/sections/" + section_id + "/assignments/" + assignment_id + "/submissions";
+    }
+
     interface SectionsInterface {
 
         @PUT("/{courseid}/sections/{sectionid}")
@@ -42,6 +47,9 @@ public class SectionAPI {
 
         @GET("/{next}")
         void getNextPageSectionsList(@EncodedPath("next") String nextURL, Callback<Section[]> callback);
+
+        @GET("/{section_id}/assignments/{assignment_id}/submissions")
+        void getAssignmentSubmissionsForSection(@Path("section_id") long section_id, @Path("assignment_id") long assignment_id, Callback<Submission[]> callback);
     }
 
 
@@ -50,6 +58,9 @@ public class SectionAPI {
         return restAdapter.create(SectionsInterface.class);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
     public static void getFirstPageSectionsList(Course course, CanvasCallback<Section[]> callback) {
         if (APIHelpers.paramIsNull(callback, course)) { return; }
 
@@ -62,6 +73,13 @@ public class SectionAPI {
 
         callback.setIsNextPage(true);
         buildInterface(callback, null).getNextPageSectionsList(nextURL, callback);
+    }
+
+    public static void getAssignmentSubmissionsForSection(CanvasContext canvasContext, long assignment_id, final CanvasCallback<Submission[]> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
+
+            callback.readFromCache(getAssignmentSubmissionForSectionCacheFilename(canvasContext.getId(), assignment_id));
+            buildInterface(callback, canvasContext).getAssignmentSubmissionsForSection(canvasContext.getId(), assignment_id, callback);
     }
 
     /**

@@ -4,7 +4,6 @@ import android.os.Parcel;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Section extends CanvasComparable<Section> {
+public class Section extends CanvasContext implements Comparable<CanvasContext> {
 
     public static final long serialVersionUID = 1L;
 
@@ -36,6 +35,11 @@ public class Section extends CanvasComparable<Section> {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SECTION;
     }
 
     public long getCourse_id() {
