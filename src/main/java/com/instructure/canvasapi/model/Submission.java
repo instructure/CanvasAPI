@@ -38,6 +38,7 @@ public class Submission extends CanvasModel<Submission>{
 	private String url;
 
     //Conversation Stuff
+    private long assignment_id;
     private Assignment assignment;
     private long user_id;
     private long grader_id;
@@ -96,9 +97,12 @@ public class Submission extends CanvasModel<Submission>{
 		this.score = score;
 	}
 
+    public long getAssignment_id() {return assignment_id;}
+    public void setAssignment_id(long assignment_id) {this.assignment_id = assignment_id;}
     public Assignment getAssignment(){
         return assignment;
     }
+    public void setAssignment(Assignment assignment){this.assignment = assignment;}
 
     public long getGraderID(){
         if(grader_id != 0){
