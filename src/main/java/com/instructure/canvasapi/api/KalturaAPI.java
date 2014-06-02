@@ -89,7 +89,6 @@ public class KalturaAPI {
             return;
         }
 
-        //callback.readFromCache(getAssignmentCacheFilename(courseID, assignmentID));
         buildKalturaConfigInterface(callback, null).startKalturaSession(callback);
     }
 
@@ -100,7 +99,6 @@ public class KalturaAPI {
 
         String kalturaToken = APIHelpers.getKalturaToken(callback.getContext());
 
-        //callback.readFromCache(getAssignmentCacheFilename(courseID, assignmentID));
         buildKalturaAPIInterface(callback).getKalturaUploadToken(kalturaToken, callback);
     }
 
