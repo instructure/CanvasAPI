@@ -478,40 +478,6 @@ public class APIHelpers {
         return editor.commit();
     }
 
-    /**
-     * loadProtocol returns the protocol or 'https' if there isn't one.
-     * @param context
-     * @return
-     */
-    public static String loadKalturaProtocol(Context context) {
-
-        if(context == null){
-            return "https";
-        }
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(SHARED_PREFERENCES_KALTURA_PROTOCOL, "https");
-    }
-
-    /**
-     * setProtocol sets the protocol
-     * @param protocol
-     * @param context
-     * @return
-     */
-    public static boolean setKalturaProtocol(String protocol, Context context) {
-
-        if(protocol == null || protocol.equals("")){
-            return false;
-        }
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SHARED_PREFERENCES_KALTURA_PROTOCOL, protocol);
-        return editor.commit();
-    }
-
-
 
     /**
      * Sets the default error delegate. This is the default if one isn't specified in the constructor

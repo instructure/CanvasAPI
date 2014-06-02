@@ -23,7 +23,7 @@ import retrofit.mime.TypedOutput;
  */
 public class KalturaRestAdapter {
     /**
-     * Returns a RestAdapter Instance that points at :domain/api/v1
+     * Returns a RestAdapter Instance that points at :domain/api_v3
      *
      * @param  callback A Canvas Callback
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
@@ -61,52 +61,6 @@ public class KalturaRestAdapter {
                 .build();
 
 
-    }
-
-    /**
-     * Returns a RestAdapter Instance that points at :domain/
-     *
-     * Used ONLY in the login flow!
-     *
-     * @param  context An Android context.
-     */
-    public static RestAdapter buildTokenRestAdapter(final Context context){
-
-        if(context == null ){
-            return null;
-        }
-
-        String domain = APIHelpers.getFullKalturaDomain(context);
-
-        return new RestAdapter.Builder()
-                .setServer(domain) // The base API endpoint.
-                .build();
-    }
-
-
-    /**
-     * Returns a RestAdapter Instance that points at :domain/
-     *
-     * Used ONLY in the login flow!
-     *
-     */
-    public static RestAdapter buildTokenRestAdapter(final String token, final String protocol, final String domain){
-
-        if(token == null || protocol == null || domain == null ){
-            return null;
-        }
-
-
-
-        return new RestAdapter.Builder()
-                .setServer(protocol + "://" + domain) // The base API endpoint.
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade requestFacade) {
-                        requestFacade.addHeader("Authorization", "Bearer " + token);
-                    }
-                })
-                .build();
     }
 
 

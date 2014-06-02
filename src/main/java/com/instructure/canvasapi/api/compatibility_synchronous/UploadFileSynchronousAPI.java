@@ -51,7 +51,6 @@ public class UploadFileSynchronousAPI {
         String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&content_type=%s",  imageName, size, contentType);
         //set the parent folder
         String parentFolder = "&parent_folder_path=profile+pictures";
-        Log.d("Nathan", path);
         url += parentFolder;
         //don't overwrite
         url += "&on_duplicate=rename";
