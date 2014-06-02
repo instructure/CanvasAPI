@@ -75,7 +75,7 @@ public class KalturaAPI {
         return restAdapter.create(KalturaAPIInterface.class);
     }
 
-    public static void getKalturaConfigaration(final CanvasCallback<KalturaConfig> callback) {
+    public static void getKalturaConfiguration(final CanvasCallback<KalturaConfig> callback) {
         if (APIHelpers.paramIsNull(callback)) {
             return;
         }
@@ -145,7 +145,6 @@ public class KalturaAPI {
             return getMediaIdForUploadedFileTokenSynchronous(context, kalturaToken, uploadToken, file.getName(), fileType);
 
         } catch (Exception e) {
-            //Log.e(APIHelpers.LOG_TAG,E.getMessage());
             Log.e(APIHelpers.LOG_TAG, e.toString());
             return null;
         }

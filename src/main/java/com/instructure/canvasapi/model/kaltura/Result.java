@@ -13,48 +13,48 @@ public class Result implements Parcelable {
 
     /*
     <objectType>KalturaMediaEntry</objectType>
-      <id>0_e3ropkdb</id>
-      <name>zach test 3</name>
+      <id></id>
+      <name></name>
       <description />
-      <partnerId>156652</partnerId>
-      <userId>231890_10</userId>
+      <partnerId></partnerId>
+      <userId></userId>
       <tags />
       <adminTags />
       <categories />
-      <status>1</status>
-      <moderationStatus>6</moderationStatus>
-      <moderationCount>0</moderationCount>
-      <type>1</type>
-      <createdAt>1279571324</createdAt>
-      <rank>0</rank>
-      <totalRank>0</totalRank>
-      <votes>0</votes>
+      <status></status>
+      <moderationStatus></moderationStatus>
+      <moderationCount></moderationCount>
+      <type></type>
+      <createdAt></createdAt>
+      <rank></rank>
+      <totalRank></totalRank>
+      <votes></votes>
       <groupId />
       <partnerData />
-      <downloadUrl>http://cdnbakmi.kaltura.com/p/156652/sp/15665200/raw/entry_id/0_e3ropkdb/version/0</downloadUrl>
-      <searchText>zach test 3</searchText>
-      <licenseType>-1</licenseType>
-      <version>0</version>
-      <thumbnailUrl>http://cdnbakmi.kaltura.com/p/156652/sp/15665200/thumbnail/entry_id/0_e3ropkdb/version/0</thumbnailUrl>
-      <accessControlId>63362</accessControlId>
+      <downloadUrl></downloadUrl>
+      <searchText></searchText>
+      <licenseType></licenseType>
+      <version></version>
+      <thumbnailUrl></thumbnailUrl>
+      <accessControlId></accessControlId>
       <startDate />
       <endDate />
-      <plays>0</plays>
-      <views>0</views>
+      <plays></plays>
+      <views></views>
       <width />
       <height />
-      <duration>0</duration>
-      <msDuration>0</msDuration>
+      <duration></duration>
+      <msDuration></msDuration>
       <durationType />
-      <mediaType>5</mediaType>
+      <mediaType></mediaType>
       <conversionQuality />
-      <sourceType>1</sourceType>
+      <sourceType></sourceType>
       <searchProviderType />
       <searchProviderId />
       <creditUserName />
       <creditUrl />
       <mediaDate />
-      <dataUrl>http://cdnbakmi.kaltura.com/p/156652/sp/15665200/flvclipper/entry_id/0_e3ropkdb/version/0</dataUrl>
+      <dataUrl></dataUrl>
       <flavorParamsIds />
      */
 
