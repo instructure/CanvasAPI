@@ -42,7 +42,7 @@ public class Submission extends CanvasModel<Submission>{
     private Assignment assignment;
     private long user_id;
     private long grader_id;
-
+    private User user;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -267,6 +267,8 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeParcelable(this.assignment, flags);
         dest.writeLong(this.user_id);
         dest.writeLong(this.grader_id);
+        dest.writeLong(this.assignment_id);
+        dest.writeParcelable(this.user, flags);
     }
 
     private Submission(Parcel in) {
@@ -292,6 +294,8 @@ public class Submission extends CanvasModel<Submission>{
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();
         this.grader_id = in.readLong();
+        this.assignment_id = in.readLong();
+        this.user = in.readParcelable(User.class.getClassLoader());
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
@@ -303,4 +307,12 @@ public class Submission extends CanvasModel<Submission>{
             return new Submission[size];
         }
     };
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

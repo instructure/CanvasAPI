@@ -52,7 +52,7 @@ public class SubmissionAPI {
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history")
         void getSubmissionsWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
-        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment")
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment&include[]=user")
         void getSubmissionsWithCommentsHistoryAndRubric(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment")
