@@ -266,6 +266,7 @@ public class Submission extends CanvasModel<Submission>{
     }
 
     private Submission(Parcel in) {
+        this.assignment = new Assignment();
         this.id = in.readLong();
         this.grade = in.readString();
         this.score = in.readDouble();

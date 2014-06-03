@@ -57,6 +57,9 @@ public class SubmissionAPI {
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[text_comment]") String comment, Callback<Submission> callback);
 
+        @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
+        void postMediaSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[media_comment_id]") String media_id,
+                                        @Query("comment[media_comment_type]") String commentType, Callback<Submission> callback);
         @POST("/{context_id}/assignments/{assignmentID}/submissions")
         void postTextSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[body]") String text, Callback<Submission> callback);
 
@@ -120,6 +123,11 @@ public class SubmissionAPI {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         buildInterface(callback, canvasContext).postSubmissionComment(canvasContext.getId(), assignmentID, userID, comment, callback);
+    }
+    public static void postMediaSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String kalturaMediaId, String mediaType, final CanvasCallback<Submission> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).postMediaSubmissionComment(canvasContext.getId(), assignmentID, userID, kalturaMediaId, mediaType, callback);
     }
 
     public static void postTextSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String text, final CanvasCallback<Submission> callback) {

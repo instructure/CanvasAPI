@@ -73,5 +73,13 @@ public class xml implements Parcelable {
             return new xml[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "xml{" +
+                "result=" + result +
+                ", executionTime=" + executionTime +
+                '}';
+    }
 }
 

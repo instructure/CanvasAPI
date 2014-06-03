@@ -89,6 +89,9 @@ public class KalturaRestAdapter {
         if(domain.startsWith("http://")) {
             protocol = "http";
         }
-        return (APIHelpers.setKalturaDomain(context, domain) && APIHelpers.setKalturaToken(context, ks_token) && APIHelpers.setProtocol(protocol, context));
+        boolean kalturaDomainSet = APIHelpers.setKalturaDomain(context, domain);
+        boolean tokenSet = APIHelpers.setKalturaToken(context, ks_token);
+        boolean protocolSet = APIHelpers.setProtocol(protocol, context);
+        return (kalturaDomainSet && tokenSet && protocolSet);
     }
 }

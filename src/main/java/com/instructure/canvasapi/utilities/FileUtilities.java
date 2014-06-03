@@ -194,4 +194,14 @@ public class FileUtilities {
             }
         }
     }
+
+    public static String mediaTypeFromKalturaCode(long kalturaCode){
+        if (kalturaCode == 1) {
+            return "video";
+        } else if(kalturaCode == 5){
+            return "audio";
+        } else {
+            return "";
+        }
+    }
 }
