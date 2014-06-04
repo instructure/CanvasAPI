@@ -28,6 +28,9 @@ public class SectionAPI {
         return "/courses/" + courseID +"/sections";
     }
 
+    private static String getSingleSectionCacheFilename(long courseID, long sectionID) {
+        return "/courses/" + courseID +"/sections/" + sectionID;
+    }
     interface SectionsInterface {
 
         @PUT("/{courseid}/sections/{sectionid}")
@@ -42,6 +45,9 @@ public class SectionAPI {
 
         @GET("/{next}")
         void getNextPageSectionsList(@EncodedPath("next") String nextURL, Callback<Section[]> callback);
+
+        @GET("/courses/{courseid}/sections/{sectionid}")
+        void getSingleSection(@Path("courseid") long courseID, @Path("sectionid") long sectionID, Callback<Section> callback);
     }
 
 
@@ -84,5 +90,11 @@ public class SectionAPI {
 
     }
 
+    public static void getSingleSection(long courseID, long sectionID, CanvasCallback<Section> callback){
+        if (APIHelpers.paramIsNull(callback)) { return; }
+        callback.readFromCache(getSingleSectionCacheFilename(courseID, sectionID));
+
+        buildInterface(callback, null).getSingleSection(courseID, sectionID, callback);
+    }
 
 }
