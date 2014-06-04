@@ -1,15 +1,25 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+
 import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveCourseBridgeCallback;
-import retrofit.RestAdapter;
-import retrofit.http.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit.RestAdapter;
+import retrofit.http.EncodedPath;
+import retrofit.http.GET;
+import retrofit.http.PUT;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Joshua Dutton on 9/5/13.
@@ -170,6 +180,9 @@ public class CourseAPI {
     ////////////////////////////////////////////////////////////////////////////
     public static Map<Long, Course> createCourseMap(Course[] courses) {
         Map<Long, Course> courseMap = new HashMap<Long, Course>();
+        if(courses == null) {
+            return courseMap;
+        }
         for (Course course : courses) {
             courseMap.put(course.getId(), course);
         }
