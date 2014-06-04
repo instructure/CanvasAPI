@@ -1,8 +1,10 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -11,7 +13,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Section extends CanvasComparable<Section> implements Serializable {
+public class Section extends CanvasContext implements Comparable<CanvasContext> {
 
     public static final long serialVersionUID = 1L;
 
@@ -22,6 +24,7 @@ public class Section extends CanvasComparable<Section> implements Serializable {
     String start_at;
     String end_at;
 
+    private ArrayList<User> students = new ArrayList<User>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -34,6 +37,11 @@ public class Section extends CanvasComparable<Section> implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SECTION;
     }
 
     public long getCourse_id() {
@@ -56,6 +64,9 @@ public class Section extends CanvasComparable<Section> implements Serializable {
         this.name = name;
     }
 
+    public ArrayList<User> getStudents() { return students; }
+
+    public void setStudents(ArrayList<User> students) { this.students = students; }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -69,4 +80,36 @@ public class Section extends CanvasComparable<Section> implements Serializable {
     public String getComparisonString() {
         return getName();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeLong(this.course_id);
+        dest.writeString(this.start_at);
+        dest.writeString(this.end_at);
+        dest.writeTypedList(students);
+    }
+
+    public Section() {
+    }
+
+    private Section(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.course_id = in.readLong();
+        this.start_at = in.readString();
+        this.end_at = in.readString();
+        in.readTypedList(students, User.CREATOR);
+    }
+
+    public static Creator<Section> CREATOR = new Creator<Section>() {
+        public Section createFromParcel(Parcel source) {
+            return new Section(source);
+        }
+
+        public Section[] newArray(int size) {
+            return new Section[size];
+        }
+    };
 }

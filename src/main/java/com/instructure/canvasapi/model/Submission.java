@@ -1,9 +1,12 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +15,7 @@ import java.util.Map;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Submission extends CanvasModel<Submission> {
+public class Submission extends CanvasModel<Submission>{
 
     private long id;
 	private String grade;
@@ -27,7 +30,7 @@ public class Submission extends CanvasModel<Submission> {
 	private ArrayList<Submission> submission_history = new ArrayList<Submission>();
 	private ArrayList<Attachment> attachments = new ArrayList<Attachment>();
 	private String body;
-    private Map<String,RubricCriterionRating> rubric_assessment;
+    private HashMap<String,RubricCriterionRating> rubric_assessment;
 	private boolean grade_matches_current_submission;
 	private String workflow_state;
 	private String submission_type;
@@ -35,10 +38,11 @@ public class Submission extends CanvasModel<Submission> {
 	private String url;
 
     //Conversation Stuff
+    private long assignment_id;
     private Assignment assignment;
     private long user_id;
     private long grader_id;
-
+    private User user;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -93,9 +97,12 @@ public class Submission extends CanvasModel<Submission> {
 		this.score = score;
 	}
 
+    public long getAssignment_id() {return assignment_id;}
+    public void setAssignment_id(long assignment_id) {this.assignment_id = assignment_id;}
     public Assignment getAssignment(){
         return assignment;
     }
+    public void setAssignment(Assignment assignment){this.assignment = assignment;}
 
     public long getGraderID(){
         if(grader_id != 0){
@@ -235,5 +242,77 @@ public class Submission extends CanvasModel<Submission> {
 
         return false;
 
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.grade);
+        dest.writeDouble(this.score);
+        dest.writeString(this.submitted_at);
+        dest.writeTypedList(this.submission_comments);
+        dest.writeLong(commentCreated != null ? commentCreated.getTime() : -1);
+        dest.writeString(this.mediaContentType);
+        dest.writeString(this.mediaCommentUrl);
+        dest.writeString(this.mediaCommentDisplay);
+        dest.writeTypedList(this.submission_history);
+        dest.writeTypedList(this.attachments);
+        dest.writeString(this.body);
+        dest.writeSerializable(this.rubric_assessment);
+        dest.writeByte(grade_matches_current_submission ? (byte) 1 : (byte) 0);
+        dest.writeString(this.workflow_state);
+        dest.writeString(this.submission_type);
+        dest.writeString(this.preview_url);
+        dest.writeString(this.url);
+        dest.writeParcelable(this.assignment, flags);
+        dest.writeLong(this.user_id);
+        dest.writeLong(this.grader_id);
+        dest.writeLong(this.assignment_id);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    private Submission(Parcel in) {
+        this.id = in.readLong();
+        this.grade = in.readString();
+        this.score = in.readDouble();
+        this.submitted_at = in.readString();
+        in.readTypedList(this.submission_comments, SubmissionComment.CREATOR);
+        long tmpCommentCreated = in.readLong();
+        this.commentCreated = tmpCommentCreated == -1 ? null : new Date(tmpCommentCreated);
+        this.mediaContentType = in.readString();
+        this.mediaCommentUrl = in.readString();
+        this.mediaCommentDisplay = in.readString();
+        in.readTypedList(this.submission_history, Submission.CREATOR);
+        in.readTypedList(this.attachments, Attachment.CREATOR);
+        this.body = in.readString();
+        this.rubric_assessment =(HashMap<String,RubricCriterionRating>) in.readSerializable();
+        this.grade_matches_current_submission = in.readByte() != 0;
+        this.workflow_state = in.readString();
+        this.submission_type = in.readString();
+        this.preview_url = in.readString();
+        this.url = in.readString();
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        this.user_id = in.readLong();
+        this.grader_id = in.readLong();
+        this.assignment_id = in.readLong();
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static Creator<Submission> CREATOR = new Creator<Submission>() {
+        public Submission createFromParcel(Parcel source) {
+            return new Submission(source);
+        }
+
+        public Submission[] newArray(int size) {
+            return new Submission[size];
+        }
+    };
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

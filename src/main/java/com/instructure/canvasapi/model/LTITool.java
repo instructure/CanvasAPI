@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class LTITool extends CanvasModel<LTITool> {
+public class LTITool extends CanvasModel<LTITool>{
 
     private long id;
     private String name;
@@ -63,4 +65,27 @@ public class LTITool extends CanvasModel<LTITool> {
     ///////////////////////////////////////////////////////////////////////////
     public LTITool() {
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.url);
+    }
+
+    private LTITool(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.url = in.readString();
+    }
+
+    public static Creator<LTITool> CREATOR = new Creator<LTITool>() {
+        public LTITool createFromParcel(Parcel source) {
+            return new LTITool(source);
+        }
+
+        public LTITool[] newArray(int size) {
+            return new LTITool[size];
+        }
+    };
 }

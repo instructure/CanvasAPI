@@ -106,7 +106,9 @@ public class CanvasRestAdapter {
             apiContext = "courses/";
         } else if (canvasContext.getType() == CanvasContext.Type.GROUP) {
             apiContext = "groups/";
-        } else {
+        } else if (canvasContext.getType() == CanvasContext.Type.SECTION){
+            apiContext = "sections/";
+        }else {
             apiContext = "users/";
         }
 

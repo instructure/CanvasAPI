@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +11,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public abstract class CanvasContext extends CanvasModel<CanvasContext> implements Serializable{
+public abstract class CanvasContext extends CanvasModel<CanvasContext>{
 
     public static final String HOME_FEED = "feed";
     public static final String HOME_WIKI = "wiki";
@@ -18,7 +20,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
     public static final String HOME_SYLLABUS = "syllabus";
 
     public static enum Type {
-        GROUP, COURSE, USER, UNKNOWN;
+        GROUP, COURSE, USER, SECTION, UNKNOWN;
         public static boolean isGroup(CanvasContext canvasContext) {
             if(canvasContext == null){
                 return false;
@@ -42,6 +44,12 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
                 return false;
             }
             return canvasContext.getType() == UNKNOWN;
+        }
+        public static boolean isSection(CanvasContext canvasContext){
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == SECTION;
         }
     };
     
@@ -126,6 +134,8 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
             typeString = "groups";
         } else if (getType().equals(Type.COURSE)){
             typeString = "courses";
+        } else if (getType().equals(Type.SECTION)) {
+            typeString = "sections";
         } else{
             typeString = "users";
         }
@@ -202,6 +212,14 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
             public int compareTo(CanvasContext canvasContext) {
                 return 0;
             }
+
+            @Override
+            public void writeToParcel(Parcel parcel, int i) {
+                parcel.writeSerializable(type);
+                parcel.writeLong(id);
+                parcel.writeString(name);
+
+            }
         };
 
         return canvasContext;
@@ -214,5 +232,6 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
     public static CanvasContext emptyUserContext() {
         return getGenericContext(Type.USER, 0, "");
     }
+
 
 }

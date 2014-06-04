@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ import java.util.Map;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class ToDo extends CanvasComparable<ToDo> {
+public class ToDo extends CanvasComparable<ToDo>{
 
     public enum Type implements Serializable { SUBMITTING, GRADING, UPCOMING_EVENT, UPCOMING_ASSIGNMENT }
 
@@ -235,4 +237,51 @@ public class ToDo extends CanvasComparable<ToDo> {
 
         return toDo;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.start_date);
+        dest.writeString(this.type);
+        dest.writeInt(this.needs_grading_count);
+        dest.writeString(this.ignore);
+        dest.writeString(this.ignore_permanently);
+        dest.writeString(this.html_url);
+        dest.writeLong(this.course_id);
+        dest.writeLong(this.group_id);
+        dest.writeLong(startDate != null ? startDate.getTime() : -1);
+        dest.writeInt(this.typeEnum == null ? -1 : this.typeEnum.ordinal());
+        dest.writeParcelable(this.canvasContext, 0);
+        dest.writeParcelable(this.assignment, flags);
+        dest.writeParcelable(this.scheduleItem, flags);
+        dest.writeByte(checked ? (byte) 1 : (byte) 0);
+    }
+
+    private ToDo(Parcel in) {
+        this.start_date = in.readString();
+        this.type = in.readString();
+        this.needs_grading_count = in.readInt();
+        this.ignore = in.readString();
+        this.ignore_permanently = in.readString();
+        this.html_url = in.readString();
+        this.course_id = in.readLong();
+        this.group_id = in.readLong();
+        long tmpStartDate = in.readLong();
+        this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
+        int tmpTypeEnum = in.readInt();
+        this.typeEnum = tmpTypeEnum == -1 ? null : Type.values()[tmpTypeEnum];
+        this.canvasContext = in.readParcelable(((Object) canvasContext).getClass().getClassLoader());
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        this.scheduleItem = in.readParcelable(ScheduleItem.class.getClassLoader());
+        this.checked = in.readByte() != 0;
+    }
+
+    public static Creator<ToDo> CREATOR = new Creator<ToDo>() {
+        public ToDo createFromParcel(Parcel source) {
+            return new ToDo(source);
+        }
+
+        public ToDo[] newArray(int size) {
+            return new ToDo[size];
+        }
+    };
 }

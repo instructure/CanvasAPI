@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.Date;
@@ -141,5 +143,41 @@ public class ModuleObject extends CanvasModel<ModuleObject> {
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeInt(this.position);
+        dest.writeString(this.name);
+        dest.writeString(this.unlock_at);
+        dest.writeByte(require_sequential_progress ? (byte) 1 : (byte) 0);
+        dest.writeLongArray(this.prerequisite_module_ids);
+        dest.writeString(this.state);
+        dest.writeString(this.completed_at);
+    }
+
+    public ModuleObject() {
+    }
+
+    private ModuleObject(Parcel in) {
+        this.id = in.readLong();
+        this.position = in.readInt();
+        this.name = in.readString();
+        this.unlock_at = in.readString();
+        this.require_sequential_progress = in.readByte() != 0;
+        this.prerequisite_module_ids = in.createLongArray();
+        this.state = in.readString();
+        this.completed_at = in.readString();
+    }
+
+    public static Creator<ModuleObject> CREATOR = new Creator<ModuleObject>() {
+        public ModuleObject createFromParcel(Parcel source) {
+            return new ModuleObject(source);
+        }
+
+        public ModuleObject[] newArray(int size) {
+            return new ModuleObject[size];
+        }
+    };
 }
 

@@ -1,5 +1,8 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Rubric implements Serializable {
+public class Rubric implements Parcelable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -49,4 +52,31 @@ public class Rubric implements Serializable {
         setAssignment(assignment);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.assignment, flags);
+        dest.writeTypedList(criteria);
+        dest.writeByte(free_form_criterion_comments ? (byte) 1 : (byte) 0);
+    }
+
+    private Rubric(Parcel in) {
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        in.readTypedList(criteria, RubricCriterion.CREATOR);
+        this.free_form_criterion_comments = in.readByte() != 0;
+    }
+
+    public static Creator<Rubric> CREATOR = new Creator<Rubric>() {
+        public Rubric createFromParcel(Parcel source) {
+            return new Rubric(source);
+        }
+
+        public Rubric[] newArray(int size) {
+            return new Rubric[size];
+        }
+    };
 }

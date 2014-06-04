@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.model;
 
+import android.os.Parcel;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.Date;
@@ -73,4 +75,41 @@ public class Message extends CanvasModel<Message> {
         return body;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.body);
+        dest.writeLong(this.author_id);
+        dest.writeByte(generated ? (byte) 1 : (byte) 0);
+        dest.writeParcelableArray(this.attachments, flags);
+        dest.writeParcelable(this.media_comment, flags);
+        dest.writeParcelable(this.submission, flags);
+        dest.writeParcelableArray(this.forwarded_messages, flags);
+    }
+
+    public Message() {
+    }
+
+    private Message(Parcel in) {
+        this.id = in.readLong();
+        this.created_at = in.readString();
+        this.body = in.readString();
+        this.author_id = in.readLong();
+        this.generated = in.readByte() != 0;
+        this.attachments =(Attachment[]) in.readParcelableArray(Attachment.class.getClassLoader());
+        this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
+        this.submission = in.readParcelable(Submission.class.getClassLoader());
+        this.forwarded_messages =(Message[]) in.readParcelableArray(Message.class.getClassLoader());
+    }
+
+    public static Creator<Message> CREATOR = new Creator<Message>() {
+        public Message createFromParcel(Parcel source) {
+            return new Message(source);
+        }
+
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 }

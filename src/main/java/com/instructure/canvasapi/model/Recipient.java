@@ -11,7 +11,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Recipient extends CanvasComparable<Recipient> implements Parcelable {
+public class Recipient extends CanvasComparable<Recipient>{
 
     public enum Type {group, metagroup, person};
 
@@ -120,11 +120,6 @@ public class Recipient extends CanvasComparable<Recipient> implements Parcelable
 			return Type.person;
 		else
 			return null;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
 	}
 
 	public void readFromParcel(Parcel in)

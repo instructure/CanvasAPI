@@ -1,6 +1,8 @@
 package com.instructure.canvasapi.model;
 
 
+import android.os.Parcel;
+
 import java.util.Date;
 
 /**
@@ -63,4 +65,27 @@ public class BasicUser extends CanvasModel<BasicUser> {
         name = _username;
         avatar_url = "";
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.avatar_url);
+    }
+
+    private BasicUser(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.avatar_url = in.readString();
+    }
+
+    public static Creator<BasicUser> CREATOR = new Creator<BasicUser>() {
+        public BasicUser createFromParcel(Parcel source) {
+            return new BasicUser(source);
+        }
+
+        public BasicUser[] newArray(int size) {
+            return new BasicUser[size];
+        }
+    };
 }
