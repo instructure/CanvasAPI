@@ -58,17 +58,23 @@ public class Poll extends CanvasComparable<Poll> implements Parcelable {
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
-    public Date getComparisonDate() { return created_at; }
-    public String getComparisonString() { return null; }
+    public Date getComparisonDate() {
+        return created_at;
+    }
+
+    public String getComparisonString() {
+        return null;
+    }
 
     @Override
     public int compareTo(Poll poll) {
-       return CanvasComparable.compare(poll.getId(),this.getId());
+        return CanvasComparable.compare(poll.getId(), this.getId());
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
+
 
     @Override
     public int describeContents() {
@@ -80,6 +86,7 @@ public class Poll extends CanvasComparable<Poll> implements Parcelable {
         dest.writeLong(this.id);
         dest.writeString(this.question);
         dest.writeString(this.description);
+        dest.writeLong(created_at != null ? created_at.getTime() : -1);
     }
 
     public Poll() {
@@ -89,9 +96,11 @@ public class Poll extends CanvasComparable<Poll> implements Parcelable {
         this.id = in.readLong();
         this.question = in.readString();
         this.description = in.readString();
+        long tmpCreated_at = in.readLong();
+        this.created_at = tmpCreated_at == -1 ? null : new Date(tmpCreated_at);
     }
 
-    public static Parcelable.Creator<Poll> CREATOR = new Parcelable.Creator<Poll>() {
+    public static Creator<Poll> CREATOR = new Creator<Poll>() {
         public Poll createFromParcel(Parcel source) {
             return new Poll(source);
         }
