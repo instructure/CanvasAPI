@@ -352,7 +352,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeByte(is_public ? (byte) 1 : (byte) 0);
         dest.writeString(this.license);
         dest.writeParcelable(this.term, flags);
-        dest.writeParcelableArray(this.enrollments,flags);
+        dest.writeTypedArray(this.enrollments,flags);
         dest.writeValue(this.currentScore);
         dest.writeValue(this.finalScore);
         dest.writeByte(checkedCurrentGrade ? (byte) 1 : (byte) 0);
@@ -376,7 +376,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.is_public = in.readByte() != 0;
         this.license = in.readString();
         this.term = in.readParcelable(Term.class.getClassLoader());
-        this.enrollments = (Enrollment[])in.readParcelableArray(Enrollment.class.getClassLoader());
+        this.enrollments = in.createTypedArray(Enrollment.CREATOR);
         this.currentScore = (Double) in.readValue(Double.class.getClassLoader());
         this.finalScore = (Double) in.readValue(Double.class.getClassLoader());
         this.checkedCurrentGrade = in.readByte() != 0;

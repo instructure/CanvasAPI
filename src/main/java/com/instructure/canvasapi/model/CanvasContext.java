@@ -1,7 +1,6 @@
 package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,7 +20,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
     public static final String HOME_SYLLABUS = "syllabus";
 
     public static enum Type {
-        GROUP, COURSE, USER, UNKNOWN;
+        GROUP, COURSE, USER, SECTION, UNKNOWN;
         public static boolean isGroup(CanvasContext canvasContext) {
             if(canvasContext == null){
                 return false;
@@ -45,6 +44,12 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
                 return false;
             }
             return canvasContext.getType() == UNKNOWN;
+        }
+        public static boolean isSection(CanvasContext canvasContext){
+            if(canvasContext == null){
+                return false;
+            }
+            return canvasContext.getType() == SECTION;
         }
     };
     
@@ -129,6 +134,8 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
             typeString = "groups";
         } else if (getType().equals(Type.COURSE)){
             typeString = "courses";
+        } else if (getType().equals(Type.SECTION)) {
+            typeString = "sections";
         } else{
             typeString = "users";
         }

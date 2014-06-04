@@ -28,10 +28,10 @@ public class Assignment extends CanvasModel<Assignment>{
 	private long course_id;
 
     private String grading_type;
+    private long needs_grading_count;
 
 	private String html_url;
     private String url;
-
     private long quiz_id; // (Optional) id of the associated quiz (applies only when submission_types is ["online_quiz"])
     private RubricCriterion[] rubric;
     private boolean use_rubric_for_grading;
@@ -119,7 +119,11 @@ public class Assignment extends CanvasModel<Assignment>{
 
         setSubmissionTypes(listSubmissionTypes.toArray(new String[listSubmissionTypes.size()]));
     }
-	public double getPointsPossible() {
+
+    public long getNeeds_grading_count() {return needs_grading_count;}
+    public void setNeeds_grading_count(long needs_grading_count) { this.needs_grading_count = needs_grading_count; }
+
+    public double getPointsPossible() {
 		return points_possible;
 	}
 	public void setPointsPossible(double pointsPossible) {
@@ -536,7 +540,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeString(this.html_url);
         dest.writeString(this.url);
         dest.writeLong(this.quiz_id);
-        dest.writeParcelableArray(this.rubric, flags);
+        dest.writeTypedArray(this.rubric, flags);
         dest.writeByte(use_rubric_for_grading ? (byte) 1 : (byte) 0);
         dest.writeStringArray(this.allowed_extensions);
         dest.writeParcelable(this.submission, flags);
@@ -546,7 +550,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeString(this.lock_at);
         dest.writeString(this.unlock_at);
         dest.writeParcelable(this.discussion_topic, flags);
-
+        dest.writeLong(this.needs_grading_count);
 
     }
 
@@ -562,7 +566,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.html_url = in.readString();
         this.url = in.readString();
         this.quiz_id = in.readLong();
-        this.rubric = (RubricCriterion[])in.readParcelableArray(RubricCriterion.class.getClassLoader());
+        this.rubric = in.createTypedArray(RubricCriterion.CREATOR);
         this.use_rubric_for_grading = in.readByte() != 0;
         this.allowed_extensions = in.createStringArray();
         this.submission = in.readParcelable(Submission.class.getClassLoader());
@@ -572,6 +576,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.lock_at = in.readString();
         this.unlock_at = in.readString();
         this.discussion_topic = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
+        this.needs_grading_count = in.readLong();
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {

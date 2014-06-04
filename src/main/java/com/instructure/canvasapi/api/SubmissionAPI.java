@@ -29,6 +29,10 @@ public class SubmissionAPI {
         return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=comments&include[]=submission_history";
     }
 
+    private static String getSubmissionsWithCommentsHistoryAndRubricCacheFilename(CanvasContext canvasContext, long assignmentID) {
+        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment";
+    }
+
     private static String getSubmissionCacheFilename(CanvasContext canvasContext, long assignmentID, long userID) {
         return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
     }
@@ -47,6 +51,9 @@ public class SubmissionAPI {
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history")
         void getSubmissionsWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
+
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment&include[]=user")
+        void getSubmissionsWithCommentsHistoryAndRubric(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment")
         void getSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("submissionID") long submissionID, Callback<Submission> callback);
@@ -103,6 +110,13 @@ public class SubmissionAPI {
 
         callback.readFromCache(getSubmissionsWithCommentsAndHistoryCacheFilename(canvasContext, assignmentID));
         buildInterface(callback, canvasContext).getSubmissionsWithCommentsAndHistory(canvasContext.getId(), assignmentID, callback);
+    }
+
+    public static void getSubmissionsWithCommentsHistoryAndRubric(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        callback.readFromCache(getSubmissionsWithCommentsHistoryAndRubricCacheFilename(canvasContext, assignmentID));
+        buildInterface(callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, callback);
     }
 
     public static void getSubmission(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {

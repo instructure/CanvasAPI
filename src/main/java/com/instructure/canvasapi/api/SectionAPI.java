@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Section;
+import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -28,9 +29,17 @@ public class SectionAPI {
         return "/courses/" + courseID +"/sections";
     }
 
+    private static String getCourseSectionsWithStudents(long courseID){
+        return "/courses/" + courseID +"/sections?include[]=user";
+    }
+
+    private static String getAssignmentSubmissionForSectionCacheFilename(long section_id, long assignment_id){
+        return "/sections/" + section_id + "/assignments/" + assignment_id + "/submissions";
+    }
+
     interface SectionsInterface {
 
-        @PUT("/{courseid}/sections/{sectionid}")
+        @PUT("{courseid}/sections/{sectionid}")
         void updateSection(@Path("courseid") long courseID, @Path("sectionid") long sectionID,
                 @Query("course_section[name]") String name,
                 @Query("course_section[start_at]") String startAt, @Query("course_section[end_at]") String endAt,
@@ -40,8 +49,14 @@ public class SectionAPI {
         @GET("/{courseid}/sections")
         void getFirstPageSectionsList(@Path("courseid") long courseID, Callback<Section[]> callback);
 
+        @GET("/{courseid}/sections?include[]=students")
+        void getCourseSectionsWithStudents(@Path("courseid") long courseID, Callback<Section[]> callback);
+
         @GET("/{next}")
         void getNextPageSectionsList(@EncodedPath("next") String nextURL, Callback<Section[]> callback);
+
+        @GET("/{section_id}/assignments/{assignment_id}/submissions")
+        void getAssignmentSubmissionsForSection(@Path("section_id") long section_id, @Path("assignment_id") long assignment_id, Callback<Submission[]> callback);
     }
 
 
@@ -50,6 +65,9 @@ public class SectionAPI {
         return restAdapter.create(SectionsInterface.class);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
     public static void getFirstPageSectionsList(Course course, CanvasCallback<Section[]> callback) {
         if (APIHelpers.paramIsNull(callback, course)) { return; }
 
@@ -57,11 +75,25 @@ public class SectionAPI {
         buildInterface(callback, course).getFirstPageSectionsList(course.getId(), callback);
     }
 
+    public static void getCourseSectionsWithStudents(Course course, CanvasCallback<Section[]> callback){
+        if (APIHelpers.paramIsNull(callback, course)) { return; }
+
+        callback.readFromCache(getCourseSectionsWithStudents(course.getId()));
+        buildInterface(callback, course).getCourseSectionsWithStudents(course.getId(), callback);
+    }
+
     public static void getNextPageSectionsList(String nextURL, CanvasCallback<Section[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
         buildInterface(callback, null).getNextPageSectionsList(nextURL, callback);
+    }
+
+    public static void getAssignmentSubmissionsForSection(CanvasContext canvasContext, long assignment_id, final CanvasCallback<Submission[]> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
+
+            callback.readFromCache(getAssignmentSubmissionForSectionCacheFilename(canvasContext.getId(), assignment_id));
+            buildInterface(callback, canvasContext).getAssignmentSubmissionsForSection(canvasContext.getId(), assignment_id, callback);
     }
 
     /**
