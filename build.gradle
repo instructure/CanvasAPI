@@ -13,12 +13,12 @@ buildscript {
 apply plugin: 'android-library'
 
 dependencies {
-    compile 'com.squareup.retrofit:retrofit:1.2.2'
     compile('com.mobprofs:retrofit-simplexmlconverter:+') {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
+    compile 'com.squareup.retrofit:retrofit:1.5.1'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
 }
