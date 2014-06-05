@@ -73,6 +73,10 @@ public class SubmissionAPI {
         @POST("/{context_id}/assignments/{assignmentID}/submissions")
         void postURLSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[url]") String url, Callback<Submission> callback);
 
+        @POST("/{context_id}/assignments/{assignmentID}/submissions")
+        void postMediaSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType,
+                                 @Query("submission[media_comment_id]") String kalturaId,@Query("submission[media_comment_type]") String mediaType, CanvasCallback<Submission> callback);
+
         @GET("/{path}")
         void getLTIFromAuthenticationURL(@EncodedPath("path") String url, Callback<LTITool> callback);
 
@@ -154,6 +158,12 @@ public class SubmissionAPI {
         if (APIHelpers.paramIsNull(callback, submissionType, url, canvasContext)) { return; }
 
         buildInterface(callback, canvasContext).postURLSubmission(canvasContext.getId(), assignmentID, submissionType, url, callback);
+    }
+
+    public static void postMediaSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String kalturaId, String mediaType, final  CanvasCallback<Submission> callback){
+        if (APIHelpers.paramIsNull(callback, submissionType, kalturaId, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).postMediaSubmission(canvasContext.getId(), assignmentID, submissionType, kalturaId, mediaType, callback);
     }
 
     public static void getLTIFromAuthenticationURL(String url, final CanvasCallback<LTITool> callback) {
