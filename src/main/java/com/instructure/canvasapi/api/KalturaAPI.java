@@ -46,7 +46,7 @@ public class KalturaAPI {
         return "/services/kaltura";
     }
     //Interface talking to Canvas servers
-    public interface KalturaConfigInterface {
+    public interface KalturaConfigurationInterface {
         @GET("/services/kaltura")
         void getKalturaConfigaration(Callback<KalturaConfig> callback);
 
@@ -65,9 +65,9 @@ public class KalturaAPI {
         xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @EncodedQuery("mediaEntry:name") String name, @EncodedQuery("mediaEntry:mediaType") String mediaType);
 
     }
-    private static KalturaConfigInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
+    private static KalturaConfigurationInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(KalturaConfigInterface.class);
+        return restAdapter.create(KalturaConfigurationInterface.class);
     }
 
     private static KalturaAPIInterface buildKalturaAPIInterface(CanvasCallback<?> callback) {
@@ -155,7 +155,7 @@ public class KalturaAPI {
             String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype);
             return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadTocken, fileName, mediaTypeConverted);
         } catch (Exception E) {
-            Log.e(APIHelpers.LOG_TAG, E.getMessage());
+            Log.e(APIHelpers.LOG_TAG, E.toString());
             return null;
         }
     }

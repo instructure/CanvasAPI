@@ -3,20 +3,10 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.instructure.canvasapi.model.CanvasContext;
+
 import com.mobprofs.retrofit.converters.SimpleXmlConverter;
 
-import java.lang.reflect.Type;
-
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.converter.ConversionException;
-import retrofit.converter.Converter;
-import retrofit.converter.GsonConverter;
-import retrofit.mime.TypedInput;
-import retrofit.mime.TypedOutput;
 
 /**
  * Created by nbutton on 5/22/14.
