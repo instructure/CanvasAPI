@@ -37,6 +37,7 @@ public class Submission extends CanvasModel<Submission>{
 	private String preview_url;
 	private String url;
 
+
     //Conversation Stuff
     private long assignment_id;
     private Assignment assignment;
@@ -54,6 +55,10 @@ public class Submission extends CanvasModel<Submission>{
     public void setId(long id) {
         this.id = id;
     }
+
+    public long getUser_id(){return user_id;}
+    public void setUser_id(long user_id){this.user_id = user_id;}
+
 	public ArrayList<SubmissionComment> getComments() {
 		return submission_comments;
 	}
@@ -105,14 +110,8 @@ public class Submission extends CanvasModel<Submission>{
     public void setAssignment(Assignment assignment){this.assignment = assignment;}
 
     public long getGraderID(){
-        if(grader_id != 0){
-            return grader_id;
-        }
-        else{
-            return user_id;
-        }
+        return grader_id;
     }
-
 
 	public Date getSubmitDate() {
         if(submitted_at == null) {
