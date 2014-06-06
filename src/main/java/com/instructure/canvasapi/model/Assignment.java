@@ -10,6 +10,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,6 +49,8 @@ public class Assignment extends CanvasModel<Assignment>{
     private String unlock_at;
 
     private DiscussionTopicHeader discussion_topic;
+
+    private HashMap<Long, Integer> needs_grading_per_section_map = new HashMap<Long, Integer>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -238,6 +241,11 @@ public class Assignment extends CanvasModel<Assignment>{
     public void setPeerReviews(boolean peerReviews) {
         this.peer_reviews = peer_reviews;
     }
+
+    public HashMap<Long, Integer> getNeeds_grading_per_section_map() { return needs_grading_per_section_map; }
+
+    public void setNeeds_grading_per_section_map(HashMap<Long, Integer> needs_grading_per_section_map) { this.needs_grading_per_section_map = needs_grading_per_section_map; }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -551,6 +559,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeString(this.unlock_at);
         dest.writeParcelable(this.discussion_topic, flags);
         dest.writeLong(this.needs_grading_count);
+        dest.writeMap(this.needs_grading_per_section_map);
 
     }
 
@@ -577,6 +586,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.unlock_at = in.readString();
         this.discussion_topic = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
         this.needs_grading_count = in.readLong();
+        this.needs_grading_per_section_map = in.readHashMap(HashMap.class.getClassLoader());
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
