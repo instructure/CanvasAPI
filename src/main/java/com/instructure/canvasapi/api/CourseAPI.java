@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import android.content.Context;
 
 import com.instructure.canvasapi.model.Course;
+import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -15,8 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import retrofit.RestAdapter;
+import retrofit.http.DELETE;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -76,6 +79,12 @@ public class CourseAPI {
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
 
+        @POST("/users/self/favorites/courses/{courseId}")
+        void addCourseToFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
+
+        @DELETE("/users/self/favorites/courses/{courseId}")
+        void removeCourseFromFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
+
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -131,6 +140,17 @@ public class CourseAPI {
         buildInterface(callback).getFavoriteCourses(callback);
     }
 
+    public static void addCourseToFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(callback).addCourseToFavorites(courseId, callback);
+    }
+
+    public static void removeCourseFromFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(callback).removeCourseFromFavorites(courseId, callback);
+    }
 
     public static void getAllFavoriteCourses(final CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
