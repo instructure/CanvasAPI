@@ -45,6 +45,7 @@ public class KalturaAPI {
     private static String getKalturaConfigCache() {
         return "/services/kaltura";
     }
+
     //Interface talking to Canvas servers
     public interface KalturaConfigurationInterface {
         @GET("/services/kaltura")
@@ -54,6 +55,7 @@ public class KalturaAPI {
         void startKalturaSession(Callback<KalturaSession> callback);
 
     }
+    
     //Interface talking to Kaltura servers
     public interface KalturaAPIInterface {
 
@@ -65,6 +67,10 @@ public class KalturaAPI {
         xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @EncodedQuery("mediaEntry:name") String name, @EncodedQuery("mediaEntry:mediaType") String mediaType);
 
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
     private static KalturaConfigurationInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(KalturaConfigurationInterface.class);
@@ -75,6 +81,9 @@ public class KalturaAPI {
         return restAdapter.create(KalturaAPIInterface.class);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // API Calls
+    /////////////////////////////////////////////////////////////////////////
     public static void getKalturaConfiguration(final CanvasCallback<KalturaConfig> callback) {
         if (APIHelpers.paramIsNull(callback)) {
             return;
@@ -101,6 +110,14 @@ public class KalturaAPI {
 
         buildKalturaAPIInterface(callback).getKalturaUploadToken(kalturaToken, callback);
     }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    //
+    // If Retrofit is unable to parse (no network for example) Synchronous calls
+    // will throw a nullPointer exception. All synchronous calls need to be in a
+    // try catch block.
+    /////////////////////////////////////////////////////////////////////////////
 
     public static xml uploadFileAtPathSynchronous(String uploadToken, Uri fileUri, Context context) {
 
@@ -160,5 +177,4 @@ public class KalturaAPI {
         }
     }
 
-    //TODO: Create Method that links calls together to check if Kaltura is enabled and then get the sessionID then get an Upload ID
 }
