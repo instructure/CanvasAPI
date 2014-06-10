@@ -365,6 +365,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     }
 
     private Course(Parcel in) {
+        this.enrollments = new Enrollment[0];
         this.id = in.readLong();
         this.name = in.readString();
         this.course_code = in.readString();

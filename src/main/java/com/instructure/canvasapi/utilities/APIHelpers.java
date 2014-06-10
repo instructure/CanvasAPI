@@ -3,6 +3,8 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
 import retrofit.client.Header;
@@ -32,9 +34,12 @@ public class APIHelpers {
 
     private final static String SHARED_PREFERENCES_USER = "user";
     private final static String SHARED_PREFERENCES_DOMAIN = "domain";
+    private final static String SHARED_PREFERENCES_KALTURA_DOMAIN = "kaltura_domain";
     private final static String SHARED_PREFERENCES_TOKEN = "token";
+    private final static String SHARED_PREFERENCES_KALTURA_TOKEN = "kaltura_token";
     private final static String SHARED_PREFERENCES_USER_AGENT = "user_agent";
     private final static String SHARED_PREFERENCES_API_PROTOCOL = "api_protocol";
+    private final static String SHARED_PREFERENCES_KALTURA_PROTOCOL = "kaltura_protocol";
     private final static String SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME = "error_delegate_class_name";
 
 
@@ -303,6 +308,44 @@ public class APIHelpers {
     }
 
     /**
+     * getFullKalturaDomain returns the protocol plus the domain.
+     *
+     * Returns "" if context is null or if the domain/token isn't set.
+     * @return
+     */
+    public static String getFullKalturaDomain(Context context){
+        String protocol = loadProtocol(context);
+        String domain = getKalturaDomain(context);
+
+        if (protocol == null || domain == null || protocol.equals("") || domain.equals("") ){
+            return "";
+        }
+
+        return protocol + "://" + domain;
+    }
+
+    /**
+     * getKalturaDomain returns the current domain. This function strips off all trailing / characters and the protocol.
+     * @link APIHelpers.loadProtocol(context)
+     * @param context
+     * @return
+     */
+    public static String getKalturaDomain(Context context){
+        if(context == null){
+            return "";
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String domain =  sharedPreferences.getString(SHARED_PREFERENCES_KALTURA_DOMAIN, "");
+
+        while (domain != null && domain.endsWith("/")) {
+            domain = domain.substring(0, domain.length() - 1);
+        }
+
+        return domain;
+    }
+
+    /**
      * setDomain sets the current domain. It strips off the protocol.
      *
      * @param context
@@ -317,16 +360,34 @@ public class APIHelpers {
             return false;
         }
 
-        if (domain.contains("https://")) {
-            domain = domain.substring(8);
-        }
-        if (domain.startsWith("http://")) {
-            domain = domain.substring(7);
-        }
+       domain = removeProtocol(domain);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SHARED_PREFERENCES_DOMAIN, domain);
+        return editor.commit();
+    }
+
+    /**
+     * setDomain sets the current Kaltura domain. It strips off the protocol.
+     *
+     * @param context
+     * @param kalturaDomain
+     * @return
+     */
+
+    public static boolean setKalturaDomain(Context context, String kalturaDomain) {
+
+
+        if(kalturaDomain == null || kalturaDomain.equals("")){
+            return false;
+        }
+
+        kalturaDomain = removeProtocol(kalturaDomain);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SHARED_PREFERENCES_KALTURA_DOMAIN, kalturaDomain);
         return editor.commit();
     }
 
@@ -354,6 +415,33 @@ public class APIHelpers {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SHARED_PREFERENCES_TOKEN, token);
+        return editor.commit();
+    }
+
+    /**
+     * getToken returns the OAuth token or "" if there isn't one.
+     * @param context
+     * @return
+     */
+    public static String getKalturaToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(SHARED_PREFERENCES_KALTURA_TOKEN, "");
+    }
+
+    /**
+     * setToken sets the OAuth token
+     * @param context
+     * @param token
+     * @return
+     */
+    public static boolean setKalturaToken(Context context, String token) {
+        if(token == null || token.equals("")){
+            return false;
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SHARED_PREFERENCES_KALTURA_TOKEN, token);
         return editor.commit();
     }
 
@@ -389,6 +477,7 @@ public class APIHelpers {
         editor.putString(SHARED_PREFERENCES_API_PROTOCOL, protocol);
         return editor.commit();
     }
+
 
     /**
      * Sets the default error delegate. This is the default if one isn't specified in the constructor
@@ -578,5 +667,17 @@ public class APIHelpers {
     private static void logParamsNull() {
         Log.d(APIHelpers.LOG_TAG, "One or more parameters is null");
     }
+
+    private static String removeProtocol(String domain){
+        if (domain.contains("https://")) {
+          return domain.substring(8);
+        }
+        if (domain.startsWith("http://")) {
+            return domain.substring(7);
+        }
+        else return domain;
+    }
+
+
 
 }
