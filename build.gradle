@@ -37,6 +37,10 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
+    
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
 //Do some maven stuff
