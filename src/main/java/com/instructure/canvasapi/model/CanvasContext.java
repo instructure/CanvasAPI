@@ -11,7 +11,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public abstract class CanvasContext extends CanvasModel<CanvasContext>{
+public abstract class CanvasContext extends CanvasModel<CanvasContext> implements android.os.Parcelable {
 
     public static final String HOME_FEED = "feed";
     public static final String HOME_WIKI = "wiki";
@@ -21,40 +21,49 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
 
     public static enum Type {
         GROUP, COURSE, USER, SECTION, UNKNOWN;
+
         public static boolean isGroup(CanvasContext canvasContext) {
-            if(canvasContext == null){
+            if (canvasContext == null) {
                 return false;
             }
             return canvasContext.getType() == GROUP;
         }
+
         public static boolean isCourse(CanvasContext canvasContext) {
-            if(canvasContext == null){
+            if (canvasContext == null) {
                 return false;
             }
             return canvasContext.getType() == COURSE;
         }
+
         public static boolean isUser(CanvasContext canvasContext) {
-            if(canvasContext == null){
+            if (canvasContext == null) {
                 return false;
             }
             return canvasContext.getType() == USER;
         }
+
         public static boolean isUnknown(CanvasContext canvasContext) {
-            if(canvasContext == null){
+            if (canvasContext == null) {
                 return false;
             }
             return canvasContext.getType() == UNKNOWN;
         }
-        public static boolean isSection(CanvasContext canvasContext){
-            if(canvasContext == null){
+
+        public static boolean isSection(CanvasContext canvasContext) {
+            if (canvasContext == null) {
                 return false;
             }
             return canvasContext.getType() == SECTION;
         }
-    };
-    
+    }
+
+    ;
+
     public abstract String getName();
+
     public abstract Type getType();
+
     public abstract long getId();
 
     protected String default_view;
@@ -69,11 +78,11 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
         this.permissions = permissions;
     }
 
-    public CanvasContextPermission getPermissions(){
+    public CanvasContextPermission getPermissions() {
         return permissions;
     }
 
-    public boolean canCreateDiscussion(){
+    public boolean canCreateDiscussion() {
         return (permissions != null && permissions.create_discussion_topic);
     }
 
@@ -92,7 +101,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
     }
 
     /**
-     *  Make sure they have the same type and the same ID.
+     * Make sure they have the same type and the same ID.
      */
     @Override
     public boolean equals(Object o) {
@@ -102,7 +111,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
 
         CanvasContext that = (CanvasContext) o;
 
-        if (getType()!= that.getType() || getId() != that.getId()) return false;
+        if (getType() != that.getType() || getId() != that.getId()) return false;
 
         return true;
     }
@@ -116,27 +125,27 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
      * For everything else, returns the Name;
      */
 
-    public String getSecondaryName(){
+    public String getSecondaryName() {
         String secondaryName = getName();
-        if(getType() == CanvasContext.Type.COURSE){
-            secondaryName = ((Course)this).getCourseCode();
+        if (getType() == CanvasContext.Type.COURSE) {
+            secondaryName = ((Course) this).getCourseCode();
         }
         return secondaryName;
     }
 
 
     /**
-     *  Used for Cache Filenames in the API.
+     * Used for Cache Filenames in the API.
      */
-    public String toAPIString(){
+    public String toAPIString() {
         String typeString;
-        if(getType().equals(Type.GROUP)){
+        if (getType().equals(Type.GROUP)) {
             typeString = "groups";
-        } else if (getType().equals(Type.COURSE)){
+        } else if (getType().equals(Type.COURSE)) {
             typeString = "courses";
         } else if (getType().equals(Type.SECTION)) {
             typeString = "sections";
-        } else{
+        } else {
             typeString = "users";
         }
 
@@ -151,12 +160,12 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
     /**
      * @returns group_:id or course_:id
      */
-    public String getContextId(){
+    public String getContextId() {
 
         String prefix = "";
-        if(getType() == Type.COURSE){
+        if (getType() == Type.COURSE) {
             prefix = "course";
-        } else if (getType() == Type.GROUP){
+        } else if (getType() == Type.GROUP) {
             prefix = "group";
         }
 
@@ -165,6 +174,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
 
     /**
      * Get home page label returns the fragment identifier.
+     *
      * @return
      */
     public String getHomePageID() {
@@ -191,36 +201,32 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext>{
         return Tab.NOTIFICATIONS_ID; //send them to notifications if we don't know what to do
     }
 
-    public static CanvasContext getGenericContext(final Type type, final long id, final String name){
-        CanvasContext canvasContext = new CanvasContext() {
-            @Override
-            public String getName() {
-                return name;
-            }
+    public static CanvasContext getGenericContext(final Type type, final long id, final String name) {
+        CanvasContext canvasContext;
+        if(type == Type.USER){
+          User  user = new User(id);
+            user.setName(name);
+            canvasContext = user;
+        } else if (type == Type.COURSE){
+            Course course = new Course();
+            course.setId(id);
+            course.setName(name);
 
-            @Override
-            public Type getType() {
-                return type;
-            }
+            canvasContext = course;
+        } else if (type == Type.GROUP){
+            Group group = new Group();
+            group.setId(id);
 
-            @Override
-            public long getId() {
-                return id;
-            }
+            canvasContext = group;
+        } else if (type == Type.SECTION){
+            Section section = new Section();
+            section.setId(id);
+            section.setName(name);
 
-            @Override
-            public int compareTo(CanvasContext canvasContext) {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel parcel, int i) {
-                parcel.writeSerializable(type);
-                parcel.writeLong(id);
-                parcel.writeString(name);
-
-            }
-        };
+            canvasContext = section;
+        } else {
+            return null;
+        }
 
         return canvasContext;
     }

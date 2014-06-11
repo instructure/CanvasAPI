@@ -476,7 +476,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
 
         this.pointsPossible = in.readDouble();
         this.quizId = in.readLong();
-        this.discussionTopicHeader = in.readParcelable(((Object) discussionTopicHeader).getClass().getClassLoader());
+        this.discussionTopicHeader = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
         this.lockedModuleName = in.readString();
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         long tmpStartDate = in.readLong();
