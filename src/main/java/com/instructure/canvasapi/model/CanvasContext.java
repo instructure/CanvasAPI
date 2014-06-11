@@ -58,7 +58,6 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
         }
     }
 
-    ;
 
     public abstract String getName();
 

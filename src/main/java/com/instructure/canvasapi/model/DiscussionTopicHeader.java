@@ -326,8 +326,6 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     }
 
     private DiscussionTopicHeader(Parcel in) {
-//        this.attachments = new DiscussionAttachment[0];
-//        in.writeTypedArray(this.attachments, 0);
 
         this.id = in.readLong();
         this.discussion_type = in.readString();
