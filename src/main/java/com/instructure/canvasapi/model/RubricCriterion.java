@@ -111,7 +111,7 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
 
 
 
-    public void markGrades(RubricAssessment rubricAssessment, RubricCriterion[] criteria) {
+    public void markGrades(RubricAssessment rubricAssessment, List<RubricCriterion> criteria) {
         if (rubricAssessment == null) {
             return;
         }

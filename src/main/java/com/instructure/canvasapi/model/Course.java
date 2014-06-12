@@ -7,6 +7,8 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * Created by Joshua Dutton on 9/5/13.
@@ -27,7 +29,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private boolean is_public;
     private String license;
     private Term term;
-    private Enrollment[] enrollments;
+    private List<Enrollment> enrollments;
 
     // Helper variables
     private Double currentScore;
@@ -98,7 +100,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public Term getTerm() {
         return term;
     }
-    public Enrollment[] getEnrollments() {
+    public List<Enrollment> getEnrollments() {
         return enrollments;
     }
     public String getHomePage() {
@@ -168,21 +170,15 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         return false;
     }
 
-    public Enrollment[] getEnrollmentsNoDuplicates() {
+    public List<Enrollment> getEnrollmentsNoDuplicates() {
         if(enrollments == null) {
             return null;
         }
-        if(enrollments.length <= 1) {
+        if(enrollments.size() <= 1) {
             return enrollments;
         }
 
-        ArrayList<Enrollment> noDuplicates = new ArrayList<Enrollment>();
-        for(Enrollment enrollment : enrollments) {
-            if(!noDuplicates.contains(enrollment)) {
-                noDuplicates.add(enrollment);
-            }
-        }
-        return noDuplicates.toArray(new Enrollment[noDuplicates.size()]);
+        return new ArrayList<Enrollment>(new LinkedHashSet<Enrollment>(enrollments));
     }
 
     public double getCurrentScore() {
@@ -241,13 +237,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     }
 
     public void addEnrollment(Enrollment enrollment) {
-        if (enrollments == null || enrollments.length == 0) {
-            enrollments = new Enrollment[] { enrollment };
+        if (enrollments == null || enrollments.size() == 0) {
+            enrollments = new ArrayList<Enrollment>();
+            enrollments.add(enrollment);
         } else {
-            ArrayList<Enrollment> tempEnrollments = new ArrayList<Enrollment>(enrollments.length + 1);
-            tempEnrollments.addAll(Arrays.asList(enrollments));
-            tempEnrollments.add(enrollment);
-            enrollments = tempEnrollments.toArray(new Enrollment[tempEnrollments.size()]);
+
+            enrollments.add(enrollment);
         }
     }
 
@@ -352,7 +347,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeByte(is_public ? (byte) 1 : (byte) 0);
         dest.writeString(this.license);
         dest.writeParcelable(this.term, flags);
-        dest.writeTypedArray(this.enrollments,flags);
+        dest.writeList(this.enrollments);
         dest.writeValue(this.currentScore);
         dest.writeValue(this.finalScore);
         dest.writeByte(checkedCurrentGrade ? (byte) 1 : (byte) 0);
@@ -365,7 +360,6 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     }
 
     private Course(Parcel in) {
-        this.enrollments = new Enrollment[0];
         this.id = in.readLong();
         this.name = in.readString();
         this.course_code = in.readString();
@@ -376,7 +370,8 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.is_public = in.readByte() != 0;
         this.license = in.readString();
         this.term = in.readParcelable(Term.class.getClassLoader());
-        this.enrollments = in.createTypedArray(Enrollment.CREATOR);
+        this.enrollments = new ArrayList<Enrollment>();
+        in.readList(this.enrollments, Enrollment.class.getClassLoader());
         this.currentScore = (Double) in.readValue(Double.class.getClassLoader());
         this.finalScore = (Double) in.readValue(Double.class.getClassLoader());
         this.checkedCurrentGrade = in.readByte() != 0;
