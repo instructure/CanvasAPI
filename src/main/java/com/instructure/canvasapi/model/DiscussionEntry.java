@@ -26,8 +26,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     private boolean deleted;                //Whether the quthor deleted the message. If true, the message will be null.
     private int totalChildren = 0;
     private int unreadChildren = 0;
-    private DiscussionEntry[] replies = new DiscussionEntry[0];  //Nested messages.
-    private DiscussionAttachment[] attachments = new DiscussionAttachment[0];
+    private List<DiscussionEntry> replies;
+    private List<DiscussionAttachment> attachments;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -42,15 +42,11 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.id = id;
     }
 
-    public ArrayList<DiscussionAttachment> getAttachments() {
-        return new ArrayList<DiscussionAttachment>(Arrays.asList(attachments));
+    public List<DiscussionAttachment> getAttachments() {
+        return attachments;
     }
 
-    public void setAttachments(ArrayList<DiscussionAttachment> attachments) {
-        this.attachments = (DiscussionAttachment[]) attachments.toArray();
-    }
-
-    public void setAttachments(DiscussionAttachment[] attachments) {
+    public void setAttachments(List<DiscussionAttachment> attachments) {
         this.attachments = attachments;
     }
 
@@ -157,23 +153,26 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     }
 
     public void addReply (DiscussionEntry entry){
-        ArrayList<DiscussionEntry> entries = new ArrayList<DiscussionEntry>(Arrays.asList(replies));
-        entries.add(entry);
-        setReplies(entries);
+
+        if(this.replies == null) {
+            this.replies = new ArrayList<DiscussionEntry>();
+        }
+
+        this.replies.add(entry);
     }
 
 
-    public DiscussionEntry[] getReplies() {
+    public List<DiscussionEntry> getReplies() {
         return replies;
     }
 
     public void setReplies(List<DiscussionEntry> replies) {
-        if (replies == null) {
-            this.replies = null;
+
+        if(this.replies == null) {
+            this.replies = new ArrayList<DiscussionEntry>();
         }
 
-        DiscussionEntry[] entries = new DiscussionEntry[replies.size()];
-        this.replies = replies.toArray(entries);
+        this.replies = replies;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -255,8 +254,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.totalChildren);
         dest.writeInt(this.unreadChildren);
-        dest.writeParcelableArray(this.replies, flags);
-        dest.writeParcelableArray(this.attachments, flags);
+        dest.writeList(this.replies);
+        dest.writeList(this.attachments);
     }
 
     private DiscussionEntry(Parcel in) {
@@ -273,8 +272,12 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.deleted = in.readByte() != 0;
         this.totalChildren = in.readInt();
         this.unreadChildren = in.readInt();
-        this.replies = (DiscussionEntry[])in.readParcelableArray(DiscussionEntry.class.getClassLoader());
-        this.attachments = (DiscussionAttachment[])in.readParcelableArray(Attachment.class.getClassLoader());
+
+        this.replies = new ArrayList<DiscussionEntry>();
+        in.readList(this.replies, DiscussionEntry.class.getClassLoader());
+
+        this.attachments = new ArrayList<DiscussionAttachment>();
+        in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
     }
 
     public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {

@@ -4,7 +4,9 @@ import android.os.Parcel;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -19,10 +21,10 @@ public class Message extends CanvasModel<Message> {
     private String body;
     private long author_id;
     private boolean generated;
-    private Attachment[] attachments;
+    private List<Attachment> attachments;
     private MediaComment media_comment;
     private Submission submission;
-    private Message[] forwarded_messages;
+    private List<Message> forwarded_messages;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -47,10 +49,10 @@ public class Message extends CanvasModel<Message> {
     public MediaComment getMediaComment() {
         return media_comment;
     }
-    public Attachment[] getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
-    public Message[] getForwardedMessages() {
+    public List<Message> getForwardedMessages() {
         return forwarded_messages;
     }
     public Submission getSubmission() {
@@ -82,10 +84,10 @@ public class Message extends CanvasModel<Message> {
         dest.writeString(this.body);
         dest.writeLong(this.author_id);
         dest.writeByte(generated ? (byte) 1 : (byte) 0);
-        dest.writeParcelableArray(this.attachments, flags);
+        dest.writeList(this.attachments);
         dest.writeParcelable(this.media_comment, flags);
         dest.writeParcelable(this.submission, flags);
-        dest.writeParcelableArray(this.forwarded_messages, flags);
+        dest.writeList(this.forwarded_messages);
     }
 
     public Message() {
@@ -97,10 +99,12 @@ public class Message extends CanvasModel<Message> {
         this.body = in.readString();
         this.author_id = in.readLong();
         this.generated = in.readByte() != 0;
-        this.attachments =(Attachment[]) in.readParcelableArray(Attachment.class.getClassLoader());
+        this.attachments = new ArrayList<Attachment>();
+        in.readList(this.attachments, Attachment.class.getClassLoader());
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         this.submission = in.readParcelable(Submission.class.getClassLoader());
-        this.forwarded_messages =(Message[]) in.readParcelableArray(Message.class.getClassLoader());
+        this.forwarded_messages = new ArrayList<Message>();
+        in.readList(this.forwarded_messages,Message.class.getClassLoader());
     }
 
     public static Creator<Message> CREATOR = new Creator<Message>() {
