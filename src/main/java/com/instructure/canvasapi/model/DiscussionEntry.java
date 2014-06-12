@@ -265,7 +265,7 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.updated_at = in.readString();
         this.created_at = in.readString();
         this.parent = in.readParcelable(DiscussionEntry.class.getClassLoader());
-        this.author = in.readParcelable(((Object) author).getClass().getClassLoader());
+        this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.description = in.readString();
         this.user_id = in.readLong();
         this.parent_id = in.readLong();
