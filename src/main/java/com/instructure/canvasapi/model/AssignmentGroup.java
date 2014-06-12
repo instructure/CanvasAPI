@@ -16,7 +16,7 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 	private long id;
 	private String name;
 	private int position;
-	private List<Assignment> assignments;
+	private List<Assignment> assignments = new ArrayList<Assignment>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -81,7 +81,6 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
         this.name = in.readString();
         this.position = in.readInt();
 
-        this.assignments = new ArrayList<Assignment>();
         in.readList(this.assignments, Assignment.class.getClassLoader());
     }
 

@@ -146,7 +146,7 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
         dest.writeString(this.description);
         dest.writeString(this.long_description);
         dest.writeDouble(this.points);
-        dest.writeTypedList(ratings);
+        dest.writeList(ratings);
     }
 
     private RubricCriterion(Parcel in) {
@@ -155,7 +155,7 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
         this.description = in.readString();
         this.long_description = in.readString();
         this.points = in.readDouble();
-        in.readTypedList(ratings, RubricCriterionRating.CREATOR);
+        in.readList(ratings, RubricCriterionRating.class.getClassLoader());
     }
 
     public static Parcelable.Creator<RubricCriterion> CREATOR = new Parcelable.Creator<RubricCriterion>() {

@@ -48,10 +48,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private long root_topic_id;
 
     // A list of topic_ids for the group discussions the user is a part of.
-    private List<Long> topic_children;
+    private List<Long> topic_children = new ArrayList<Long>();
 
     //List of file attachments
-    private List<DiscussionAttachment> attachments;
+    private List<DiscussionAttachment> attachments = new ArrayList<DiscussionAttachment>();
 
     public boolean unauthorized;
     private DiscussionTopicPermission permission;
@@ -346,13 +346,8 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.podcast_url = in.readString();
         this.root_topic_id = in.readLong();
-
-        this.topic_children = new ArrayList<Long>();
         in.readList(this.topic_children, Long.class.getClassLoader());
-
-        this.attachments = new ArrayList<DiscussionAttachment>();
         in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
-
         this.unauthorized = in.readByte() != 0;
         this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());

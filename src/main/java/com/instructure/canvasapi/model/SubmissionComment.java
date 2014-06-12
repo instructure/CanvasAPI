@@ -126,7 +126,6 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
         this.comment = in.readString();
         this.created_at = in.readString();
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
-        this.attachments = new ArrayList<Attachment>();
         in.readList(this.attachments, Attachment.class.getClassLoader());
         this.author = in.readParcelable(Author.class.getClassLoader());
     }

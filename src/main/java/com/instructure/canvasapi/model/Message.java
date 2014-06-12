@@ -21,10 +21,10 @@ public class Message extends CanvasModel<Message> {
     private String body;
     private long author_id;
     private boolean generated;
-    private List<Attachment> attachments;
+    private List<Attachment> attachments = new ArrayList<Attachment>();
     private MediaComment media_comment;
     private Submission submission;
-    private List<Message> forwarded_messages;
+    private List<Message> forwarded_messages = new ArrayList<Message>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -99,12 +99,10 @@ public class Message extends CanvasModel<Message> {
         this.body = in.readString();
         this.author_id = in.readLong();
         this.generated = in.readByte() != 0;
-        this.attachments = new ArrayList<Attachment>();
         in.readList(this.attachments, Attachment.class.getClassLoader());
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         this.submission = in.readParcelable(Submission.class.getClassLoader());
-        this.forwarded_messages = new ArrayList<Message>();
-        in.readList(this.forwarded_messages,Message.class.getClassLoader());
+        in.readList(this.forwarded_messages, Message.class.getClassLoader());
     }
 
     public static Creator<Message> CREATOR = new Creator<Message>() {

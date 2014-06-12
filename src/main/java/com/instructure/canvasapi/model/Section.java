@@ -101,7 +101,6 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
         this.course_id = in.readLong();
         this.start_at = in.readString();
         this.end_at = in.readString();
-        this.students = new ArrayList<User>();
         in.readList(this.students, User.class.getClassLoader());
     }
 

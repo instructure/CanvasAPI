@@ -21,12 +21,12 @@ public class DiscussionTopic implements Parcelable {
 	private boolean forbidden = false;
 
 	//List of all the ids of the unread discussion entries.
-    private List<Long> unread_entries;
+    private List<Long> unread_entries = new ArrayList<Long>();
 	
 	//List of the participants.
-    private List<DiscussionParticipant> participants;
-    private HashMap<Long, DiscussionParticipant> participantsMap;
-    private HashMap<Long, Boolean> unread_entriesMap;
+    private List<DiscussionParticipant> participants = new ArrayList<DiscussionParticipant>();
+    private HashMap<Long, DiscussionParticipant> participantsMap = new HashMap<Long, DiscussionParticipant>();
+    private HashMap<Long, Boolean> unread_entriesMap = new HashMap<Long, Boolean>();
 
     //List of all the discussion entries (views)
     private List<DiscussionEntry> view;
@@ -126,17 +126,8 @@ public class DiscussionTopic implements Parcelable {
 
     private DiscussionTopic(Parcel in) {
         this.forbidden = in.readByte() != 0;
-
-        this.unread_entries = new ArrayList<Long>();
         in.readList(this.unread_entries, Long.class.getClassLoader());
-
-        this.participants = new ArrayList<DiscussionParticipant>();
         in.readList(this.participants, DiscussionParticipant.class.getClassLoader());
-
-        this.participantsMap = (HashMap<Long, DiscussionParticipant>) in.readSerializable();
-        this.unread_entriesMap = (HashMap<Long, Boolean>) in.readSerializable();
-
-        this.view = new ArrayList<DiscussionEntry>();
         in.readList(this.view, DiscussionEntry.class.getClassLoader());
     }
 

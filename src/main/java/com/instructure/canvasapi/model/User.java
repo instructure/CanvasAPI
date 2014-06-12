@@ -23,7 +23,7 @@ public class User extends CanvasContext{
     private String avatar_url;
     private String primary_email;
 
-    private List<Enrollment> enrollments;
+    private List<Enrollment> enrollments = new ArrayList<Enrollment>();
 
     //Helper variable for the "specified" enrollment.
     private int enrollmentIndex;
@@ -162,10 +162,7 @@ public class User extends CanvasContext{
         this.login_id = in.readString();
         this.avatar_url = in.readString();
         this.primary_email = in.readString();
-
-        this.enrollments = new ArrayList<Enrollment>();
         in.readList(this.enrollments, Enrollment.class.getClassLoader());
-
         this.enrollmentIndex = in.readInt();
     }
 

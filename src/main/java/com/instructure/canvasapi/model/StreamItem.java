@@ -62,7 +62,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     private int total_root_discussion_entries;
     private boolean require_initial_post;
     private boolean user_has_posted;
-    private ArrayList<DiscussionEntry> root_discussion_entries;
+    private List<DiscussionEntry> root_discussion_entries = new ArrayList<DiscussionEntry>();
 
     // submission
     private int attempt;
@@ -77,7 +77,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     private String workflow_state;
     private boolean late;
     private String preview_url;
-    private List<SubmissionComment> submission_comments;
+    private List<SubmissionComment> submission_comments = new ArrayList<SubmissionComment>();
     private CanvasContext canvasContext;
     private Assignment assignment;
     private long user_id;
@@ -215,7 +215,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     public boolean userHasPosted() {
         return user_has_posted;
     }
-    public ArrayList<DiscussionEntry> getRootDiscussionEntries() {
+    public List<DiscussionEntry> getRootDiscussionEntries() {
         return root_discussion_entries;
     }
     public int getAttempt() {
@@ -515,10 +515,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.total_root_discussion_entries = in.readInt();
         this.require_initial_post = in.readByte() != 0;
         this.user_has_posted = in.readByte() != 0;
-
-        this.root_discussion_entries = new ArrayList<DiscussionEntry>();
         in.readList(this.root_discussion_entries, DiscussionEntry.class.getClassLoader());
-
         this.attempt = in.readInt();
         this.body = in.readString();
         this.grade = in.readString();
@@ -531,10 +528,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.workflow_state = in.readString();
         this.late = in.readByte() != 0;
         this.preview_url = in.readString();
-
-        this.submission_comments = new ArrayList<SubmissionComment>();
         in.readList(this.submission_comments, SubmissionComment.class.getClassLoader());
-
         this.canvasContext = in.readParcelable(CanvasContext.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();
