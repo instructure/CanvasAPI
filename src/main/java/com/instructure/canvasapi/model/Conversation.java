@@ -245,9 +245,9 @@ public class Conversation extends CanvasModel<Conversation> {
         dest.writeStringArray(this.properties);
         dest.writeString(this.avatar_url);
         dest.writeByte(visible ? (byte) 1 : (byte) 0);
-        dest.writeArray(this.audience);
-        dest.writeParcelableArray(this.participants, flags);
-        dest.writeParcelableArray(this.messages, flags);
+        dest.writeSerializable(this.audience);
+        dest.writeSerializable(this.participants);
+        dest.writeSerializable(this.messages);
         dest.writeLong(lastMessageDate != null ? lastMessageDate.getTime() : -1);
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeString(this.deletedString);
@@ -264,9 +264,9 @@ public class Conversation extends CanvasModel<Conversation> {
         this.properties = in.createStringArray();
         this.avatar_url = in.readString();
         this.visible = in.readByte() != 0;
-        this.audience = (Long[]) in.readArray(Long.class.getClassLoader());
-        this.participants = (BasicUser[])in.readParcelableArray(BasicUser.class.getClassLoader());
-        this.messages = (Message[])in.readParcelableArray(Message.class.getClassLoader());
+        this.audience = (Long[]) in.readSerializable();
+        this.participants = (BasicUser[])in.readSerializable();
+        this.messages = (Message[]) in.readSerializable();
         long tmpLastMessageDate = in.readLong();
         this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
         this.deleted = in.readByte() != 0;

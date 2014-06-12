@@ -459,7 +459,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         dest.writeInt(this.total_root_discussion_entries);
         dest.writeByte(require_initial_post ? (byte) 1 : (byte) 0);
         dest.writeByte(user_has_posted ? (byte) 1 : (byte) 0);
-        dest.writeParcelableArray(this.root_discussion_entries, flags);
+        dest.writeSerializable(this.root_discussion_entries);
         dest.writeInt(this.attempt);
         dest.writeString(this.body);
         dest.writeString(this.grade);
@@ -513,7 +513,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.total_root_discussion_entries = in.readInt();
         this.require_initial_post = in.readByte() != 0;
         this.user_has_posted = in.readByte() != 0;
-        this.root_discussion_entries =(DiscussionEntry[]) in.readParcelableArray(DiscussionEntry.class.getClassLoader());
+        this.root_discussion_entries =(DiscussionEntry[]) in.readSerializable();
         this.attempt = in.readInt();
         this.body = in.readString();
         this.grade = in.readString();
