@@ -9,6 +9,7 @@ import com.instructure.canvasapi.utilities.TestHelpers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Brady Larson on 9/6/13.
@@ -17,12 +18,12 @@ import java.util.Date;
  */
 public class LockedModule extends CanvasComparable<LockedModule> implements Serializable{
     private static final long serialVersionUID = 1L;
-    private ArrayList<ModuleName> prerequisites = new ArrayList<ModuleName>();
+    private List<ModuleName> prerequisites = new ArrayList<ModuleName>();
     private String unlock_at;
     private String name;
     private long context_id;
 
-    public ArrayList<ModuleName> getPrerequisites() {
+    public List<ModuleName> getPrerequisites() {
         return prerequisites;
     }
 
@@ -97,7 +98,7 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(this.prerequisites);
+        dest.writeList(this.prerequisites);
         dest.writeString(this.unlock_at);
         dest.writeString(this.name);
         dest.writeLong(this.context_id);
@@ -107,7 +108,8 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
     }
 
     private LockedModule(Parcel in) {
-        this.prerequisites = (ArrayList<ModuleName>) in.readSerializable();
+        this.prerequisites = new ArrayList<ModuleName>();
+        in.readList(this.getPrerequisites(), ModuleName.class.getClassLoader());
         this.unlock_at = in.readString();
         this.name = in.readString();
         this.context_id = in.readLong();

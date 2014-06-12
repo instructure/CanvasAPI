@@ -27,7 +27,7 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
     private String comment;
     private String created_at;
     private MediaComment media_comment;
-    private Attachment[] attachments = new Attachment[0];
+    private List<Attachment> attachments = new ArrayList<Attachment>();
     private Author author;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
         if(attachments == null) {
             return new ArrayList<Attachment>();
         }
-        return Arrays.asList(attachments);
+        return attachments;
     }
 	public void setAuthorID(long authorID) {
 		this.author_id = authorID;
@@ -116,7 +116,7 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
         dest.writeString(this.comment);
         dest.writeString(this.created_at);
         dest.writeParcelable(this.media_comment, flags);
-        dest.writeTypedArray(this.attachments, flags);
+        dest.writeList(this.attachments);
         dest.writeParcelable(this.author, flags);
     }
 
@@ -126,7 +126,8 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
         this.comment = in.readString();
         this.created_at = in.readString();
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
-        in.readTypedArray(this.attachments, Attachment.CREATOR);
+        this.attachments = new ArrayList<Attachment>();
+        in.readList(this.attachments, Attachment.class.getClassLoader());
         this.author = in.readParcelable(Author.class.getClassLoader());
     }
 

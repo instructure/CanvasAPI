@@ -7,7 +7,9 @@ import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,7 +62,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     private int total_root_discussion_entries;
     private boolean require_initial_post;
     private boolean user_has_posted;
-    private DiscussionEntry[] root_discussion_entries;
+    private ArrayList<DiscussionEntry> root_discussion_entries;
 
     // submission
     private int attempt;
@@ -75,7 +77,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     private String workflow_state;
     private boolean late;
     private String preview_url;
-    private SubmissionComment[] submission_comments;
+    private List<SubmissionComment> submission_comments;
     private CanvasContext canvasContext;
     private Assignment assignment;
     private long user_id;
@@ -213,7 +215,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
     public boolean userHasPosted() {
         return user_has_posted;
     }
-    public DiscussionEntry[] getRootDiscussionEntries() {
+    public ArrayList<DiscussionEntry> getRootDiscussionEntries() {
         return root_discussion_entries;
     }
     public int getAttempt() {
@@ -264,7 +266,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         return preview_url;
     }
 
-    public SubmissionComment[] getSubmissionComments() {
+    public List<SubmissionComment> getSubmissionComments() {
         return submission_comments;
     }
 
@@ -350,8 +352,8 @@ public class StreamItem extends CanvasModel<StreamItem> {
             case SUBMISSION:
                 //get comments from assignment
                 String comment = null;
-                if (submission_comments.length > 0) {
-                    comment = submission_comments[submission_comments.length - 1].getComment();
+                if (submission_comments.size()> 0) {
+                    comment = submission_comments.get(submission_comments.size() - 1).getComment();
                 }
                 //set it to the last comment if it's not null
                 if(comment != null && !comment.equals("null") && score != -1.0) {
@@ -366,8 +368,8 @@ public class StreamItem extends CanvasModel<StreamItem> {
                 break;
             case DISCUSSION_TOPIC :
                 //if it's a discussionTopic, get the last entry for the message.
-                if (root_discussion_entries.length > 0) {
-                    return root_discussion_entries[root_discussion_entries.length - 1].getMessage(context.getString(R.string.Deleted));
+                if (root_discussion_entries.size() > 0) {
+                    return root_discussion_entries.get(root_discussion_entries.size() - 1).getMessage(context.getString(R.string.Deleted));
                 }
                 break;
             default:
@@ -459,7 +461,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         dest.writeInt(this.total_root_discussion_entries);
         dest.writeByte(require_initial_post ? (byte) 1 : (byte) 0);
         dest.writeByte(user_has_posted ? (byte) 1 : (byte) 0);
-        dest.writeParcelableArray(this.root_discussion_entries, flags);
+        dest.writeList(this.root_discussion_entries);
         dest.writeInt(this.attempt);
         dest.writeString(this.body);
         dest.writeString(this.grade);
@@ -472,7 +474,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         dest.writeString(this.workflow_state);
         dest.writeByte(late ? (byte) 1 : (byte) 0);
         dest.writeString(this.preview_url);
-        dest.writeParcelableArray(this.submission_comments, flags);
+        dest.writeList(this.submission_comments);
         dest.writeParcelable(this.canvasContext, 0);
         dest.writeParcelable(this.assignment, flags);
         dest.writeLong(this.user_id);
@@ -513,7 +515,10 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.total_root_discussion_entries = in.readInt();
         this.require_initial_post = in.readByte() != 0;
         this.user_has_posted = in.readByte() != 0;
-        this.root_discussion_entries =(DiscussionEntry[]) in.readParcelableArray(DiscussionEntry.class.getClassLoader());
+
+        this.root_discussion_entries = new ArrayList<DiscussionEntry>();
+        in.readList(this.root_discussion_entries, DiscussionEntry.class.getClassLoader());
+
         this.attempt = in.readInt();
         this.body = in.readString();
         this.grade = in.readString();
@@ -526,7 +531,10 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.workflow_state = in.readString();
         this.late = in.readByte() != 0;
         this.preview_url = in.readString();
-        this.submission_comments = (SubmissionComment[])in.readParcelableArray(SubmissionComment.class.getClassLoader());
+
+        this.submission_comments = new ArrayList<SubmissionComment>();
+        in.readList(this.submission_comments, SubmissionComment.class.getClassLoader());
+
         this.canvasContext = in.readParcelable(CanvasContext.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();
