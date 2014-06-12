@@ -10,6 +10,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import java.util.Date;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -150,7 +151,7 @@ public class AssignmentAPI {
     }
     private static void editAssignment(long courseId, long assignmentId, String name, String description, Assignment.SUBMISSION_TYPE[] submissionTypes,
                                        Date dueAt, double pointsPossible, Assignment.GRADING_TYPE gradingType, String htmlUrl, String url,
-                                       Long quizId, RubricCriterion[] rubric, String[] allowedExtensions, Long assignmentGroupId, Boolean hasPeerReviews,
+                                       Long quizId, List<RubricCriterion> rubric, String[] allowedExtensions, Long assignmentGroupId, Boolean hasPeerReviews,
                                        Date lockAt, Date unlockAt, Long groupCategoryId, boolean notifyOfUpdate, final CanvasCallback<Assignment> callback){
 
         String stringDueAt = APIHelpers.dateToString(dueAt);

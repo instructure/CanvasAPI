@@ -26,17 +26,17 @@ public class Conversation extends CanvasModel<Conversation> {
     private boolean subscribed;         // Whether or not the user is subscribed to the current message.
     private boolean starred;            // Whether or not the message is starred.
 
-    private String[] properties;
+    private List<String> properties;
 
     private String avatar_url;          // The avatar to display. Knows if group, user, etc.
     private boolean visible;            // Whether this conversation is visible in the current context. Not 100% what that means.
 
     // The IDs of all people in the conversation. EXCLUDING the current user unless it's a monologue.
-    private Long[] audience;
+    private List<Long> audience;
     //TODO: Audience contexts.
 
     // The name and IDs of all participants in the conversation.
-    private BasicUser[] participants;
+    private List<BasicUser> participants;
 
     // Messages attached to the conversation.
     private List<Message> messages;
@@ -49,9 +49,9 @@ public class Conversation extends CanvasModel<Conversation> {
     ///////////////////////////////////////////////////////////////////////////
     // Constructor
     ///////////////////////////////////////////////////////////////////////////
-    public Conversation(boolean deleted, String deletedStringtoShow){
+    public Conversation(boolean deleted, String deletedStringToShow){
         this.deleted = deleted;
-        this.deletedString = deletedStringtoShow;
+        this.deletedString = deletedStringToShow;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -116,36 +116,36 @@ public class Conversation extends CanvasModel<Conversation> {
         return starred;
     }
     public boolean isLastAuthor() {
-        for(int i = 0; i < properties.length; i++)
+        for(int i = 0; i < properties.size(); i++)
         {
-            if(properties[i].equals("last_author")){
+            if(properties.get(i).equals("last_author")){
                 return true;
             }
         }
         return false;
     }
     public boolean hasAttachments() {
-        for(int i = 0; i < properties.length; i++)
+        for(int i = 0; i < properties.size(); i++)
         {
-            if(properties[i].equals("attachments")){
+            if(properties.get(i).equals("attachments")){
                 return true;
             }
         }
         return false;
     }
     public boolean hasMedia() {
-        for(int i = 0; i < properties.length; i++)
+        for(int i = 0; i < properties.size(); i++)
         {
-            if(properties[i].equals("media_objects")){
+            if(properties.get(i).equals("media_objects")){
                 return true;
             }
         }
         return false;
     }
-    public Long[] getAudienceIDs() {
+    public List<Long> getAudienceIDs() {
         return audience;
     }
-    public BasicUser[] getAllParticipants() {
+    public List<BasicUser> getAllParticipants() {
         return participants;
     }
     public String getAvatarURL() {
@@ -187,12 +187,12 @@ public class Conversation extends CanvasModel<Conversation> {
     private boolean determineMonologue(long userID) {
         if(audience == null){
             return false;
-        } else if (audience.length == 0){
+        } else if (audience.size() == 0){
             return true;
         }
 
-        for(int i = 0; i < audience.length; i++){
-            if(audience[i] == userID){
+        for(int i = 0; i < audience.size(); i++){
+            if(audience.get(i) == userID){
                 return true;
             }
         }
@@ -211,11 +211,11 @@ public class Conversation extends CanvasModel<Conversation> {
         ArrayList<BasicUser> normalized = new ArrayList<BasicUser>();
 
         //Normalize the message!
-        for (int i = 0; i < getAllParticipants().length; i++) {
-            if (getAllParticipants()[i].getId() == myUserID) {
+        for (int i = 0; i < getAllParticipants().size(); i++) {
+            if (getAllParticipants().get(i).getId() == myUserID) {
                 continue;
             } else {
-                normalized.add(getAllParticipants()[i]);
+                normalized.add(getAllParticipants().get(i));
             }
         }
 
@@ -243,11 +243,11 @@ public class Conversation extends CanvasModel<Conversation> {
         dest.writeInt(this.message_count);
         dest.writeByte(subscribed ? (byte) 1 : (byte) 0);
         dest.writeByte(starred ? (byte) 1 : (byte) 0);
-        dest.writeStringArray(this.properties);
+        dest.writeList(this.properties);
         dest.writeString(this.avatar_url);
         dest.writeByte(visible ? (byte) 1 : (byte) 0);
-        dest.writeArray(this.audience);
-        dest.writeParcelableArray(this.participants, flags);
+        dest.writeList(this.audience);
+        dest.writeList(this.participants);
         dest.writeList(this.messages);
         dest.writeLong(lastMessageDate != null ? lastMessageDate.getTime() : -1);
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
@@ -262,13 +262,22 @@ public class Conversation extends CanvasModel<Conversation> {
         this.message_count = in.readInt();
         this.subscribed = in.readByte() != 0;
         this.starred = in.readByte() != 0;
-        this.properties = in.createStringArray();
+
+        this.properties = new ArrayList<String>();
+        in.readList(this.properties, String.class.getClassLoader());
+
         this.avatar_url = in.readString();
         this.visible = in.readByte() != 0;
-        this.audience = (Long[]) in.readArray(Long.class.getClassLoader());
-        this.participants = (BasicUser[])in.readParcelableArray(BasicUser.class.getClassLoader());
+
+        this.audience = new ArrayList<Long>();
+        in.readList(this.audience, Long.class.getClassLoader());
+
+        this.participants = new ArrayList<BasicUser>();
+        in.readList(this.participants, BasicUser.class.getClassLoader());
+
         this.messages = new ArrayList<Message>();
         in.readList(this.messages, Message.class.getClassLoader());
+
         long tmpLastMessageDate = in.readLong();
         this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
         this.deleted = in.readByte() != 0;

@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -47,10 +48,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private long root_topic_id;
 
     // A list of topic_ids for the group discussions the user is a part of.
-    private Long[] topic_children;
+    private List<Long> topic_children;
 
     //List of file attachments
-    private DiscussionAttachment[] attachments;
+    private List<DiscussionAttachment> attachments;
 
     public boolean unauthorized;
     private DiscussionTopicPermission permission;
@@ -189,12 +190,12 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 	public void setRootTopicId(long root_topic_id) {
 		this.root_topic_id = root_topic_id;
 	}
-	public Long[] getTopicChildren() {
+	public List<Long> getTopicChildren() {
 		return topic_children;
 	}
-	public void setTopicChildren(ArrayList<Long> topic_children) {
+	public void setTopicChildren(List<Long> topic_children) {
         if(topic_children != null){
-            this.topic_children = (Long[])topic_children.toArray();
+            this.topic_children = topic_children;
         }
 	}
 	public String getPodcastUrl() {
@@ -203,12 +204,12 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 	public void setPodcastUrl(String podcast_url) {
 		this.podcast_url = podcast_url;
 	}
-	public DiscussionAttachment[] getAttachments() {
+	public List<DiscussionAttachment> getAttachments() {
 		return attachments;
 	}
-	public void setAttachments(ArrayList<DiscussionAttachment> attachments) {
+	public void setAttachments(List<DiscussionAttachment> attachments) {
         if(attachments != null){
-            this.attachments = (DiscussionAttachment[])attachments.toArray();
+            this.attachments = attachments;
         }
 	}
 	public DiscussionTopicPermission getPermission() {
@@ -317,8 +318,8 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeParcelable(this.author, flags);
         dest.writeString(this.podcast_url);
         dest.writeLong(this.root_topic_id);
-        dest.writeSerializable(this.topic_children);
-        dest.writeSerializable(this.attachments);
+        dest.writeList(this.topic_children);
+        dest.writeList(this.attachments);
         dest.writeByte(unauthorized ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.permission, flags);
         dest.writeParcelable(this.assignment, flags);
@@ -345,8 +346,13 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.podcast_url = in.readString();
         this.root_topic_id = in.readLong();
-        this.topic_children = (Long[])in.readSerializable();
-        this.attachments = (DiscussionAttachment[])in.readSerializable();
+
+        this.topic_children = new ArrayList<Long>();
+        in.readList(this.topic_children, Long.class.getClassLoader());
+
+        this.attachments = new ArrayList<DiscussionAttachment>();
+        in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
+
         this.unauthorized = in.readByte() != 0;
         this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());

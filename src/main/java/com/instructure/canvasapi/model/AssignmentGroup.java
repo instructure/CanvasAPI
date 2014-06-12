@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Brady Larson
@@ -15,7 +16,7 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 	private long id;
 	private String name;
 	private int position;
-	private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+	private List<Assignment> assignments;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -40,10 +41,10 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-	public ArrayList<Assignment> getAssignments() {
+	public List<Assignment> getAssignments() {
 		return assignments;
 	}
-	public void setAssignments(ArrayList<Assignment> assignments) {
+	public void setAssignments(List<Assignment> assignments) {
 		this.assignments = assignments;
 	}
 
@@ -72,14 +73,16 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
         dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeInt(this.position);
-        dest.writeTypedList(this.assignments);
+        dest.writeList(this.assignments);
     }
 
     private AssignmentGroup(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
         this.position = in.readInt();
-        in.readTypedList(this.assignments, Assignment.CREATOR);
+
+        this.assignments = new ArrayList<Assignment>();
+        in.readList(this.assignments, Assignment.class.getClassLoader());
     }
 
     public static Creator<AssignmentGroup> CREATOR = new Creator<AssignmentGroup>() {

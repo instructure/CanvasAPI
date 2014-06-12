@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -19,15 +21,15 @@ public class DiscussionTopic implements Parcelable {
 	private boolean forbidden = false;
 
 	//List of all the ids of the unread discussion entries.
-    private Long[] unread_entries = new Long[0];
+    private List<Long> unread_entries;
 	
 	//List of the participants.
-    private DiscussionParticipant[] participants;
+    private List<DiscussionParticipant> participants;
     private HashMap<Long, DiscussionParticipant> participantsMap;
     private HashMap<Long, Boolean> unread_entriesMap;
 
     //List of all the discussion entries (views)
-    private DiscussionEntry[]view;
+    private List<DiscussionEntry> view;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -55,7 +57,7 @@ public class DiscussionTopic implements Parcelable {
         return unread_entriesMap;
     }
 
-    public Long[] getUnreadEntries() {
+    public List<Long> getUnreadEntries() {
 		return unread_entries;
 	}
 
@@ -74,20 +76,20 @@ public class DiscussionTopic implements Parcelable {
         return participantsMap;
     }
 
-    public void setUnreadEntries(Long[] unread_entries) {
+    public void setUnreadEntries(List<Long> unread_entries) {
         this.unread_entries = unread_entries;
     }
-    public DiscussionParticipant[] getParticipants() {
+    public List<DiscussionParticipant> getParticipants() {
         return participants;
     }
-    public void setParticipants(DiscussionParticipant[] participants) {
+    public void setParticipants(List<DiscussionParticipant> participants) {
         this.participants = participants;
     }
-	public DiscussionEntry[] getViews() {
+	public List<DiscussionEntry> getViews() {
 		return view;
 	}
 
-    public void setViews(DiscussionEntry[] views) {
+    public void setViews(List<DiscussionEntry> views) {
 		this.view = views;
 	}
 
@@ -115,20 +117,27 @@ public class DiscussionTopic implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(forbidden ? (byte) 1 : (byte) 0);
-        dest.writeArray(this.unread_entries);
-        dest.writeParcelableArray(this.participants, flags);
+        dest.writeList(this.unread_entries);
+        dest.writeList(this.participants);
         dest.writeSerializable(this.participantsMap);
         dest.writeSerializable(this.unread_entriesMap);
-        dest.writeParcelableArray(this.view, flags);
+        dest.writeList(this.view);
     }
 
     private DiscussionTopic(Parcel in) {
         this.forbidden = in.readByte() != 0;
-        this.unread_entries =(Long[]) in.readArray(Long.class.getClassLoader());
-        this.participants = (DiscussionParticipant[])in.readParcelableArray(DiscussionParticipant.class.getClassLoader());
+
+        this.unread_entries = new ArrayList<Long>();
+        in.readList(this.unread_entries, Long.class.getClassLoader());
+
+        this.participants = new ArrayList<DiscussionParticipant>();
+        in.readList(this.participants, DiscussionParticipant.class.getClassLoader());
+
         this.participantsMap = (HashMap<Long, DiscussionParticipant>) in.readSerializable();
         this.unread_entriesMap = (HashMap<Long, Boolean>) in.readSerializable();
-        this.view = (DiscussionEntry[]) in.readParcelableArray(DiscussionEntry.class.getClassLoader());
+
+        this.view = new ArrayList<DiscussionEntry>();
+        in.readList(this.view, DiscussionEntry.class.getClassLoader());
     }
 
     public static Creator<DiscussionTopic> CREATOR = new Creator<DiscussionTopic>() {
