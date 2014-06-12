@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public class PollSession extends CanvasComparable<PollSession> implements Parcel
     private boolean has_public_results;
     private Map<Long, Integer> results;
     private Date created_at;
-    private ArrayList<PollSubmission> poll_submissions;
+    private List<PollSubmission> poll_submissions;
     private boolean has_submitted;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -94,7 +95,7 @@ public class PollSession extends CanvasComparable<PollSession> implements Parcel
         this.created_at = created_at;
     }
 
-    public ArrayList<PollSubmission> getPoll_submissions() {
+    public List<PollSubmission> getPoll_submissions() {
         return poll_submissions;
     }
 
@@ -141,7 +142,7 @@ public class PollSession extends CanvasComparable<PollSession> implements Parcel
         dest.writeByte(has_public_results ? (byte) 1 : (byte) 0);
         dest.writeMap(this.results);
         dest.writeLong(created_at != null ? created_at.getTime() : -1);
-        dest.writeSerializable(this.poll_submissions);
+        dest.writeList(this.poll_submissions);
     }
 
     public PollSession() {
@@ -157,7 +158,8 @@ public class PollSession extends CanvasComparable<PollSession> implements Parcel
         this.results = in.readHashMap(Map.class.getClassLoader());
         long tmpCreated_at = in.readLong();
         this.created_at = tmpCreated_at == -1 ? null : new Date(tmpCreated_at);
-        this.poll_submissions = (ArrayList<PollSubmission>) in.readSerializable();
+        this.poll_submissions = new ArrayList<PollSubmission>();
+        in.readList(this.poll_submissions, PollSubmission.class.getClassLoader());
     }
 
     public static Creator<PollSession> CREATOR = new Creator<PollSession>() {

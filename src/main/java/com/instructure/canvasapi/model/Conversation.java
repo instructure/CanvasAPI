@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -38,7 +39,7 @@ public class Conversation extends CanvasModel<Conversation> {
     private BasicUser[] participants;
 
     // Messages attached to the conversation.
-    private Message[] messages;
+    private List<Message> messages;
 
     // helper variables
     private Date lastMessageDate;
@@ -156,7 +157,7 @@ public class Conversation extends CanvasModel<Conversation> {
     public boolean isMonologue (long myUserID) {
         return determineMonologue(myUserID);
     }
-    public Message[] getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
     public String getMessageTitle(long myUserID, String monologue) {
@@ -247,7 +248,7 @@ public class Conversation extends CanvasModel<Conversation> {
         dest.writeByte(visible ? (byte) 1 : (byte) 0);
         dest.writeArray(this.audience);
         dest.writeParcelableArray(this.participants, flags);
-        dest.writeParcelableArray(this.messages, flags);
+        dest.writeList(this.messages);
         dest.writeLong(lastMessageDate != null ? lastMessageDate.getTime() : -1);
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeString(this.deletedString);
@@ -266,7 +267,8 @@ public class Conversation extends CanvasModel<Conversation> {
         this.visible = in.readByte() != 0;
         this.audience = (Long[]) in.readArray(Long.class.getClassLoader());
         this.participants = (BasicUser[])in.readParcelableArray(BasicUser.class.getClassLoader());
-        this.messages = (Message[])in.readParcelableArray(Message.class.getClassLoader());
+        this.messages = new ArrayList<Message>();
+        in.readList(this.messages, Message.class.getClassLoader());
         long tmpLastMessageDate = in.readLong();
         this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
         this.deleted = in.readByte() != 0;
