@@ -269,7 +269,7 @@ public class ToDo extends CanvasComparable<ToDo>{
         this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
         int tmpTypeEnum = in.readInt();
         this.typeEnum = tmpTypeEnum == -1 ? null : Type.values()[tmpTypeEnum];
-        this.canvasContext = in.readParcelable(((Object) canvasContext).getClass().getClassLoader());
+        this.canvasContext = in.readParcelable(CanvasContext.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.scheduleItem = in.readParcelable(ScheduleItem.class.getClassLoader());
         this.checked = in.readByte() != 0;

@@ -527,10 +527,10 @@ public class StreamItem extends CanvasModel<StreamItem> {
         this.late = in.readByte() != 0;
         this.preview_url = in.readString();
         this.submission_comments = (SubmissionComment[])in.readParcelableArray(SubmissionComment.class.getClassLoader());
-        this.canvasContext = in.readParcelable(((Object) canvasContext).getClass().getClassLoader());
+        this.canvasContext = in.readParcelable(CanvasContext.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.user_id = in.readLong();
-        this.user = in.readParcelable(((Object) user).getClass().getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
         int tmpEnumType = in.readInt();
         this.enumType = tmpEnumType == -1 ? null : Type.values()[tmpEnumType];
         int tmpCanvasContextType = in.readInt();
