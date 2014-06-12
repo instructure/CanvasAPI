@@ -58,6 +58,7 @@ public class Group extends CanvasContext{
 
     @Override
     public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
     @Override
     public Date getComparisonDate() {

@@ -317,15 +317,16 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeParcelable(this.author, flags);
         dest.writeString(this.podcast_url);
         dest.writeLong(this.root_topic_id);
-        dest.writeArray(this.topic_children);
-        dest.writeParcelableArray(this.attachments, flags);
+        dest.writeSerializable(this.topic_children);
+        dest.writeSerializable(this.attachments);
         dest.writeByte(unauthorized ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.permission, flags);
-        dest.writeParcelable(this.assignment, 0);
+        dest.writeParcelable(this.assignment, flags);
         dest.writeParcelable(this.lock_info, flags);
     }
 
     private DiscussionTopicHeader(Parcel in) {
+
         this.id = in.readLong();
         this.discussion_type = in.readString();
         this.title = in.readString();
@@ -344,11 +345,11 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.podcast_url = in.readString();
         this.root_topic_id = in.readLong();
-        this.topic_children = (Long [])in.readArray(Long.class.getClassLoader());
-        this.attachments = (DiscussionAttachment[])in.readParcelableArray(DiscussionAttachment.class.getClassLoader());
+        this.topic_children = (Long[])in.readSerializable();
+        this.attachments = (DiscussionAttachment[])in.readSerializable();
         this.unauthorized = in.readByte() != 0;
         this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
-        this.assignment = in.readParcelable(((Object) assignment).getClass().getClassLoader());
+        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
     }
 

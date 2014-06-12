@@ -12,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class User extends CanvasModel<User>{
+public class User extends CanvasContext{
 
     private long id;
     private String name;
@@ -54,6 +54,12 @@ public class User extends CanvasModel<User>{
     public String getName() {
         return name;
     }
+
+    @Override
+    public Type getType() {
+        return Type.USER;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -173,4 +179,9 @@ public class User extends CanvasModel<User>{
             return new User[size];
         }
     };
+
+    @Override
+    public int compareTo(CanvasContext canvasContext) {
+        return 0;
+    }
 }
