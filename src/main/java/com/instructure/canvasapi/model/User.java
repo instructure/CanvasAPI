@@ -3,8 +3,10 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -21,7 +23,7 @@ public class User extends CanvasContext{
     private String avatar_url;
     private String primary_email;
 
-    private Enrollment[] enrollments;
+    private List<Enrollment> enrollments;
 
     //Helper variable for the "specified" enrollment.
     private int enrollmentIndex;
@@ -87,10 +89,10 @@ public class User extends CanvasContext{
     public void setEmail(String email) {
         this.primary_email = email;
     }
-    public Enrollment[] getEnrollments() {
+    public List<Enrollment> getEnrollments() {
         return enrollments;
     }
-    public void setEnrollments(Enrollment[] enrollments) {
+    public void setEnrollments(ArrayList<Enrollment> enrollments) {
         this.enrollments = enrollments;
     }
     public int getEnrollmentIndex(){
@@ -149,7 +151,7 @@ public class User extends CanvasContext{
         dest.writeString(this.login_id);
         dest.writeString(this.avatar_url);
         dest.writeString(this.primary_email);
-        dest.writeParcelableArray(this.enrollments, flags);
+        dest.writeList(this.enrollments);
         dest.writeInt(this.enrollmentIndex);
     }
 
@@ -161,11 +163,8 @@ public class User extends CanvasContext{
         this.avatar_url = in.readString();
         this.primary_email = in.readString();
 
-        Parcelable[] parcelableArray = in.readParcelableArray(Enrollment[].class.getClassLoader());
-        if (parcelableArray != null) {
-            this.enrollments = null;
-            this.enrollments = Arrays.copyOf(parcelableArray, parcelableArray.length, Enrollment[].class);
-        }
+        this.enrollments = new ArrayList<Enrollment>();
+        in.readList(this.enrollments, Enrollment.class.getClassLoader());
 
         this.enrollmentIndex = in.readInt();
     }

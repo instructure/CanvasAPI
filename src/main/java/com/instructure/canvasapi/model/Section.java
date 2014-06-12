@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
@@ -24,7 +25,7 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
     String start_at;
     String end_at;
 
-    private ArrayList<User> students = new ArrayList<User>();
+    private List<User> students = new ArrayList<User>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -64,7 +65,7 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
         this.name = name;
     }
 
-    public ArrayList<User> getStudents() { return students; }
+    public List<User> getStudents() { return students; }
 
     public void setStudents(ArrayList<User> students) { this.students = students; }
     ///////////////////////////////////////////////////////////////////////////
@@ -88,7 +89,7 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
         dest.writeLong(this.course_id);
         dest.writeString(this.start_at);
         dest.writeString(this.end_at);
-        dest.writeTypedList(students);
+        dest.writeList(this.students);
     }
 
     public Section() {
@@ -100,7 +101,8 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
         this.course_id = in.readLong();
         this.start_at = in.readString();
         this.end_at = in.readString();
-        in.readTypedList(students, User.CREATOR);
+        this.students = new ArrayList<User>();
+        in.readList(this.students, User.class.getClassLoader());
     }
 
     public static Creator<Section> CREATOR = new Creator<Section>() {
