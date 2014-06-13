@@ -29,7 +29,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private boolean is_public;
     private String license;
     private Term term;
-    private List<Enrollment> enrollments;
+    private List<Enrollment> enrollments = new ArrayList<Enrollment>();
 
     // Helper variables
     private Double currentScore;
@@ -370,7 +370,6 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.is_public = in.readByte() != 0;
         this.license = in.readString();
         this.term = in.readParcelable(Term.class.getClassLoader());
-        this.enrollments = new ArrayList<Enrollment>();
         in.readList(this.enrollments, Enrollment.class.getClassLoader());
         this.currentScore = (Double) in.readValue(Double.class.getClassLoader());
         this.finalScore = (Double) in.readValue(Double.class.getClassLoader());

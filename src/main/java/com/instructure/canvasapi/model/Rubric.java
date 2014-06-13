@@ -65,7 +65,6 @@ public class Rubric implements Parcelable {
     }
 
     private Rubric(Parcel in) {
-        this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         in.readTypedList(criteria, RubricCriterion.CREATOR);
         this.free_form_criterion_comments = in.readByte() != 0;
     }

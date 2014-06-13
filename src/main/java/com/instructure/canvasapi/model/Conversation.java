@@ -26,20 +26,20 @@ public class Conversation extends CanvasModel<Conversation> {
     private boolean subscribed;         // Whether or not the user is subscribed to the current message.
     private boolean starred;            // Whether or not the message is starred.
 
-    private List<String> properties;
+    private List<String> properties = new ArrayList<String>();
 
     private String avatar_url;          // The avatar to display. Knows if group, user, etc.
     private boolean visible;            // Whether this conversation is visible in the current context. Not 100% what that means.
 
     // The IDs of all people in the conversation. EXCLUDING the current user unless it's a monologue.
-    private List<Long> audience;
+    private List<Long> audience = new ArrayList<Long>();
     //TODO: Audience contexts.
 
     // The name and IDs of all participants in the conversation.
-    private List<BasicUser> participants;
+    private List<BasicUser> participants = new ArrayList<BasicUser>();
 
     // Messages attached to the conversation.
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<Message>();
 
     // helper variables
     private Date lastMessageDate;
@@ -262,22 +262,12 @@ public class Conversation extends CanvasModel<Conversation> {
         this.message_count = in.readInt();
         this.subscribed = in.readByte() != 0;
         this.starred = in.readByte() != 0;
-
-        this.properties = new ArrayList<String>();
         in.readList(this.properties, String.class.getClassLoader());
-
         this.avatar_url = in.readString();
         this.visible = in.readByte() != 0;
-
-        this.audience = new ArrayList<Long>();
         in.readList(this.audience, Long.class.getClassLoader());
-
-        this.participants = new ArrayList<BasicUser>();
         in.readList(this.participants, BasicUser.class.getClassLoader());
-
-        this.messages = new ArrayList<Message>();
         in.readList(this.messages, Message.class.getClassLoader());
-
         long tmpLastMessageDate = in.readLong();
         this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
         this.deleted = in.readByte() != 0;

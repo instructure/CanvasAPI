@@ -108,7 +108,6 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
     }
 
     private LockedModule(Parcel in) {
-        this.prerequisites = new ArrayList<ModuleName>();
         in.readList(this.getPrerequisites(), ModuleName.class.getClassLoader());
         this.unlock_at = in.readString();
         this.name = in.readString();

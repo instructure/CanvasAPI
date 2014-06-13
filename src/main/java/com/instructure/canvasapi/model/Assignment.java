@@ -23,7 +23,7 @@ public class Assignment extends CanvasModel<Assignment>{
 	private long id;
 	private String name;
 	private String description;
-    private List<String> submission_types;
+    private List<String> submission_types = new ArrayList<String>();
 	private String due_at;
 	private double points_possible;
 	private long course_id;
@@ -34,9 +34,9 @@ public class Assignment extends CanvasModel<Assignment>{
 	private String html_url;
     private String url;
     private long quiz_id; // (Optional) id of the associated quiz (applies only when submission_types is ["online_quiz"])
-    private List<RubricCriterion> rubric;
+    private List<RubricCriterion> rubric = new ArrayList<RubricCriterion>();
     private boolean use_rubric_for_grading;
-    private List<String> allowed_extensions;
+    private List<String> allowed_extensions = new ArrayList<String>();
     private Submission submission;
     private long assignment_group_id;
     private boolean peer_reviews;
@@ -568,7 +568,6 @@ public class Assignment extends CanvasModel<Assignment>{
         this.name = in.readString();
         this.description = in.readString();
 
-        this.submission_types = new ArrayList<String>();
         in.readList(this.submission_types, String.class.getClassLoader());
 
         this.due_at = in.readString();
@@ -579,12 +578,10 @@ public class Assignment extends CanvasModel<Assignment>{
         this.url = in.readString();
         this.quiz_id = in.readLong();
 
-        this.rubric = new ArrayList<RubricCriterion>();
         in.readList(this.rubric, RubricCriterion.class.getClassLoader());
 
         this.use_rubric_for_grading = in.readByte() != 0;
 
-        this.allowed_extensions = new ArrayList<String>();
         in.readList(this.allowed_extensions, String.class.getClassLoader());
 
         this.submission = in.readParcelable(Submission.class.getClassLoader());

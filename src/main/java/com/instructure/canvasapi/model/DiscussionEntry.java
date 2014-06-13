@@ -26,8 +26,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     private boolean deleted;                //Whether the quthor deleted the message. If true, the message will be null.
     private int totalChildren = 0;
     private int unreadChildren = 0;
-    private List<DiscussionEntry> replies;
-    private List<DiscussionAttachment> attachments;
+    private List<DiscussionEntry> replies = new ArrayList<DiscussionEntry>();
+    private List<DiscussionAttachment> attachments = new ArrayList<DiscussionAttachment>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -272,11 +272,7 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.deleted = in.readByte() != 0;
         this.totalChildren = in.readInt();
         this.unreadChildren = in.readInt();
-
-        this.replies = new ArrayList<DiscussionEntry>();
         in.readList(this.replies, DiscussionEntry.class.getClassLoader());
-
-        this.attachments = new ArrayList<DiscussionAttachment>();
         in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
     }
 
