@@ -42,10 +42,10 @@ public class PollChoiceAPI {
         void getSinglePollChoice(@Path("pollid") long poll_id, @Path("poll_choice_id") long poll_choice_id, Callback<PollChoiceResponse> callback);
 
         @POST("/polls/{pollid}/poll_choices")
-        void createPollChoice(@Path("pollid") long poll_id, @Query("poll_choices[][text]") String pollChoiceText, @Query("poll_choices[][is_correct]") boolean isCorrect, Callback<PollChoiceResponse> callback);
+        void createPollChoice(@Path("pollid") long poll_id, @Query("poll_choices[][text]") String pollChoiceText, @Query("poll_choices[][is_correct]") boolean isCorrect, @Query("poll_choices[][position]") int position, Callback<PollChoiceResponse> callback);
 
         @PUT("/polls/{pollid}/poll_choices/{poll_choice_id}")
-        void updatePollChoice(@Path("pollid") long poll_id, @Path("poll_choice_id") long poll_choice_id, @Query("poll_choices[][text]") String pollChoiceText, @Query("poll_choices[][is_correct]") boolean isCorrect, Callback<PollChoiceResponse> callback);
+        void updatePollChoice(@Path("pollid") long poll_id, @Path("poll_choice_id") long poll_choice_id, @Query("poll_choices[][text]") String pollChoiceText, @Query("poll_choices[][is_correct]") boolean isCorrect, @Query("poll_choices[][position]") int position, Callback<PollChoiceResponse> callback);
 
         @DELETE("/polls/{pollid}/poll_choices/{poll_choice_id}")
         void deletePollChoice(@Path("pollid") long poll_id, @Path("poll_choice_id") long poll_choice_id, Callback<Response> callback);
@@ -85,16 +85,16 @@ public class PollChoiceAPI {
         buildInterface(callback).getSinglePollChoice(poll_id, poll_choice_id, callback);
     }
 
-    public static void createPollChoice(long poll_id, String text, boolean is_correct, CanvasCallback<PollChoiceResponse> callback) {
+    public static void createPollChoice(long poll_id, String text, boolean is_correct, int position, CanvasCallback<PollChoiceResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, text, is_correct)) { return; }
 
-        buildInterface(callback).createPollChoice(poll_id, text, is_correct, callback);
+        buildInterface(callback).createPollChoice(poll_id, text, is_correct, position, callback);
     }
 
-    public static void updatePollChoice(long poll_id, long poll_choice_id, String text, boolean is_correct, CanvasCallback<PollChoiceResponse> callback) {
+    public static void updatePollChoice(long poll_id, long poll_choice_id, String text, boolean is_correct, int position, CanvasCallback<PollChoiceResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_choice_id, text, is_correct)) { return; }
 
-        buildInterface(callback).updatePollChoice(poll_id, poll_choice_id, text, is_correct, callback);
+        buildInterface(callback).updatePollChoice(poll_id, poll_choice_id, text, is_correct, position, callback);
     }
 
     public static void deletePollChoice(long poll_id, long poll_choice_id, CanvasCallback<Response> callback) {

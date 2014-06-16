@@ -16,6 +16,8 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
     private long id;
     private boolean is_correct;
     private String text;
+    private long poll_id;
+    private int position;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -45,6 +47,21 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
         this.text = text;
     }
 
+    public long getPollId() {
+        return poll_id;
+    }
+
+    public void setPollId(long poll_id) {
+        this.poll_id = poll_id;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -55,12 +72,13 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
 
     @Override
     public int compareTo(PollChoice pollChoice) {
-        return CanvasComparable.compare(this.getText(),pollChoice.getText());
+        return CanvasComparable.compare(this.getPosition(),pollChoice.getPosition());
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
+
 
     @Override
     public int describeContents() {
@@ -72,6 +90,8 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
         dest.writeLong(this.id);
         dest.writeByte(is_correct ? (byte) 1 : (byte) 0);
         dest.writeString(this.text);
+        dest.writeLong(this.poll_id);
+        dest.writeInt(this.position);
     }
 
     public PollChoice() {
@@ -81,9 +101,11 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
         this.id = in.readLong();
         this.is_correct = in.readByte() != 0;
         this.text = in.readString();
+        this.poll_id = in.readLong();
+        this.position = in.readInt();
     }
 
-    public static Parcelable.Creator<PollChoice> CREATOR = new Parcelable.Creator<PollChoice>() {
+    public static Creator<PollChoice> CREATOR = new Creator<PollChoice>() {
         public PollChoice createFromParcel(Parcel source) {
             return new PollChoice(source);
         }
