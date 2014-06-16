@@ -47,11 +47,11 @@ public class PollChoice extends CanvasComparable<PollChoice> implements Parcelab
         this.text = text;
     }
 
-    public long getPoll_id() {
+    public long getPollId() {
         return poll_id;
     }
 
-    public void setPoll_id(long poll_id) {
+    public void setPollId(long poll_id) {
         this.poll_id = poll_id;
     }
 

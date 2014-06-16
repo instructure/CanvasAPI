@@ -13,11 +13,11 @@ public class PollChoiceResponse extends CanvasComparable<PollChoiceResponse> imp
 
     List<PollChoice> poll_choices = new ArrayList<PollChoice>();
 
-    public List<PollChoice> getPoll_choices() {
+    public List<PollChoice> getPollChoices() {
         return poll_choices;
     }
 
-    public void setPoll_choices(List<PollChoice> poll_choices) {
+    public void setPollChoices(List<PollChoice> poll_choices) {
         this.poll_choices = poll_choices;
     }
 

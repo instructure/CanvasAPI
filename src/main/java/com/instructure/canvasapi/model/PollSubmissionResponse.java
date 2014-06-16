@@ -13,11 +13,11 @@ public class PollSubmissionResponse extends CanvasComparable<PollSubmissionRespo
 
     private List<PollSubmission> poll_submissions = new ArrayList<PollSubmission>();
 
-    public List<PollSubmission> getPoll_submissions() {
+    public List<PollSubmission> getPollSubmissions() {
         return poll_submissions;
     }
 
-    public void setPoll_submissions(List<PollSubmission> poll_submissions) {
+    public void setPollSubmissions(List<PollSubmission> poll_submissions) {
         this.poll_submissions = poll_submissions;
     }
 
