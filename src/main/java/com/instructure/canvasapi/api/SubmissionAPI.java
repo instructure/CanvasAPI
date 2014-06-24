@@ -41,6 +41,10 @@ public class SubmissionAPI {
         return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
     }
 
+    private static String getSubmissionsForMultipleStudents(CanvasContext canvasContext, String ids) {
+        return canvasContext.toAPIString() + "/students/submissions?include[]=assignment" + ids;
+    }
+
 
     public interface SubmissionsInterface {
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments")
@@ -60,6 +64,9 @@ public class SubmissionAPI {
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment&include[]=submission_comments&include[]=submission_history")
         void getSubmissionWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("submissionID") long userID, Callback<Submission> callback);
+
+        @GET("/{context_id}/students/submissions?include[]=assignment")
+        void getSubmissionsForMultipleStudents(@Path("context_id") long context_id, @Query("student_ids[]") String ids, Callback<Submission[]> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[text_comment]") String comment, Callback<Submission> callback);
@@ -170,5 +177,18 @@ public class SubmissionAPI {
         if (APIHelpers.paramIsNull(callback, url)) { return; }
 
         buildInterface(callback, null).getLTIFromAuthenticationURL(url, callback);
+    }
+
+    /**
+     *
+     * @param canvasContext
+     * @param callback
+     * @param ids -- a list of comma separated ids or "all" if you want to get all available submissions
+     */
+    public static void getSubmissionsForMultipleStudents(CanvasContext canvasContext, CanvasCallback<Submission[]> callback, String ids) {
+        if (APIHelpers.paramIsNull(callback, canvasContext, ids)) { return; }
+
+        callback.readFromCache(getSubmissionsForMultipleStudents(canvasContext, ids));
+        buildInterface(callback, canvasContext).getSubmissionsForMultipleStudents(canvasContext.getId(), ids, callback);
     }
 }
