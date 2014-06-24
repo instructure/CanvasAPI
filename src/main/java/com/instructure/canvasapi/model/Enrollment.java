@@ -52,6 +52,10 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     private String computed_current_grade;
     private String computed_final_grade;
 
+    //The unique id of the associated user. Will be null unless type is
+    //ObserverEnrollment.
+    private long associated_user_id;
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -127,6 +131,14 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
             return grades.final_grade;
         }
         return computed_final_grade;
+    }
+
+    public long getAssociated_user_id() {
+        return associated_user_id;
+    }
+
+    public void setAssociated_user_id(long associated_user_id) {
+        this.associated_user_id = associated_user_id;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -208,6 +220,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         dest.writeDouble(this.computed_final_score);
         dest.writeString(this.computed_current_grade);
         dest.writeString(this.computed_final_grade);
+        dest.writeLong(this.associated_user_id);
     }
 
     private Enrollment(Parcel in) {
@@ -223,6 +236,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         this.computed_final_score = in.readDouble();
         this.computed_current_grade = in.readString();
         this.computed_final_grade = in.readString();
+        this.associated_user_id = in.readLong();
     }
 
     public static Parcelable.Creator<Enrollment> CREATOR = new Parcelable.Creator<Enrollment>() {
