@@ -16,6 +16,7 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 	private long id;
 	private String name;
 	private int position;
+    private long group_weight;
 	private List<Assignment> assignments = new ArrayList<Assignment>();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,8 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 	public void setAssignments(List<Assignment> assignments) {
 		this.assignments = assignments;
 	}
+    public long getGroupWeight() { return group_weight; }
+    public void setGroupWeight(long group_weight) {this.group_weight = group_weight;}
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
