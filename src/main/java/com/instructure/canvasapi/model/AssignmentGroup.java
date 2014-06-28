@@ -84,8 +84,8 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
         this.id = in.readLong();
         this.name = in.readString();
         this.position = in.readInt();
-        this.groupWeight = in.readLong();
         in.readList(this.assignments, Assignment.class.getClassLoader());
+        this.groupWeight = in.readLong();
     }
 
     public static Creator<AssignmentGroup> CREATOR = new Creator<AssignmentGroup>() {
