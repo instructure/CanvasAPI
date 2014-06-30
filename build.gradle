@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 apply plugin: 'android-library'
@@ -25,21 +25,22 @@ dependencies {
 
 android {
     compileSdkVersion 17
-    buildToolsVersion "19.1.0"
-
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 16
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
-    
     lintOptions {
         disable 'InvalidPackage'
+    }
+    productFlavors {
+    }
+    buildTypes {
     }
 }
 
@@ -95,9 +96,9 @@ uploadArchives {
 
             developers {
                 developer {
-                    id 'joshr'
-                    name 'Josh Ruesch'
-                    email 'joshr@instructure.com'
+                    id 'tneedham'
+                    name 'Trevor Needham'
+                    email 'tneedham@instructure.com'
                 }
                 developer {
                     id 'nbutton'
