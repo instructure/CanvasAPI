@@ -2,9 +2,11 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
@@ -198,6 +200,8 @@ public class CanvasRestAdapter {
             if(token != null && !token.equals("")){
                 requestFacade.addHeader("Authorization", "Bearer " + token);
             }
+
+            requestFacade.addHeader("Cache-Control", "no-cache");
             //HTTP referer (originally a misspelling of referrer) is an HTTP header field that identifies the address of the webpage that linked to the resource being requested
             //Source: https://en.wikipedia.org/wiki/HTTP_referer
             //Some schools use an LTI tool called SlideShare that whitelists domains to be able to inject content into assignments
