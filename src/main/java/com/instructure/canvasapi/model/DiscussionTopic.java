@@ -65,7 +65,7 @@ public class DiscussionTopic implements Parcelable {
     //MUCH faster for lookups.
     //So instead of n linear operations, we have 1 linear operations and (n-1) constant ones.
     public HashMap<Long,DiscussionParticipant> getParticipantsMap(){
-        if(participantsMap == null){
+        if(participantsMap == null || participantsMap.isEmpty()){
             participantsMap = new HashMap<Long, DiscussionParticipant>();
             if(participants != null){
                 for(DiscussionParticipant discussionParticipant : participants){
