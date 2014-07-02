@@ -63,20 +63,20 @@ public class CourseAPI {
                           @Query("course[license]") String license, @Query("course[is_public]") Integer isPublic,
                           CanvasCallback<Course> callback);
 
-        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public")
+        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count")
         void getCourse(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public")
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count")
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/{next}")
+        @GET("/{next}?&include[]=needs_grading_count")
         void getNextPageCourses(@EncodedPath("next") String nextURL, CanvasCallback<Course[]> callback);
 
-        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
+        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
 
         @POST("/users/self/favorites/courses/{courseId}")
