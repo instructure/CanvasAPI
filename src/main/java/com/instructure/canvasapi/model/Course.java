@@ -30,6 +30,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private String license;
     private Term term;
     private List<Enrollment> enrollments = new ArrayList<Enrollment>();
+    private long needs_grading_count;
 
     // Helper variables
     private Double currentScore;
@@ -246,6 +247,8 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         }
     }
 
+    public long getNeedsGradingCount() { return needs_grading_count; }
+    public void setNeedsGradingCount(long needs_grading_count) { this.needs_grading_count = needs_grading_count; }
 
     /**
      * License
@@ -357,6 +360,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
         dest.writeString(this.default_view);
         dest.writeSerializable(this.permissions);
+        dest.writeLong(this.needs_grading_count);
     }
 
     private Course(Parcel in) {
@@ -380,6 +384,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.isFavorite = in.readByte() != 0;
         this.default_view = in.readString();
         this.permissions = (CanvasContextPermission) in.readSerializable();
+        this.needs_grading_count = in.readLong();
     }
 
     public static Creator<Course> CREATOR = new Creator<Course>() {
