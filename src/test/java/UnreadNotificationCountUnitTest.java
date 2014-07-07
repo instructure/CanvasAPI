@@ -1,17 +1,16 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.UnreadNotificationCount;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-/**
- * Created by Josh Ruesch on 9/18/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class UnreadNotificationCountTest extends InstrumentationTestCase {
+import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(RobolectricGradleTestRunner.class)
+public class UnreadNotificationCountUnitTest extends Assert {
+
+    @Test
     public void testUnreadNotificationCount() {
         String unreadNotificationCountJSON = "[{\"type\":\"Announcement\",\"count\":1,\"unread_count\":1,\"notification_category\":\"null\"},{\"type\":\"DiscussionTopic\",\"count\":17,\"unread_count\":9,\"notification_category\":\"null\"},{\"type\":\"Message\",\"count\":10,\"unread_count\":10,\"notification_category\":\"Due Date\"},{\"type\":\"Message\",\"count\":8,\"unread_count\":10,\"notification_category\":\"Late Grading\"},{\"type\":\"Submission\",\"count\":5,\"unread_count\":10,\"notification_category\":\"null\"}]";
         Gson gson = CanvasRestAdapter.getGSONParser();

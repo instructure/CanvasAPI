@@ -8,9 +8,11 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
     }
 }
 apply plugin: 'android-library'
+apply plugin: 'robolectric'
 
 dependencies {
     compile('com.mobprofs:retrofit-simplexmlconverter:+') {
@@ -21,6 +23,10 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.5.1'
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
+
+    androidTestCompile 'junit:junit:4.10'
+    androidTestCompile 'org.robolectric:robolectric:2.2+'
+    androidTestCompile 'com.squareup:fest-android:1.0.+'
 }
 
 android {
@@ -41,6 +47,10 @@ android {
     productFlavors {
     }
     buildTypes {
+    }
+
+    sourceSets {
+        androidTest.setRoot('src/tests')
     }
 }
 

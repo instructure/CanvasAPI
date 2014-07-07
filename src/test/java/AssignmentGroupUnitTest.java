@@ -1,17 +1,16 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-/**
- * Created by Josh Ruesch on 9/18/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class AssignmentGroupUnitTest extends InstrumentationTestCase {
+import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(RobolectricGradleTestRunner.class)
+public class AssignmentGroupUnitTest extends Assert {
+
+    @Test
     public void testAssignmentGroup() {
         String assignmentGroupJSON = "[\n" +
                 "{\n" +

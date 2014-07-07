@@ -1,18 +1,14 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.ModuleObject;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import junit.framework.Assert;
 
-/**
- * Created by Josh Ruesch on 12/5/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class ModuleObjectTest extends InstrumentationTestCase {
+import org.junit.Test;
 
+public class ModuleObjectUnitTest extends Assert {
+
+    @Test
     public void testModuleObject() {
 
         String moduleObjectJSON = "[\n" +

@@ -1,17 +1,16 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.ModuleItem;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-/**
- * Created by Josh Ruesch on 9/18/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class ModuleItemTest extends InstrumentationTestCase {
+import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(RobolectricGradleTestRunner.class)
+public class ModuleItemUnitTest extends Assert {
+
+    @Test
     public void testModuleItem() {
         String moduleItemJSON = "[\n" +
                 "{\n" +
@@ -76,6 +75,7 @@ public class ModuleItemTest extends InstrumentationTestCase {
                 "}\n" +
                 "}\n" +
                 "]";
+
         Gson gson = CanvasRestAdapter.getGSONParser();
         ModuleItem[] moduleItems = gson.fromJson(moduleItemJSON, ModuleItem[].class);
 
