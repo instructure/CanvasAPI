@@ -1,19 +1,18 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.model.SubmissionComment;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-/**
- * Created by Josh Ruesch on 9/18/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class SubmissionTest extends InstrumentationTestCase {
+import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(RobolectricGradleTestRunner.class)
+public class SubmissionUnitTest extends Assert{
+
+    @Test
     public void testSubmission() {
         String submissionJson = "{\n" +
                 "\"assignment_id\": 2241864,\n" +
