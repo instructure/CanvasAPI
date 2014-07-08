@@ -289,6 +289,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeLong(this.grader_id);
         dest.writeLong(this.assignment_id);
         dest.writeParcelable(this.user, flags);
+        dest.writeList(this.discussion_entries);
     }
 
     private Submission(Parcel in) {
@@ -317,6 +318,7 @@ public class Submission extends CanvasModel<Submission>{
         this.grader_id = in.readLong();
         this.assignment_id = in.readLong();
         this.user = in.readParcelable(User.class.getClassLoader());
+        in.readList(this.discussion_entries, DiscussionEntry.class.getClassLoader());
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
