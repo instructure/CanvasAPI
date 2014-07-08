@@ -45,6 +45,11 @@ public class Submission extends CanvasModel<Submission>{
     private long user_id;
     private long grader_id;
     private User user;
+
+    //this value could be null. Currently will only be returned when getting the submission for
+    //a user when the submission_type is discussion_topic
+    private ArrayList<DiscussionEntry> discussion_entries = new ArrayList<DiscussionEntry>();
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -192,6 +197,14 @@ public class Submission extends CanvasModel<Submission>{
         return assessment;
     }
 
+    public ArrayList<DiscussionEntry> getDiscussion_entries() {
+        return discussion_entries;
+    }
+
+    public void setDiscussion_entries(ArrayList<DiscussionEntry> discussion_entries) {
+        this.discussion_entries = discussion_entries;
+    }
+
     public MediaComment getMediaComment() {
         return media_comment;
     }
@@ -277,6 +290,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeLong(this.assignment_id);
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.media_comment, flags);
+        dest.writeList(this.discussion_entries);
     }
 
     private Submission(Parcel in) {
@@ -306,6 +320,7 @@ public class Submission extends CanvasModel<Submission>{
         this.assignment_id = in.readLong();
         this.user = in.readParcelable(User.class.getClassLoader());
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
+        in.readList(this.discussion_entries, DiscussionEntry.class.getClassLoader());
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
