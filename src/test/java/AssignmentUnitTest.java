@@ -1,6 +1,3 @@
-package com.instructure.canvasapi.test;
-
-import android.test.InstrumentationTestCase;
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.LockInfo;
@@ -8,14 +5,19 @@ import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.RubricCriterionRating;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-/**
- * Created by Josh Ruesch on 9/18/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
-public class AssignmentTest extends InstrumentationTestCase {
+import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.List;
+
+@RunWith(RobolectricGradleTestRunner.class)
+public class AssignmentUnitTest extends Assert {
+
+    @Test
     public void testAssignment() {
+
         String assignmentJSON = "{\n" +
                 "\"assignment_group_id\": 534100,\n" +
                 "\"automatic_peer_reviews\": false,\n" +
@@ -306,6 +308,8 @@ public class AssignmentTest extends InstrumentationTestCase {
                 "\"locked_for_user\": true,\n" +
                 "\"lock_explanation\": \"This assignment is part of the module <b>Locked Prereq</b> and hasn&#39;t been unlocked yet.<br/><a href='/courses/836357/modules'>Visit the course modules page for information on how to unlock this content.</a><a href='/courses/836357/modules/805092/prerequisites/assignment_3546452' style='display: none;' id='module_prerequisites_lookup_link'>&nbsp;</a>\"\n" +
                 "}";
+
+
         Gson gson = CanvasRestAdapter.getGSONParser();
         Assignment assignment = gson.fromJson(assignmentJSON, Assignment.class);
         Assignment rubricAssignment = gson.fromJson(rubricAssignmentJSON, Assignment.class);
@@ -316,9 +320,9 @@ public class AssignmentTest extends InstrumentationTestCase {
         assertEquals(assignment.getPointsPossible(), 30.0);
 
         assertEquals(assignment.getSubmissionTypes().size(), 3);
-        assertTrue(assignment.getSubmissionTypes().get(0).equalsIgnoreCase("online_upload"));
-        assertTrue(assignment.getSubmissionTypes().get(1).equalsIgnoreCase("online_text_entry"));
-        assertTrue(assignment.getSubmissionTypes().get(2).equalsIgnoreCase("media_recording"));
+        assertTrue(assignment.getSubmissionTypes().get(0).toString().equalsIgnoreCase("online_upload"));
+        assertTrue(assignment.getSubmissionTypes().get(1).toString().equalsIgnoreCase("online_text_entry"));
+        assertTrue(assignment.getSubmissionTypes().get(2).toString().equalsIgnoreCase("media_recording"));
 
         assertEquals(assignment.getAllowedExtensions().size(), 3);
         assertTrue(assignment.getAllowedExtensions().get(0).equalsIgnoreCase("doc"));
@@ -327,7 +331,7 @@ public class AssignmentTest extends InstrumentationTestCase {
 
         assertEquals(assignment.getCourseId(), 833052);
 
-       assertNotNull(assignment.getDescription());
+        assertNotNull(assignment.getDescription());
 
         assertNotNull(assignment.getDueDate());
 
@@ -340,8 +344,8 @@ public class AssignmentTest extends InstrumentationTestCase {
 
         assertNotNull(rubricAssignment.getRubric());
 
-        RubricCriterion[] rubricCriterions = rubricAssignment.getRubric();
-        assertEquals(rubricCriterions.length, 3);
+        List<RubricCriterion> rubricCriterions = rubricAssignment.getRubric();
+        assertEquals(rubricCriterions.size(), 3);
         for(RubricCriterion rubricCriterion : rubricCriterions){
             testRubricCriterion(rubricCriterion);
         }
@@ -361,7 +365,7 @@ public class AssignmentTest extends InstrumentationTestCase {
 
         assertNotNull(rubricCriterion.getLongDescription());
 
-       assertTrue(rubricCriterion.getPoints() >= 0);
+        assertTrue(rubricCriterion.getPoints() >= 0);
 
         if(rubricCriterion.getRatings() != null) {
             for(RubricCriterionRating rubricCriterionRating : rubricCriterion.getRatings()){
