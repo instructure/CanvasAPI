@@ -192,11 +192,11 @@ public class Submission extends CanvasModel<Submission>{
         return assessment;
     }
 
-    public MediaComment getMedia_comment() {
+    public MediaComment getMediaComment() {
         return media_comment;
     }
 
-    public void setMedia_comment(MediaComment media_comment) {
+    public void setMediaComment(MediaComment media_comment) {
         this.media_comment = media_comment;
     }
     ///////////////////////////////////////////////////////////////////////////
