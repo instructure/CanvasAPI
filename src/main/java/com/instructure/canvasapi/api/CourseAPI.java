@@ -66,6 +66,9 @@ public class CourseAPI {
         @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count")
         void getCourse(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
+        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=total_scores")
+        void getCourseWithGrade(@Path("courseid") long courseId, CanvasCallback<Course> callback);
+
         @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public")
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
@@ -110,6 +113,13 @@ public class CourseAPI {
 
         callback.readFromCache(getCourseCacheFilename(courseId));
         buildInterface(callback).getCourse(courseId, callback);
+    }
+
+    public static void getCourseWithGrade(long courseId, CanvasCallback<Course> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        callback.readFromCache(getCourseCacheFilename(courseId));
+        buildInterface(callback).getCourseWithGrade(courseId, callback);
     }
 
     public static void getCourseWithSyllabus(long courseId, CanvasCallback<Course> callback) {
