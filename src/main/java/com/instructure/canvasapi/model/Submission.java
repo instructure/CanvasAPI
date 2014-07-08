@@ -44,6 +44,11 @@ public class Submission extends CanvasModel<Submission>{
     private long user_id;
     private long grader_id;
     private User user;
+
+    //this value could be null. Currently will only be returned when getting the submission for
+    //a user when the submission_type is discussion_topic
+    private ArrayList<DiscussionEntry> discussion_entries = new ArrayList<DiscussionEntry>();
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -189,6 +194,14 @@ public class Submission extends CanvasModel<Submission>{
         }
         assessment.setRatings(ratings);
         return assessment;
+    }
+
+    public ArrayList<DiscussionEntry> getDiscussion_entries() {
+        return discussion_entries;
+    }
+
+    public void setDiscussion_entries(ArrayList<DiscussionEntry> discussion_entries) {
+        this.discussion_entries = discussion_entries;
     }
 
     ///////////////////////////////////////////////////////////////////////////
