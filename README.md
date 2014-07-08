@@ -66,34 +66,87 @@ We also provided an interface entitled `ErrorDelegate` that gives you callbacks 
 
 You can also handle errors manually by overriding `public boolean onFailure(RetrofitError RetrofitError)`. This callback allows you to handle errors in API calls before the error delegate methods are called. Returning true from this method means you have successfully handled the error and the error delegate will NOT be called; return false otherwise.
 
+
 ###Using Kaltura
 
 Kaltura has its own flow and half of the calls use a KalturaRestAdapter. To set up the KalturaRestAdapter you first need to make a call to `KalturaAPI.getKalturaConfiguration(kalturaConfigurationCallback)`
-From the callback check that Kaltura is enabled by checking the `KalturaConfig.isEnabled()`. If Kaltura is enabled you then need to save the Kaltura domain by calling `kalturaConfig.getDomain` then make a call to `KalturaAPI.startKalturaSession(kalturaSessionCallback)`
+From the callback check that Kaltura is enabled.
+```java
+kalturaConfigCallback = new CanvasCallback<KalturaConfig>(this) {
+            @Override
+            public void cache(KalturaConfig kalturaConfig) {
+                return;
+            }
 
-`startKalturaSession(kalturaSessionCallback)` will return a KalturaSession object. Using the `kalturaSession.getKs()` and the KalturaDomain you can set up the KalturaRestAdapter.
-```
-//KaKalturaRestAdapter.setupInstance() returns false on error
-if (!KalturaRestAdapter.setupInstance(getContext(), kalturaSession.getKs(), kalturaDomain)) {
+            @Override
+            public void firstPage(KalturaConfig kalturaConfig, LinkHeaders linkHeaders, Response response) {
+
+                if (kalturaConfig.isEnabled()) {
+                  //If Kaltura is Enabled we want to save the domain, then request an session token
+                    kalturaDomain = kalturaConfig.getDomain();
+                    KalturaAPI.startKalturaSession(kalturaSessionCallback);
+                } else {
                     uploadError();
- }
-```
-After you have setup the KaltruaRestAdapter you then will need to make a call to `KalturaAPI.getKalturaUploadToken(kalturaUploadTokenCallback)`. KalturaUploadToken returns an an xml object. To get the uploadtoken
-```
- if (xml.getResult() != null && xml.getResult().getKalturaError() == null) {
-                    kalturaUploadToken = xml.getResult().getId();
-                  }
+                }
+
+            }
+        };
 ```
 
-You are now ready to upload a file to Kaltura.
+`startKalturaSession(kalturaSessionCallback)` will return a KalturaSession object.
+```java
+kalturaSessionCallback = new CanvasCallback<KalturaSession>(this) {
+            @Override
+            public void cache(KalturaSession kalturaSession) {
+                return;
+            }
 
-
+            @Override
+            public void firstPage(KalturaSession kalturaSession, LinkHeaders linkHeaders, Response response) {
+                //Using the Kaltura domain from the previuse call and then the Kaltura Session (ks)
+                //create a KalturaRestAdapter
+                if (!KalturaRestAdapter.setupInstance(getContext(), kalturaSession.getKs(), kalturaDomain)) {
+                  //KalturaRestAdapter.setupInstance() returns false if there is an error Handles this
+                    uploadError();
+                } else {
+                  //Request a uploadToken from the Kaltura server
+                KalturaAPI.getKalturaUploadToken(kalturaUploadTokenCanvasCallback);
+                }
+            }
+        };
 ```
-xml newReturnXml = KalturaAPI.uploadFileAtPathSynchronous(kalturaUploadToken, mediaUri, getContext());
-long assignmentId = assignment.getId
-long userId = APIHelpers.getCacheUser(this).getId
-String mediaId = xml.getResult().getId
-String mediaType = FileUtilities.mediaTypeFromKalturaCode(xml.getResult().getMediaType
+After you have setup the KaltruaRestAdapter you then will need to make a call to `KalturaAPI.getKalturaUploadToken(kalturaUploadTokenCallback)`. Once you have the a KalturaUploadtoken you are ready to upload the file.
+```java
+ kalturaUploadTokenCanvasCallback = new CanvasCallback<xml>(this) {
+            @Override
+            public void cache(xml xml) {
+                return;
+            }
 
-SubmissionAPI.postMediaSubmissionComment(course, assignmentId, userId, mediaId, mediaType, submissionCanvasCallback);
+            @Override
+            public void firstPage(final xml xml, LinkHeaders linkHeaders, Response response) {
+              //Kaltura returns a generic xml object for all responces, this is annoying but we can get around it like so
+                if (xml.getResult() != null && xml.getResult().getKalturaError() == null) {
+
+
+                  kalturaUploadToken = xml.getResult().getId();
+                  //Upload the file.
+                  xml newReturnXml = KalturaAPI.uploadFileAtPathSynchronous(kalturaUploadToken, mediaUri, getContext());
+
+                  if (newReturnXml != null && newReturnXml.getResult() != null){
+                  //After the upload has finished we need to pass data back to canvas.
+                  CanvasContext course = CanvasContext.getGenericContext(CanvasContext.Type.COURSE, assignment.getCourseId(), Const.COURSE);
+                  //The mediaId is what Canvas uses to find the media on the Kaltura server
+                  String mediaId = xml.getResult().getId;
+                  long assignmentId = assignment.getId;
+                  long userId = APIHelpers.getCacheUser(this).getId;
+                  String mediaType = FileUtilities.mediaTypeFromKalturaCode(xml.getResult().getMediaType());
+
+                  SubmissionAPI.postMediaSubmissionComment(course, assignmentId, userId, mediaId, mediaType, submissionCanvasCallback);
+                 } else {
+                  uploadError()
+                }
+            }
+
+        };
 ```
