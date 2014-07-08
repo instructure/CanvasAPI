@@ -37,6 +37,7 @@ public class Submission extends CanvasModel<Submission>{
 	private String preview_url;
 	private String url;
 
+    private MediaComment media_comment;
 
     //Conversation Stuff
     private long assignment_id;
@@ -191,6 +192,13 @@ public class Submission extends CanvasModel<Submission>{
         return assessment;
     }
 
+    public MediaComment getMedia_comment() {
+        return media_comment;
+    }
+
+    public void setMedia_comment(MediaComment media_comment) {
+        this.media_comment = media_comment;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
