@@ -1,5 +1,7 @@
 package com.instructure.canvasapi.api;
 
+import android.util.Log;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -35,6 +37,9 @@ public class PageAPI {
 
         @GET("/{context_id}/pages/{pageid}")
         void getDetailedPage(@Path("context_id") long context_id, @Path("pageid") String page_id, Callback<Page> callback);
+
+        @GET("/{context_id}/front_page")
+        void getFrontPage(@Path("context_id") long context_id, Callback<Page> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -69,5 +74,11 @@ public class PageAPI {
 
         callback.readFromCache(getDetailedPageCacheFilename(canvasContext,page_id));
         buildInterface(callback, canvasContext).getDetailedPage(canvasContext.getId(), page_id, callback);
+    }
+
+    public static void getFrontPage(CanvasContext canvasContext, CanvasCallback<Page> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
     }
 }
