@@ -28,6 +28,10 @@ public class PageAPI {
         return canvasContext.toAPIString() + "/pages/"+pageID;
     }
 
+    private static String getFrontPageCacheFilename(CanvasContext canvasContext){
+        return canvasContext.toAPIString() + "/front_page";
+    }
+
     interface PagesInterface {
         @GET("/{context_id}/pages")
         void getFirstPagePagesList(@Path("context_id") long context_id, Callback<Page[]> callback);
@@ -79,6 +83,7 @@ public class PageAPI {
     public static void getFrontPage(CanvasContext canvasContext, CanvasCallback<Page> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
+        callback.readFromCache(getFrontPageCacheFilename(canvasContext));
         buildInterface(callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
     }
 }
