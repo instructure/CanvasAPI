@@ -1,4 +1,5 @@
 # built application files #
+build/
 *.apk
 *.ap_
 
@@ -13,7 +14,7 @@ bin/
 gen/
 target
 
-# Local configuration file (sdk path, etc) #
+# Local configuration file #
 local.properties
 
 # Windows thumbnail db #
@@ -26,11 +27,9 @@ Thumbs.db
 .classpath
 .project
 
-# Android Studio #
-.idea/workspace.xml
-.idea/tasks.xml
-.gradle
-build/
+# Android Studio and Intellij #
+.idea/
+*.iml
 *.iws
 
 # Package Files #
@@ -38,13 +37,10 @@ build/
 *.war
 *.ear
 
+# Gradle Files #
+.gradle
+gradle.properties
+release_build/.gradle
+
 # Project Files #
 .gitconfig
-
-# Gradle Files #
-gradle.properties
-.gradle/1.6/taskArtifacts/
-.gradle/1.8/taskArtifacts/
-.gradle/1.10/taskArtifacts/
-.gradle/1.11/taskArtifacts/
-.gradle/1.12/taskArtifacts/
