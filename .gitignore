@@ -28,13 +28,8 @@ Thumbs.db
 .project
 
 # Android Studio and Intellij #
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/libraries
-
-# For IDEA 13, fixed in IDEA 14 #
-.idea/datasources.xml
-.idea/dataSources.ids
+.idea/
+*.iml
 *.iws
 
 # Package Files #
@@ -46,3 +41,6 @@ Thumbs.db
 .gradle
 gradle.properties
 release_build/.gradle
+
+# Project Files #
+.gitconfig
