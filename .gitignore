@@ -46,3 +46,6 @@ Thumbs.db
 .gradle
 gradle.properties
 release_build/.gradle
+
+# Project Files #
+.gitconfig
