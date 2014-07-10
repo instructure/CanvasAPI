@@ -57,6 +57,15 @@ public class MediaComment extends CanvasComparable<MediaComment>{
         return content_type;
     }
 
+    public String getFileName(){
+       if(media_id == null || url == null){
+           return null;
+       }
+
+       String[] split = url.split("=");
+       return media_id + "."+split[split.length-1];
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
