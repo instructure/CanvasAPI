@@ -1,5 +1,37 @@
-# Java Files#
+# built application files #
+*.apk
+*.ap_
+
+# files for the dex VM #
+*.dex
+
+# Java class files #
 *.class
+
+# generated files #
+bin/
+gen/
+target
+
+# Local configuration file (sdk path, etc) #
+local.properties
+
+# Windows thumbnail db #
+Thumbs.db
+
+# OSX files #
+.DS_Store
+
+# Eclipse project files #
+.classpath
+.project
+
+# Android Studio #
+.idea/workspace.xml
+.idea/tasks.xml
+.gradle
+build/
+*.iws
 
 # Package Files #
 *.jar
@@ -8,14 +40,11 @@
 
 # Project Files #
 .gitconfig
-.DS_Store
+
+# Gradle Files #
 gradle.properties
-.idea/
 .gradle/1.6/taskArtifacts/
 .gradle/1.8/taskArtifacts/
 .gradle/1.10/taskArtifacts/
-/local.properties
-bin
-gen
-build
-target
+.gradle/1.11/taskArtifacts/
+.gradle/1.12/taskArtifacts/
