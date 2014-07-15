@@ -12,10 +12,12 @@ public class UnreadConversationCountUnitTest extends Assert {
 
     @Test
     public void testUnreadConversationCount() {
-        String unreadConversationCountJSON = "{\"unread_count\":\"3\"}";
         Gson gson = CanvasRestAdapter.getGSONParser();
         UnreadConversationCount unreadConversationCount = gson.fromJson(unreadConversationCountJSON, UnreadConversationCount.class);
 
         assertEquals(unreadConversationCount.getUnreadCount(), "3");
     }
+
+    String unreadConversationCountJSON = "{\"unread_count\":\"3\"}";
+
 }
