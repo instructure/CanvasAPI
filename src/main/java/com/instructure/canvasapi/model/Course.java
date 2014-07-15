@@ -31,6 +31,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private Term term;
     private List<Enrollment> enrollments = new ArrayList<Enrollment>();
     private long needs_grading_count;
+    private boolean apply_assignment_group_weights;
 
     // Helper variables
     private Double currentScore;
@@ -61,7 +62,6 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public void setId(long id) {
         this.id = id;
     }
-
 
     public void setName(String name) {
         this.name = name;
@@ -250,6 +250,10 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public long getNeedsGradingCount() { return needs_grading_count; }
     public void setNeedsGradingCount(long needs_grading_count) { this.needs_grading_count = needs_grading_count; }
 
+    public void setApplyAssignmentGroupWeights(boolean b){ apply_assignment_group_weights = b;}
+
+    public boolean getApplyAssignmentGroupWeights(){ return apply_assignment_group_weights; }
+
     /**
      * License
      */
@@ -361,6 +365,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeString(this.default_view);
         dest.writeSerializable(this.permissions);
         dest.writeLong(this.needs_grading_count);
+        dest.writeByte(apply_assignment_group_weights ? (byte) 1 : (byte) 0);
     }
 
     private Course(Parcel in) {
@@ -386,6 +391,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.default_view = in.readString();
         this.permissions = (CanvasContextPermission) in.readSerializable();
         this.needs_grading_count = in.readLong();
+        this.apply_assignment_group_weights = in.readByte() != 0;
     }
 
     public static Creator<Course> CREATOR = new Creator<Course>() {
