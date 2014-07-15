@@ -50,7 +50,7 @@ android {
     }
 
     sourceSets {
-        androidTest.setRoot('src/tests')
+        androidTest.setRoot('src/test')
     }
 }
 
@@ -109,11 +109,6 @@ uploadArchives {
                     id 'tneedham'
                     name 'Trevor Needham'
                     email 'tneedham@instructure.com'
-                }
-                developer {
-                    id 'nbutton'
-                    name 'Nathan Button'
-                    email 'nbutton@instructure.com'
                 }
                 developer {
                     id 'brady'
