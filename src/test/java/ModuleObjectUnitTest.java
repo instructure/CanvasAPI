@@ -10,64 +10,6 @@ public class ModuleObjectUnitTest extends Assert {
 
     @Test
     public void testModuleObject() {
-
-        String moduleObjectJSON = "[\n" +
-                "{\n" +
-                "\"id\": 1059720,\n" +
-                "\"name\": \"Beginners\",\n" +
-                "\"position\": 1,\n" +
-                "\"unlock_at\": null,\n" +
-                "\"require_sequential_progress\": false,\n" +
-                "\"prerequisite_module_ids\": [],\n" +
-                "\"state\": \"started\",\n" +
-                "\"completed_at\": null,\n" +
-                "\"items_count\": 4,\n" +
-                "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059720/items\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"id\": 1059721,\n" +
-                "\"name\": \"Advanced\",\n" +
-                "\"position\": 2,\n" +
-                "\"unlock_at\": \"2013-07-31T06:00:00Z\",\n" +
-                "\"require_sequential_progress\": false,\n" +
-                "\"prerequisite_module_ids\": [\n" +
-                "1059720\n" +
-                "],\n" +
-                "\"state\": \"locked\",\n" +
-                "\"completed_at\": null,\n" +
-                "\"items_count\": 1,\n" +
-                "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059721/items\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"id\": 1059722,\n" +
-                "\"name\": \"User Interface\",\n" +
-                "\"position\": 3,\n" +
-                "\"unlock_at\": null,\n" +
-                "\"require_sequential_progress\": false,\n" +
-                "\"prerequisite_module_ids\": [\n" +
-                "1059721\n" +
-                "],\n" +
-                "\"state\": \"locked\",\n" +
-                "\"completed_at\": null,\n" +
-                "\"items_count\": 0,\n" +
-                "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059722/items\"\n" +
-                "},\n" +
-                "{\n" +
-                "\"id\": 1059723,\n" +
-                "\"name\": \"Jelly Bean\",\n" +
-                "\"position\": 4,\n" +
-                "\"unlock_at\": null,\n" +
-                "\"require_sequential_progress\": false,\n" +
-                "\"prerequisite_module_ids\": [\n" +
-                "1059722\n" +
-                "],\n" +
-                "\"state\": \"locked\",\n" +
-                "\"completed_at\": null,\n" +
-                "\"items_count\": 0,\n" +
-                "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059723/items\"\n" +
-                "}\n" +
-                "]";
-
         Gson gson = CanvasRestAdapter.getGSONParser();
 
         ModuleObject[] moduleObjects = gson.fromJson(moduleObjectJSON, ModuleObject[].class);
@@ -94,4 +36,61 @@ public class ModuleObjectUnitTest extends Assert {
             }
         }
     }
+
+    String moduleObjectJSON = "[\n" +
+            "{\n" +
+            "\"id\": 1059720,\n" +
+            "\"name\": \"Beginners\",\n" +
+            "\"position\": 1,\n" +
+            "\"unlock_at\": null,\n" +
+            "\"require_sequential_progress\": false,\n" +
+            "\"prerequisite_module_ids\": [],\n" +
+            "\"state\": \"started\",\n" +
+            "\"completed_at\": null,\n" +
+            "\"items_count\": 4,\n" +
+            "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059720/items\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"id\": 1059721,\n" +
+            "\"name\": \"Advanced\",\n" +
+            "\"position\": 2,\n" +
+            "\"unlock_at\": \"2013-07-31T06:00:00Z\",\n" +
+            "\"require_sequential_progress\": false,\n" +
+            "\"prerequisite_module_ids\": [\n" +
+            "1059720\n" +
+            "],\n" +
+            "\"state\": \"locked\",\n" +
+            "\"completed_at\": null,\n" +
+            "\"items_count\": 1,\n" +
+            "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059721/items\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"id\": 1059722,\n" +
+            "\"name\": \"User Interface\",\n" +
+            "\"position\": 3,\n" +
+            "\"unlock_at\": null,\n" +
+            "\"require_sequential_progress\": false,\n" +
+            "\"prerequisite_module_ids\": [\n" +
+            "1059721\n" +
+            "],\n" +
+            "\"state\": \"locked\",\n" +
+            "\"completed_at\": null,\n" +
+            "\"items_count\": 0,\n" +
+            "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059722/items\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"id\": 1059723,\n" +
+            "\"name\": \"Jelly Bean\",\n" +
+            "\"position\": 4,\n" +
+            "\"unlock_at\": null,\n" +
+            "\"require_sequential_progress\": false,\n" +
+            "\"prerequisite_module_ids\": [\n" +
+            "1059722\n" +
+            "],\n" +
+            "\"state\": \"locked\",\n" +
+            "\"completed_at\": null,\n" +
+            "\"items_count\": 0,\n" +
+            "\"items_url\": \"https://mobiledev.instructure.com/api/v1/courses/833052/modules/1059723/items\"\n" +
+            "}\n" +
+            "]";
 }
