@@ -14,31 +14,9 @@ public class CalenderEventUnitTest extends Assert {
     @Test
     public void testCalenderEvent(){
         Gson gson = CanvasRestAdapter.getGSONParser();
-        ScheduleItem[] list = gson.fromJson(upcomingEventsJSON, ScheduleItem[].class);
         ScheduleItem scheduleItem = gson.fromJson(calenderEventJSON, ScheduleItem.class);
 
-        assertNotNull(list);
-
-        ScheduleItem listScheduleItem = list[0];
-
-        //list item
-
-        if(listScheduleItem.isAllDay()){
-            assertNotNull(listScheduleItem.getAllDayDate());
-        }else{
-            assertFalse(listScheduleItem.isAllDay());
-            assertNull(listScheduleItem.getAllDayDate());
-        }
-
-        assertTrue(listScheduleItem.getId() > 0);
-        assertNotNull(listScheduleItem.getStartDate());
-        assertNotNull(listScheduleItem.getEndDate());
-        assertNotNull(listScheduleItem.getLocationName());
-        assertNotNull(listScheduleItem.getTitle());
-        assertNotNull(listScheduleItem.getDescription());
-        assertNotNull(listScheduleItem.getLocationAddress ());
-
-        //individually requested item
+        assertNotNull(scheduleItem);
 
         if(scheduleItem.isAllDay()){
             assertNotNull(scheduleItem.getAllDayDate());
@@ -56,9 +34,37 @@ public class CalenderEventUnitTest extends Assert {
         assertNotNull(scheduleItem.getLocationAddress());
     }
 
+    @Test
+    public void testCalenderEventList(){
+        Gson gson = CanvasRestAdapter.getGSONParser();
+        ScheduleItem[] list = gson.fromJson(upcomingEventsJSON, ScheduleItem[].class);
+
+        assertNotNull(list);
+
+        ScheduleItem listScheduleItem = list[0];
+
+        if(listScheduleItem.isAllDay()){
+            assertNotNull(listScheduleItem.getAllDayDate());
+        }else{
+            assertFalse(listScheduleItem.isAllDay());
+            assertNull(listScheduleItem.getAllDayDate());
+        }
+
+        assertTrue(listScheduleItem.getId() > 0);
+        assertNotNull(listScheduleItem.getStartDate());
+        assertNotNull(listScheduleItem.getEndDate());
+        assertNotNull(listScheduleItem.getLocationName());
+        assertNotNull(listScheduleItem.getTitle());
+        assertNotNull(listScheduleItem.getDescription());
+        assertNotNull(listScheduleItem.getLocationAddress ());
+    }
 
 
 
+
+    //vanilla event request
+    //@GET("/calendar_events/{event_id}")
+    //void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
     final String calenderEventJSON = "{\n" +
             "\"all_day\": false,\n" +
             "\"all_day_date\": null,\n" +
@@ -81,6 +87,9 @@ public class CalenderEventUnitTest extends Assert {
             "\"html_url\": \"https://mobiledev.instructure.com/calendar?event_id=1935799&include_contexts=user_5814789#7b2273686f77223a2267726f75705f757365725f35383134373839227d\"\n" +
             "}";
 
+    //upcoming events request
+    //@GET("/users/self/upcoming_events")
+    //ScheduleItem[] getUpcomingEvents();
     final String upcomingEventsJSON = "[\n" +
             "{\n" +
             "\"all_day\": false,\n" +
