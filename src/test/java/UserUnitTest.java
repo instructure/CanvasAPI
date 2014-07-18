@@ -12,8 +12,6 @@ public class UserUnitTest extends Assert {
 
     @Test
     public void testUser() {
-        String userJSON = "{\"id\":1111,\"name\":\"Sam Franklen\",\"short_name\":\"Samf\",\"sortable_name\":\"Franklen, Sam\",\"login_id\":\"login_id\",\"avatar_url\":\"https://www.example.com\",\"title\":null,\"bio\":null,\"primary_email\":\"primary_email\",\"time_zone\":\"America/Denver\",\"calendar\":{\"ics\":\"https://mobiledev.instructure.com/feeds/calendars/user_8JCkdINx6RO3dB8Ao5aPQCJO49p8XUpCbZgmqk7X.ics\"}}";
-
         Gson gson = CanvasRestAdapter.getGSONParser();
         User user = gson.fromJson(userJSON, User.class);
 
@@ -29,4 +27,6 @@ public class UserUnitTest extends Assert {
 
         assertEquals(user.getShortName(),"Samf");
     }
+
+    String userJSON = "{\"id\":1111,\"name\":\"Sam Franklen\",\"short_name\":\"Samf\",\"sortable_name\":\"Franklen, Sam\",\"login_id\":\"login_id\",\"avatar_url\":\"https://www.example.com\",\"title\":null,\"bio\":null,\"primary_email\":\"primary_email\",\"time_zone\":\"America/Denver\",\"calendar\":{\"ics\":\"https://mobiledev.instructure.com/feeds/calendars/user_8JCkdINx6RO3dB8Ao5aPQCJO49p8XUpCbZgmqk7X.ics\"}}";
 }

@@ -12,7 +12,6 @@ public class UnreadNotificationCountUnitTest extends Assert {
 
     @Test
     public void testUnreadNotificationCount() {
-        String unreadNotificationCountJSON = "[{\"type\":\"Announcement\",\"count\":1,\"unread_count\":1,\"notification_category\":\"null\"},{\"type\":\"DiscussionTopic\",\"count\":17,\"unread_count\":9,\"notification_category\":\"null\"},{\"type\":\"Message\",\"count\":10,\"unread_count\":10,\"notification_category\":\"Due Date\"},{\"type\":\"Message\",\"count\":8,\"unread_count\":10,\"notification_category\":\"Late Grading\"},{\"type\":\"Submission\",\"count\":5,\"unread_count\":10,\"notification_category\":\"null\"}]";
         Gson gson = CanvasRestAdapter.getGSONParser();
         UnreadNotificationCount[] unreadNotificationCount = gson.fromJson(unreadNotificationCountJSON, UnreadNotificationCount[].class);
 
@@ -28,4 +27,7 @@ public class UnreadNotificationCountUnitTest extends Assert {
             assertNotNull(unc.getType());
         }
     }
+
+    String unreadNotificationCountJSON = "[{\"type\":\"Announcement\",\"count\":1,\"unread_count\":1,\"notification_category\":\"null\"},{\"type\":\"DiscussionTopic\",\"count\":17,\"unread_count\":9,\"notification_category\":\"null\"},{\"type\":\"Message\",\"count\":10,\"unread_count\":10,\"notification_category\":\"Due Date\"},{\"type\":\"Message\",\"count\":8,\"unread_count\":10,\"notification_category\":\"Late Grading\"},{\"type\":\"Submission\",\"count\":5,\"unread_count\":10,\"notification_category\":\"null\"}]";
+
 }
