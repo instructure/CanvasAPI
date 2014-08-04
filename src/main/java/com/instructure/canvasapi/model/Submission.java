@@ -20,6 +20,8 @@ public class Submission extends CanvasModel<Submission>{
     private long id;
 	private String grade;
 	private double score;
+    private long attempt;
+
 	private String submitted_at;
 
 	private ArrayList<SubmissionComment> submission_comments = new ArrayList<SubmissionComment>();
@@ -139,7 +141,7 @@ public class Submission extends CanvasModel<Submission>{
 	public ArrayList<Submission> getSubmissionHistory() {
 	    return submission_history;
 	}
-	public ArrayList<Attachment> getAttachments() {
+    public ArrayList<Attachment> getAttachments() {
         return attachments;
     } 
     public void setAttachments(ArrayList<Attachment> attachments) {
@@ -205,13 +207,16 @@ public class Submission extends CanvasModel<Submission>{
         this.discussion_entries = discussion_entries;
     }
 
-    public MediaComment getMediaComment() {
-        return media_comment;
-    }
-
+    public MediaComment getMediaComment() { return media_comment; }
     public void setMediaComment(MediaComment media_comment) {
         this.media_comment = media_comment;
     }
+
+    public long getAttempt() { return attempt; }
+    public void setAttempt(long attempt) {
+        this.attempt = attempt;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -291,6 +296,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.media_comment, flags);
         dest.writeList(this.discussion_entries);
+        dest.writeLong(this.attempt);
     }
 
     private Submission(Parcel in) {
@@ -321,6 +327,7 @@ public class Submission extends CanvasModel<Submission>{
         this.user = in.readParcelable(User.class.getClassLoader());
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         in.readList(this.discussion_entries, DiscussionEntry.class.getClassLoader());
+        this.attempt = in.readLong();
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
