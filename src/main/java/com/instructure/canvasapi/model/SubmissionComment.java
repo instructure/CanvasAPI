@@ -86,7 +86,10 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
 
     @Override
     public Date getComparisonDate() {
-        return null;
+        if(created_at == null) {
+            return null;
+        }
+        return APIHelpers.stringToDate(created_at);
     }
 
     @Override
