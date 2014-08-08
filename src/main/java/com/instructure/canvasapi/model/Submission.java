@@ -70,8 +70,8 @@ public class Submission extends CanvasModel<Submission>{
 	public ArrayList<SubmissionComment> getComments() {
 		return submission_comments;
 	}
-	public void setComment(ArrayList<SubmissionComment> comment) {
-		this.submission_comments = comment;
+	public void setComments(ArrayList<SubmissionComment> comments) {
+		this.submission_comments = comments;
 	}
 	public Date getCommentCreated() {
 		return commentCreated;
