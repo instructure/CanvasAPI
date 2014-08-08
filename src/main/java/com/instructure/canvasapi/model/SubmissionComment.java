@@ -49,6 +49,14 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
         }
 		return created_at;
 	}
+
+    public Date getCreatedAtDate(){
+        if(created_at == null) {
+            return null;
+        }
+        return APIHelpers.stringToDate(created_at);
+    }
+
 	public MediaComment getMedia_comment() {
 		return media_comment;
 	}
@@ -86,7 +94,7 @@ public class SubmissionComment extends CanvasComparable<SubmissionComment> imple
 
     @Override
     public Date getComparisonDate() {
-        return null;
+        return getCreatedAtDate();
     }
 
     @Override
