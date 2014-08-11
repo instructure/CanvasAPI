@@ -48,16 +48,16 @@ public class SubmissionAPI {
 
 
     public interface SubmissionsInterface {
-        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments")
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments")
         void getSubmissionsWithComments(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_history")
         void getSubmissionsWithHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
-        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history")
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments&include[]=submission_history")
         void getSubmissionsWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
-        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment&include[]=user")
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments&include[]=submission_history&include[]=rubric_assessment&include[]=user")
         void getSubmissionsWithCommentsHistoryAndRubric(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment")

@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.instructure.canvasapi.R;
-
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +26,16 @@ public class DateHelpers {
 
     public static Format getPreferredDateFormat(Context context) {
         return android.text.format.DateFormat.getMediumDateFormat(context);
+    }
+
+    public static Format getShortDateFormat(Context context){
+        return android.text.format.DateFormat.getDateFormat(context);
+    }
+
+    public static String getShortDate(Context context, Date date){
+        Format format = getShortDateFormat(context);
+        String sFormat = format.format(date.getTime());
+        return sFormat;
     }
 
     public static String getFormattedDate(Context context, Date date) {
