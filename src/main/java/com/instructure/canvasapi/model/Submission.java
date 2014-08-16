@@ -184,6 +184,7 @@ public class Submission extends CanvasModel<Submission>{
     public void setUrl(String url) {
         this.url = url;
     }
+
     public RubricAssessment getRubricAssessment() {
         RubricAssessment assessment = new RubricAssessment();
         ArrayList<RubricCriterionRating> ratings = new ArrayList<RubricCriterionRating>();
@@ -192,11 +193,14 @@ public class Submission extends CanvasModel<Submission>{
                 RubricCriterionRating rating = entry.getValue();
                 rating.setCriterionId(entry.getKey());
                 ratings.add(rating);
-
             }
         }
         assessment.setRatings(ratings);
         return assessment;
+    }
+
+    public void setRubricAssessment(HashMap<String,RubricCriterionRating> ratings){
+        this.rubric_assessment = ratings;
     }
 
     public ArrayList<DiscussionEntry> getDiscussion_entries() {
