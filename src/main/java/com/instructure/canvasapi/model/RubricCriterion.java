@@ -95,31 +95,92 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
         return id != null ? id.hashCode() : 0;
     }
 
-    public void markGrade(RubricCriterionRating rating) {
-        for (RubricCriterionRating criterionRating : ratings) {
-            if (criterionRating.getPoints() == rating.getPoints()) {
-                criterionRating.setGrade(true);
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+    public RubricCriterionRating getGradedCriterionRating(){
+        for(RubricCriterionRating rating : ratings){
+            if(rating.isGrade()){
+                return rating;
             }
         }
+        return null;
+    }
 
+    /**
+     *  Freeform rubric comments in canvas may contain RubricCriterionRatings not included in the assignment rubric.
+     *  @return true if the rubric assessment contains a rating for the provided rubric criterion
+     */
+    public  boolean containsRubricCriterionRating(String ratingId, List<RubricCriterionRating> criterionRatings){
+        for(RubricCriterionRating rating : criterionRatings){
+            if(rating.getId().equals(ratingId)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void markGradeByPoints(double points){
+        for (RubricCriterionRating criterionRating : ratings) {
+            if (criterionRating.getPoints() == points) {
+                criterionRating.setGrade(true);
+            }else{
+                criterionRating.setGrade(false);
+            }
+        }
+    }
+
+    public void handleComments(RubricCriterionRating rating){
         if (rating.isComment() && !ratings.contains(rating)) {
             rating.setRatingDescription(rating.getComments());
             ratings.add(rating);
         }
+    }
 
+    public void markGrade(RubricCriterionRating rating) {
+        markGradeByPoints(rating.getPoints());
+        handleComments(rating);
     }
 
 
+    public void markFreeformGrade(RubricCriterionRating rating, RubricCriterion criterion) {
+        if(containsRubricCriterionRating(rating.getCriterionId(), criterion.getRatings())){
+            markGradeByPoints(rating.getPoints());
+        }
+        else{
+            rating.setGrade(true);
+            ratings.add(rating);
+        }
+
+        handleComments(rating);
+    }
 
     public void markGrades(RubricAssessment rubricAssessment, List<RubricCriterion> criteria) {
-        if (rubricAssessment == null) {
-            return;
-        }
+        if (rubricAssessment == null) { return; }
 
         for (RubricCriterionRating rating : rubricAssessment.getRatings()) {
             for (RubricCriterion criterion : criteria) {
                 if (criterion.getId().equals(rating.getCriterionId())) {
                     criterion.markGrade(rating);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void markGrades(RubricAssessment rubricAssessment, List<RubricCriterion> criteria, boolean isFreeFormComment) {
+        if (rubricAssessment == null) { return; }
+
+        for (RubricCriterionRating rating : rubricAssessment.getRatings()) {
+            for (RubricCriterion criterion : criteria) {
+                if (criterion.getId().equals(rating.getCriterionId())) {
+                    if(isFreeFormComment){
+                        criterion.markFreeformGrade(rating, criterion);
+                    }
+                    else{
+                        criterion.markGrade(rating);
+                    }
+                    break;
                 }
             }
         }

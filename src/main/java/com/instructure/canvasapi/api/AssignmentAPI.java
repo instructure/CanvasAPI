@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.Conversation;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -47,6 +49,9 @@ public class AssignmentAPI {
 
         @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment")
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
+
+        @GET("/{next}")
+        void getNextpageAssignmentsList(@EncodedPath("next") String nextURL, Callback<Assignment[]>callback);
 
         @GET("/courses/{course_id}/assignment_groups")
         void getAssignmentGroupList(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
@@ -92,6 +97,13 @@ public class AssignmentAPI {
 
         callback.readFromCache(getAssignmentsListCacheFilename(courseID));
         buildInterface(callback, null).getAssignmentsList(courseID, callback);
+    }
+
+    public static void getNextPageAssignmentsList(CanvasCallback<Assignment[]> callback, String nextURL){
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        buildInterface(callback, null).getNextpageAssignmentsList(nextURL, callback);
     }
 
     public static void getAssignmentGroupsList(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {

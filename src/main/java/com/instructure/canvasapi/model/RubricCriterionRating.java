@@ -22,7 +22,8 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
 	private double points;
 	private String comments;
     private boolean isGrade;
-
+    private boolean isFreeFormComment;
+    private double maxPoints;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -51,6 +52,12 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
 	public void setPoints(double points) {
 		this.points = points;
 	}
+    public double getMaxPoints() {
+        return maxPoints;
+    }
+    public void setMaxPoints(double points) {
+        this.maxPoints = points;
+    }
 	public String getComments() {
 		return comments;
 	}
@@ -63,7 +70,12 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
     public void setGrade(boolean grade) {
         isGrade = grade;
     }
-
+    public void setIsFreeFormComment(boolean isFreeFormComment){
+        this.isFreeFormComment = isFreeFormComment;
+    }
+    public boolean isFreeFormComment(){
+        return this.isFreeFormComment;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -105,7 +117,6 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
-
     public boolean isComment() {
         return getComments() != null && !getComments().equals("");
     }
@@ -133,6 +144,8 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
         dest.writeDouble(this.points);
         dest.writeString(this.comments);
         dest.writeByte(isGrade ? (byte) 1 : (byte) 0);
+        dest.writeByte(isFreeFormComment ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.maxPoints);
     }
 
     private RubricCriterionRating(Parcel in) {
@@ -142,6 +155,8 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
         this.points = in.readDouble();
         this.comments = in.readString();
         this.isGrade = in.readByte() != 0;
+        this.isFreeFormComment = in.readByte() != 0;
+        this.maxPoints = in.readDouble();
     }
 
     public static Creator<RubricCriterionRating> CREATOR = new Creator<RubricCriterionRating>() {
