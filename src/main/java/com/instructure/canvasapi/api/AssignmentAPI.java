@@ -41,8 +41,6 @@ public class AssignmentAPI {
         return  "/courses/" + courseID + "/assignments_groups";
     }
 
-
-
     public interface AssignmentsInterface {
         @GET("/courses/{course_id}/assignments/{assignmentid}")
         void getAssignment(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<Assignment> callback);
@@ -51,7 +49,7 @@ public class AssignmentAPI {
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
 
         @GET("/{next}")
-        void getNextpageAssignmentsList(@EncodedPath("next") String nextURL, Callback<Assignment[]>callback);
+        void getNextPageAssignmentsList(@EncodedPath("next") String nextURL, Callback<Assignment[]>callback);
 
         @GET("/courses/{course_id}/assignment_groups")
         void getAssignmentGroupList(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
@@ -103,7 +101,7 @@ public class AssignmentAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextpageAssignmentsList(nextURL, callback);
+        buildInterface(callback, null).getNextPageAssignmentsList(nextURL, callback);
     }
 
     public static void getAssignmentGroupsList(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
