@@ -52,6 +52,7 @@ public class Assignment extends CanvasModel<Assignment>{
 
     private HashMap<Long, Integer> needs_grading_per_section_map = new HashMap<Long, Integer>();
 
+    private boolean free_form_criterion_comments;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -123,8 +124,8 @@ public class Assignment extends CanvasModel<Assignment>{
         setSubmissionTypes(listSubmissionTypes);
     }
 
-    public long getNeeds_grading_count() {return needs_grading_count;}
-    public void setNeeds_grading_count(long needs_grading_count) { this.needs_grading_count = needs_grading_count; }
+    public long getNeedsGradingCount() {return needs_grading_count;}
+    public void setNeedsGradingCount(long needs_grading_count) { this.needs_grading_count = needs_grading_count; }
 
     public double getPointsPossible() {
 		return points_possible;
@@ -242,9 +243,17 @@ public class Assignment extends CanvasModel<Assignment>{
         this.peer_reviews = peer_reviews;
     }
 
-    public HashMap<Long, Integer> getNeeds_grading_per_section_map() { return needs_grading_per_section_map; }
+    public HashMap<Long, Integer> getNeedsGradingPerSectionMap() { return needs_grading_per_section_map; }
 
-    public void setNeeds_grading_per_section_map(HashMap<Long, Integer> needs_grading_per_section_map) { this.needs_grading_per_section_map = needs_grading_per_section_map; }
+    public void setNeedsGradingPerSectionMap(HashMap<Long, Integer> needs_grading_per_section_map) { this.needs_grading_per_section_map = needs_grading_per_section_map; }
+
+    public boolean isFreeFormCriterionComments() {
+        return free_form_criterion_comments;
+    }
+
+    public void setFreeFormCriterionComments(boolean free_form_criterion_comments) {
+        this.free_form_criterion_comments = free_form_criterion_comments;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -271,6 +280,7 @@ public class Assignment extends CanvasModel<Assignment>{
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
     public static final SUBMISSION_TYPE[] ONLINE_SUBMISSIONS = {SUBMISSION_TYPE.ONLINE_UPLOAD, SUBMISSION_TYPE.ONLINE_URL, SUBMISSION_TYPE.ONLINE_TEXT_ENTRY, SUBMISSION_TYPE.MEDIA_RECORDING};
+
 
 
     public enum TURN_IN_TYPE {ONLINE, ON_PAPER, NONE, DISCUSSION, QUIZ, EXTERNAL_TOOL}
@@ -560,7 +570,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeParcelable(this.discussion_topic, flags);
         dest.writeLong(this.needs_grading_count);
         dest.writeMap(this.needs_grading_per_section_map);
-
+        dest.writeByte(free_form_criterion_comments ? (byte) 1 : (byte) 0);
     }
 
     private Assignment(Parcel in) {
@@ -593,6 +603,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.discussion_topic = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
         this.needs_grading_count = in.readLong();
         this.needs_grading_per_section_map = in.readHashMap(HashMap.class.getClassLoader());
+        this.free_form_criterion_comments = in.readByte() != 0;
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {

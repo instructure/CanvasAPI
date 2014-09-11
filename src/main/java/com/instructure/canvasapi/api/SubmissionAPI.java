@@ -2,11 +2,20 @@ package com.instructure.canvasapi.api;
 
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.LTITool;
+import com.instructure.canvasapi.model.Rubric;
+import com.instructure.canvasapi.model.RubricAssessment;
+import com.instructure.canvasapi.model.RubricCriterion;
+import com.instructure.canvasapi.model.RubricCriterionRating;
 import com.instructure.canvasapi.model.StudentSubmission;
 import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.*;
@@ -91,6 +100,8 @@ public class SubmissionAPI {
         @GET("/{path}")
         void getLTIFromAuthenticationURL(@EncodedPath("path") String url, Callback<LTITool> callback);
 
+        @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
+        void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, Callback<Submission> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -211,4 +222,22 @@ public class SubmissionAPI {
         callback.readFromCache(getSubmissionsForMultipleStudents(canvasContext, ids));
         buildInterface(callback, canvasContext).getSubmissionsAndGradesForMultipleStudents(canvasContext.getId(), ids, callback);
     }
+
+    public static void postSubmissionRubricAssessmentMap(CanvasContext canvasContext, RubricAssessment rubricAssessment, long assignmentId, long userId, CanvasCallback<Submission> callback){
+        if (APIHelpers.paramIsNull(canvasContext, rubricAssessment, callback)){return;}
+
+        buildInterface(callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), callback);
+    }
+
+    private static Map<String, String> generateRubricAssessmentQueryMap(RubricAssessment rubricAssessment){
+        Map<String, String> map = new HashMap<String, String>();
+        for (RubricCriterionRating entry : rubricAssessment.getRatings()) {
+            map.put("rubric_assessment[" +entry.getCriterionId() +"][points]", String.valueOf(entry.getPoints()));
+            if(entry.getComments() != null && entry.getComments() != ""){
+                map.put("rubric_assessment[" +entry.getCriterionId() +"][comments]", entry.getComments());
+            }
+        }
+        return map;
+    }
+
 }
