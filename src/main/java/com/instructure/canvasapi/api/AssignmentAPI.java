@@ -45,7 +45,7 @@ public class AssignmentAPI {
         @GET("/courses/{course_id}/assignments/{assignmentid}")
         void getAssignment(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<Assignment> callback);
 
-        @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment")
+        @GET("/courses/{course_id}/assignments&include[]=rubric_assessment?include[]=submission&needs_grading_count_by_section=true")
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
 
         @GET("/{next}")

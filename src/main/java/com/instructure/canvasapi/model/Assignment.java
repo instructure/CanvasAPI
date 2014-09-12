@@ -50,8 +50,7 @@ public class Assignment extends CanvasModel<Assignment>{
 
     private DiscussionTopicHeader discussion_topic;
 
-    private HashMap<Long, Integer> needs_grading_per_section_map = new HashMap<Long, Integer>();
-
+    private List<NeedsGradingCount> needs_grading_count_by_section = new ArrayList<NeedsGradingCount>();
     private boolean free_form_criterion_comments;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -243,9 +242,13 @@ public class Assignment extends CanvasModel<Assignment>{
         this.peer_reviews = peer_reviews;
     }
 
-    public HashMap<Long, Integer> getNeedsGradingPerSectionMap() { return needs_grading_per_section_map; }
+    public List<NeedsGradingCount> getNeedsGradingCountBySection(){
+        return needs_grading_count_by_section;
+    }
 
-    public void setNeedsGradingPerSectionMap(HashMap<Long, Integer> needs_grading_per_section_map) { this.needs_grading_per_section_map = needs_grading_per_section_map; }
+    public void setNeedsGradingCountBySection(List<NeedsGradingCount> needs_grading_count_by_section){
+        this.needs_grading_count_by_section = needs_grading_count_by_section;
+    }
 
     public boolean isFreeFormCriterionComments() {
         return free_form_criterion_comments;
@@ -569,7 +572,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeString(this.unlock_at);
         dest.writeParcelable(this.discussion_topic, flags);
         dest.writeLong(this.needs_grading_count);
-        dest.writeMap(this.needs_grading_per_section_map);
+        dest.writeList(this.needs_grading_count_by_section);
         dest.writeByte(free_form_criterion_comments ? (byte) 1 : (byte) 0);
     }
 
@@ -602,7 +605,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.unlock_at = in.readString();
         this.discussion_topic = in.readParcelable(DiscussionTopicHeader.class.getClassLoader());
         this.needs_grading_count = in.readLong();
-        this.needs_grading_per_section_map = in.readHashMap(HashMap.class.getClassLoader());
+        in.readList(this.needs_grading_count_by_section, NeedsGradingCount.class.getClassLoader());
         this.free_form_criterion_comments = in.readByte() != 0;
     }
 
