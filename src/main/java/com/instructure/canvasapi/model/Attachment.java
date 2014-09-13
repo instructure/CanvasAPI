@@ -24,10 +24,10 @@ public class Attachment extends CanvasModel<Attachment> {
     private String url;
     private String thumbnail_url;
     private String preview_url;
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public long getId(){
         return id;
