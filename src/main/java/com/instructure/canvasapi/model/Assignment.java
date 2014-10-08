@@ -52,6 +52,10 @@ public class Assignment extends CanvasModel<Assignment>{
 
     private List<NeedsGradingCount> needs_grading_count_by_section = new ArrayList<NeedsGradingCount>();
     private boolean free_form_criterion_comments;
+
+    private boolean published;
+
+    private long group_category_id;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -257,7 +261,21 @@ public class Assignment extends CanvasModel<Assignment>{
     public void setFreeFormCriterionComments(boolean free_form_criterion_comments) {
         this.free_form_criterion_comments = free_form_criterion_comments;
     }
+    public boolean isPublished() {
+        return published;
+    }
 
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public long getGroupCategoryId(){
+        return this.group_category_id;
+    }
+
+    public void setGroupCategoryId(long groupId){
+        this.group_category_id = groupId;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -574,6 +592,8 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeLong(this.needs_grading_count);
         dest.writeList(this.needs_grading_count_by_section);
         dest.writeByte(free_form_criterion_comments ? (byte) 1 : (byte) 0);
+        dest.writeByte(published ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.group_category_id);
     }
 
     private Assignment(Parcel in) {
@@ -607,6 +627,8 @@ public class Assignment extends CanvasModel<Assignment>{
         this.needs_grading_count = in.readLong();
         in.readList(this.needs_grading_count_by_section, NeedsGradingCount.class.getClassLoader());
         this.free_form_criterion_comments = in.readByte() != 0;
+        this.published = in.readByte() != 0;
+        this.group_category_id = in.readLong();
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {

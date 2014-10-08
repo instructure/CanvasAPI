@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import android.content.Context;
 
 import com.instructure.canvasapi.model.Group;
+import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -46,6 +47,14 @@ public class GroupAPI {
         return "/users/courses/"+courseID+"/allgroups";
     }
 
+    private static String getGroupUsersCacheFilename(long courseID) {
+        return "/groups/"+courseID+"/users";
+    }
+
+    private static String getGroupUsersWithAvatarsCacheFilename(long courseID) {
+        return "/groups/"+courseID+"/users?include[]=avatar_url";
+    }
+
     interface GroupsInterface {
         @GET("/users/self/groups")
         void getFirstPageGroups(CanvasCallback<Group[]> callback);
@@ -58,6 +67,12 @@ public class GroupAPI {
 
         @GET("/groups/{groupid}?include[]=permissions")
         void getDetailedGroup(@Path("groupid") long groupId, CanvasCallback<Group> callback);
+
+        @GET("/groups/{groupid}/users")
+        void getGroupUsers(@Path("groupid") long groupId, CanvasCallback<User[]> callback);
+
+        @GET("/groups/{groupid}/users?include[]=avatar_url")
+        void getGroupUsersWithAvatars(@Path("groupid") long groupId, CanvasCallback<User[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -131,6 +146,20 @@ public class GroupAPI {
 
         callback.readFromCache(getGroupCacheFilename(groupId));
         buildInterface(callback).getDetailedGroup(groupId,callback);
+    }
+
+    public static void getGroupUsers(long groupId, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(groupId, callback)) return;
+
+        callback.readFromCache(getGroupUsersCacheFilename(groupId));
+        buildInterface(callback).getGroupUsers(groupId,callback);
+    }
+
+    public static void getGroupUsersWithAvatars(long groupId, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(groupId, callback)) return;
+
+        callback.readFromCache(getGroupUsersWithAvatarsCacheFilename(groupId));
+        buildInterface(callback).getGroupUsersWithAvatars(groupId,callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
