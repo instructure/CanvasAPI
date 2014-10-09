@@ -218,7 +218,9 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             return;
         }
 
-        new CacheData(t, response).execute((Serializable)t);
+        if(t instanceof Serializable) {
+            new CacheData(t, response).execute((Serializable) t);
+        }
     }
 
     /**
