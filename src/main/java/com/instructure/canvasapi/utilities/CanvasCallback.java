@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import com.instructure.canvasapi.model.CanvasError;
 import retrofit.Callback;
@@ -153,17 +154,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * @param path
      */
     public void readFromCache(String path) {
-        try {
-            Serializable serializable = FileUtilities.FileToSerializable(getContext(), path);
-            if (serializable != null && getContext() != null) {
-                cache((T) serializable);
-            }
-        } catch (Exception E) {
-            Log.e(APIHelpers.LOG_TAG,"NO CACHE: " + path);
-        }
-        setHasReadFromCache(true);
-        setShouldCache(path);
-        statusDelegate.onCallbackFinished(SOURCE.CACHE);
+        new ReadCacheData().execute(path);
     }
 
     public boolean deleteCache(){
@@ -227,23 +218,9 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             return;
         }
 
-        LinkHeaders linkHeaders = APIHelpers.parseLinkHeaderResponse(getContext(), response.getHeaders());
-
-        if (shouldCache() && !isNextPage && getContext() != null) {
-            try {
-                Serializable serializable = (Serializable) t;
-                FileUtilities.SerializableToFile(getContext(), cacheFileName, serializable);
-            } catch (Exception E) {
-            }
+        if(t instanceof Serializable) {
+            new CacheData(t, response).execute((Serializable) t);
         }
-
-        if(isNextPage){
-            nextPage(t, linkHeaders, response);
-        }else {
-            firstPage(t, linkHeaders, response);
-        }
-
-        finishLoading();
     }
 
     /**
@@ -317,6 +294,75 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
         public boolean isCache(){
             return this == CACHE;
+        }
+    }
+
+    private class CacheData extends AsyncTask<Serializable, Void, LinkHeaders> {
+
+        private T t;
+        private Response response;
+
+        public CacheData(T t, Response response) {
+            this.t = t;
+            this.response = response;
+        }
+
+        @Override
+        protected LinkHeaders doInBackground(Serializable... params) {
+            LinkHeaders linkHeaders = APIHelpers.parseLinkHeaderResponse(getContext(), response.getHeaders());
+
+            if (shouldCache() && !isNextPage && getContext() != null) {
+                try {
+                    FileUtilities.SerializableToFile(getContext(), cacheFileName, params[0]);
+                } catch (Exception E) {
+                    Log.e(APIHelpers.LOG_TAG, "Could not cache serializable: " + E);
+                }
+            }
+
+            return linkHeaders;
+        }
+
+        @Override
+        protected void onPostExecute(LinkHeaders linkHeaders) {
+            super.onPostExecute(linkHeaders);
+
+            if(isNextPage){
+                nextPage(t, linkHeaders, response);
+            }else {
+                firstPage(t, linkHeaders, response);
+            }
+
+            finishLoading();
+        }
+    }
+
+    private class ReadCacheData extends AsyncTask<String, Void, Serializable> {
+
+        private String path = null;
+
+        @Override
+        protected Serializable doInBackground(String... params) {
+            path = params[0];
+            try {
+                return FileUtilities.FileToSerializable(getContext(), path);
+            } catch (Exception E) {
+                Log.e(APIHelpers.LOG_TAG, "NO CACHE: " + path);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Serializable serializable) {
+            super.onPostExecute(serializable);
+
+            if (serializable != null && getContext() != null) {
+                cache((T) serializable);
+            }
+
+            setHasReadFromCache(true);
+            setShouldCache(path);
+            statusDelegate.onCallbackFinished(SOURCE.CACHE);
         }
     }
 }

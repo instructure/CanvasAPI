@@ -13,7 +13,7 @@ import java.util.List;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionTopic implements Parcelable {
+public class DiscussionTopic implements Parcelable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
