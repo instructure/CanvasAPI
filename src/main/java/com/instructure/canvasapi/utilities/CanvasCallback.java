@@ -3,12 +3,14 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.instructure.canvasapi.model.CanvasError;
+
+import java.io.Serializable;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import java.io.Serializable;
 
 /**
  * CanvasCallback is a parameterized class that handles pagination and caching automatically.
@@ -218,9 +220,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             return;
         }
 
-        if(t instanceof Serializable) {
-            new CacheData(t, response).execute((Serializable) t);
-        }
+        new CacheData(t, response).execute(t);
     }
 
     /**
@@ -297,7 +297,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         }
     }
 
-    private class CacheData extends AsyncTask<Serializable, Void, LinkHeaders> {
+    private class CacheData extends AsyncTask<T, Void, LinkHeaders> {
 
         private T t;
         private Response response;
@@ -308,14 +308,16 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         }
 
         @Override
-        protected LinkHeaders doInBackground(Serializable... params) {
+        protected LinkHeaders doInBackground(T... params) {
             LinkHeaders linkHeaders = APIHelpers.parseLinkHeaderResponse(getContext(), response.getHeaders());
 
             if (shouldCache() && !isNextPage && getContext() != null) {
-                try {
-                    FileUtilities.SerializableToFile(getContext(), cacheFileName, params[0]);
-                } catch (Exception E) {
-                    Log.e(APIHelpers.LOG_TAG, "Could not cache serializable: " + E);
+                if(t instanceof Serializable) {
+                    try {
+                        FileUtilities.SerializableToFile(getContext(), cacheFileName, (Serializable)params[0]);
+                    } catch (Exception E) {
+                        Log.e(APIHelpers.LOG_TAG, "Could not cache serializable: " + E);
+                    }
                 }
             }
 
