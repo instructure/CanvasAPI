@@ -166,6 +166,8 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
             prefix = "course";
         } else if (getType() == Type.GROUP) {
             prefix = "group";
+        } else if(getType() == Type.USER) {
+            prefix = "user";
         }
 
         return prefix + "_" + getId();
