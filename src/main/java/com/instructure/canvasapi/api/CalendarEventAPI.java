@@ -125,9 +125,9 @@ public class CalendarEventAPI {
 
     public static void getAlCalendarEvents(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
 
+        //Builds an array of context_codes, the way we have to build and send the array is funky.
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < canvasContextIds.size(); i++) {
             sb.append(canvasContextIds.get(i));
