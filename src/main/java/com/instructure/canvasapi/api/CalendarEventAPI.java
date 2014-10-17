@@ -6,9 +6,13 @@ import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import java.util.ArrayList;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.EncodedPath;
+import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -19,6 +23,17 @@ import retrofit.http.Query;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 public class CalendarEventAPI {
+
+    public enum EVENT_TYPE {CALENDAR_EVENT, ASSIGNMENT_EVENT;
+
+        public static String getEventTypeName(EVENT_TYPE eventType) {
+            if(eventType == CALENDAR_EVENT) {
+                return "event";
+            } else {
+                return "assignment";
+            }
+        }
+    }
 
     private static String getCalendarEventCacheFilename(long eventID) {
         return "/calendar_events/" + eventID;
@@ -44,6 +59,15 @@ public class CalendarEventAPI {
 
         @GET("/{next}")
         void getNextPageCalendarEvents(@EncodedPath("next") String nextURL, Callback<ScheduleItem[]> callback);
+
+        @GET("/calendar_events/")
+        void getCalendarEvents(
+                @Query("all_events") boolean allEvents,
+                @Query("type") String type,
+                @Query("start_date") String startDate,
+                @Query("end_date") String endDate,
+                @EncodedQuery("context_codes[]") String contextCodes,
+                Callback<ScheduleItem[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -99,6 +123,22 @@ public class CalendarEventAPI {
         buildInterface(callback).getNextPageCalendarEvents(nextURL, callback);
     }
 
+    public static void getAlCalendarEvents(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
+
+        //Builds an array of context_codes, the way we have to build and send the array is funky.
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < canvasContextIds.size(); i++) {
+            sb.append(canvasContextIds.get(i));
+
+            if(i == canvasContextIds.size() - 1) {
+                break;
+            }
+            sb.append("&context_codes[]=");
+        }
+        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, sb.toString(), callback);
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // Synchronous
