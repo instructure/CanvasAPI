@@ -1,10 +1,6 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.instructure.canvasapi.model.CalendarEvent;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
