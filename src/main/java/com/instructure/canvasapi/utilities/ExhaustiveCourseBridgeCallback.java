@@ -23,8 +23,8 @@ public class ExhaustiveCourseBridgeCallback extends CanvasCallback<Course[]> {
     CanvasCallback<Course[]> finalCourseCallback;
     ArrayList<Course> allCourses = new ArrayList<Course>();
 
-    public ExhaustiveCourseBridgeCallback(APIStatusDelegate apiStatusDelegate, CanvasCallback<Course[]> finalCourseCallback){
-        super(apiStatusDelegate);
+    public ExhaustiveCourseBridgeCallback(CanvasCallback<Course[]> finalCourseCallback){
+        super(finalCourseCallback.getStatusDelegate());
         this.finalCourseCallback = finalCourseCallback;
     }
 

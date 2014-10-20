@@ -109,7 +109,7 @@ public class GroupAPI {
         if(APIHelpers.paramIsNull(callback)) return;
 
         //Create a bridge.
-        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(APIHelpers.statusDelegateWithContext(callback.getContext()), callback);
+        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
 
         //This should handle caching of ALL elements automatically.
         callback.readFromCache(getAllGroupsCacheFilename());
@@ -127,7 +127,7 @@ public class GroupAPI {
         if (APIHelpers.paramIsNull(callback)) return;
 
         //Create a bridge.
-        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(APIHelpers.statusDelegateWithContext(callback.getContext()), callback);
+        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
 
 
         callback.readFromCache(getAllGroupsInCourseCacheFilename(courseID));
