@@ -108,6 +108,43 @@ public class UploadFileSynchronousAPI {
         }
     }
 
+    public static String postBackDrop(String imageName, long size, String contentType, String path, Context context){
+        String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&content_type=%s",  imageName, size, contentType);
+        //set parent folder
+        String parentFolder = "&parent_folder_path=profile+pictures";
+        url += parentFolder;
+        //dont overwrite
+        url += "&on_duplicate=rename";
+        APIHttpResponse response = HttpHelpers.httpPost(url, null, context);
+
+        try{
+            ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+            JSONObject json = new JSONObject(response.responseBody);
+            String uploadUrl = json.getString("upload_url");
+            JSONObject params = json.getJSONObject("upload_params");
+
+            Iterator<?> keys = params.keys();
+
+            while(keys.hasNext()){
+                String currenDynamicKey = (String)keys.next();
+
+                pairs.add(new BasicNameValuePair(currenDynamicKey, params.getString(currenDynamicKey)));
+            }
+
+            File file = new File(path);
+            String postResponse = UploadFileSynchronousAPI.uploadFile(file, uploadUrl, contentType, pairs, context);
+
+            JSONObject object = new JSONObject(postResponse);
+            String backDropUrl = object.getString("url");
+
+            return backDropUrl;
+
+        }catch(Exception E){
+            return null;
+        }
+
+    }
+
     public static Attachment uploadSubmissionFile(long courseId, long assignmentId, String name, long size, String path, String contentType, Activity activity, UploadFilesErrorHandler uploadFilesErrorHandler){
         String url = String.format(Locale.US, "/api/v1/courses/%d/assignments/%d/submissions/self/files?name=%s&size=%d&on_duplicate=rename",  courseId, assignmentId, name, size);
         return uploadFile(url, null, path, contentType, activity, uploadFilesErrorHandler);
