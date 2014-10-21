@@ -7,17 +7,23 @@ package com.instructure.canvasapi.model;
  */
 public class CanvasError {
     private String status;
-    private Error errors;
+    private Error error;
     private String message;
     private String formattedStatus;
     private String errorMessage;
 
+    public static CanvasError createError(String status, String message) {
+        CanvasError error = new CanvasError();
+        error.status = status;
+        error.message = message;
+
+        return error;
+    }
+
     public String getStatus(){
         if (formattedStatus == null) {
-            if (status != null & status.length() > 1) {
-
+            if (status != null && status.length() > 1) {
                 formattedStatus = status.substring(0, 1).toUpperCase() + status.substring(1);
-
             } else {
                 formattedStatus = "";
             }
@@ -33,21 +39,22 @@ public class CanvasError {
         return "";
     }
 
-    public Error getErrors(){
-        return errors;
+    public Error getError(){
+        return error;
     }
 
     @Override
     public String toString() {
         if (errorMessage == null) {
-            if (getStatus().equals("") && errors != null && errors.getMessage().equals("")) {
-
-                errorMessage = getStatus() + ": " + getErrors().getMessage();
-
-
+            if (error != null) {
+                errorMessage = getError().getMessage();
+            } else {
+                errorMessage = getMessage();
             }
-        } else {
-            errorMessage = "";
+
+            if (getStatus().length() > 0) {
+                errorMessage = getStatus() + ": " + errorMessage;
+            }
         }
 
         return errorMessage;
