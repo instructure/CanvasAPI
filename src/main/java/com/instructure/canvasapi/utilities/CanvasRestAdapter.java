@@ -43,6 +43,10 @@ public class CanvasRestAdapter {
             return null;
         }
 
+        if (context instanceof APIStatusDelegate) {
+            ((APIStatusDelegate)context).onCallbackStarted();
+        }
+
         String domain = APIHelpers.getFullDomain(context);
 
         //Can make this check as we KNOW that the setter doesn't allow empty strings.
@@ -93,6 +97,10 @@ public class CanvasRestAdapter {
         //Check for null values or invalid CanvasContext types.
         if(context == null) {
             return null;
+        }
+
+        if (context instanceof APIStatusDelegate) {
+            ((APIStatusDelegate)context).onCallbackStarted();
         }
 
         String domain = APIHelpers.getFullDomain(context);

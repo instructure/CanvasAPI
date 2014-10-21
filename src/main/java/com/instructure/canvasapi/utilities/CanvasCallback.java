@@ -50,6 +50,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         this.hasReadFromCache = hasReadFromCache;
     }
 
+    public APIStatusDelegate getStatusDelegate() {
+        return statusDelegate;
+    }
+
     /**
      * setIsNextPage sets whether you're on the NextPages (2 or more) of pagination.
      * @param nextPage
@@ -63,26 +67,31 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param apiStatusDelegate Delegate to get the context
+     * @param statusDelegate Delegate to get the context
      */
-
-    public CanvasCallback(APIStatusDelegate apiStatusDelegate) {
-        statusDelegate = apiStatusDelegate;
-
-
-        this.errorDelegate = getDefaultErrorDelgate(getContext());
-
-        if(this.errorDelegate == null){
-            Log.e(APIHelpers.LOG_TAG, "WARNING: No ErrorDelegate Set.");
-        }
+    public CanvasCallback(APIStatusDelegate statusDelegate) {
+        setupDelegates(statusDelegate, null);
     }
 
     /**
      * Overload constructor to override default error delegate.
      */
-    public CanvasCallback(APIStatusDelegate apiStatusDelegate, ErrorDelegate errorDelegate){
-        statusDelegate = apiStatusDelegate;
-        this.errorDelegate = errorDelegate;
+    public CanvasCallback(APIStatusDelegate statusDelegate, ErrorDelegate errorDelegate){
+        setupDelegates(statusDelegate, errorDelegate);
+    }
+
+    private void setupDelegates(APIStatusDelegate statusDelegate, ErrorDelegate errorDelegate) {
+        this.statusDelegate = statusDelegate;
+
+        if (errorDelegate == null) {
+            this.errorDelegate = getDefaultErrorDelegate(statusDelegate.getContext());
+        } else {
+            this.errorDelegate = errorDelegate;
+        }
+
+        if(this.errorDelegate == null){
+            Log.e(APIHelpers.LOG_TAG, "WARNING: No ErrorDelegate Set.");
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -94,7 +103,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * @param context
      * @return
      */
-    public static ErrorDelegate getDefaultErrorDelgate(Context context){
+    public static ErrorDelegate getDefaultErrorDelegate(Context context){
         if(defaultErrorDelegate == null ){
             String defaultErrorDelegateClass = APIHelpers.getDefaultErrorDelegateClass(context);
 

@@ -16,12 +16,12 @@ import retrofit.client.Response;
 
 public abstract class UserCallback extends CanvasCallback<User> {
 
-    public UserCallback(APIStatusDelegate apiStatusDelegate) {
-        super(apiStatusDelegate);
+    public UserCallback(APIStatusDelegate statusDelegate) {
+        super(statusDelegate);
     }
 
-    public UserCallback(APIStatusDelegate apiStatusDelegate, ErrorDelegate errorDelegate) {
-        super(apiStatusDelegate, errorDelegate);
+    public UserCallback(APIStatusDelegate statusDelegate, ErrorDelegate errorDelegate) {
+        super(statusDelegate, errorDelegate);
     }
 
     public abstract void cachedUser(User user);

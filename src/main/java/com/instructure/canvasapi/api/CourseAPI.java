@@ -166,7 +166,7 @@ public class CourseAPI {
         if (APIHelpers.paramIsNull(callback)) return;
 
         //Create a bridge.
-        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(APIHelpers.statusDelegateWithContext(callback.getContext()), callback);
+        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(callback);
 
         //This should handle caching of ALL elements automatically.
         callback.readFromCache(getAllFavoriteCoursesCacheFilename());
@@ -177,7 +177,7 @@ public class CourseAPI {
         if (APIHelpers.paramIsNull(callback)) return;
 
         //Create a bridge.
-        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(APIHelpers.statusDelegateWithContext(callback.getContext()), callback);
+        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(callback);
 
         //This should handle caching of ALL elements automatically.
         callback.readFromCache(getAllCoursesCacheFilename());
