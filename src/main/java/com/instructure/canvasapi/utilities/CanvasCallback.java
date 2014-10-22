@@ -277,6 +277,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
                 canvasError = CanvasError.createError("Unexpected Error", "An internal error occurred while attempting to execute a request.");
                 errorDelegate.generalError(retrofitError, canvasError, getContext());
                 break;
+            default:
+                canvasError = CanvasError.createError("Unexpected Error", "An unexpected error occurred.");
+                errorDelegate.generalError(retrofitError, canvasError, getContext());
+                break;
         }
     }
 
