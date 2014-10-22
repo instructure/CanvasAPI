@@ -25,6 +25,6 @@ public interface ErrorDelegate {
     // HTTP 500-600
     public void serverError(RetrofitError error, Context context);
 
-    // HTTP 200 OK but unknown error.
+    // HTTP 200 OK but unknown error or an unexpected error in the retrofit client.
     public void generalError(RetrofitError error, CanvasError canvasError, Context context);
 }
