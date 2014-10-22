@@ -52,14 +52,14 @@ public class CanvasRestAdapter {
         //Can make this check as we KNOW that the setter doesn't allow empty strings.
         if (domain == null || domain.equals("")) {
             Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
-            return new RestAdapter.Builder().setServer("http://invalid.domain.com").build();
+            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
         }
 
         GsonConverter gsonConverter = new GsonConverter(getGSONParser());
 
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
-                .setServer(domain + "/api/v1/") // The base API endpoint.
+                .setEndpoint(domain + "/api/v1/") // The base API endpoint.
                 .setRequestInterceptor(new CanvasRequestInterceptor(context))
                 .setConverter(gsonConverter)
                 .build();
@@ -108,7 +108,7 @@ public class CanvasRestAdapter {
         //Can make this check as we KNOW that the setter doesn't allow empty strings.
         if (domain == null || domain.equals("")) {
             Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
-            return new RestAdapter.Builder().setServer("http://invalid.domain.com").build();
+            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
         }
 
         String apiContext;
@@ -126,7 +126,7 @@ public class CanvasRestAdapter {
 
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
-                .setServer(domain + "/api/v1/" + apiContext) // The base API endpoint.
+                .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
                 .setRequestInterceptor(new CanvasRequestInterceptor(context))
                 .setConverter(gsonConverter)
                 .build();
@@ -149,7 +149,7 @@ public class CanvasRestAdapter {
         String domain = APIHelpers.getFullDomain(context);
 
         return new RestAdapter.Builder()
-                .setServer(domain) // The base API endpoint.
+                .setEndpoint(domain) // The base API endpoint.
                 .setRequestInterceptor(new CanvasRequestInterceptor(context))
                 .build();
     }
@@ -170,7 +170,7 @@ public class CanvasRestAdapter {
 
 
         return new RestAdapter.Builder()
-                .setServer(protocol + "://" + domain) // The base API endpoint.
+                .setEndpoint(protocol + "://" + domain) // The base API endpoint.
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override
                     public void intercept(RequestFacade requestFacade) {

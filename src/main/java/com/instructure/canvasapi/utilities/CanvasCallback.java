@@ -245,6 +245,9 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
         finishLoading();
 
+        Log.e(APIHelpers.LOG_TAG, "ERROR: " + retrofitError.getUrl());
+        Log.e(APIHelpers.LOG_TAG, "ERROR: " + retrofitError.getMessage());
+
         // Return if the failure was already handled
         if (onFailure(retrofitError)) {
             return;
@@ -255,33 +258,45 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             return;
         }
 
-
-        if (retrofitError.isNetworkError()) {
-            if (retrofitError.getMessage() != null && retrofitError.getMessage().contains("authentication challenges")) {
-                errorDelegate.notAuthorizedError(retrofitError, null, getContext());
-            } else {
+        CanvasError canvasError;
+        switch (retrofitError.getKind()) {
+            case CONVERSION:
+                canvasError = CanvasError.createError("Conversion Error", "An exception was thrown while (de)serializing a body");
+                errorDelegate.generalError(retrofitError, canvasError, getContext());
+                break;
+            case HTTP:
+                // A non-200 HTTP status code was received from the server.
+                handleHTTPError(retrofitError);
+                break;
+            case NETWORK:
+                // An IOException occurred while communicating to the server.
                 statusDelegate.onNoNetwork();
                 errorDelegate.noNetworkError(retrofitError, getContext());
-            }
+                break;
+            case UNEXPECTED:
+                canvasError = CanvasError.createError("Unexpected Error", "An internal error occurred while attempting to execute a request.");
+                errorDelegate.generalError(retrofitError, canvasError, getContext());
+                break;
+            default:
+                canvasError = CanvasError.createError("Unexpected Error", "An unexpected error occurred.");
+                errorDelegate.generalError(retrofitError, canvasError, getContext());
+                break;
         }
+    }
 
-
-        Log.e(APIHelpers.LOG_TAG, "ERROR: " + retrofitError.getUrl());
-        Log.e(APIHelpers.LOG_TAG, "ERROR: " + retrofitError.getMessage());
+    private void handleHTTPError(RetrofitError retrofitError) {
+        Response response = retrofitError.getResponse();
+        if (response == null) {
+            return;
+        }
+        Log.e(APIHelpers.LOG_TAG, "Response code: " + response.getStatus());
+        Log.e(APIHelpers.LOG_TAG, "Response body: " + response.getBody());
 
         CanvasError canvasError = null;
         try {
             canvasError = (CanvasError) retrofitError.getBodyAs(CanvasError.class);
         } catch (Exception exception) {
         }
-
-        Response response = retrofitError.getResponse();
-        if (response == null) {
-            return;
-        }
-
-        Log.e(APIHelpers.LOG_TAG, "Response code: " + response.getStatus());
-        Log.e(APIHelpers.LOG_TAG, "Response body: " + response.getBody());
 
         if (response.getStatus() == 200) {
             errorDelegate.generalError(retrofitError, canvasError, getContext());
