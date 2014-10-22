@@ -618,15 +618,13 @@ public class APIHelpers {
 
     public static APIStatusDelegate statusDelegateWithContext(final Context context) {
         return new APIStatusDelegate() {
+            @Override public void onCallbackStarted() { }
             @Override public void onCallbackFinished(CanvasCallback.SOURCE source) { }
-
-            @Override
-            public Context getContext() {
-                return context;
-            }
-
             @Override public void onNoNetwork() { }
 
+            @Override public Context getContext() {
+                return context;
+            }
         };
     }
 

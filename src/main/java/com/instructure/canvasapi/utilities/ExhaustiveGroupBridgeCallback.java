@@ -23,8 +23,8 @@ public class ExhaustiveGroupBridgeCallback extends CanvasCallback<Group[]> {
     CanvasCallback<Group[]> finalGroupCallback;
     ArrayList<Group> allGroups = new ArrayList<Group>();
 
-    public ExhaustiveGroupBridgeCallback(APIStatusDelegate apiStatusDelegate, CanvasCallback<Group[]> finalCourseCallback){
-        super(apiStatusDelegate);
+    public ExhaustiveGroupBridgeCallback(CanvasCallback<Group[]> finalCourseCallback){
+        super(finalCourseCallback.getStatusDelegate());
         this.finalGroupCallback = finalCourseCallback;
     }
 

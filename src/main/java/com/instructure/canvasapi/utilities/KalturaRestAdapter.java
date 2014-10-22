@@ -40,13 +40,13 @@ public class KalturaRestAdapter {
         //Can make this check as we KNOW that the setter doesn't allow empty strings.
         if (domain == null || domain.equals("")) {
             Log.d(APIHelpers.LOG_TAG, "The KalturaRestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
-            return new RestAdapter.Builder().setServer("http://invalid.domain.com").build();
+            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
         }
 
 
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
-                .setServer(domain + "/api_v3/") // The base API endpoint.
+                .setEndpoint(domain + "/api_v3/") // The base API endpoint.
                 .setConverter(new SimpleXmlConverter())
                 .build();
 
