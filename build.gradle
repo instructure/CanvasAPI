@@ -11,7 +11,7 @@ buildscript {
         classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
     }
 }
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 apply plugin: 'robolectric'
 
 dependencies {
@@ -34,11 +34,11 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.1'
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 16
+        targetSdkVersion 21
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -128,6 +128,11 @@ uploadArchives {
                     id 'mrice'
                     name 'Matthew Rice'
                     email 'mrice@instructure.com'
+                }
+                developer {
+                    id 'jdutton'
+                    name 'Joshua Dutton'
+                    email 'jdutton@instructure.com'
                 }
             }
         }
