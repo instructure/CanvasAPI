@@ -1,12 +1,12 @@
 apply plugin: 'android'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.1'
 
     defaultConfig {
-        minSdkVersion 7
-        targetSdkVersion 19
+        minSdkVersion 15
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -20,6 +20,6 @@ android {
 
 dependencies {
     compile 'com.instructure:CanvasAPI:1.0.0@aar'
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:support-v13:21.0.+'
     compile 'com.squareup.retrofit:retrofit:1.2.2'
 }
