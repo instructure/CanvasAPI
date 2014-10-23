@@ -73,13 +73,13 @@ public class CourseAPI {
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/{next}?&include[]=needs_grading_count")
+        @GET("/{next}?&include[]=needs_grading_count&include[]=permissions")
         void getNextPageCourses(@EncodedPath("next") String nextURL, CanvasCallback<Course[]> callback);
 
-        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count")
+        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
 
         @POST("/users/self/favorites/courses/{courseId}")
@@ -91,7 +91,7 @@ public class CourseAPI {
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=permissions")
         Course[] getCoursesSynchronous(@Query("page") int page);
     }
 
