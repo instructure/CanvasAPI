@@ -21,6 +21,7 @@ public class Result implements Parcelable {
       <tags />
       <adminTags />
       <categories />
+      <catoriesIds/>
       <status></status>
       <moderationStatus></moderationStatus>
       <moderationCount></moderationCount>
@@ -138,7 +139,7 @@ public class Result implements Parcelable {
     @Element(required = false)
     private long height;
     @Element(required = false)
-    private long duration;
+    private double duration;
     @Element(required = false)
     private long durationType;
     @Element(required = false)
@@ -162,9 +163,10 @@ public class Result implements Parcelable {
     @Element(required = false)
     private String flavorParamsIds;
     @Element(required = false)
-    private String categoriesIds;
+    //misspelled on Kaltura's side
+    private String catoriesIds;
     @Element(required = false)
-    private long msDuration;
+    private double msDuration;
     @Element(required = false)
     private Error error;
 
@@ -207,7 +209,7 @@ public class Result implements Parcelable {
         this.views = in.readLong();
         this.width = in.readLong();
         this.height = in.readLong();
-        this.duration = in.readLong();
+        this.duration = in.readDouble();
         this.durationType = in.readLong();
         this.mediaType = in.readLong();
         this.conversionQuality = in.readLong();
@@ -219,8 +221,8 @@ public class Result implements Parcelable {
         this.mediaDate = in.readString();
         this.dataUrl = in.readString();
         this.flavorParamsIds = in.readString();
-        this.categoriesIds = in.readString();
-        this.msDuration = in.readLong();
+        this.catoriesIds = in.readString();
+        this.msDuration = in.readDouble();
         this.error = in.readParcelable(Error.class.getClassLoader());
     }
 
@@ -512,11 +514,11 @@ public class Result implements Parcelable {
         this.height = height;
     }
 
-    public long getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 
@@ -609,18 +611,18 @@ public class Result implements Parcelable {
     }
 
     public String getCategoriesIds() {
-        return categoriesIds;
+        return catoriesIds;
     }
 
     public void setCategoriesIds(String categoriesIds) {
-        this.categoriesIds = categoriesIds;
+        this.catoriesIds = categoriesIds;
     }
 
-    public long getMsDuration() {
+    public double getMsDuration() {
         return msDuration;
     }
 
-    public void setMsDuration(long msDuration) {
+    public void setMsDuration(double msDuration) {
         this.msDuration = msDuration;
     }
 
@@ -674,7 +676,7 @@ public class Result implements Parcelable {
                 ", mediaDate='" + mediaDate + '\'' +
                 ", dataUrl='" + dataUrl + '\'' +
                 ", flavorParamsIds='" + flavorParamsIds + '\'' +
-                ", categoriesIds='" + categoriesIds + '\'' +
+                ", catoriesIds='" + catoriesIds + '\'' +
                 ", msDuration=" + msDuration +
                 ", error=" + error +
                 '}';
@@ -722,7 +724,7 @@ public class Result implements Parcelable {
         dest.writeLong(this.views);
         dest.writeLong(this.width);
         dest.writeLong(this.height);
-        dest.writeLong(this.duration);
+        dest.writeDouble(this.duration);
         dest.writeLong(this.durationType);
         dest.writeLong(this.mediaType);
         dest.writeLong(this.conversionQuality);
@@ -734,8 +736,8 @@ public class Result implements Parcelable {
         dest.writeString(this.mediaDate);
         dest.writeString(this.dataUrl);
         dest.writeString(this.flavorParamsIds);
-        dest.writeString(this.categoriesIds);
-        dest.writeLong(this.msDuration);
+        dest.writeString(this.catoriesIds);
+        dest.writeDouble(this.msDuration);
         dest.writeParcelable(this.error, flags);
     }
 }
