@@ -503,7 +503,7 @@ public class Assignment extends CanvasModel<Assignment>{
         }
     }
 
-    public enum GRADING_TYPE {PASS_FAIL, PERCENT, LETTER_GRADE, POINTS}
+    public enum GRADING_TYPE {PASS_FAIL, PERCENT, LETTER_GRADE, POINTS, GPA_SCALE}
 
     public static GRADING_TYPE getGradingTypeFromString(String gradingType, Context context){
         if(gradingType.equals("pass_fail") || gradingType.equals(context.getString(R.string.canvasAPI_passFail))){
@@ -514,7 +514,9 @@ public class Assignment extends CanvasModel<Assignment>{
             return GRADING_TYPE.LETTER_GRADE;
         } else if (gradingType.equals("points") || gradingType.equals(context.getString(R.string.canvasAPI_points))){
             return GRADING_TYPE.POINTS;
-        } else {
+        } else if (gradingType.equals("gpa_scale") || gradingType.equals(context.getString(R.string.canvasAPI_gpaScale))){
+            return GRADING_TYPE.GPA_SCALE;
+        }else {
             return null;
         }
     }
@@ -527,7 +529,9 @@ public class Assignment extends CanvasModel<Assignment>{
             return GRADING_TYPE.LETTER_GRADE;
         } else if (gradingType.equals("points")){
             return GRADING_TYPE.POINTS;
-        } else {
+        } else if (gradingType.equals("gpa_scale")){
+            return GRADING_TYPE.GPA_SCALE;
+        } else{
             return null;
         }
     }
