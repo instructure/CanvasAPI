@@ -29,6 +29,8 @@
     <string name="canvasAPI_percent">Percent</string>
     <string name="canvasAPI_letterGrade">Letter Grade</string>
     <string name="canvasAPI_points">Points</string>
+    <string name="canvasAPI_gpaScale">GPA Scale</string>
+    <string name="canvasAPI_notGraded">Not Graded</string>
 
     <string name="canvasAPI_onlineQuiz">Online Quiz</string>
     <string name="canvasAPI_discussionTopic">Discussion Topic</string>
