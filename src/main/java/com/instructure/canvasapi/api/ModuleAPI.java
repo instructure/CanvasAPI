@@ -9,9 +9,8 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 
 /**
  * Created by Brady Larson on 10/15/13.
@@ -33,13 +32,13 @@ public class ModuleAPI {
         void getFirstPageModuleObjects(@Path("context_id") long context_id, Callback<ModuleObject[]> callback);
 
         @GET("/{next}")
-        void getNextPageModuleObjectList(@EncodedPath("next") String nextURL, Callback<ModuleObject[]> callback);
+        void getNextPageModuleObjectList(@Path("next") String nextURL, Callback<ModuleObject[]> callback);
 
         @GET("/{context_id}/modules/{moduleid}/items")
         void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("moduleid") long moduleID, Callback<ModuleItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageModuleItemList(@EncodedPath("next") String nextURL, Callback<ModuleItem[]> callback);
+        void getNextPageModuleItemList(@Path("next") String nextURL, Callback<ModuleItem[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

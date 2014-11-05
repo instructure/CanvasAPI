@@ -11,10 +11,9 @@ import java.util.ArrayList;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
+import retrofit.http.Path;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -58,7 +57,7 @@ public class CalendarEventAPI {
         void getUpcomingEvents(Callback<ScheduleItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageCalendarEvents(@EncodedPath("next") String nextURL, Callback<ScheduleItem[]> callback);
+        void getNextPageCalendarEvents(@Path("next") String nextURL, Callback<ScheduleItem[]> callback);
 
         @GET("/calendar_events/")
         void getCalendarEvents(

@@ -3,7 +3,6 @@ package com.instructure.canvasapi.api.compatibility_synchronous;
 import android.app.Activity;
 import android.content.Context;
 import android.net.http.AndroidHttpClient;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.Attachment;
@@ -135,10 +134,7 @@ public class UploadFileSynchronousAPI {
             String postResponse = UploadFileSynchronousAPI.uploadFile(file, uploadUrl, contentType, pairs, context);
 
             JSONObject object = new JSONObject(postResponse);
-            String backDropUrl = object.getString("url");
-
-            return backDropUrl;
-
+            return object.getString("url");
         }catch(Exception E){
             return null;
         }
@@ -221,9 +217,7 @@ public class UploadFileSynchronousAPI {
 
             //Do the JSON parsing.
             Gson gson = CanvasRestAdapter.getGSONParser();
-            Attachment attachment = gson.fromJson(postResponse,Attachment.class);
-
-            return attachment;
+            return gson.fromJson(postResponse,Attachment.class);
         } catch (final Exception exception) {
             if (uploadFilesErrorHandler != null && activity != null) {
                 activity.runOnUiThread(new Runnable() {

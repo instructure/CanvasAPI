@@ -30,7 +30,7 @@ public class StreamItem extends CanvasModel<StreamItem> {
         public static boolean isCollectionItem(StreamItem streamItem) {return streamItem.getType() == COLLECTION_ITEM;}
         public static boolean isUnknown(StreamItem streamItem) {return streamItem.getType() == UNKNOWN;}
         public static boolean isNotSet(StreamItem streamItem) {return streamItem.getType() == NOT_SET;}
-    };
+    }
 
     // general info returned by the API
     private String updated_at;
