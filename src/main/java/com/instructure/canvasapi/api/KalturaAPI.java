@@ -59,12 +59,12 @@ public class KalturaAPI {
     //Interface talking to Kaltura servers
     public interface KalturaAPIInterface {
 
-        @POST("/index.php?service=uploadToken&action=add")
-        void getKalturaUploadToken(@Query("ks") String ks, Callback<xml> callback);
+        @POST("/index.php?service=uploadtoken&action=add")
+        void getKalturaUploadToken(@EncodedQuery("ks") String ks, Callback<xml> callback);
 
 
         @POST("/index.php?service=media&action=addFromUploadedFile")
-        xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @EncodedQuery("mediaEntry:name") String name, @EncodedQuery("mediaEntry:mediaType") String mediaType);
+        xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @Query("mediaEntry:name") String name, @Query("mediaEntry:mediaType") String mediaType);
 
     }
 
@@ -73,6 +73,7 @@ public class KalturaAPI {
     /////////////////////////////////////////////////////////////////////////
     private static KalturaConfigurationInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(KalturaConfigurationInterface.class);
     }
 
@@ -166,11 +167,12 @@ public class KalturaAPI {
 
     }
 
-    private static xml getMediaIdForUploadedFileTokenSynchronous(Context context, String ks, String uploadTocken, String fileName, String mimetype) {
+    private static xml getMediaIdForUploadedFileTokenSynchronous(Context context, String ks, String uploadToken, String fileName, String mimetype) {
         try {
             RestAdapter restAdapter = KalturaRestAdapter.buildAdapter(context);
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
             String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype);
-            return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadTocken, fileName, mediaTypeConverted);
+            return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadToken, fileName, mediaTypeConverted);
         } catch (Exception E) {
             Log.e(APIHelpers.LOG_TAG, E.toString());
             return null;
