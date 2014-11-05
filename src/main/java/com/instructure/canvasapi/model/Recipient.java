@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class Recipient extends CanvasComparable<Recipient>{
 
-    public enum Type {group, metagroup, person};
+    public enum Type {group, metagroup, person}
 
     private String id;
     private int user_count;

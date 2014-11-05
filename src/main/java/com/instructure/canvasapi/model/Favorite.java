@@ -55,9 +55,6 @@ public class Favorite extends CanvasComparable<Favorite> implements android.os.P
         dest.writeString(this.context_type);
     }
 
-    public Favorite() {
-    }
-
     private Favorite(Parcel in) {
         this.context_id = in.readLong();
         this.context_type = in.readString();

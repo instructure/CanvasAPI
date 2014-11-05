@@ -16,7 +16,7 @@ import retrofit.http.*;
  */
 public class UserAPI {
 
-    public enum ENROLLMENT_TYPE {STUDENT, TEACHER, TA, OBSERVER, DESIGNER};
+    public enum ENROLLMENT_TYPE {STUDENT, TEACHER, TA, OBSERVER, DESIGNER}
 
     private static String getSelfEnrollmentsCacheFilename(){
         return "/users/self/enrollments";
@@ -55,7 +55,7 @@ public class UserAPI {
         void getFirstPagePeopleListWithEnrollmentType(@Path("context_id") long context_id, @Query("enrollment_role") String enrollmentType, Callback<User[]> callback);
 
         @GET("/{next}")
-        void getNextPagePeopleList(@EncodedPath("next") String nextURL, Callback<User[]> callback);
+        void getNextPagePeopleList(@Path("next") String nextURL, Callback<User[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,5 @@
 package com.instructure.canvasapi.model;
 
-import android.os.Parcel;
-
 import java.io.Serializable;
 import java.util.Date;
 

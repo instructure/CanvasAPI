@@ -12,10 +12,9 @@ import java.util.Date;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
+import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.PUT;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -57,7 +56,7 @@ public class SectionAPI {
         void getCourseSectionsWithStudents(@Path("courseid") long courseID, Callback<Section[]> callback);
 
         @GET("/{next}")
-        void getNextPageSectionsList(@EncodedPath("next") String nextURL, Callback<Section[]> callback);
+        void getNextPageSectionsList(@Path("next") String nextURL, Callback<Section[]> callback);
 
         @GET("/courses/{courseid}/sections/{sectionid}")
         void getSingleSection(@Path("courseid") long courseID, @Path("sectionid") long sectionID, Callback<Section> callback);

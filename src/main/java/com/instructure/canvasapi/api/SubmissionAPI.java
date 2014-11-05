@@ -1,10 +1,10 @@
 package com.instructure.canvasapi.api;
 
+import android.text.TextUtils;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.LTITool;
-import com.instructure.canvasapi.model.Rubric;
 import com.instructure.canvasapi.model.RubricAssessment;
-import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.RubricCriterionRating;
 import com.instructure.canvasapi.model.StudentSubmission;
 import com.instructure.canvasapi.model.Submission;
@@ -13,7 +13,6 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -98,7 +97,7 @@ public class SubmissionAPI {
                                  @Query("submission[media_comment_id]") String kalturaId,@Query("submission[media_comment_type]") String mediaType, CanvasCallback<Submission> callback);
 
         @GET("/{path}")
-        void getLTIFromAuthenticationURL(@EncodedPath("path") String url, Callback<LTITool> callback);
+        void getLTIFromAuthenticationURL(@Path(value = "path") String url, Callback<LTITool> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, @Query("submission[posted_grade]") String assignmentScore, Callback<Submission> callback);
@@ -233,7 +232,7 @@ public class SubmissionAPI {
         Map<String, String> map = new HashMap<String, String>();
         for (RubricCriterionRating entry : rubricAssessment.getRatings()) {
             map.put("rubric_assessment[" +entry.getCriterionId() +"][points]", String.valueOf(entry.getPoints()));
-            if(entry.getComments() != null && entry.getComments() != ""){
+            if(entry.getComments() != null && !TextUtils.isEmpty(entry.getComments())){
                 map.put("rubric_assessment[" +entry.getCriterionId() +"][comments]", entry.getComments());
             }
         }

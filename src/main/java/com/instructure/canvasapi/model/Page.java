@@ -4,7 +4,6 @@ import android.os.Parcel;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**

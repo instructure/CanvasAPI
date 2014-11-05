@@ -1,7 +1,5 @@
 package com.instructure.canvasapi.api;
 
-import android.util.Log;
-
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -9,9 +7,8 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -37,7 +34,7 @@ public class PageAPI {
         void getFirstPagePagesList(@Path("context_id") long context_id, Callback<Page[]> callback);
 
         @GET("/{next}")
-        void getNextPagePagesList(@EncodedPath("next") String nextURL, Callback<Page[]> callback);
+        void getNextPagePagesList(@Path("next") String nextURL, Callback<Page[]> callback);
 
         @GET("/{context_id}/pages/{pageid}")
         void getDetailedPage(@Path("context_id") long context_id, @Path("pageid") String page_id, Callback<Page> callback);

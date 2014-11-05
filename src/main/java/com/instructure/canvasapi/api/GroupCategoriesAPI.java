@@ -2,23 +2,14 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 
-import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-import com.instructure.canvasapi.utilities.ExhaustiveGroupBridgeCallback;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.GET;
 
 /**
  * Created by Hoa Hoang on 9/25/14.

@@ -2,14 +2,12 @@ package com.instructure.canvasapi.model;
 
 import android.content.Context;
 import android.os.Parcel;
-import android.util.AttributeSet;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.DateHelpers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

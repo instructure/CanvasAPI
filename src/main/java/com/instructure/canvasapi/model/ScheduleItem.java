@@ -2,7 +2,6 @@ package com.instructure.canvasapi.model;
 
 import android.content.Context;
 import android.os.Parcel;
-import android.text.format.DateFormat;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.DateHelpers;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Joshua Dutton
@@ -65,13 +63,12 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         //id can either be a regular long, or it could be prefixed by "assignment_".
         //for more info check out the upcoming_events api documentation
         try {
-            long tempId = Long.parseLong(id);
-            return tempId;
+            return Long.parseLong(id);
         }
         catch(NumberFormatException e) {
             //it's a string with assignment_ as a prefix...hopefully
             try {
-                String stringId = id.toString();
+                String stringId = id;
                 String tempId = stringId.replace("assignment_", "");
                 long assignmentId = Long.parseLong(tempId);
                 setId(assignmentId);

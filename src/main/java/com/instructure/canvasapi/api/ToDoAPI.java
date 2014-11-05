@@ -11,9 +11,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 
 import java.util.*;
 
@@ -39,7 +38,7 @@ public class ToDoAPI {
         void getCourseTodos(@Path("context_id") long context_id, Callback<ToDo[]> callback);
 
         @DELETE("/{path}")
-        void dismissTodo(@EncodedPath("path")String path, CanvasCallback<Response>responseCallback);
+        void dismissTodo(@Path("path")String path, CanvasCallback<Response>responseCallback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
