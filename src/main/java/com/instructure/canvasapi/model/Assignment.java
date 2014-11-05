@@ -503,7 +503,7 @@ public class Assignment extends CanvasModel<Assignment>{
         }
     }
 
-    public enum GRADING_TYPE {PASS_FAIL, PERCENT, LETTER_GRADE, POINTS, GPA_SCALE}
+    public enum GRADING_TYPE {PASS_FAIL, PERCENT, LETTER_GRADE, POINTS, GPA_SCALE, NOT_GRADED}
 
     public static GRADING_TYPE getGradingTypeFromString(String gradingType, Context context){
         if(gradingType.equals("pass_fail") || gradingType.equals(context.getString(R.string.canvasAPI_passFail))){
@@ -516,6 +516,8 @@ public class Assignment extends CanvasModel<Assignment>{
             return GRADING_TYPE.POINTS;
         } else if (gradingType.equals("gpa_scale") || gradingType.equals(context.getString(R.string.canvasAPI_gpaScale))){
             return GRADING_TYPE.GPA_SCALE;
+        } else if(gradingType.equals("not_graded") || gradingType.equals(context.getString(R.string.canvasAPI_notGraded))){
+            return GRADING_TYPE.NOT_GRADED;
         }else {
             return null;
         }
@@ -531,7 +533,9 @@ public class Assignment extends CanvasModel<Assignment>{
             return GRADING_TYPE.POINTS;
         } else if (gradingType.equals("gpa_scale")){
             return GRADING_TYPE.GPA_SCALE;
-        } else{
+        } else if(gradingType.equals("not_graded")){
+            return GRADING_TYPE.NOT_GRADED;
+        }else{
             return null;
         }
     }
@@ -548,6 +552,10 @@ public class Assignment extends CanvasModel<Assignment>{
                 return "letter_grade";
             case POINTS:
                 return "points";
+            case GPA_SCALE:
+                return "gpa_scale";
+            case NOT_GRADED:
+                return "not_graded";
             default:
                 return "";
         }
@@ -565,6 +573,10 @@ public class Assignment extends CanvasModel<Assignment>{
                 return context.getString(R.string.canvasAPI_letterGrade);
             case POINTS:
                 return context.getString(R.string.canvasAPI_points);
+            case GPA_SCALE:
+                return context.getString(R.string.canvasAPI_gpaScale);
+            case NOT_GRADED:
+                return context.getString(R.string.canvasAPI_notGraded);
             default:
                 return "";
         }
