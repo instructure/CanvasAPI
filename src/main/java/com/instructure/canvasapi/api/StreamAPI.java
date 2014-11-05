@@ -12,9 +12,8 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 import retrofit.http.Query;
 
 /**
@@ -42,7 +41,7 @@ public class StreamAPI {
         void getContextStream(@Path("context_id") long context_id, Callback<StreamItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageStream(@EncodedPath("next") String nextURL, Callback<StreamItem[]> callback);
+        void getNextPageStream(@Path("next") String nextURL, Callback<StreamItem[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous

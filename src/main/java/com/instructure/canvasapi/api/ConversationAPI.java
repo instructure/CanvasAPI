@@ -47,7 +47,7 @@ public class ConversationAPI {
 
 
         @GET("/{next}")
-        void getNextPageConversationList(@EncodedPath("next") String nextURL, Callback<Conversation[]>callback);
+        void getNextPageConversationList(@Path("next") String nextURL, Callback<Conversation[]>callback);
 
         @GET("/conversations/{id}/?interleave_submissions=1")
         void getDetailedConversation(@Path("id") long conversation_id, @Query("auto_mark_as_read") int markAsRead, Callback<Conversation> callback);

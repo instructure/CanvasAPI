@@ -8,9 +8,7 @@ import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**

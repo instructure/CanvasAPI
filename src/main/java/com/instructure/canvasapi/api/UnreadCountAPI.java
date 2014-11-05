@@ -1,7 +1,6 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.instructure.canvasapi.model.UnreadConversationCount;
 import com.instructure.canvasapi.model.UnreadNotificationCount;

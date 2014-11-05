@@ -5,7 +5,6 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.FileUtilities;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**

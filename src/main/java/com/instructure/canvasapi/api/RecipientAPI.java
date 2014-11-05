@@ -6,7 +6,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
+import retrofit.http.Path;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
 import retrofit.http.Query;
@@ -26,7 +26,7 @@ public class RecipientAPI {
         void getFirstPageRecipientsListNoContext(@Query("search") String searchTerm, Callback<Recipient[]> callback);
 
         @GET("/{next}")
-        void getNextPageRecipientsList(@EncodedPath("next") String nextURL, Callback<Recipient[]> callback);
+        void getNextPageRecipientsList(@Path("next") String nextURL, Callback<Recipient[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

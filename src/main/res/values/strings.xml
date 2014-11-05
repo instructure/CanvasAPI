@@ -14,7 +14,7 @@
 
     <!--StreamItems-->
     <string name="Message">Message</string>
-    <string name="Loading">Loading...</string>
+    <string name="Loading">Loading&#8230;</string>
     <string name="Deleted">Deleted</string>
 
     <!-- Assignment Module -->
