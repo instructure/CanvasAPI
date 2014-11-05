@@ -22,11 +22,12 @@ dependencies {
     }
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.+'
-    compile 'com.squareup.okio:okio:1.0.+'
     compile 'com.squareup.retrofit:retrofit:1.7.0'
 
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpmime:4.3.1'
+
+    compile 'com.netflix.rxjava:rxjava-android:0.20.6'
 
     androidTestCompile 'junit:junit:4.10'
     androidTestCompile 'org.robolectric:robolectric:2.2+'
