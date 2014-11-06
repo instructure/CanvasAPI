@@ -33,7 +33,7 @@ public class PollSessionAPI {
         void getFirstPagePollSessionsList(@Path("pollid") long poll_id, Callback<PollSessionResponse> callback);
 
         @GET("/{next}")
-        void getNextPagePollSessionsList(@Path("next") String nextURL, Callback<PollSessionResponse> callback);
+        void getNextPagePollSessionsList(@Path(value = "next", encode = false) String nextURL, Callback<PollSessionResponse> callback);
 
         @GET("/polls/{pollid}/poll_sessions/{poll_session_id}")
         void getSinglePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id, Callback<PollSessionResponse> callback);

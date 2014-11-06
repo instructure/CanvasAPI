@@ -56,7 +56,7 @@ public class SectionAPI {
         void getCourseSectionsWithStudents(@Path("courseid") long courseID, Callback<Section[]> callback);
 
         @GET("/{next}")
-        void getNextPageSectionsList(@Path("next") String nextURL, Callback<Section[]> callback);
+        void getNextPageSectionsList(@Path(value = "next", encode = false) String nextURL, Callback<Section[]> callback);
 
         @GET("/courses/{courseid}/sections/{sectionid}")
         void getSingleSection(@Path("courseid") long courseID, @Path("sectionid") long sectionID, Callback<Section> callback);

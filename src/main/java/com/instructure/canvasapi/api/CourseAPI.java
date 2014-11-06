@@ -76,7 +76,7 @@ public class CourseAPI {
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
         @GET("/{next}?&include[]=needs_grading_count&include[]=permissions")
-        void getNextPageCourses(@Path("next") String nextURL, CanvasCallback<Course[]> callback);
+        void getNextPageCourses(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);

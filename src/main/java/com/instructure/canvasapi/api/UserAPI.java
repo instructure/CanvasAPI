@@ -55,7 +55,7 @@ public class UserAPI {
         void getFirstPagePeopleListWithEnrollmentType(@Path("context_id") long context_id, @Query("enrollment_role") String enrollmentType, Callback<User[]> callback);
 
         @GET("/{next}")
-        void getNextPagePeopleList(@Path("next") String nextURL, Callback<User[]> callback);
+        void getNextPagePeopleList(@Path(value = "next", encode = false) String nextURL, Callback<User[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

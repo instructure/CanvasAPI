@@ -38,7 +38,7 @@ public class ToDoAPI {
         void getCourseTodos(@Path("context_id") long context_id, Callback<ToDo[]> callback);
 
         @DELETE("/{path}")
-        void dismissTodo(@Path("path")String path, CanvasCallback<Response>responseCallback);
+        void dismissTodo(@Path(value = "path", encode = false)String path, CanvasCallback<Response>responseCallback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
