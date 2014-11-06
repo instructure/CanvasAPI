@@ -26,7 +26,7 @@ public class AnnouncementAPI {
         void getFirstPageAnnouncementsList(@Path("context_id") long context_id, Callback<DiscussionTopicHeader[]> callback);
 
         @GET("/{next}")
-        void getNextPageAnnouncementsList(@Path(value = "next") String nextURL, Callback<DiscussionTopicHeader[]> callback);
+        void getNextPageAnnouncementsList(@Path(value = "next", encode = false) String nextURL, Callback<DiscussionTopicHeader[]> callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Build Interface Helpers

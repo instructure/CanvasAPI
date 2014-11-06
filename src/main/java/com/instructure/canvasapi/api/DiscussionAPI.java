@@ -35,7 +35,7 @@ public class DiscussionAPI {
         void getFirstPageDiscussions(@Path("context_id") long course_id, Callback<DiscussionTopicHeader[]> callback);
 
         @GET("/{next}")
-        void getNextPageDiscussions(@Path("next") String nextURL, Callback<DiscussionTopicHeader[]> callback);
+        void getNextPageDiscussions(@Path(value = "next", encode = false) String nextURL, Callback<DiscussionTopicHeader[]> callback);
 
         @GET("/{context_id}/discussion_topics/{discussionid}")
         void getDetailedDiscussion(@Path("context_id") long courseId, @Path("discussionid") long discussionId, Callback<DiscussionTopicHeader> callback);

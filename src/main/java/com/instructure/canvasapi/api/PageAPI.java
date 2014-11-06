@@ -34,7 +34,7 @@ public class PageAPI {
         void getFirstPagePagesList(@Path("context_id") long context_id, Callback<Page[]> callback);
 
         @GET("/{next}")
-        void getNextPagePagesList(@Path("next") String nextURL, Callback<Page[]> callback);
+        void getNextPagePagesList(@Path(value = "next", encode = false) String nextURL, Callback<Page[]> callback);
 
         @GET("/{context_id}/pages/{pageid}")
         void getDetailedPage(@Path("context_id") long context_id, @Path("pageid") String page_id, Callback<Page> callback);

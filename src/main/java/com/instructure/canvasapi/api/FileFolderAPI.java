@@ -41,10 +41,10 @@ public class FileFolderAPI {
         void getFirstPageFiles(@Path("folderid") long folder_id, Callback<FileFolder[]> callback);
 
         @GET("/{fileurl}")
-        void getFileFolderFromURL(@Path("fileurl") String fileURL, Callback<FileFolder> callback);
+        void getFileFolderFromURL(@Path(value = "fileurl", encode = false) String fileURL, Callback<FileFolder> callback);
 
         @GET("/{next}")
-        void getNextPageFileFoldersList(@Path("next") String nextURL, Callback<FileFolder[]> callback);
+        void getNextPageFileFoldersList(@Path(value = "next", encode = false) String nextURL, Callback<FileFolder[]> callback);
 
         @DELETE("/files/{fileid}")
         void deleteFile(@Path("fileid")long fileId, Callback<Response> callback);

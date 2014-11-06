@@ -26,7 +26,7 @@ public class RecipientAPI {
         void getFirstPageRecipientsListNoContext(@Query("search") String searchTerm, Callback<Recipient[]> callback);
 
         @GET("/{next}")
-        void getNextPageRecipientsList(@Path("next") String nextURL, Callback<Recipient[]> callback);
+        void getNextPageRecipientsList(@Path(value = "next", encode = false) String nextURL, Callback<Recipient[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
