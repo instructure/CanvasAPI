@@ -6,9 +6,8 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -32,13 +31,13 @@ public class QuizAPI {
         void getFirstPageQuizzesList(@Path("context_id") long context_id, Callback<Quiz[]> callback);
 
         @GET("/{next}")
-        void getNextPageQuizzesList(@EncodedPath("next") String nextURL, Callback<Quiz[]> callback);
+        void getNextPageQuizzesList(@Path(value = "next", encode = false) String nextURL, Callback<Quiz[]> callback);
 
         @GET("/{context_id}/quizzes/{quizid}")
         void getDetailedQuiz(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<Quiz> callback);
 
         @GET("/{next}")
-        void getDetailedQuizFromURL(@EncodedPath("next") String quizURL, Callback<Quiz> callback);
+        void getDetailedQuizFromURL(@Path(value = "next", encode = false) String quizURL, Callback<Quiz> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

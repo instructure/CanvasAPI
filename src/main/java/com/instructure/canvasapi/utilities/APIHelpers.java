@@ -3,7 +3,6 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
@@ -489,7 +488,7 @@ public class APIHelpers {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME, errorDelegateClassName);
-        editor.commit();
+        editor.apply();
     }
 
     /**

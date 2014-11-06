@@ -9,11 +9,10 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
+import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -34,7 +33,7 @@ public class PollSessionAPI {
         void getFirstPagePollSessionsList(@Path("pollid") long poll_id, Callback<PollSessionResponse> callback);
 
         @GET("/{next}")
-        void getNextPagePollSessionsList(@EncodedPath("next") String nextURL, Callback<PollSessionResponse> callback);
+        void getNextPagePollSessionsList(@Path(value = "next", encode = false) String nextURL, Callback<PollSessionResponse> callback);
 
         @GET("/polls/{pollid}/poll_sessions/{poll_session_id}")
         void getSinglePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id, Callback<PollSessionResponse> callback);

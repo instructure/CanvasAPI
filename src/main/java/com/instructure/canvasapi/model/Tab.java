@@ -6,8 +6,6 @@ import android.os.Parcelable;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
-import java.io.Serializable;
-
 /**
  * Created by Joshua Dutton on 9/6/13.
  *

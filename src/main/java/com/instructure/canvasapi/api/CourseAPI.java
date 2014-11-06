@@ -17,11 +17,10 @@ import java.util.Map;
 
 import retrofit.RestAdapter;
 import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
+import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -77,7 +76,7 @@ public class CourseAPI {
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
         @GET("/{next}?&include[]=needs_grading_count&include[]=permissions")
-        void getNextPageCourses(@EncodedPath("next") String nextURL, CanvasCallback<Course[]> callback);
+        void getNextPageCourses(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
