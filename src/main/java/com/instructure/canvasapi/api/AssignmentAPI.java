@@ -73,7 +73,7 @@ public class AssignmentAPI {
                             @Query("assignment[lock_at]") String lockAt,
                             @Query(value = "assignment[html_url]", encodeName = false) String htmlUrl,
                             @Query(value = "assignment[url]", encodeName = false) String url,
-                            @Query("assingment[quiz_id]") Long quizzId, Callback<Assignment> callback);
+                            @Query("assignment[quiz_id]") Long quizId, Callback<Assignment> callback);
 
     }
 
