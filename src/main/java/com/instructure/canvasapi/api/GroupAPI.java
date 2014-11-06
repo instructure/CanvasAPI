@@ -62,7 +62,7 @@ public class GroupAPI {
         void getFirstPageGroupsInCourse(@Path("courseid") long courseId, CanvasCallback<Group[]> callback);
 
         @GET("/{next}")
-        void getNextPageGroups(@Path("next")String nextURL, CanvasCallback<Group[]> callback);
+        void getNextPageGroups(@Path(value = "next", encode = false)String nextURL, CanvasCallback<Group[]> callback);
 
         @GET("/groups/{groupid}?include[]=permissions")
         void getDetailedGroup(@Path("groupid") long groupId, CanvasCallback<Group> callback);

@@ -32,13 +32,13 @@ public class ModuleAPI {
         void getFirstPageModuleObjects(@Path("context_id") long context_id, Callback<ModuleObject[]> callback);
 
         @GET("/{next}")
-        void getNextPageModuleObjectList(@Path("next") String nextURL, Callback<ModuleObject[]> callback);
+        void getNextPageModuleObjectList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleObject[]> callback);
 
         @GET("/{context_id}/modules/{moduleid}/items")
         void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("moduleid") long moduleID, Callback<ModuleItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageModuleItemList(@Path("next") String nextURL, Callback<ModuleItem[]> callback);
+        void getNextPageModuleItemList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleItem[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

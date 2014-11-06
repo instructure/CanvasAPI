@@ -31,13 +31,13 @@ public class QuizAPI {
         void getFirstPageQuizzesList(@Path("context_id") long context_id, Callback<Quiz[]> callback);
 
         @GET("/{next}")
-        void getNextPageQuizzesList(@Path("next") String nextURL, Callback<Quiz[]> callback);
+        void getNextPageQuizzesList(@Path(value = "next", encode = false) String nextURL, Callback<Quiz[]> callback);
 
         @GET("/{context_id}/quizzes/{quizid}")
         void getDetailedQuiz(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<Quiz> callback);
 
         @GET("/{next}")
-        void getDetailedQuizFromURL(@Path("next") String quizURL, Callback<Quiz> callback);
+        void getDetailedQuizFromURL(@Path(value = "next", encode = false) String quizURL, Callback<Quiz> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////

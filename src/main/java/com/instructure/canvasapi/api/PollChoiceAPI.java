@@ -35,7 +35,7 @@ public class PollChoiceAPI {
         void getFirstPagePollChoicesList(@Path("pollid") long poll_id, Callback<PollChoiceResponse> callback);
 
         @GET("/{next}")
-        void getNextPagePollChoicesList(@Path("next") String nextURL, Callback<PollChoiceResponse> callback);
+        void getNextPagePollChoicesList(@Path(value = "next", encode = false) String nextURL, Callback<PollChoiceResponse> callback);
 
         @GET("/polls/{pollid}/poll_choices/{poll_choice_id}")
         void getSinglePollChoice(@Path("pollid") long poll_id, @Path("poll_choice_id") long poll_choice_id, Callback<PollChoiceResponse> callback);

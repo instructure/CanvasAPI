@@ -97,7 +97,7 @@ public class SubmissionAPI {
                                  @Query("submission[media_comment_id]") String kalturaId,@Query("submission[media_comment_type]") String mediaType, CanvasCallback<Submission> callback);
 
         @GET("/{path}")
-        void getLTIFromAuthenticationURL(@Path(value = "path") String url, Callback<LTITool> callback);
+        void getLTIFromAuthenticationURL(@Path(value = "path", encode = false) String url, Callback<LTITool> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, @Query("submission[posted_grade]") String assignmentScore, Callback<Submission> callback);

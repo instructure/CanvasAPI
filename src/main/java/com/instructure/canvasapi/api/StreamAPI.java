@@ -41,7 +41,7 @@ public class StreamAPI {
         void getContextStream(@Path("context_id") long context_id, Callback<StreamItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageStream(@Path("next") String nextURL, Callback<StreamItem[]> callback);
+        void getNextPageStream(@Path(value = "next", encode = false) String nextURL, Callback<StreamItem[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous

@@ -46,7 +46,7 @@ public class AssignmentAPI {
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
 
         @GET("/{next}")
-        void getNextPageAssignmentsList(@Path("next") String nextURL, Callback<Assignment[]>callback);
+        void getNextPageAssignmentsList(@Path(value = "next", encode = false) String nextURL, Callback<Assignment[]>callback);
 
         @GET("/courses/{course_id}/assignment_groups")
         void getAssignmentGroupList(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
@@ -58,12 +58,22 @@ public class AssignmentAPI {
         void getCalendarEvents(@Query("context_codes[]") String context_id, Callback<ScheduleItem[]> callback);
 
         @PUT("/courses/{course_id}/assignments/{assignment_id}")
-        void editAssignment(@Path("course_id") long courseId, @Path("assignment_id") long assignmentId, @Query("assignment[name]") String assignmentName,
-                            @Query("assignment[assignment_group_id]") Long assignmentGroupId, @Query("assignment[submission_types][]") String submissionTypes,
-                            @Query("assignment[peer_reviews]") Integer hasPeerReviews, @Query("assignment[group_category_id]") Long groupId, @Query("assignment[points_possible]") Double pointsPossible,
-                            @Query("assignment[grading_type]") String gradingType, @Query("assignment[due_at]") String dueAt, @Query("assignment[description]") String description,
-                            @Query("assignment[notify_of_update]") Integer notifyOfUpdate, @Query("assignment[unlock_at]")String unlockAt, @Query("assignment[lock_at]") String lockAt,
-                            @Query("assignment[html_url]") String htmlUrl, @Query("assignment[url]") String url, @Query("assingment[quiz_id]") Long quizzId, Callback<Assignment> callback);
+        void editAssignment(@Path("course_id") long courseId, @Path("assignment_id") long assignmentId,
+                            @Query("assignment[name]") String assignmentName,
+                            @Query("assignment[assignment_group_id]") Long assignmentGroupId,
+                            @Query(value = "assignment[submission_types][]", encodeName = false) String submissionTypes,
+                            @Query("assignment[peer_reviews]") Integer hasPeerReviews,
+                            @Query("assignment[group_category_id]") Long groupId,
+                            @Query("assignment[points_possible]") Double pointsPossible,
+                            @Query("assignment[grading_type]") String gradingType,
+                            @Query("assignment[due_at]") String dueAt,
+                            @Query("assignment[description]") String description,
+                            @Query("assignment[notify_of_update]") Integer notifyOfUpdate,
+                            @Query("assignment[unlock_at]")String unlockAt,
+                            @Query("assignment[lock_at]") String lockAt,
+                            @Query(value = "assignment[html_url]", encodeName = false) String htmlUrl,
+                            @Query(value = "assignment[url]", encodeName = false) String url,
+                            @Query("assingment[quiz_id]") Long quizzId, Callback<Assignment> callback);
 
     }
 

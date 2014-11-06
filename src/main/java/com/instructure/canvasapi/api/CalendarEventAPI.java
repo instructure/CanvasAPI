@@ -57,7 +57,7 @@ public class CalendarEventAPI {
         void getUpcomingEvents(Callback<ScheduleItem[]> callback);
 
         @GET("/{next}")
-        void getNextPageCalendarEvents(@Path("next") String nextURL, Callback<ScheduleItem[]> callback);
+        void getNextPageCalendarEvents(@Path(value = "next", encode = false) String nextURL, Callback<ScheduleItem[]> callback);
 
         @GET("/calendar_events/")
         void getCalendarEvents(
