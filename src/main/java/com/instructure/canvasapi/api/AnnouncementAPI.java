@@ -7,9 +7,8 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.GET;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -27,7 +26,7 @@ public class AnnouncementAPI {
         void getFirstPageAnnouncementsList(@Path("context_id") long context_id, Callback<DiscussionTopicHeader[]> callback);
 
         @GET("/{next}")
-        void getNextPageAnnouncementsList(@EncodedPath("next") String nextURL, Callback<DiscussionTopicHeader[]> callback);
+        void getNextPageAnnouncementsList(@Path(value = "next", encode = false) String nextURL, Callback<DiscussionTopicHeader[]> callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Build Interface Helpers

@@ -5,7 +5,6 @@ import android.os.Parcel;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;

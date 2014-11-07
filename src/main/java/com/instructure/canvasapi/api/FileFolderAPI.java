@@ -1,6 +1,5 @@
 package com.instructure.canvasapi.api;
 
-import android.content.Context;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.FileFolder;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -11,10 +10,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
 import retrofit.http.Path;
-
+import retrofit.http.GET;
 /**
  * Created by Josh Ruesch on 8/9/13.
  *
@@ -44,10 +41,10 @@ public class FileFolderAPI {
         void getFirstPageFiles(@Path("folderid") long folder_id, Callback<FileFolder[]> callback);
 
         @GET("/{fileurl}")
-        void getFileFolderFromURL(@EncodedPath("fileurl") String fileURL, Callback<FileFolder> callback);
+        void getFileFolderFromURL(@Path(value = "fileurl", encode = false) String fileURL, Callback<FileFolder> callback);
 
         @GET("/{next}")
-        void getNextPageFileFoldersList(@EncodedPath("next") String nextURL, Callback<FileFolder[]> callback);
+        void getNextPageFileFoldersList(@Path(value = "next", encode = false) String nextURL, Callback<FileFolder[]> callback);
 
         @DELETE("/files/{fileid}")
         void deleteFile(@Path("fileid")long fileId, Callback<Response> callback);

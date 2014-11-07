@@ -43,8 +43,7 @@ public class Masquerading {
 
     public static boolean isMasquerading(Context context) {
         SharedPreferences settings = context.getSharedPreferences(MASQ_PREF_NAME, 0);
-        boolean isMasquerading = settings.getBoolean(IS_MASQUERADING, false);
-        return isMasquerading;
+        return settings.getBoolean(IS_MASQUERADING, false);
     }
     public static void stopMasquerading(Context context) {
         File cacheDir = new File(context.getFilesDir(), "cache");
@@ -54,7 +53,7 @@ public class Masquerading {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(IS_MASQUERADING, false);
         editor.putLong(MASQUERADE_ID, -1);
-        editor.commit();
+        editor.apply();
     }
     public static void startMasquerading(long masqueradeId, Context context, CanvasCallback<User> masqueradeUser) {
 
@@ -65,7 +64,7 @@ public class Masquerading {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(IS_MASQUERADING, true);
         editor.putLong(MASQUERADE_ID, masqueradeId);
-        editor.commit();
+        editor.apply();
 
         UserAPI.getUserById(masqueradeId, masqueradeUser);
 

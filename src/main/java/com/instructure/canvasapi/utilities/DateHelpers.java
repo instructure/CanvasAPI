@@ -1,14 +1,10 @@
 package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -52,8 +48,7 @@ public class DateHelpers {
             return null;
         }
         Format format = getPreferredDateFormat(context);
-        String sFormat = format.format(date.getTime());
-        return sFormat;
+        return format.format(date.getTime());
     }
 
     public static SimpleDateFormat getPreferredTimeFormat(Context context) {
@@ -67,7 +62,7 @@ public class DateHelpers {
         if(context == null) {
             return null;
         }
-        return DateHelpers.getPreferredTimeFormat(context).format(date).toString();
+        return DateHelpers.getPreferredTimeFormat(context).format(date);
     }
 
     public static String createPrefixedDateString(Context context, String prefix, Date date) {
