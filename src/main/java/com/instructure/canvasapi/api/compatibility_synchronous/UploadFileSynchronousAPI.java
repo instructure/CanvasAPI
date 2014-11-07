@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by Josh Ruesch on 10/16/13.
  *
@@ -44,67 +49,60 @@ public class UploadFileSynchronousAPI {
         public void onUnexpectedError(Exception exception);
     }
 
+    public static Observable<Avatar> postAvatar(final String imageName, final long size, final String contentType, final String path, final Context context) {
+        return Observable.create(new Observable.OnSubscribe<Avatar>() {
+            @Override
+            public void call(Subscriber<? super Avatar> subscriber) {
+                try {
+                    String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&content_type=%s",  imageName, size, contentType);
+                    //set the parent folder
+                    String parentFolder = "&parent_folder_path=profile+pictures";
+                    url += parentFolder;
+                    //don't overwrite
+                    url += "&on_duplicate=rename";
+                    APIHttpResponse response = HttpHelpers.httpPost(url, null, context);
 
+                    ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                    JSONObject json = new JSONObject(response.responseBody);
 
-    public static Avatar postAvatar(String imageName, long size, String contentType, String path, Context context) {
-        String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&content_type=%s",  imageName, size, contentType);
-        //set the parent folder
-        String parentFolder = "&parent_folder_path=profile+pictures";
-        url += parentFolder;
-        //don't overwrite
-        url += "&on_duplicate=rename";
-        APIHttpResponse response = HttpHelpers.httpPost(url, null, context);
+                    if (json.has("message")) {
+                        subscriber.onError(new Exception(json.getString("message")));
+                        return;
+                    }
 
-        try
-        {
-			/*{
-				  "upload_url": "https://some-bucket.s3.amazonaws.com/",
-				  "upload_params": {
-				    "key": "/users/1234/files/profile_pic.jpg",
-				    "acl": "private",
-				    "Filename": "profile_pic.jpg",
-				    "AWSAccessKeyId": "some_id",
-				    "Policy": "some_opaque_string",
-				    "Signature": "another_opaque_string",
-				    "Content-Type": "image/jpeg"
-				  }
-				}
-			 */
-            ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-            JSONObject json = new JSONObject(response.responseBody);
-            String uploadUrl = json.getString("upload_url");
-            JSONObject params = json.getJSONObject("upload_params");
+                    String uploadUrl = json.getString("upload_url");
+                    JSONObject params = json.getJSONObject("upload_params");
 
-            Iterator<?> keys = params.keys();
+                    Iterator<?> keys = params.keys();
 
-            //get all the keys
-            while(keys.hasNext()) {
-                // loop to get the dynamic key
-                String currentDynamicKey = (String)keys.next();
+                    //get all the keys
+                    while(keys.hasNext()) {
+                        // loop to get the dynamic key
+                        String currentDynamicKey = (String)keys.next();
 
-                //TODO: what to do if the parameter isn't a string??
-                pairs.add(new BasicNameValuePair(currentDynamicKey , params.getString(currentDynamicKey)));
+                        //TODO: what to do if the parameter isn't a string??
+                        pairs.add(new BasicNameValuePair(currentDynamicKey , params.getString(currentDynamicKey)));
+                    }
 
+                    File file = new File(path);
+                    String postResponse = UploadFileSynchronousAPI.uploadFile(file, uploadUrl, contentType, pairs, context);
+
+                    JSONObject object = new JSONObject(postResponse);
+                    String avatarUrl = object.getString("url");
+
+                    //set up a new avatar to return
+                    Avatar avatar = new Avatar();
+                    avatar.setUrl(avatarUrl);
+                    avatar.setDisplayName(object.getString("display_name"));
+                    avatar.setType(object.getString("content-type"));
+
+                    subscriber.onNext(avatar);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
             }
-
-            File file = new File(path);
-            String postResponse = UploadFileSynchronousAPI.uploadFile(file, uploadUrl, contentType, pairs, context);
-
-            JSONObject object = new JSONObject(postResponse);
-            String avatarUrl = object.getString("url");
-
-            //set up a new avatar to return
-            Avatar avatar = new Avatar();
-            avatar.setUrl(avatarUrl);
-            avatar.setDisplayName(object.getString("display_name"));
-            avatar.setType(object.getString("content-type"));
-
-            return avatar;
-        }
-        catch(Exception E)
-        {
-            return null;
-        }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public static String postBackDrop(String imageName, long size, String contentType, String path, Context context){
