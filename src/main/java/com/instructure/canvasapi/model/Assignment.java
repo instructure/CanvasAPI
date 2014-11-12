@@ -112,10 +112,18 @@ public class Assignment extends CanvasModel<Assignment>{
 		return submissionTypeList;
 	}
 	public void setSubmissionTypes(ArrayList<String> submissionTypes) {
+        if(submissionTypes == null){
+            return;
+        }
+
 		this.submission_types = submissionTypes;
 	}
 
     public void setSubmissionTypes(SUBMISSION_TYPE[] submissionTypes){
+        if(submissionTypes == null){
+            return;
+        }
+
         ArrayList<String> listSubmissionTypes = new ArrayList<String>();
 
         for(SUBMISSION_TYPE submissionType: submissionTypes){
