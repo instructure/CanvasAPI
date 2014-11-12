@@ -61,7 +61,7 @@ public class AssignmentAPI {
         void editAssignment(@Path("course_id") long courseId, @Path("assignment_id") long assignmentId,
                             @Query("assignment[name]") String assignmentName,
                             @Query("assignment[assignment_group_id]") Long assignmentGroupId,
-                            @Query(value = "assignment[submission_types][]", encodeName = false) String submissionTypes,
+                            @Query("assignment[submission_types][]") String submissionTypes,
                             @Query("assignment[peer_reviews]") Integer hasPeerReviews,
                             @Query("assignment[group_category_id]") Long groupId,
                             @Query("assignment[points_possible]") Double pointsPossible,
@@ -71,8 +71,8 @@ public class AssignmentAPI {
                             @Query("assignment[notify_of_update]") Integer notifyOfUpdate,
                             @Query("assignment[unlock_at]")String unlockAt,
                             @Query("assignment[lock_at]") String lockAt,
-                            @Query(value = "assignment[html_url]", encodeName = false) String htmlUrl,
-                            @Query(value = "assignment[url]", encodeName = false) String url,
+                            @Query("assignment[html_url]") String htmlUrl,
+                            @Query("assignment[url]") String url,
                             @Query("assignment[quiz_id]") Long quizId, Callback<Assignment> callback);
 
     }
