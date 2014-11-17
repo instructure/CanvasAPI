@@ -46,12 +46,9 @@ public class DiscussionTopic implements Parcelable, Serializable {
     //    //MUCH faster for lookups.
     //So instead of n linear operations, we have 1 linear operations and (n-1) constant ones.
     public HashMap<Long,Boolean> getUnread_entriesMap(){
-        if(unread_entriesMap == null){
-            unread_entriesMap = new HashMap<Long, Boolean>();
-            if(unread_entries != null){
-                for(Long unreadEntry : unread_entries){
-                    unread_entriesMap.put(unreadEntry,true);
-                }
+        if (unread_entries.size() != unread_entriesMap.size()) {
+            for (Long unreadEntry : unread_entries) {
+                unread_entriesMap.put(unreadEntry, true);
             }
         }
         return unread_entriesMap;

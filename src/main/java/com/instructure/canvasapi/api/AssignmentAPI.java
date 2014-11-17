@@ -74,7 +74,6 @@ public class AssignmentAPI {
                             @Query(value = "assignment[html_url]", encodeValue = false) String htmlUrl,
                             @Query(value = "assignment[url]", encodeValue = false) String url,
                             @Query("assignment[quiz_id]") Long quizId, Callback<Assignment> callback);
-
     }
 
     /////////////////////////////////////////////////////////////////////////
