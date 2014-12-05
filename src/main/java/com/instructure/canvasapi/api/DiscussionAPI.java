@@ -43,6 +43,9 @@ public class DiscussionAPI {
         @GET("/{context_id}/discussion_topics/{discussionid}/view")
         void getFullDiscussionTopic(@Path("context_id") long courseId, @Path("discussionid") long discussionId, Callback<DiscussionTopic> callback);
 
+        @GET("/{context_id}/discussion_topics/{discussionid}")
+        void getFilteredDiscussionTopic(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("search_term") String searchTerm, Callback<DiscussionTopicHeader> callback);
+
         @POST("/{context_id}/discussion_topics/{discussionid}/entries/")
         void postDiscussionEntry(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("message") String message, Callback<DiscussionEntry> callback);
 
@@ -93,6 +96,12 @@ public class DiscussionAPI {
 
         callback.readFromCache(getFullDiscussionsCacheFilename(canvasContext, discussion_id));
         buildInterface(callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
+    }
+
+    public static void getFilteredDiscussionTopic(CanvasContext canvasContext, long discussion_id, String searchTerm,  CanvasCallback<DiscussionTopicHeader> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), discussion_id, searchTerm, callback);
     }
 
     public static void postDiscussionEntry(CanvasContext canvasContext, long discussionId, String message, CanvasCallback<DiscussionEntry> callback){

@@ -41,6 +41,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private boolean pinned;                 // whether or not the discussion has been "pinned" by an instructor
     private DiscussionParticipant author;  //The user that started the thread.
     private String podcast_url;             // If the topic is a podcast topic this is the feed url for the current user.
+    private String group_category_id;
 
     // If the topic is for grading and a group assignment this will
     // point to the original topic in the course.
@@ -232,6 +233,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.lock_info = lockInfo;
     }
 
+    public String getGroupCategoryId() {
+        return group_category_id;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -313,6 +318,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeString(this.read_state);
         dest.writeInt(this.unread_count);
         dest.writeLong(this.assignment_id);
+        dest.writeString(this.group_category_id);
         dest.writeByte(locked ? (byte) 1 : (byte) 0);
         dest.writeByte(pinned ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.author, flags);
@@ -341,6 +347,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.read_state = in.readString();
         this.unread_count = in.readInt();
         this.assignment_id = in.readLong();
+        this.group_category_id = in.readString();
         this.locked = in.readByte() != 0;
         this.pinned = in.readByte() != 0;
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
