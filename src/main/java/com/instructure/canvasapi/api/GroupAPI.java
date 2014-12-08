@@ -15,8 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import retrofit.RestAdapter;
-import retrofit.http.Path;
+import retrofit.client.Response;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -73,6 +76,20 @@ public class GroupAPI {
         @GET("/groups/{groupid}/users?include[]=avatar_url")
         void getGroupUsersWithAvatars(@Path("groupid") long groupId, CanvasCallback<User[]> callback);
 
+        @GET("/{next}")
+        void getNextPageGroupUsers(@Path(value = "next", encode = false) String nextURL, CanvasCallback<User[]> callback);
+
+        @POST("/groups")
+        void createGroup(@Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
+
+        @DELETE("/groups/{groupid}")
+        void deleteGroup(@Path("groupid") long groupId, CanvasCallback<Response> callback);
+
+        @POST("/groups/{groupid}/memberships")
+        void createMembership(@Path("groupid") long groupId, @Query("user_id") String userId, CanvasCallback<Response> callback);
+
+        @POST("/group_categories/{group_category_id}/groups")
+        void createGroupWithCategory(@Path("group_category_id") long groupCategoryId, @Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -161,6 +178,36 @@ public class GroupAPI {
         buildInterface(callback).getGroupUsersWithAvatars(groupId,callback);
     }
 
+    public static void getNextPageGroupUsers(String nextURL, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        buildInterface(callback).getNextPageGroupUsers(nextURL, callback);
+    }
+
+    public static void createGroup(String name, boolean isPublic, CanvasCallback<Group> callback) {
+        if (APIHelpers.paramIsNull(name, callback)) return;
+
+        buildInterface(callback).createGroup(name, isPublic, callback);
+    }
+
+    public static void createGroupWithCategory(long categoryId, String name, boolean isPublic, CanvasCallback<Group> callback) {
+        if (APIHelpers.paramIsNull(name, callback)) return;
+
+        buildInterface(callback).createGroupWithCategory(categoryId, name, isPublic, callback);
+    }
+
+    public static void deleteGroup(long groupId, CanvasCallback<Response>responseCanvasCallback){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).deleteGroup(groupId,responseCanvasCallback);
+    }
+
+    public static void createMembership(long groupId, String userId, CanvasCallback<Response> callback) {
+        if (APIHelpers.paramIsNull(userId, callback)) return;
+
+        buildInterface(callback).createMembership(groupId, userId, callback);
+    }
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
     ////////////////////////////////////////////////////////////////////////////
