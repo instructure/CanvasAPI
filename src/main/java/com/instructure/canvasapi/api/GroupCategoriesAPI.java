@@ -99,9 +99,7 @@ public class GroupCategoriesAPI {
     }
 
     public static void getNextPageGroupCategoriesInCourse(String nextURL, CanvasCallback<GroupCategory[]> callback) {
-        if (APIHelpers.paramIsNull(callback, nextURL)) {
-            return;
-        }
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
         buildInterface(callback).getNextPageGroupCategories(nextURL, callback);
@@ -122,9 +120,7 @@ public class GroupCategoriesAPI {
     }
 
     public static void getNextPageUsersInCategory(String nextURL, CanvasCallback<User[]> callback) {
-        if (APIHelpers.paramIsNull(callback, nextURL)) {
-            return;
-        }
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
         buildInterface(callback).getNextPageUsersInCategory(nextURL, callback);
