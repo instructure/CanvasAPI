@@ -7,9 +7,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.List;
 
+@Config(emulateSdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class SelfEnrollmentsUnitTest extends Assert {
 

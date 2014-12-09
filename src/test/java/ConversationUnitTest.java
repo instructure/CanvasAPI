@@ -9,10 +9,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@Config(emulateSdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class ConversationUnitTest extends Assert {
 
