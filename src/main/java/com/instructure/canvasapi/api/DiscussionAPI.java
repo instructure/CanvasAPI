@@ -43,8 +43,8 @@ public class DiscussionAPI {
         @GET("/{context_id}/discussion_topics/{discussionid}/view")
         void getFullDiscussionTopic(@Path("context_id") long courseId, @Path("discussionid") long discussionId, Callback<DiscussionTopic> callback);
 
-        @GET("/{context_id}/discussion_topics/{discussionid}")
-        void getFilteredDiscussionTopic(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("search_term") String searchTerm, Callback<DiscussionTopicHeader> callback);
+        @GET("/{context_id}/discussion_topics/")
+        void getFilteredDiscussionTopic(@Path("context_id") long courseId, @Query("search_term") String searchTerm, Callback<DiscussionTopicHeader[]> callback);
 
         @POST("/{context_id}/discussion_topics/{discussionid}/entries/")
         void postDiscussionEntry(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("message") String message, Callback<DiscussionEntry> callback);
@@ -63,6 +63,7 @@ public class DiscussionAPI {
 
     private static DiscussionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(DiscussionsInterface.class);
     }
 
@@ -98,10 +99,10 @@ public class DiscussionAPI {
         buildInterface(callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
     }
 
-    public static void getFilteredDiscussionTopic(CanvasContext canvasContext, long discussion_id, String searchTerm,  CanvasCallback<DiscussionTopicHeader> callback) {
+    public static void getFilteredDiscussionTopic(CanvasContext canvasContext, String searchTerm,  CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), discussion_id, searchTerm, callback);
+        buildInterface(callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), searchTerm, callback);
     }
 
     public static void postDiscussionEntry(CanvasContext canvasContext, long discussionId, String message, CanvasCallback<DiscussionEntry> callback){

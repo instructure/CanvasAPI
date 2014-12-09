@@ -215,6 +215,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
         } else if (type == Type.GROUP){
             Group group = new Group();
             group.setId(id);
+            group.setName(name);
 
             canvasContext = group;
         } else if (type == Type.SECTION){
