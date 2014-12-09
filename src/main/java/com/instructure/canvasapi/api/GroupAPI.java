@@ -150,6 +150,13 @@ public class GroupAPI {
         getFirstPageGroupsInCourse(courseID, bridge);
     }
 
+    public static void getGroupsForUser(CanvasCallback<Group[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
+        getFirstPageGroups(bridge);
+    }
+
     public static void getNextPageGroups(String nextURL, CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
