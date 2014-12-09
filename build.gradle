@@ -63,7 +63,7 @@ android {
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.1.1"
+version = "1.2.0"
 group = "com.instructure"
 
 configurations {
@@ -131,9 +131,9 @@ uploadArchives {
                     email 'mrice@instructure.com'
                 }
                 developer {
-                    id 'jdutton'
-                    name 'Joshua Dutton'
-                    email 'jdutton@instructure.com'
+                    id 'dwilloughby'
+                    name 'Dan Willoughby'
+                    email 'dwilloughby@instructure.com'
                 }
             }
         }
