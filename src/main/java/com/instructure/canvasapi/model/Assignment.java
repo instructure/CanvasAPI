@@ -50,10 +50,11 @@ public class Assignment extends CanvasModel<Assignment>{
 
     private List<NeedsGradingCount> needs_grading_count_by_section = new ArrayList<NeedsGradingCount>();
     private boolean free_form_criterion_comments;
-
     private boolean published;
-
     private long group_category_id;
+
+    private List<AssignmentDueDate> all_dates = new ArrayList<AssignmentDueDate>();
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -281,6 +282,14 @@ public class Assignment extends CanvasModel<Assignment>{
 
     public void setGroupCategoryId(long groupId){
         this.group_category_id = groupId;
+    }
+
+    public List<AssignmentDueDate> getDueDates(){
+        return this.all_dates;
+    }
+
+    public void setAllDates(List<AssignmentDueDate> all_dates){
+        this.all_dates = all_dates;
     }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -616,6 +625,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeByte(free_form_criterion_comments ? (byte) 1 : (byte) 0);
         dest.writeByte(published ? (byte) 1 : (byte) 0);
         dest.writeLong(this.group_category_id);
+        dest.writeList(this.all_dates);
     }
 
     private Assignment(Parcel in) {
@@ -651,6 +661,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.free_form_criterion_comments = in.readByte() != 0;
         this.published = in.readByte() != 0;
         this.group_category_id = in.readLong();
+        in.readList(this.all_dates, AssignmentDueDate.class.getClassLoader());
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
