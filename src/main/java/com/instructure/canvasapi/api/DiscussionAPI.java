@@ -22,6 +22,10 @@ public class DiscussionAPI {
         return canvasContext.toAPIString() + "/discussion_topics";
     }
 
+    private static String getFirstPagePinnedDiscussionsCacheFilename(CanvasContext canvasContext) {
+        return canvasContext.toAPIString() + "/discussion_topics?scope=pinned";
+    }
+
     private static String getDetailedDiscussionsCacheFilename(CanvasContext canvasContext, long discussionID) {
         return canvasContext.toAPIString() + "/discussion_topics/" + discussionID;
     }
@@ -33,6 +37,9 @@ public class DiscussionAPI {
     interface DiscussionsInterface {
         @GET("/{context_id}/discussion_topics")
         void getFirstPageDiscussions(@Path("context_id") long course_id, Callback<DiscussionTopicHeader[]> callback);
+
+        @GET("/{context_id}/discussion_topics?scope=pinned")
+        void getFirstPagePinnedDiscussions(@Path("context_id") long course_id, Callback<DiscussionTopicHeader[]> callback);
 
         @GET("/{next}")
         void getNextPageDiscussions(@Path(value = "next", encode = false) String nextURL, Callback<DiscussionTopicHeader[]> callback);
@@ -76,6 +83,13 @@ public class DiscussionAPI {
 
         callback.readFromCache(getFirstPageDiscussionsCacheFilename(canvasContext));
         buildInterface(callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+    }
+
+    public static void getFirstPagePinnedDiscussions(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        callback.readFromCache(getFirstPagePinnedDiscussionsCacheFilename(canvasContext));
+        buildInterface(callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
     }
 
     public static void getNextPageDiscussions(String nextURL, CanvasCallback<DiscussionTopicHeader[]> callback) {
