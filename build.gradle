@@ -24,8 +24,10 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.retrofit:retrofit:1.8.0'
 
-    compile 'org.apache.httpcomponents:httpcore:4.3'
-    compile 'org.apache.httpcomponents:httpmime:4.3.1'
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
+    compile (group: 'org.apache.httpcomponents' , name: 'httpmime' , version: '4.3.5') {
+        exclude module: 'org.apache.httpcomponents:httpclient'
+    }
 
     compile 'com.netflix.rxjava:rxjava-android:0.20.6'
 
@@ -36,7 +38,7 @@ dependencies {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    buildToolsVersion '21.1.2'
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 21
@@ -52,6 +54,14 @@ android {
     productFlavors {
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+        }
     }
 
     sourceSets {
