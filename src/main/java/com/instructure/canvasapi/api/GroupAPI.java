@@ -2,12 +2,13 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 
+import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-import com.instructure.canvasapi.utilities.ExhaustiveGroupBridgeCallback;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,12 +125,21 @@ public class GroupAPI {
     public static void getAllGroups(final CanvasCallback<Group[]> callback){
         if(APIHelpers.paramIsNull(callback)) return;
 
-        //Create a bridge.
-        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                getNextPageGroups(nextURL, callback);
+            }
+
+            @Override
+            public Class classType() {
+                return Group.class;
+            }
+        });
 
         //This should handle caching of ALL elements automatically.
-        callback.readFromCache(getAllGroupsCacheFilename());
-        getFirstPageGroups(bridge);
+        bridge.readFromCache(getAllGroupsCacheFilename());
+        getFirstPageGroups(callback);
     }
 
     public static void getFirstPageGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
@@ -142,9 +152,17 @@ public class GroupAPI {
     public static void getAllGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        //Create a bridge.
-        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                getNextPageGroups(nextURL, callback);
+            }
 
+            @Override
+            public Class classType() {
+                return Group.class;
+            }
+        });
 
         callback.readFromCache(getAllGroupsInCourseCacheFilename(courseID));
         getFirstPageGroupsInCourse(courseID, bridge);
@@ -153,7 +171,18 @@ public class GroupAPI {
     public static void getGroupsForUser(CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Group[]> bridge = new ExhaustiveGroupBridgeCallback(callback);
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                getNextPageGroups(nextURL, callback);
+            }
+
+            @Override
+            public Class classType() {
+                return Group.class;
+            }
+        });
+
         getFirstPageGroups(bridge);
     }
 

@@ -7,7 +7,7 @@ import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-import com.instructure.canvasapi.utilities.ExhaustiveCourseBridgeCallback;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -164,10 +164,18 @@ public class CourseAPI {
     public static void getAllFavoriteCourses(final CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        //Create a bridge.
-        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(callback);
+        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                CourseAPI.getNextPageCourses(callback, nextURL);
+            }
 
-        //This should handle caching of ALL elements automatically.
+            @Override
+            public Class classType() {
+                return Course.class;
+            }
+        });
+
         callback.readFromCache(getAllFavoriteCoursesCacheFilename());
         getFirstPageFavoriteCourses(bridge);
     }
@@ -175,10 +183,18 @@ public class CourseAPI {
     public static void getAllCourses(final CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        //Create a bridge.
-        CanvasCallback<Course[]> bridge = new ExhaustiveCourseBridgeCallback(callback);
+        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                CourseAPI.getNextPageCourses(callback, nextURL);
+            }
 
-        //This should handle caching of ALL elements automatically.
+            @Override
+            public Class classType() {
+                return Course.class;
+            }
+        });
+
         callback.readFromCache(getAllCoursesCacheFilename());
         getFirstPageCourses(bridge);
     }

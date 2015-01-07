@@ -3,11 +3,13 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.Date;
 import java.util.List;
@@ -94,6 +96,25 @@ public class AssignmentAPI {
 
         callback.readFromCache(getAssignmentCacheFilename(courseID, assignmentID));
         buildInterface(callback, null).getAssignment(courseID, assignmentID, callback);
+    }
+
+    public static void getAllAssignmentsWithoutPagination(long courseID, final CanvasCallback<Assignment[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        CanvasCallback<Assignment[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                AssignmentAPI.getNextPageAssignmentsList(callback, nextURL);
+            }
+
+            @Override
+            public Class classType() {
+                return Assignment.class;
+            }
+        });
+
+        callback.readFromCache(getAssignmentsListCacheFilename(courseID));
+        buildInterface(callback, null).getAssignmentsList(courseID, bridge);
     }
 
     public static void getAssignmentsList(long courseID, final CanvasCallback<Assignment[]> callback) {
