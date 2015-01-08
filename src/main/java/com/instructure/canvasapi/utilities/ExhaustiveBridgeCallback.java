@@ -19,9 +19,9 @@ import retrofit.client.Response;
  */
 public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallback<T[]>{
 
-    private CanvasCallback<T[]> mCallback;
-    private ExhaustiveBridgeEvents mEventsCallback;
-    private List<T> mAllItems = new ArrayList<T>();
+    private CanvasCallback<T[]> callback;
+    private ExhaustiveBridgeEvents eventsCallback;
+    private List<T> allItems = new ArrayList<T>();
 
     public interface ExhaustiveBridgeEvents {
         public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextUrl);
@@ -30,10 +30,10 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
 
     public ExhaustiveBridgeCallback(CanvasCallback<T[]> callback, ExhaustiveBridgeEvents eventsCallback) {
         super(callback.statusDelegate);
-        mCallback = callback;
-        mEventsCallback = eventsCallback;
+        this.callback = callback;
+        this.eventsCallback = eventsCallback;
 
-        if(mEventsCallback == null) {
+        if(eventsCallback == null) {
             throw new UnsupportedOperationException("ExhaustiveBridgeEvents cannot be null");
         }
     }
@@ -46,26 +46,26 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
     @Override
     public void firstPage(T[] ts, LinkHeaders linkHeaders, Response response) {
         String nextURL = linkHeaders.nextURL;
-        Collections.addAll(mAllItems, ts);
+        Collections.addAll(allItems, ts);
 
         if(nextURL == null) {
             //Done
-            if (mAllItems.size() > 0) {
+            if (allItems.size() > 0) {
                 //Create an array of generics from our list.
-                T[] toArray = (T[]) Array.newInstance(mEventsCallback.classType(), mAllItems.size());
-                for (int i = 0; i < mAllItems.size(); i++) {
-                    toArray[i] = mAllItems.get(i);
+                T[] toArray = (T[]) Array.newInstance(eventsCallback.classType(), allItems.size());
+                for (int i = 0; i < allItems.size(); i++) {
+                    toArray[i] = allItems.get(i);
                 }
 
-                mCallback.success(toArray, response);
+                callback.success(toArray, response);
             } else {
                 //No items were retrieved.
-                T[] toArray = (T[]) Array.newInstance(mEventsCallback.classType(), mAllItems.size());
-                mCallback.success(toArray, response);
+                T[] toArray = (T[]) Array.newInstance(eventsCallback.classType(), allItems.size());
+                callback.success(toArray, response);
             }
         } else {
             //Do more api calls
-            mEventsCallback.performApiCallWithExhaustiveCallback(this, nextURL);
+            eventsCallback.performApiCallWithExhaustiveCallback(this, nextURL);
         }
     }
 

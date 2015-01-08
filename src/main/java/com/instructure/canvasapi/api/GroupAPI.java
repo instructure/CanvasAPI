@@ -138,8 +138,8 @@ public class GroupAPI {
         });
 
         //This should handle caching of ALL elements automatically.
-        bridge.readFromCache(getAllGroupsCacheFilename());
-        getFirstPageGroups(callback);
+        callback.readFromCache(getAllGroupsCacheFilename());
+        getFirstPageGroups(bridge);
     }
 
     public static void getFirstPageGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
