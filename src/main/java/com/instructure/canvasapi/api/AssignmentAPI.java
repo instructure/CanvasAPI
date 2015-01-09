@@ -75,7 +75,9 @@ public class AssignmentAPI {
                             @Query("assignment[lock_at]") String lockAt,
                             @Query(value = "assignment[html_url]", encodeValue = false) String htmlUrl,
                             @Query(value = "assignment[url]", encodeValue = false) String url,
-                            @Query("assignment[quiz_id]") Long quizId, Callback<Assignment> callback);
+                            @Query("assignment[quiz_id]") Long quizId,
+                            @Query(value = "assignment[muted]", encodeValue = false) boolean isMuted,
+                            Callback<Assignment> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -173,7 +175,7 @@ public class AssignmentAPI {
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
         buildInterface(callback, null).editAssignment(assignment.getCourseId(), assignment.getId(), assignmentName, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
-                                                        groupId, pointsPossible, newGradingType,dueAt,description,newNotifyOfUpdate,unlockAt,lockAt,null, null, null, callback );
+                                                        groupId, pointsPossible, newGradingType,dueAt,description,newNotifyOfUpdate,unlockAt,lockAt,null, null, null, assignment.isMuted(), callback );
 
     }
     public static void editAssignment(Assignment editedAssignment, Boolean notifyOfUpdate, final CanvasCallback<Assignment> callback){
@@ -184,12 +186,12 @@ public class AssignmentAPI {
         editAssignment(editedAssignment.getCourseId(), editedAssignment.getId(), editedAssignment.getName(), editedAssignment.getDescription(), arrayOfSubmissionTypes,
                 editedAssignment.getDueDate(), editedAssignment.getPointsPossible(), editedAssignment.getGradingType(), editedAssignment.getHtmlUrl(), editedAssignment.getUrl(),
                 editedAssignment.getQuizId(), editedAssignment.getRubric(), arrayOfAllowedExtensions, editedAssignment.getAssignmentGroupId(), editedAssignment.hasPeerReviews(),
-                editedAssignment.getlockAtDate(), editedAssignment.getUnlockAt(), null, notifyOfUpdate, callback);
+                editedAssignment.getlockAtDate(), editedAssignment.getUnlockAt(), null, notifyOfUpdate, editedAssignment.isMuted(), callback);
     }
     private static void editAssignment(long courseId, long assignmentId, String name, String description, Assignment.SUBMISSION_TYPE[] submissionTypes,
                                        Date dueAt, double pointsPossible, Assignment.GRADING_TYPE gradingType, String htmlUrl, String url,
                                        Long quizId, List<RubricCriterion> rubric, String[] allowedExtensions, Long assignmentGroupId, Boolean hasPeerReviews,
-                                       Date lockAt, Date unlockAt, Long groupCategoryId, boolean notifyOfUpdate, final CanvasCallback<Assignment> callback){
+                                       Date lockAt, Date unlockAt, Long groupCategoryId, boolean notifyOfUpdate, boolean isMuted, final CanvasCallback<Assignment> callback){
 
         String stringDueAt = APIHelpers.dateToString(dueAt);
         String stringUnlockAt = APIHelpers.dateToString(unlockAt);
@@ -201,7 +203,7 @@ public class AssignmentAPI {
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
         buildInterface(callback, null).editAssignment(courseId, assignmentId, name, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
-                groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, callback);
+                groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, isMuted, callback);
 
     }
 
