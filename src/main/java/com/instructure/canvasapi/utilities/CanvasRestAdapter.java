@@ -7,8 +7,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
+import retrofit.client.Request;
 import retrofit.converter.GsonConverter;
 
 /**
@@ -124,11 +129,22 @@ public class CanvasRestAdapter {
 
         GsonConverter gsonConverter = new GsonConverter(getGSONParser());
 
+        // Set request timeout to 60 seconds
+        final OkClient httpClient = new OkClient(){
+            @Override
+            protected HttpURLConnection openConnection(Request request) throws IOException {
+                HttpURLConnection connection = super.openConnection(request);
+                connection.setReadTimeout(60 * 1000);
+                return connection;
+            }
+        };
+
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
                 .setRequestInterceptor(new CanvasRequestInterceptor(context))
                 .setConverter(gsonConverter)
+                .setClient(httpClient)
                 .build();
 
     }
