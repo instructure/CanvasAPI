@@ -22,6 +22,7 @@ public class User extends CanvasContext{
     private String avatar_url;
     private String primary_email;
     private String sortable_name;
+    private String bio;
 
     private List<Enrollment> enrollments = new ArrayList<Enrollment>();
 
@@ -107,6 +108,8 @@ public class User extends CanvasContext{
     public void setSortableName(String sortable_name){
         this.sortable_name = sortable_name;
     }
+
+    public String getBio() { return bio; }
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
@@ -159,6 +162,7 @@ public class User extends CanvasContext{
         dest.writeList(this.enrollments);
         dest.writeInt(this.enrollmentIndex);
         dest.writeString(this.sortable_name);
+        dest.writeString(this.bio);
     }
 
     private User(Parcel in) {
@@ -171,6 +175,7 @@ public class User extends CanvasContext{
         in.readList(this.enrollments, Enrollment.class.getClassLoader());
         this.enrollmentIndex = in.readInt();
         this.sortable_name = in.readString();
+        this.bio = in.readString();
     }
 
     public static Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

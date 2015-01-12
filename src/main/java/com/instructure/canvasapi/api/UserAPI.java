@@ -48,7 +48,7 @@ public class UserAPI {
         @GET("/users/{userid}/profile")
         void getUserById(@Path("userid")long userId, Callback<User> userCallback);
 
-        @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email")
+        @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
         void getFirstPagePeopleList(@Path("context_id") long context_id, Callback<User[]> callback);
 
         @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email")
