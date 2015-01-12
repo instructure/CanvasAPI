@@ -49,8 +49,10 @@ public class Assignment extends CanvasModel<Assignment>{
     private DiscussionTopicHeader discussion_topic;
 
     private List<NeedsGradingCount> needs_grading_count_by_section = new ArrayList<NeedsGradingCount>();
+
     private boolean free_form_criterion_comments;
     private boolean published;
+    private boolean muted;
     private long group_category_id;
 
     private List<AssignmentDueDate> all_dates = new ArrayList<AssignmentDueDate>();
@@ -290,6 +292,14 @@ public class Assignment extends CanvasModel<Assignment>{
 
     public void setAllDates(List<AssignmentDueDate> all_dates){
         this.all_dates = all_dates;
+    }
+
+    public void setMuted(boolean isMuted){
+        this.muted = isMuted;
+    }
+
+    public boolean isMuted(){
+        return this.muted;
     }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -626,6 +636,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeByte(published ? (byte) 1 : (byte) 0);
         dest.writeLong(this.group_category_id);
         dest.writeList(this.all_dates);
+        dest.writeByte(this.muted ? (byte)1 : (byte) 0);
     }
 
     private Assignment(Parcel in) {
@@ -662,6 +673,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.published = in.readByte() != 0;
         this.group_category_id = in.readLong();
         in.readList(this.all_dates, AssignmentDueDate.class.getClassLoader());
+        this.muted = in.readByte() != 0;
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
