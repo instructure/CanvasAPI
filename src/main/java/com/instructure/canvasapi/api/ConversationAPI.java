@@ -6,12 +6,19 @@ import com.instructure.canvasapi.model.Conversation;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import java.util.ArrayList;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
-import retrofit.http.*;
-
-import java.util.ArrayList;
+import retrofit.http.DELETE;
+import retrofit.http.EncodedQuery;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -20,7 +27,7 @@ import java.util.ArrayList;
  */
 public class ConversationAPI {
 
-    public enum ConversationScope { ALL,UNREAD,ARCHIVED,STARRED }
+    public enum ConversationScope { ALL,UNREAD,ARCHIVED,STARRED,SENT }
 
     private static String conversationScopeToString(ConversationScope scope){
         if(scope == ConversationScope.UNREAD) {
@@ -29,6 +36,8 @@ public class ConversationAPI {
             return "starred";
         } else if (scope == ConversationScope.ARCHIVED) {
             return "archived";
+        } else if (scope == ConversationScope.SENT) {
+            return "sent";
         }
         return "";
     }

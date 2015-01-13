@@ -22,6 +22,7 @@ public class Conversation extends CanvasModel<Conversation> {
     private String workflow_state;      // The workflowState of the conversation (unread, read, archived)
     private String last_message;        // <100 character preview of the last message.
     private String last_message_at;   // Date of the last message sent.
+    private String last_authored_message_at;
     private int message_count;          // Number of messages in the conversation.
     private boolean subscribed;         // Whether or not the user is subscribed to the current message.
     private boolean starred;            // Whether or not the message is starred.
@@ -102,6 +103,14 @@ public class Conversation extends CanvasModel<Conversation> {
         }
         return lastMessageDate;
     }
+
+    public Date getLastAuthoredMessageSent() {
+        Date lastAuthoredDate = null;
+        if (last_authored_message_at != null) {
+            lastAuthoredDate = APIHelpers.stringToDate(last_authored_message_at);
+        }
+        return lastAuthoredDate;
+    }
     public void setLastMessageSent(Date date) {
         lastMessageDate = date;
     }
@@ -109,6 +118,7 @@ public class Conversation extends CanvasModel<Conversation> {
         return message_count;
     }
     public String getLastMessageAt(){return last_message_at;}
+    public String getLastAuthoredMessageAt() { return last_authored_message_at; }
     public boolean isSubscribed() {
         return subscribed;
     }
@@ -172,7 +182,14 @@ public class Conversation extends CanvasModel<Conversation> {
     // We want opposite of natural sorting order of date since we want the newest one to come first
     @Override
     public Date getComparisonDate() {
-        return getLastMessageSent();
+        //sent messages have a last_authored_message_at that other messages won't. In that case last_message_at can be null,
+        //but last_authored_message isn't
+        if(last_message_at != null) {
+            return getLastMessageSent();
+        }
+        else {
+            return getLastAuthoredMessageSent();
+        }
     }
 
     @Override
@@ -252,6 +269,7 @@ public class Conversation extends CanvasModel<Conversation> {
         dest.writeLong(lastMessageDate != null ? lastMessageDate.getTime() : -1);
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeString(this.deletedString);
+        dest.writeString(this.last_authored_message_at);
     }
 
     private Conversation(Parcel in) {
@@ -272,6 +290,7 @@ public class Conversation extends CanvasModel<Conversation> {
         this.lastMessageDate = tmpLastMessageDate == -1 ? null : new Date(tmpLastMessageDate);
         this.deleted = in.readByte() != 0;
         this.deletedString = in.readString();
+        this.last_authored_message_at = in.readString();
     }
 
     public static Creator<Conversation> CREATOR = new Creator<Conversation>() {
