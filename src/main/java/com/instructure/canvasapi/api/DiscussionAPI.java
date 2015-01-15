@@ -70,7 +70,6 @@ public class DiscussionAPI {
 
     private static DiscussionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(DiscussionsInterface.class);
     }
 
