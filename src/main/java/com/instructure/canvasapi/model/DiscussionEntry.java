@@ -15,7 +15,7 @@ import java.util.List;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionEntry extends CanvasComparable<DiscussionEntry>{
+public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
 
     private long id;                      //Entry id.
     private boolean unread = false;
