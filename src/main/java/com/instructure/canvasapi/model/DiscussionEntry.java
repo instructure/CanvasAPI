@@ -261,7 +261,7 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         dest.writeInt(this.unreadChildren);
         //can't have a circular reference with parcelable, so it needs to be serializable
         dest.writeSerializable((Serializable)this.replies);
-        dest.writeTypedList(this.attachments);
+        dest.writeList(this.attachments);
     }
 
     private DiscussionEntry(Parcel in) {
@@ -279,7 +279,7 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.totalChildren = in.readInt();
         this.unreadChildren = in.readInt();
         this.replies = (List<DiscussionEntry>)in.readSerializable();
-        in.readTypedList(this.attachments, DiscussionAttachment.CREATOR);
+        in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
     }
 
     public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {
