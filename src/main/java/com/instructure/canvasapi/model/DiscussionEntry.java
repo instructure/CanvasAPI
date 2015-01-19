@@ -4,14 +4,18 @@ import android.os.Parcel;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Josh Ruesch
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
+public class DiscussionEntry extends CanvasComparable<DiscussionEntry>{
 
     private long id;                      //Entry id.
     private boolean unread = false;
@@ -245,7 +249,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         dest.writeByte(unread ? (byte) 1 : (byte) 0);
         dest.writeString(this.updated_at);
         dest.writeString(this.created_at);
-        dest.writeParcelable(this.parent, flags);
+        //can't have a circular reference with parcelable, so it needs to be serializable
+        dest.writeSerializable(this.parent);
         dest.writeParcelable(this.author, 0);
         dest.writeString(this.description);
         dest.writeLong(this.user_id);
@@ -254,8 +259,9 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         dest.writeByte(deleted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.totalChildren);
         dest.writeInt(this.unreadChildren);
-        dest.writeList(this.replies);
-        dest.writeList(this.attachments);
+        //can't have a circular reference with parcelable, so it needs to be serializable
+        dest.writeSerializable((Serializable)this.replies);
+        dest.writeTypedList(this.attachments);
     }
 
     private DiscussionEntry(Parcel in) {
@@ -263,7 +269,7 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.unread = in.readByte() != 0;
         this.updated_at = in.readString();
         this.created_at = in.readString();
-        this.parent = in.readParcelable(DiscussionEntry.class.getClassLoader());
+        this.parent = (DiscussionEntry)in.readSerializable();
         this.author = in.readParcelable(DiscussionParticipant.class.getClassLoader());
         this.description = in.readString();
         this.user_id = in.readLong();
@@ -272,8 +278,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.deleted = in.readByte() != 0;
         this.totalChildren = in.readInt();
         this.unreadChildren = in.readInt();
-        in.readList(this.replies, DiscussionEntry.class.getClassLoader());
-        in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
+        this.replies = (List<DiscussionEntry>)in.readSerializable();
+        in.readTypedList(this.attachments, DiscussionAttachment.CREATOR);
     }
 
     public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {
