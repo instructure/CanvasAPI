@@ -73,7 +73,6 @@ public class KalturaAPI {
     /////////////////////////////////////////////////////////////////////////
     private static KalturaConfigurationInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(KalturaConfigurationInterface.class);
     }
 
@@ -170,8 +169,7 @@ public class KalturaAPI {
     private static xml getMediaIdForUploadedFileTokenSynchronous(Context context, String ks, String uploadToken, String fileName, String mimetype) {
         try {
             RestAdapter restAdapter = KalturaRestAdapter.buildAdapter(context);
-            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-            String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype);
+            String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype); 
             return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadToken, fileName, mediaTypeConverted);
         } catch (Exception E) {
             Log.e(APIHelpers.LOG_TAG, E.toString());
