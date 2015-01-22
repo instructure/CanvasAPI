@@ -62,6 +62,11 @@ public class DiscussionAPI {
         @POST("/{context_id}/discussion_topics/")
         void postNewDiscussion(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
 
+        @POST("/{context_id}/discussion_topics/")
+        void postNewDiscussionAndPublish(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
+
+        @PUT("/{context_id}/discussion_topics/{topic_id}")
+        void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("title") String title, @Query("message")String message, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -145,4 +150,34 @@ public class DiscussionAPI {
         buildInterface(callback, canvasContext).postNewDiscussion(canvasContext.getId(), title, message, announcement, type, callback);
     }
 
+    public static void postNewDiscussionAndPublish(CanvasContext canvasContext, String  title, String message, boolean threaded, boolean is_announcement, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
+        if (APIHelpers.paramIsNull(callback, message, title, canvasContext)) { return; }
+
+
+        String type = "";
+        if (threaded)
+            type = "threaded";
+        else
+            type = "side_comment";
+
+        int announcement = APIHelpers.booleanToInt(is_announcement);
+        int publish = APIHelpers.booleanToInt(isPublished);
+
+        buildInterface(callback, canvasContext).postNewDiscussionAndPublish(canvasContext.getId(), title, message, announcement, publish, type, callback);
+    }
+
+    public static void updateDiscussionTopic(CanvasContext canvasContext, long topicId, String  title, String message, boolean threaded, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
+        if (APIHelpers.paramIsNull(callback, message, title, canvasContext)) { return; }
+
+        String type = "";
+        if (threaded)
+            type = "threaded";
+        else
+            type = "side_comment";
+
+        int publish = APIHelpers.booleanToInt(isPublished);
+
+        buildInterface(callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, callback);
+
+    }
 }

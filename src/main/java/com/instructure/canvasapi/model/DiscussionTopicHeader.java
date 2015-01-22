@@ -58,6 +58,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private DiscussionTopicPermission permission;
     private Assignment assignment;
     private LockInfo lock_info;
+    private boolean published;              //Whether this discussion topic is published (true) or draft state (false)
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -237,6 +238,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         return group_category_id;
     }
 
+    public boolean isPublished() {
+        return published;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -330,6 +335,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeParcelable(this.permission, flags);
         dest.writeParcelable(this.assignment, flags);
         dest.writeParcelable(this.lock_info, flags);
+        dest.writeByte(published ? (byte) 1 : (byte) 0);
     }
 
     private DiscussionTopicHeader(Parcel in) {
@@ -359,6 +365,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
+        this.published = in.readByte() != 0;
     }
 
     public static Creator<DiscussionTopicHeader> CREATOR = new Creator<DiscussionTopicHeader>() {
