@@ -57,7 +57,7 @@ public class StudentSubmission extends CanvasModel<StudentSubmission> implements
 
     @Override
     public long getId() {
-        return this.getId();
+        return user_id;
     }
 
     @Override
