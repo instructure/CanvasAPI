@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Avatar;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -29,11 +30,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by Josh Ruesch on 10/16/13.
  *
@@ -49,7 +45,22 @@ public class UploadFileSynchronousAPI {
         public void onUnexpectedError(Exception exception);
     }
 
-    public static Avatar postAvatar(String imageName, long size, String contentType, String path, Context context) {
+
+    //wrapper classes for the avatar so we can let the view know what type of error (if any) happened
+    public static class AvatarError {
+        public static int NONE = 0;
+        public static int QUOTA_EXCEEDED = 1;
+        public static int UNKNOWN = 2;
+    }
+    public static class AvatarWrapper {
+        public int error;
+        public Avatar avatar;
+
+        public AvatarWrapper(){}
+    }
+
+
+    public static AvatarWrapper postAvatar(String imageName, long size, String contentType, String path, Context context) {
         String url = String.format(Locale.US, "/api/v1/users/self/files?name=%s&size=%d&content_type=%s",  imageName, size, contentType);
         //set the parent folder
         String parentFolder = "&parent_folder_path=profile+pictures";
@@ -75,6 +86,16 @@ public class UploadFileSynchronousAPI {
 			 */
             ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
             JSONObject json = new JSONObject(response.responseBody);
+
+            //See if we've exceeded the quota.
+            if(json.has("message") && json.getString("message").equals("file size exceeds quota")){
+                //let the user know
+                AvatarWrapper avatarWrapper = new AvatarWrapper();
+                avatarWrapper.avatar = null;
+                avatarWrapper.error = AvatarError.QUOTA_EXCEEDED;
+                return avatarWrapper;
+            }
+
             String uploadUrl = json.getString("upload_url");
             JSONObject params = json.getJSONObject("upload_params");
 
@@ -102,11 +123,18 @@ public class UploadFileSynchronousAPI {
             avatar.setDisplayName(object.getString("display_name"));
             avatar.setType(object.getString("content-type"));
 
-            return avatar;
+            AvatarWrapper avatarWrapper = new AvatarWrapper();
+            avatarWrapper.avatar = avatar;
+            avatarWrapper.error = AvatarError.NONE;
+
+            return avatarWrapper;
         }
         catch(Exception E)
         {
-            return null;
+            AvatarWrapper avatarWrapper = new AvatarWrapper();
+            avatarWrapper.avatar = null;
+            avatarWrapper.error = AvatarError.UNKNOWN;
+            return avatarWrapper;
         }
     }
 
