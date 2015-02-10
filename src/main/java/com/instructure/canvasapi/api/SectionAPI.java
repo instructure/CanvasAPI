@@ -52,7 +52,7 @@ public class SectionAPI {
         @GET("/{courseid}/sections")
         void getFirstPageSectionsList(@Path("courseid") long courseID, Callback<Section[]> callback);
 
-        @GET("/{courseid}/sections?include[]=students")
+        @GET("/{courseid}/sections?include[]=students&include[]=avatar_url")
         void getCourseSectionsWithStudents(@Path("courseid") long courseID, Callback<Section[]> callback);
 
         @GET("/{next}")
