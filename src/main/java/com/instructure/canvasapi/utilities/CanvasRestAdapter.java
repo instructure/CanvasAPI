@@ -246,13 +246,15 @@ public class CanvasRestAdapter {
 
 
     /**
-    * set a new default for the number of items returned per page.
-    *
-    * @param itemsPerPage
-    */
-    public static void setDefaultNumberOfItemsPerPage(int itemsPerPage){
-                numberOfItemsPerPage = itemsPerPage;
-            }
+     * set a new default for the number of items returned per page.
+     *
+     * @param itemsPerPage
+     */
+    public static void setDefaultNumberOfItemsPerPage(int itemsPerPage) {
+        if(itemsPerPage > 0){
+            numberOfItemsPerPage = itemsPerPage;
+        }
+    }
 
     /**
      * Gets our custom GSON parser.
@@ -280,7 +282,7 @@ public class CanvasRestAdapter {
      * @return Whether or not the instance was setup. Only returns false if the data is empty or invalid.
      */
     public static boolean setupInstance(Context context, String token, String domain, int itemsPerPage){
-        numberOfItemsPerPage = itemsPerPage;
+        setDefaultNumberOfItemsPerPage(itemsPerPage);
         return setupInstance(context,token,domain);
     }
 
