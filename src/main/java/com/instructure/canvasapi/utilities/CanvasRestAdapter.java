@@ -236,6 +236,9 @@ public class CanvasRestAdapter {
             if (Masquerading.isMasquerading(context)) {
                 requestFacade.addQueryParam("as_user_id", Long.toString(Masquerading.getMasqueradingId(context)));
             }
+
+            //Sets the per_page count so we can get back more items with less round-trip calls.
+            requestFacade.addQueryParam("per_page", Integer.toString(30));
         }
     }
 
