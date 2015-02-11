@@ -25,6 +25,8 @@ import retrofit.converter.GsonConverter;
 
 public class CanvasRestAdapter {
 
+    private static int numberOfItemsPerPage = 30;
+
     /**
      * Returns a RestAdapter Instance that points at :domain/api/v1
      *
@@ -238,11 +240,19 @@ public class CanvasRestAdapter {
             }
 
             //Sets the per_page count so we can get back more items with less round-trip calls.
-            requestFacade.addQueryParam("per_page", Integer.toString(30));
+            requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
         }
     }
 
 
+    /**
+    * set a new default for the number of items returned per page.
+    *
+    * @param itemsPerPage
+    */
+    public static void setDefaultNumberOfItemsPerPage(int itemsPerPage){
+                numberOfItemsPerPage = itemsPerPage;
+            }
 
     /**
      * Gets our custom GSON parser.
@@ -256,6 +266,23 @@ public class CanvasRestAdapter {
         return b.create();
     }
 
+    /**
+     * Sets up the CanvasRestAdapter.
+     *
+     * Short hand for setdomain, setToken, and setProtocol.
+     *
+     * Clears out any old data before setting the new data.
+     *
+     * @param context An Android context.
+     * @param token An OAuth2 Token
+     * @param domain The domain for the signed in user.
+     * @param itemsPerPage The number of items to return per page. Default is 30.
+     * @return Whether or not the instance was setup. Only returns false if the data is empty or invalid.
+     */
+    public static boolean setupInstance(Context context, String token, String domain, int itemsPerPage){
+        numberOfItemsPerPage = itemsPerPage;
+        return setupInstance(context,token,domain);
+    }
 
     /**
      * Sets up the CanvasRestAdapter.
