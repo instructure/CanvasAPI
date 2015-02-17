@@ -9,6 +9,14 @@ import java.util.Date;
 
 public class AccountNotification extends CanvasModel<AccountNotification> {
 
+    public static final String ACCOUNT_NOTIFICATION_WARNING = "warning";
+    public static final String ACCOUNT_NOTIFICATION_INFORMATION = "information";
+    public static final String ACCOUNT_NOTIFICATION_QUESTION = "question";
+    public static final String ACCOUNT_NOTIFICATION_ERROR = "error";
+    public static final String ACCOUNT_NOTIFICATION_CALENDAR = "calendar";
+
+
+
     @SerializedName("id")
     private long account_notification_id;
     private String subject;
@@ -17,8 +25,7 @@ public class AccountNotification extends CanvasModel<AccountNotification> {
     private String start_at;
     private String end_at;
 
-    private String[] icon;
-    private int[] role_ids;
+    private String icon;
 
     public long getAccountNotificationId() {
         return account_notification_id;
@@ -32,11 +39,7 @@ public class AccountNotification extends CanvasModel<AccountNotification> {
         return message;
     }
 
-    public int[] getRole_ids() {
-        return role_ids;
-    }
-
-    public String[] getIcon() {
+    public String getIcon() {
         return icon;
     }
 
@@ -66,7 +69,7 @@ public class AccountNotification extends CanvasModel<AccountNotification> {
 
     @Override
     public long getId() {
-        return 0;
+        return account_notification_id;
     }
 
     @Override
@@ -81,8 +84,7 @@ public class AccountNotification extends CanvasModel<AccountNotification> {
         dest.writeString(this.message);
         dest.writeString(this.start_at);
         dest.writeString(this.end_at);
-        dest.writeStringArray(this.icon);
-        dest.writeIntArray(this.role_ids);
+        dest.writeString(this.icon);
     }
 
     public AccountNotification() {
@@ -94,8 +96,7 @@ public class AccountNotification extends CanvasModel<AccountNotification> {
         this.message = in.readString();
         this.start_at = in.readString();
         this.end_at = in.readString();
-        this.icon = in.createStringArray();
-        this.role_ids = in.createIntArray();
+        this.icon = in.readString();
     }
 
     public static final Creator<AccountNotification> CREATOR = new Creator<AccountNotification>() {
