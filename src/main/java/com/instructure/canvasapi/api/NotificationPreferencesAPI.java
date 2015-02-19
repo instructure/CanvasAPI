@@ -14,6 +14,12 @@ import retrofit.http.Path;
 
 public class NotificationPreferencesAPI {
 
+    //Frequency keys
+    public static final String IMMEDIATELY = "immediately";
+    public static final String DAILY = "daily";
+    public static final String WEEKLY = "weekly";
+    public static final String NEVER = "never";
+
     public interface NotificationPreferencesInterface {
 
         @GET("/users/{user_id}/communication_channels/{communication_channel_id}/notification_preferences")
