@@ -2,10 +2,12 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
 
@@ -137,6 +139,36 @@ public class CalendarEventAPI {
             sb.append("&context_codes[]=");
         }
         eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, sb.toString(), callback);
+    }
+
+    public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
+
+        //Builds an array of context_codes, the way we have to build and send the array is funky.
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < canvasContextIds.size(); i++) {
+            sb.append(canvasContextIds.get(i));
+
+            if(i == canvasContextIds.size() - 1) {
+                break;
+            }
+            sb.append("&context_codes[]=");
+        }
+
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                CalendarEventAPI.getNextPageCalendarEvents(nextURL, callback);
+            }
+
+            @Override
+            public Class classType() {
+                return ScheduleItem.class;
+            }
+        });
+
+        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, sb.toString(), bridge);
     }
 
     /////////////////////////////////////////////////////////////////////////////
