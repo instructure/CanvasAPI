@@ -128,34 +128,15 @@ public class CalendarEventAPI {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
 
-        //Builds an array of context_codes, the way we have to build and send the array is funky.
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < canvasContextIds.size(); i++) {
-            sb.append(canvasContextIds.get(i));
-
-            if(i == canvasContextIds.size() - 1) {
-                break;
-            }
-            sb.append("&context_codes[]=");
-        }
-        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, sb.toString(), callback);
+        String contextIds = buildContextArray(canvasContextIds);
+        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, callback);
     }
 
     public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
 
-        //Builds an array of context_codes, the way we have to build and send the array is funky.
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < canvasContextIds.size(); i++) {
-            sb.append(canvasContextIds.get(i));
-
-            if(i == canvasContextIds.size() - 1) {
-                break;
-            }
-            sb.append("&context_codes[]=");
-        }
-
+        String contextIds = buildContextArray(canvasContextIds);
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
             public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
@@ -168,7 +149,22 @@ public class CalendarEventAPI {
             }
         });
 
-        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, sb.toString(), bridge);
+        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, bridge);
+    }
+
+    private static String buildContextArray(ArrayList<String> canvasContextIds){
+        //Builds an array of context_codes, the way we have to build and send the array is funky.
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < canvasContextIds.size(); i++) {
+            sb.append(canvasContextIds.get(i));
+
+            if(i == canvasContextIds.size() - 1) {
+                break;
+            }
+            sb.append("&context_codes[]=");
+        }
+
+        return sb.toString();
     }
 
     /////////////////////////////////////////////////////////////////////////////
