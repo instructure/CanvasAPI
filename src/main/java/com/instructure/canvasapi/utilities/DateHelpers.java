@@ -2,8 +2,6 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.text.method.DateTimeKeyListener;
-
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
