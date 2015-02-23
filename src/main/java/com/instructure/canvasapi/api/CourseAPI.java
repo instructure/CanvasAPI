@@ -68,7 +68,7 @@ public class CourseAPI {
         @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=total_scores")
         void getCourseWithGrade(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
-        @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public")
+        @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public&include[]=permissions")
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
