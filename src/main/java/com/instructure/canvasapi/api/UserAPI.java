@@ -1,6 +1,8 @@
 package com.instructure.canvasapi.api;
 
 import android.util.Log;
+
+import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.User;
@@ -29,10 +31,14 @@ public class UserAPI {
     private static String getFirstPagePeopleCacheFilename(CanvasContext canvasContext){
         return canvasContext.toAPIString() + "/users";
     }
+
     private static String getFirstPagePeopleCacheFilename(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type){
         return canvasContext + "/users/"+enrollment_type;
     }
 
+    private static String getCourseUserListCacheFilename(CanvasContext canvasContext){
+        return canvasContext.toAPIString() + "/users/all";
+    }
 
     interface UsersInterface {
         @GET("/users/self/profile")
@@ -52,7 +58,7 @@ public class UserAPI {
         void getFirstPagePeopleList(@Path("context_id") long context_id, Callback<User[]> callback);
 
         @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email")
-        void getFirstPagePeopleListWithEnrollmentType(@Path("context_id") long context_id, @Query("enrollment_role") String enrollmentType, Callback<User[]> callback);
+        void getFirstPagePeopleListWithEnrollmentType(@Path("context_id") long context_id, @Query("enrollment_type") String enrollmentType, Callback<User[]> callback);
 
         @GET("/{next}")
         void getNextPagePeopleList(@Path(value = "next", encode = false) String nextURL, Callback<User[]> callback);
@@ -129,32 +135,51 @@ public class UserAPI {
         buildInterface(callback, null).getNextPagePeopleList(nextURL, callback);
     }
 
+    public static void getAllUsersForCourseByEnrollmentType(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, CanvasCallback<User[]> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
+
+        CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                UserAPI.getNextPagePeople(nextURL, callback);
+            }
+
+            @Override
+            public Class classType() {
+                return User.class;
+            }
+        });
+        callback.readFromCache(getCourseUserListCacheFilename(canvasContext));
+        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), bridge);
+    }
+
     public static void getFirstPagePeople(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         callback.readFromCache(getFirstPagePeopleCacheFilename(canvasContext, enrollment_type));
 
-        String enrollmentType;
+        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+    }
+
+    private static String getEnrollmentTypeString(ENROLLMENT_TYPE enrollment_type){
+        String enrollmentType = "";
         switch (enrollment_type){
             case DESIGNER:
-                enrollmentType = "DesignerEnrollment";
+                enrollmentType = "designer";
                 break;
             case OBSERVER:
-                enrollmentType = "ObserverEnrollment";
+                enrollmentType = "observer";
                 break;
             case STUDENT:
-                enrollmentType = "StudentEnrollment";
+                enrollmentType = "student";
                 break;
             case TA:
-                enrollmentType = "TaEnrollment";
+                enrollmentType = "ta";
                 break;
             case TEACHER:
-                enrollmentType = "TeacherEnrollment";
+                enrollmentType = "teacher";
                 break;
-            default:
-                return;
         }
-
-        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), enrollmentType, callback);
+        return enrollmentType;
     }
 }
