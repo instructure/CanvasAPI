@@ -3,7 +3,6 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.model.CanvasContext;
-import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -16,9 +15,9 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -41,7 +40,7 @@ public class AssignmentAPI {
     }
 
     public interface AssignmentsInterface {
-        @GET("/courses/{course_id}/assignments/{assignmentid}")
+        @GET("/courses/{course_id}/assignments/{assignmentid}?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
         void getAssignment(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<Assignment> callback);
 
         @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
