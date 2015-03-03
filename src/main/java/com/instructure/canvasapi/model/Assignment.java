@@ -45,6 +45,7 @@ public class Assignment extends CanvasModel<Assignment>{
     //Date the teacher no longer accepts submissions.
     private String lock_at;
     private String unlock_at;
+    private String lock_explanation;
 
     private DiscussionTopicHeader discussion_topic;
 
@@ -301,6 +302,11 @@ public class Assignment extends CanvasModel<Assignment>{
     public boolean isMuted(){
         return this.muted;
     }
+
+    public String getLock_explanation() {
+        return lock_explanation;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
