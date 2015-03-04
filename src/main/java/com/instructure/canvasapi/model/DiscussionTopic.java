@@ -125,6 +125,8 @@ public class DiscussionTopic implements Parcelable, Serializable {
         this.forbidden = in.readByte() != 0;
         in.readList(this.unread_entries, Long.class.getClassLoader());
         in.readList(this.participants, DiscussionParticipant.class.getClassLoader());
+        this.participantsMap = (HashMap<Long, DiscussionParticipant>)in.readSerializable();
+        this.unread_entriesMap = (HashMap<Long, Boolean>)in.readSerializable();
         in.readList(this.view, DiscussionEntry.class.getClassLoader());
     }
 
