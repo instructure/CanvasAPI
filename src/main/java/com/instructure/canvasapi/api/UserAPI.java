@@ -54,6 +54,9 @@ public class UserAPI {
         @GET("/users/{userid}/profile")
         void getUserById(@Path("userid")long userId, Callback<User> userCallback);
 
+        @GET("/{context_id}/users/{userid}?include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
+        void getUserById(@Path("context_id") long context_id, @Path("userid")long userId, Callback<User> userCallback);
+
         @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
         void getFirstPagePeopleList(@Path("context_id") long context_id, Callback<User[]> callback);
 
@@ -119,6 +122,20 @@ public class UserAPI {
         }
 
         buildInterface(userCanvasCallback, null).getUserById(userId,userCanvasCallback);
+    }
+
+    public static void getCourseUserById(CanvasContext canvasContext, long userId, CanvasCallback<User> userCanvasCallback){
+        if(APIHelpers.paramIsNull(userCanvasCallback)){return;}
+
+        userCanvasCallback.readFromCache(getUserByIdCacheFilename(userId));
+
+        //Passing UserCallback here will break OUR cache.
+        if(userCanvasCallback instanceof UserCallback){
+            Log.e(APIHelpers.LOG_TAG, "You cannot pass a User Call back here. It'll break cache for users/self..");
+            return;
+        }
+
+        buildInterface(userCanvasCallback, canvasContext).getUserById(canvasContext.getId(), userId, userCanvasCallback);
     }
 
     public static void getFirstPagePeople(CanvasContext canvasContext, CanvasCallback<User[]> callback) {
