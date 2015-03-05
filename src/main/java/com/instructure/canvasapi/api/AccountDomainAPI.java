@@ -17,6 +17,8 @@ import retrofit.http.Query;
 
 public class AccountDomainAPI {
 
+    private static final String DEFAULT_DOMAIN = "canvas.instructure.com";
+
     public interface AccountDomainInterface {
 
         @GET("/accounts/search")
@@ -37,7 +39,7 @@ public class AccountDomainAPI {
 
     private static AccountDomainInterface buildInterface(CanvasCallback<?> callback) {
         //set the domain here so we have a domain for the api call
-        APIHelpers.setDomain(callback.getContext(), "canvas.instructure.com");
+        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(AccountDomainInterface.class);
     }
