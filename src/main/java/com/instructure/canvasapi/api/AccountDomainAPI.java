@@ -39,19 +39,20 @@ public class AccountDomainAPI {
 
     private static AccountDomainInterface buildInterface(CanvasCallback<?> callback) {
         //set the domain here so we have a domain for the api call
-        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(AccountDomainInterface.class);
     }
 
     public static void searchAccountDomains(String campusName, String domain, float latitude, float longitude, final CanvasCallback<AccountDomain[]> callback) {
         if (APIHelpers.paramIsNull(campusName, domain, callback)) { return; }
+        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
 
         buildInterface(callback).searchAccountDomains(campusName, domain, latitude, longitude, callback);
     }
 
     public static void getFirstPageAccountDomains(CanvasCallback<AccountDomain[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
+        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
 
         buildInterface(callback).getFirstPageAccountDomains(callback);
     }

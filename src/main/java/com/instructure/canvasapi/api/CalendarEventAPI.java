@@ -10,6 +10,8 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -46,6 +48,11 @@ public class CalendarEventAPI {
 
     private static String getUpcomingEventsCacheFilename(){
         return "/users/self/upcoming_events";
+    }
+
+    private static String getAllEventsCacheFilename(String startDate, EVENT_TYPE eventType){
+        String resultString = startDate.replaceAll("[^\\p{L}\\p{Nd}]+", "");
+        return "/users/self/all" + eventType.name() + resultString.substring(0, 7);
     }
 
     public interface CalendarEventsInterface {
@@ -133,9 +140,9 @@ public class CalendarEventAPI {
     }
 
     public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        callback.readFromCache(getAllEventsCacheFilename(startDate, eventType));
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
-
         String contextIds = buildContextArray(canvasContextIds);
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override

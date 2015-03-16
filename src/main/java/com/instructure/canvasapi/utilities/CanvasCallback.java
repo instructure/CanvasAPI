@@ -38,6 +38,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         return isFinished;
     }
 
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
     }
