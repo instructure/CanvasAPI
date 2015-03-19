@@ -26,6 +26,19 @@ public class StreamUnitTest extends Assert{
         assertTrue(streamItem.getCourseId() == 1393179);
     }
 
+    @Test
+    public void testStreamItemCourse() {
+        Gson gson = CanvasRestAdapter.getGSONParser();
+        StreamItem streamItem = gson.fromJson(courseStreamItemJSON, StreamItem.class);
+
+        assertNotNull(streamItem);
+
+        assertNotNull(streamItem.getHtmlUrl());
+        assertNotNull(streamItem.getContextType());
+        assertNotNull(streamItem.getType());
+        assertTrue(streamItem.getId() > 0);
+    }
+
     //personal stream
     //@GET("/users/self/activity_stream")
     //void getUserStream(Callback<StreamItem[]> callback);
@@ -166,5 +179,25 @@ public class StreamUnitTest extends Assert{
             "]\n" +
             "}\n" +
             "]";
+
+
+    String courseStreamItemJSON =
+            "{\n" +
+            "\"created_at\": \"2015-02-23T23:41:16Z\",\n" +
+            "\"updated_at\": \"2015-02-23T23:41:16Z\",\n" +
+            "\"id\": 129486849,\n" +
+            "\"title\": \"post a discussion from a ta perspective\",\n" +
+            "\"message\": \"hasjdf;lk alksjdfa;k sfal;jdflaksjdflas f;ljaslf kajsfl;ajsf\",\n" +
+            "\"type\": \"DiscussionTopic\",\n" +
+            "\"read_state\": false,\n" +
+            "\"context_type\": \"Course\",\n" +
+            "\"course_id\": 836357,\n" +
+            "\"discussion_topic_id\": 9834412,\n" +
+            "\"html_url\": \"https://mobiledev.instructure.com/courses/836357/discussion_topics/9834412\",\n" +
+            "\"total_root_discussion_entries\": 0,\n" +
+            "\"require_initial_post\": null,\n" +
+            "\"user_has_posted\": null,\n" +
+            "\"root_discussion_entries\": []\n" +
+            "}";
 
 }
