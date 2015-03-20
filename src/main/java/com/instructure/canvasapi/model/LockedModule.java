@@ -18,27 +18,62 @@ import java.util.List;
  */
 public class LockedModule extends CanvasComparable<LockedModule> implements Serializable{
     private static final long serialVersionUID = 1L;
-    private List<ModuleName> prerequisites = new ArrayList<ModuleName>();
-    private String unlock_at;
-    private String name;
+
+    private long id;
     private long context_id;
+    private String context_type;
+    private String name;
+    private String unlock_at;
+    private boolean require_sequential_progress;
 
-    public List<ModuleName> getPrerequisites() {
-        return prerequisites;
+    private List<ModuleName> prerequisites = new ArrayList<>();
+    private List<ModuleCompletionRequirement> completion_requirements = new ArrayList<>();
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Getters and Setters
+    ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public long getId() {
+        return id;
     }
-
-    public Date getUnlock_at() {
-        return APIHelpers.stringToDate(unlock_at);
+    public void setId(long id) {
+        this.id = id;
     }
-
+    public String getContextType() {
+        return context_type;
+    }
+    public void setContextType(String context_type) {
+        this.context_type = context_type;
+    }
     public String getName() {
         return name;
     }
-
+    public void setName(String name){
+        this.name = name;
+    }
+    public boolean isRequireSequentialProgress() {
+        return require_sequential_progress;
+    }
+    public void setRequireSequentialProgress(boolean require_sequential_progress) {
+        this.require_sequential_progress = require_sequential_progress;
+    }
+    public List<ModuleName> getPrerequisites() {
+        return prerequisites;
+    }
+    public Date getUnlock_at() {
+        return APIHelpers.stringToDate(unlock_at);
+    }
     public long getContext_id() {
         return context_id;
     }
+    public List<ModuleCompletionRequirement> getCompletionRequirements() {
+        return completion_requirements;
+    }
+    public void setCompletionRequirements(List<ModuleCompletionRequirement> completion_requirements) {
+        this.completion_requirements = completion_requirements;
+    }
 
+    //Module Name
     private class ModuleName implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -52,11 +87,9 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
 
         private String name;
     }
-
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public Date getComparisonDate() {
         return null;
@@ -96,22 +129,32 @@ public class LockedModule extends CanvasComparable<LockedModule> implements Seri
         return true;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.prerequisites);
-        dest.writeString(this.unlock_at);
-        dest.writeString(this.name);
-        dest.writeLong(this.context_id);
-    }
-
-    public LockedModule() {
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
+    ///////////////////////////////////////////////////////////////////////////
+    public LockedModule() {}
 
     private LockedModule(Parcel in) {
         in.readList(this.getPrerequisites(), ModuleName.class.getClassLoader());
         this.unlock_at = in.readString();
         this.name = in.readString();
         this.context_id = in.readLong();
+        this.id = in.readLong();
+        this.context_type = in.readString();
+        this.require_sequential_progress = in.readByte() != 0;
+        in.readList(this.getCompletionRequirements(), ModuleCompletionRequirement.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(this.prerequisites);
+        dest.writeString(this.unlock_at);
+        dest.writeString(this.name);
+        dest.writeLong(this.context_id);
+        dest.writeLong(this.id);
+        dest.writeString(this.context_type);
+        dest.writeByte(this.require_sequential_progress ? (byte) 1 : (byte) 0);
+        dest.writeList(this.completion_requirements);
     }
 
     public static Creator<LockedModule> CREATOR = new Creator<LockedModule>() {

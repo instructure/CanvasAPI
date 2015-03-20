@@ -31,6 +31,11 @@ public class DiscussionAttachment extends CanvasModel<DiscussionAttachment> {
     @SerializedName("content-type")
     private String content_type;
 
+    @SerializedName("folder_id")
+    private long folderId;
+
+    @SerializedName("thumbnail_url")
+    private String thumbnailUrl;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -120,7 +125,18 @@ public class DiscussionAttachment extends CanvasModel<DiscussionAttachment> {
     public void setMimeType(String mimeType) {
         this.content_type = mimeType;
     }
-
+    public long getFolderId(){
+        return folderId;
+    }
+    public void setFolderId(long folderId){
+        this.folderId = folderId;
+    }
+    public String getThumbnailUrl(){
+        return thumbnailUrl;
+    }
+    public void setThumbnailUrl(String thumbnailUrl){
+        this.thumbnailUrl = thumbnailUrl;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
