@@ -15,57 +15,107 @@ import java.util.Date;
 
 public class FileFolder extends CanvasModel<FileFolder>{
 
-	/**
-	 * {
-		  "size":4,
-		  "content-type":"text/plain",
-		  "url":"http://www.example.com/files/569/download?download_frd=1\u0026verifier=c6HdZmxOZa0Fiin2cbvZeI8I5ry7yqD7RChQzb6P",
-		  "id":569,
-		  "display_name":"file.txt",
-		  "created_at':"2012-07-06T14:58:50Z",
-		  "updated_at':"2012-07-06T14:58:50Z",
-		  "unlock_at':null,
-		  "locked':false,
-		  "hidden':false,
-		  "lock_at':null,
-		  "locked_for_user":false,
-		  "hidden_for_user":false
-		}
-	 */
-	//file
-	private long size;
+    // Common Attributes
+    private long id;
+    private String created_at;
+    private String updated_at;
+    private String unlock_at;
+    private String lock_at;
+    private boolean locked;
+    private boolean hidden;
+    private boolean locked_for_user;
+    private boolean hidden_for_user;
+
+	// File Attributes
+    private long folder_id;
+    private long size;
     @SerializedName("content-type")
 	private String content_type;
 	private String url;
 	private String display_name;
-	
-	//folder
-	private String context_type;
-	private long context_id;
+	private String thumbnail_url;
+    private LockInfo lock_info;
+
+    // Folder Attributes
+    private long parent_folder_id;
+    private long context_id;
 	private int files_count;
 	private int position;
 	private int folders_count;
-	private String name;
-	private long parent_folder_id;
-	private String folders_url;
+    private String context_type;
+    private String name;
+    private String folders_url;
 	private String files_url;
 	private String full_name;
 	
-	//common to both
-	private long id;
-	private String created_at;
-	private String updated_at;
-	private String unlock_at;
-	private boolean locked;
-	private boolean hidden;
-	private String lock_at;
-	private boolean locked_for_user;
-	private boolean hidden_for_user;
-    private LockInfo lock_info;
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
-	
+
+    // Common
+    @Override
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+    public Date getCreatedAt() {
+        return APIHelpers.stringToDate(created_at);
+    }
+    public void setCreatedAt(Date created_at) {
+        this.created_at = APIHelpers.dateToString(created_at);
+    }
+    public Date getUpdatedAt() {
+        return APIHelpers.stringToDate(updated_at);
+    }
+    public void setUpdatedAt(Date updated_at) {
+        this.updated_at = APIHelpers.dateToString(updated_at);
+    }
+    public Date getUnlockAt() {
+        return APIHelpers.stringToDate(unlock_at);
+    }
+    public void setUnlockAt(Date unlock_at) {
+        this.unlock_at = APIHelpers.dateToString(unlock_at);
+    }
+    public Date getLockAt(){
+        return APIHelpers.stringToDate(lock_at);
+    }
+    public void setLockAt(Date lock_at){
+        this.lock_at = APIHelpers.dateToString(lock_at);
+    }
+    public boolean isLocked() {
+        return locked;
+    }
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+    public boolean isHidden() {
+        return hidden;
+    }
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+    public boolean isLockedForUser() {
+        return locked_for_user;
+    }
+    public void setLockedForUser(boolean locked_for_user) {
+        this.locked_for_user = locked_for_user;
+    }
+    public boolean isHiddenForUser() {
+        return hidden_for_user;
+    }
+    public void setHiddenForUser(boolean hidden_for_user) {
+        this.hidden_for_user = hidden_for_user;
+    }
+
+    // Files
+    public long getFolderId(){
+        return this.folder_id;
+    }
+    public void setFolderId(long folderId){
+        this.folder_id = folderId;
+    }
 	public long getSize() {
 		return size;
 	}
@@ -84,20 +134,28 @@ public class FileFolder extends CanvasModel<FileFolder>{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-    @Override
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
 	public String getDisplayName() {
 		return display_name;
 	}
 	public void setDisplayName(String display_name) {
 		this.display_name = display_name;
 	}
-	public String getContextType() {
+	public String getThumbnailUrl(){
+        return this.thumbnail_url;
+    }
+    public void setThumbnailUrl(String thumbnailUrl){
+        this.thumbnail_url = thumbnailUrl;
+    }
+    public LockInfo getLockInfo() {
+        return (lock_info == null || lock_info.isEmpty()) ? null : lock_info;
+    }
+    public void setLockInfo(LockInfo lockInfo) {
+        this.lock_info = lockInfo;
+    }
+
+
+    // Folders
+    public String getContextType() {
 		return context_type;
 	}
 	public void setContextType(String context_type) {
@@ -157,114 +215,17 @@ public class FileFolder extends CanvasModel<FileFolder>{
 	public void setFullName(String full_name) {
 		this.full_name = full_name;
 	}
-	
-	public Date getCreatedAt() {
-		return APIHelpers.stringToDate(created_at);
-	}
-	public void setCreatedAt(Date created_at) {
-		this.created_at = APIHelpers.dateToString(created_at);
-	}
-	public Date getUpdatedAt() {
-		return APIHelpers.stringToDate(updated_at);
-	}
-	public void setUpdatedAt(Date updated_at) {
-		this.updated_at = APIHelpers.dateToString(updated_at);
-	}
-	public Date getUnlockAt() {
-        return APIHelpers.stringToDate(unlock_at);
-	}
-	public void setUnlockAt(Date unlock_at) {
-		this.unlock_at = APIHelpers.dateToString(unlock_at);
-	}
-	public boolean isLocked() {
-		return locked;
-	}
-	public void setLocked(boolean locked) {
-		this.locked = locked;
-	}
-	public boolean isHidden() {
-		return hidden;
-	}
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-//	public Date getLock_at() {
-//		return lock_at;
-//	}
-//	public void setLock_at(Date lock_at) {
-//		this.lock_at = lock_at;
-//	}
-	public boolean isLockedForUser() {
-		return locked_for_user;
-	}
-	public void setLockedForUser(boolean locked_for_user) {
-		this.locked_for_user = locked_for_user;
-	}
-	public boolean isHiddenForUser() {
-		return hidden_for_user;
-	}
-	public void setHiddenForUser(boolean hidden_for_user) {
-		this.hidden_for_user = hidden_for_user;
-	}
-
-    //During parsing, GSON will try. Which means sometimes we get 'empty' objects
-    //They're non-null, but don't have any information.
-    public LockInfo getLockInfo() {
-        if(lock_info == null || lock_info.isEmpty()){
-            return null;
-        }
-
-        return lock_info;
-    }
-
-    public void setLockInfo(LockInfo lockInfo) {
-        this.lock_info = lockInfo;
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
-    // we override compareTo instead of using these
     @Override
-    public Date getComparisonDate() {
-        return null;
-    }
-
+    public Date getComparisonDate() { return null;}
     @Override
-    public String getComparisonString() {
-        return null;
-    }
+    public String getComparisonString() {return null;}
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructors
-    ///////////////////////////////////////////////////////////////////////////
-
-	public FileFolder() {}
-
-    /**
-     * Example JSON response
-     {
-     "size":4,
-     "content-type":"text/plain",
-     "url":"http://www.example.com/files/569/download?download_frd=1\u0026verifier=c6HdZmxOZa0Fiin2cbvZeI8I5ry7yqD7RChQzb6P",
-     "id":569,
-     "display_name":"file.txt",
-     "created_at':"2012-07-06T14:58:50Z",
-     "updated_at':"2012-07-06T14:58:50Z",
-     "unlock_at':null,
-     "locked':false,
-     "hidden':false,
-     "lock_at':null,
-     "locked_for_user":false,
-     "hidden_for_user":false
-     }
-     */
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Overrides
-    ///////////////////////////////////////////////////////////////////////////
-
+    // we override compareTo instead of using Canvas Comparable methods
     @Override
     public int compareTo(FileFolder other) {
         // folders go before files
@@ -282,6 +243,40 @@ public class FileFolder extends CanvasModel<FileFolder>{
         }
         // both are files
         return getDisplayName().compareTo(other.getDisplayName());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
+    ///////////////////////////////////////////////////////////////////////////
+
+	public FileFolder() {}
+
+    private FileFolder(Parcel in) {
+        this.size = in.readLong();
+        this.content_type = in.readString();
+        this.url = in.readString();
+        this.display_name = in.readString();
+        this.context_type = in.readString();
+        this.context_id = in.readLong();
+        this.files_count = in.readInt();
+        this.position = in.readInt();
+        this.folders_count = in.readInt();
+        this.name = in.readString();
+        this.parent_folder_id = in.readLong();
+        this.folders_url = in.readString();
+        this.files_url = in.readString();
+        this.full_name = in.readString();
+        this.id = in.readLong();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.unlock_at = in.readString();
+        this.locked = in.readByte() != 0;
+        this.hidden = in.readByte() != 0;
+        this.lock_at = in.readString();
+        this.locked_for_user = in.readByte() != 0;
+        this.hidden_for_user = in.readByte() != 0;
+        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
+        this.folder_id = in.readLong();
     }
 
     @Override
@@ -309,34 +304,8 @@ public class FileFolder extends CanvasModel<FileFolder>{
         dest.writeString(this.lock_at);
         dest.writeByte(locked_for_user ? (byte) 1 : (byte) 0);
         dest.writeByte(hidden_for_user ? (byte) 1 : (byte) 0);
-        dest. writeParcelable(this.lock_info,flags);
-    }
-
-    private FileFolder(Parcel in) {
-        this.size = in.readLong();
-        this.content_type = in.readString();
-        this.url = in.readString();
-        this.display_name = in.readString();
-        this.context_type = in.readString();
-        this.context_id = in.readLong();
-        this.files_count = in.readInt();
-        this.position = in.readInt();
-        this.folders_count = in.readInt();
-        this.name = in.readString();
-        this.parent_folder_id = in.readLong();
-        this.folders_url = in.readString();
-        this.files_url = in.readString();
-        this.full_name = in.readString();
-        this.id = in.readLong();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.unlock_at = in.readString();
-        this.locked = in.readByte() != 0;
-        this.hidden = in.readByte() != 0;
-        this.lock_at = in.readString();
-        this.locked_for_user = in.readByte() != 0;
-        this.hidden_for_user = in.readByte() != 0;
-        this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
+        dest.writeParcelable(this.lock_info,flags);
+        dest.writeLong(this.folder_id);
     }
 
     public static Creator<FileFolder> CREATOR = new Creator<FileFolder>() {
