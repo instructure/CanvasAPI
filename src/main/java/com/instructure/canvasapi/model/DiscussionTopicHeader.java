@@ -31,15 +31,17 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private String posted_at;
     private String delayed_post_at;
 
-    private String last_reply_at;              //Last response to the thread.
-    private boolean require_initial_post;   //Whether or not users are required to post before they can respond to comments.
+    private String last_reply_at;           // Last response to the thread.
+    private boolean require_initial_post;   // Whether or not users are required to post before they can respond to comments.
     private int discussion_subentry_count;  // The count of entries in the topic.
-    private String read_state;                  //Whether or not the topic has been read yet.
-    private int unread_count;               //Number of unread messages.
+    private String read_state;              // Whether or not the topic has been read yet.
+    private int unread_count;               // Number of unread messages.
     private long assignment_id;             // The unique identifier of the assignment if the topic is for grading, otherwise null.
-    private boolean locked;                 // whether or not this is locked for students to see.
+    private boolean locked;                 // Whether or not the discussion is 'closed for comments'.
+    private boolean locked_for_user;        // whether or not this is locked for students to see.
+    private String lock_explanation;        // (Optional) An explanation of why this is locked for the user. Present when locked_for_user is true.
     private boolean pinned;                 // whether or not the discussion has been "pinned" by an instructor
-    private DiscussionParticipant author;  //The user that started the thread.
+    private DiscussionParticipant author;   // The user that started the thread.
     private String podcast_url;             // If the topic is a podcast topic this is the feed url for the current user.
     private String group_category_id;
 
@@ -174,6 +176,18 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+    public boolean isLockedForUser(){
+        return this.locked_for_user;
+    }
+    public void setLockedForUser(boolean lockedForUser){
+        this.locked_for_user = lockedForUser;
+    }
+    public String getLockExplanation(){
+        return lock_explanation;
+    }
+    public void setLockExplanation(String lock_explanation){
+        this.lock_explanation = lock_explanation;
+    }
     public boolean isPinned() {
         return pinned;
     }

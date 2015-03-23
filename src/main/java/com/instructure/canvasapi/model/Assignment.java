@@ -41,9 +41,8 @@ public class Assignment extends CanvasModel<Assignment>{
 
     //Module lock info
     private LockInfo lock_info;
-
-    //Date the teacher no longer accepts submissions.
-    private String lock_at;
+    private boolean locked_for_user;
+    private String lock_at; //Date the teacher no longer accepts submissions.
     private String unlock_at;
     private String lock_explanation;
 
@@ -209,9 +208,14 @@ public class Assignment extends CanvasModel<Assignment>{
     public LockInfo getLockInfo() {
         return lock_info;
     }
-
     public void setLockInfo(LockInfo lockInfo) {
         this.lock_info = lockInfo;
+    }
+    public boolean isLockedForUser() {
+        return locked_for_user;
+    }
+    public void setLockedForUser(boolean locked) {
+        this.locked_for_user = locked;
     }
     public GRADING_TYPE getGradingType(){return getGradingTypeFromAPIString(grading_type);}
     @Deprecated
@@ -355,7 +359,6 @@ public class Assignment extends CanvasModel<Assignment>{
         } else{
             return TURN_IN_TYPE.NONE;
         }
-
     }
 
     public static String turnInTypeToPrettyPrintString(TURN_IN_TYPE turnInType, Context context){
@@ -643,6 +646,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeLong(this.group_category_id);
         dest.writeList(this.all_dates);
         dest.writeByte(this.muted ? (byte)1 : (byte) 0);
+        dest.writeByte(this.locked_for_user ? (byte)1 : (byte) 0);
     }
 
     private Assignment(Parcel in) {
@@ -680,6 +684,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.group_category_id = in.readLong();
         in.readList(this.all_dates, AssignmentDueDate.class.getClassLoader());
         this.muted = in.readByte() != 0;
+        this.locked_for_user = in.readByte() != 0;
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
