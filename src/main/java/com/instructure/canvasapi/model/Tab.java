@@ -42,7 +42,7 @@ public class Tab implements Parcelable {
     private String label;
     private String type;
     private String html_url;    // internal url
-    private String url;         // external url
+    private String full_url;         // external url
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -72,7 +72,7 @@ public class Tab implements Parcelable {
     }
 
     public String getExternalUrl() {
-        return url;
+        return full_url;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ public class Tab implements Parcelable {
         dest.writeString(this.label);
         dest.writeString(this.type);
         dest.writeString(this.html_url);
-        dest.writeString(this.url);
+        dest.writeString(this.full_url);
     }
 
     private Tab(Parcel in) {
@@ -136,7 +136,7 @@ public class Tab implements Parcelable {
         this.label = in.readString();
         this.type = in.readString();
         this.html_url = in.readString();
-        this.url = in.readString();
+        this.full_url = in.readString();
     }
 
     public static Parcelable.Creator<Tab> CREATOR = new Parcelable.Creator<Tab>() {
