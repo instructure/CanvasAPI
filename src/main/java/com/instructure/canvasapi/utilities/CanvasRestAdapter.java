@@ -39,12 +39,23 @@ public class CanvasRestAdapter {
     }
 
     /**
-     * Returns a RestAdapter Instance
+     * Returns a RestAdapter Instance that points at :domain/api/v1
      *
-     * @param  context An Android context.
+     * @param context An Android context.
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context) {
+        return buildAdapter(context, true);
+    }
+
+    /**
+     * Returns a RestAdapter Instance
+     *
+     * @param context An Android context.
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    public static RestAdapter buildAdapter(final Context context, final boolean addPerPageQueryParam) {
 
         if(context == null ){
             return null;
@@ -67,7 +78,7 @@ public class CanvasRestAdapter {
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/") // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
                 .setConverter(gsonConverter)
                 .build();
 
@@ -78,7 +89,8 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  callback A Canvas Callback
+     * @param callback A Canvas Callback
+     * @param canvasContext A Canvas Context
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext) {
@@ -86,19 +98,61 @@ public class CanvasRestAdapter {
         return buildAdapter(callback.getContext(), canvasContext);
     }
 
+    /**
+     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
+     *
+     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
+     *
+     * @param callback A Canvas Callback
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext, boolean addPerPageQueryParam) {
+        callback.setFinished(false);
+        return buildAdapter(callback.getContext(), canvasContext, addPerPageQueryParam);
+    }
 
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  context An Android context.
+     * @param context An Android context.
+     * @param canvasContext A Canvas Context
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext) {
+        return buildAdapterHelper(context, canvasContext, true);
+    }
+
+    /**
+     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
+     *
+     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
+     * @param context An Android context.
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return
+     */
+    public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, canvasContext, addPerPageQueryParam);
+    }
+
+    /**
+     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
+     *
+     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
+     *
+     * @param context An Android context.
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
         //If not return an adapter with no context.
         if(canvasContext == null){
-            return buildAdapter(context);
+            return buildAdapter(context, addPerPageQueryParam);
         }
 
         //Check for null values or invalid CanvasContext types.
@@ -144,7 +198,7 @@ public class CanvasRestAdapter {
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
                 .setConverter(gsonConverter)
                 .setClient(httpClient)
                 .build();
@@ -168,7 +222,7 @@ public class CanvasRestAdapter {
 
         return new RestAdapter.Builder()
                 .setEndpoint(domain) // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, true))
                 .build();
     }
 
@@ -206,9 +260,11 @@ public class CanvasRestAdapter {
     public static class CanvasRequestInterceptor implements RequestInterceptor{
 
         Context context;
+        boolean addPerPageQueryParam;
 
-        CanvasRequestInterceptor(Context context){
+        CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam){
             this.context = context;
+            this.addPerPageQueryParam = addPerPageQueryParam;
         }
 
         @Override
@@ -239,8 +295,10 @@ public class CanvasRestAdapter {
                 requestFacade.addQueryParam("as_user_id", Long.toString(Masquerading.getMasqueradingId(context)));
             }
 
-            //Sets the per_page count so we can get back more items with less round-trip calls.
-            requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
+            if(addPerPageQueryParam) {
+                //Sets the per_page count so we can get back more items with less round-trip calls.
+                requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
+            }
         }
     }
 
