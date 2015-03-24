@@ -27,6 +27,28 @@ import retrofit.http.Query;
  */
 public class AssignmentAPI {
 
+    public enum ASSIGNMENT_BUCKET_TYPE { PAST, OVERDUE, UNDATED, UNGRADED, UPCOMING, FUTURE;
+        public static String getEventTypeName(ASSIGNMENT_BUCKET_TYPE eventType) {
+            switch (eventType) {
+                case PAST:
+                    return "past";
+                case OVERDUE:
+                    return "overdue";
+                case UNDATED:
+                    return "undated";
+                case UNGRADED:
+                    return "ungraded";
+                case UPCOMING:
+                    return "upcoming";
+                case FUTURE:
+                    return "future";
+
+            }
+            return "upcoming";
+        }
+    }
+
+
     private static String getAssignmentCacheFilename(long courseID, long assignmentID) {
         return "/courses/" + courseID + "/assignments/" + assignmentID;
     }
@@ -37,6 +59,10 @@ public class AssignmentAPI {
 
     private static String getAssignmentGroupsListCacheFilename(long courseID) {
         return  "/courses/" + courseID + "/assignments_groups";
+    }
+
+    private static String getAssignmentsListWithBucketCacheFilename(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type) {
+        return "/courses/" + courseID + "/assignments?bucket=" + ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type);
     }
 
     public interface AssignmentsInterface {
@@ -77,6 +103,10 @@ public class AssignmentAPI {
                             @Query("assignment[quiz_id]") Long quizId,
                             @Query(value = "assignment[muted]", encodeValue = false) boolean isMuted,
                             Callback<Assignment> callback);
+
+        @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
+        void getAssignmentsWithBucket(@Path("course_id") long course_id, @Query("bucket") String bucket_type, Callback<Assignment[]> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -205,6 +235,14 @@ public class AssignmentAPI {
                 groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, isMuted, callback);
 
     }
+
+    public static void getAssignmentsWithBucket(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type, final CanvasCallback<Assignment[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        callback.readFromCache(getAssignmentsListWithBucketCacheFilename(courseID, bucket_type));
+        buildInterface(callback, null).getAssignmentsWithBucket(courseID, ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type), callback);
+    }
+
 
     /*
     *Converts a SUBMISSION_TYPE[] to a queryString for the API
