@@ -67,10 +67,6 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
 
     protected CanvasContextPermission permissions;
 
-    public class CanvasContextPermission implements Serializable {
-        boolean create_discussion_topic;
-    }
-
     public void setPermissions(CanvasContextPermission permissions) {
         this.permissions = permissions;
     }
@@ -80,7 +76,7 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
     }
 
     public boolean canCreateDiscussion() {
-        return (permissions != null && permissions.create_discussion_topic);
+        return (permissions != null && permissions.canCreateDiscussionTopic());
     }
 
     ///////////////////////////////////////////////////////////////////////////

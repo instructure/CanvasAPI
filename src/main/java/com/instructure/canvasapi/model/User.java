@@ -110,6 +110,15 @@ public class User extends CanvasContext{
     }
 
     public String getBio() { return bio; }
+
+    // User Permissions - defaults to false, returned with UserAPI.getSelfWithPermissions()
+    public boolean canUpdateAvatar(){
+        return getPermissions() != null && getPermissions().canUpdateAvatar();
+    }
+    public boolean canUpdateName(){
+        return getPermissions() != null && getPermissions().canUpdateName();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
@@ -163,6 +172,7 @@ public class User extends CanvasContext{
         dest.writeInt(this.enrollmentIndex);
         dest.writeString(this.sortable_name);
         dest.writeString(this.bio);
+        dest.writeParcelable(this.permissions, flags);
     }
 
     private User(Parcel in) {
@@ -176,6 +186,7 @@ public class User extends CanvasContext{
         this.enrollmentIndex = in.readInt();
         this.sortable_name = in.readString();
         this.bio = in.readString();
+        this.permissions = in.readParcelable(CanvasContextPermission.class.getClassLoader());
     }
 
     public static Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
