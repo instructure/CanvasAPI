@@ -362,7 +362,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeString(this.finalGrade);
         dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
         dest.writeString(this.default_view);
-        dest.writeSerializable(this.permissions);
+        dest.writeParcelable(this.permissions, flags);
         dest.writeLong(this.needs_grading_count);
         dest.writeByte(apply_assignment_group_weights ? (byte) 1 : (byte) 0);
     }
@@ -388,7 +388,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.finalGrade = in.readString();
         this.isFavorite = in.readByte() != 0;
         this.default_view = in.readString();
-        this.permissions = (CanvasContextPermission) in.readSerializable();
+        this.permissions = in.readParcelable(CanvasContextPermission.class.getClassLoader());
         this.needs_grading_count = in.readLong();
         this.apply_assignment_group_weights = in.readByte() != 0;
     }

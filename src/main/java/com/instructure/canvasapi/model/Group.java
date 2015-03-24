@@ -180,7 +180,7 @@ public class Group extends CanvasContext{
         dest.writeLong(this.group_category_id);
         dest.writeLong(this.storage_quota_mb);
         dest.writeString(this.default_view);
-        dest.writeSerializable(this.permissions);
+        dest.writeParcelable(this.permissions, flags);
     }
 
     public Group() {
@@ -202,7 +202,7 @@ public class Group extends CanvasContext{
         this.group_category_id = in.readLong();
         this.storage_quota_mb = in.readLong();
         this.default_view = in.readString();
-        this.permissions = (CanvasContextPermission) in.readSerializable();
+        this.permissions = in.readParcelable(CanvasContextPermission.class.getClassLoader());
     }
 
     public static Creator<Group> CREATOR = new Creator<Group>() {

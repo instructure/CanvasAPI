@@ -40,6 +40,10 @@ public class UserAPI {
         return canvasContext.toAPIString() + "/users/all";
     }
 
+    private static String getSelfWithPermissionsCacheFileName(){
+        return "/users/self";
+    }
+
     interface UsersInterface {
         @GET("/users/self/profile")
         void getSelf(Callback<User> callback);
@@ -47,6 +51,9 @@ public class UserAPI {
         // TODO: We probably need to create a helper that does each of these individually
         @GET("/users/self/enrollments?state[]=active&state[]=invited&state[]=completed")
         void getSelfEnrollments(Callback<Enrollment[]> callback);
+
+        @GET("/users/self")
+        void getSelfWithPermission(CanvasCallback<User> callback);
 
         @PUT("/users/self")
         void updateShortName(@Query("user[short_name]") String shortName, Callback<User> callback);
@@ -94,6 +101,21 @@ public class UserAPI {
         }
 
         buildInterface(callback, null).getSelf(callback);
+    }
+
+    public static void getSelfWithPermissions(CanvasCallback<User> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        //Don't allow this API call to be made while masquerading.
+        //It causes the current user to be overriden with the masqueraded one.
+        if (Masquerading.isMasquerading(callback.getContext())) {
+            Log.w(APIHelpers.LOG_TAG,"No API call for /users/self can be made while masquerading.");
+            return;
+        }
+
+        callback.readFromCache(getSelfWithPermissionsCacheFileName());
+
+        buildInterface(callback, null).getSelfWithPermission(callback);
     }
 
     public static void getSelfEnrollments(CanvasCallback<Enrollment[]> callback) {
