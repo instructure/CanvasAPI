@@ -38,6 +38,12 @@ public class CanvasRestAdapter {
         return buildAdapter(callback.getContext());
     }
 
+    /**
+     * Returns a RestAdapter Instance that points at :domain/api/v1
+     *
+     * @param context An Android context.
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
     public static RestAdapter buildAdapter(final Context context) {
         return buildAdapter(context, true);
     }
@@ -45,7 +51,8 @@ public class CanvasRestAdapter {
     /**
      * Returns a RestAdapter Instance
      *
-     * @param  context An Android context.
+     * @param context An Android context.
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, final boolean addPerPageQueryParam) {
@@ -82,7 +89,8 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  callback A Canvas Callback
+     * @param callback A Canvas Callback
+     * @param canvasContext A Canvas Context
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext) {
@@ -95,12 +103,14 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  callback A Canvas Callback
+     * @param callback A Canvas Callback
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
-    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext, boolean addPerQueryParam) {
+    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext, boolean addPerPageQueryParam) {
         callback.setFinished(false);
-        return buildAdapter(callback.getContext(), canvasContext, addPerQueryParam);
+        return buildAdapter(callback.getContext(), canvasContext, addPerPageQueryParam);
     }
 
     /**
@@ -108,7 +118,8 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  context An Android context.
+     * @param context An Android context.
+     * @param canvasContext A Canvas Context
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext) {
@@ -120,11 +131,12 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      * @param context An Android context.
-     * @param addPerQueryParam Specify if the per page query param should be added automatically
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
      * @return
      */
-    public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext, boolean addPerQueryParam) {
-        return buildAdapterHelper(context, canvasContext, addPerQueryParam);
+    public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, canvasContext, addPerPageQueryParam);
     }
 
     /**
@@ -132,13 +144,15 @@ public class CanvasRestAdapter {
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
-     * @param  context An Android context.
+     * @param context An Android context.
+     * @param canvasContext A Canvas Context
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
-    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean addPerQueryParam) {
+    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
         //If not return an adapter with no context.
         if(canvasContext == null){
-            return buildAdapter(context, addPerQueryParam);
+            return buildAdapter(context, addPerPageQueryParam);
         }
 
         //Check for null values or invalid CanvasContext types.
@@ -184,7 +198,7 @@ public class CanvasRestAdapter {
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerQueryParam))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
                 .setConverter(gsonConverter)
                 .setClient(httpClient)
                 .build();
