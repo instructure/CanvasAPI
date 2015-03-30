@@ -65,7 +65,7 @@ android {
     }
 
     sourceSets {
-        androidTest.setRoot('src/test')
+        androidTest.setRoot('src/androidTest')
     }
 }
 
@@ -80,6 +80,12 @@ configurations {
     archives {
         extendsFrom configurations.default
     }
+}
+
+robolectric {
+    // Configure includes / excludes
+    include '**/*Test.class'
+    exclude '**/espresso/**/*.class'
 }
 
 signing {
