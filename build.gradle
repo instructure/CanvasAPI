@@ -81,6 +81,8 @@ configurations {
     archives {
         extendsFrom configurations.default
     }
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
 }
 
 signing {
