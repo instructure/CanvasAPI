@@ -29,6 +29,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private String description;
     private String quiz_type;
     private LockInfo lock_info;
+    private QuizPermission permissions;
 
     // Helper variables
 
@@ -114,6 +115,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.quiz_type);
         dest.writeParcelable(this.lock_info, flags);
         dest.writeParcelable(this.assignment, flags);
+        dest.writeParcelable(this.permissions, flags);
     }
 
     public Quiz() {
@@ -128,6 +130,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.quiz_type = in.readString();
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
+        this.permissions = in.readParcelable(QuizPermission.class.getClassLoader());
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {

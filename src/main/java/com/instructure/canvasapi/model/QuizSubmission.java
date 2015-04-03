@@ -1,0 +1,323 @@
+package com.instructure.canvasapi.model;
+
+import android.os.Parcel;
+
+import com.google.gson.annotations.SerializedName;
+import com.instructure.canvasapi.utilities.APIHelpers;
+
+import java.util.Date;
+
+/**
+ * Copyright (c) 2015 Instructure. All rights reserved.
+ */
+public class QuizSubmission extends CanvasModel<QuizSubmission> {
+    //The ID of the quiz submission.
+    private long id;
+
+    //The ID of the Quiz the quiz submission belongs to.
+    @SerializedName("quiz_id")
+    private long quizId;
+
+    //The ID of the Student that made the quiz submission.
+    @SerializedName("user_id")
+    private long userId;
+
+    //The ID of the Submission the quiz submission represents.
+    @SerializedName("submission_id")
+    private long submissionId;
+
+    //The time at which the student started the quiz submission.
+    @SerializedName("started_at")
+    private String startedAt;
+
+    //The time at which the student submitted the quiz submission.
+    @SerializedName("finished_at")
+    private String finishedAt;
+
+    //The time at which the quiz submission will be overdue, and be flagged as a late
+    //submission.
+    @SerializedName("end_at")
+    private String endAt;
+
+    //For quizzes that allow multiple attempts, this field specifies the quiz
+    //submission attempt number.
+    private int attempt;
+
+    //Number of times the student was allowed to re-take the quiz over the
+    //multiple-attempt limit.
+    @SerializedName("extra_attempts")
+    private int extraAttempts;
+
+    //Amount of extra time allowed for the quiz submission, in minutes.
+    @SerializedName("extra_time")
+    private int extraTime;
+
+    //The student can take the quiz even if it's locked for everyone else
+    @SerializedName("manually_unlocked")
+    private boolean manuallyUnlocked;
+
+    //Amount of time spent, in seconds.
+    @SerializedName("time_spent")
+    private int timeSpent;
+
+    //The score of the quiz submission, if graded.
+    private int score;
+
+    //The original score of the quiz submission prior to any re-grading.
+    @SerializedName("score_before_regrade")
+    private int scoreBeforeRegrade;
+
+    //For quizzes that allow multiple attempts, this is the score that will be used,
+    //which might be the score of the latest, or the highest, quiz submission.
+    @SerializedName("kept_score")
+    private int keptScore;
+
+    //Number of points the quiz submission's score was fudged by.
+    @SerializedName("fudge_points")
+    private int fudgePoints;
+
+    //Whether the student has viewed their results to the quiz.
+    @SerializedName("has_seen_results")
+    private boolean hasSeenResults;
+
+    //The current state of the quiz submission. Possible values:
+    //['untaken'|'pending_review'|'complete'|'settings_only'|'preview'].
+    @SerializedName("workflow_state")
+    private String workflowState;
+
+    //Points possible for the quiz
+    @SerializedName("quiz_points_possible")
+    private int quizPointsPossible;
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getQuizId() {
+        return quizId;
+    }
+
+    public void setQuizId(long quizId) {
+        this.quizId = quizId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(long submissionId) {
+        this.submissionId = submissionId;
+    }
+
+    public Date getStartedAt() {
+        return APIHelpers.stringToDate(startedAt);
+    }
+
+    public void setStartedAt(String startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Date getFinishedAt() {
+        return APIHelpers.stringToDate(finishedAt);
+    }
+
+    public void setFinishedAt(String finishedAt) {
+        this.finishedAt = finishedAt;
+    }
+
+    public Date getEndAt() {
+        return APIHelpers.stringToDate(endAt);
+    }
+
+    public void setEndAt(String endAt) {
+        this.endAt = endAt;
+    }
+
+    public int getAttempt() {
+        return attempt;
+    }
+
+    public void setAttempt(int attempt) {
+        this.attempt = attempt;
+    }
+
+    public int getExtraAttempts() {
+        return extraAttempts;
+    }
+
+    public void setExtraAttempts(int extraAttempts) {
+        this.extraAttempts = extraAttempts;
+    }
+
+    public int getExtraTime() {
+        return extraTime;
+    }
+
+    public void setExtraTime(int extraTime) {
+        this.extraTime = extraTime;
+    }
+
+    public boolean isManuallyUnlocked() {
+        return manuallyUnlocked;
+    }
+
+    public void setManuallyUnlocked(boolean manuallyUnlocked) {
+        this.manuallyUnlocked = manuallyUnlocked;
+    }
+
+    public int getTimeSpent() {
+        return timeSpent;
+    }
+
+    public void setTimeSpent(int timeSpent) {
+        this.timeSpent = timeSpent;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScoreBeforeRegrade() {
+        return scoreBeforeRegrade;
+    }
+
+    public void setScoreBeforeRegrade(int scoreBeforeRegrade) {
+        this.scoreBeforeRegrade = scoreBeforeRegrade;
+    }
+
+    public int getKeptScore() {
+        return keptScore;
+    }
+
+    public void setKeptScore(int keptScore) {
+        this.keptScore = keptScore;
+    }
+
+    public int getFudgePoints() {
+        return fudgePoints;
+    }
+
+    public void setFudgePoints(int fudgePoints) {
+        this.fudgePoints = fudgePoints;
+    }
+
+    public boolean hasSeenResults() {
+        return hasSeenResults;
+    }
+
+    public void setHasSeenResults(boolean hasSeenResults) {
+        this.hasSeenResults = hasSeenResults;
+    }
+
+    public String getWorkflowState() {
+        return workflowState;
+    }
+
+    public void setWorkflowState(String workflowState) {
+        this.workflowState = workflowState;
+    }
+
+    public int getQuizPointsPossible() {
+        return quizPointsPossible;
+    }
+
+    public void setQuizPointsPossible(int quizPointsPossible) {
+        this.quizPointsPossible = quizPointsPossible;
+    }
+
+    @Override
+    public Date getComparisonDate() {
+        return getFinishedAt();
+    }
+
+    @Override
+    public String getComparisonString() {
+        return null;
+    }
+
+    @Override
+    public int compareTo(QuizSubmission another) {
+        return 0;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeLong(this.quizId);
+        dest.writeLong(this.userId);
+        dest.writeLong(this.submissionId);
+        dest.writeString(this.startedAt);
+        dest.writeString(this.finishedAt);
+        dest.writeString(this.endAt);
+        dest.writeInt(this.attempt);
+        dest.writeInt(this.extraAttempts);
+        dest.writeInt(this.extraTime);
+        dest.writeByte(manuallyUnlocked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.timeSpent);
+        dest.writeInt(this.score);
+        dest.writeInt(this.scoreBeforeRegrade);
+        dest.writeInt(this.keptScore);
+        dest.writeInt(this.fudgePoints);
+        dest.writeByte(hasSeenResults ? (byte) 1 : (byte) 0);
+        dest.writeString(this.workflowState);
+        dest.writeInt(this.quizPointsPossible);
+    }
+
+    public QuizSubmission() {
+    }
+
+    private QuizSubmission(Parcel in) {
+        this.id = in.readLong();
+        this.quizId = in.readLong();
+        this.userId = in.readLong();
+        this.submissionId = in.readLong();
+        this.startedAt = in.readString();
+        this.finishedAt = in.readString();
+        this.endAt = in.readString();
+        this.attempt = in.readInt();
+        this.extraAttempts = in.readInt();
+        this.extraTime = in.readInt();
+        this.manuallyUnlocked = in.readByte() != 0;
+        this.timeSpent = in.readInt();
+        this.score = in.readInt();
+        this.scoreBeforeRegrade = in.readInt();
+        this.keptScore = in.readInt();
+        this.fudgePoints = in.readInt();
+        this.hasSeenResults = in.readByte() != 0;
+        this.workflowState = in.readString();
+        this.quizPointsPossible = in.readInt();
+    }
+
+    public static final Creator<QuizSubmission> CREATOR = new Creator<QuizSubmission>() {
+        public QuizSubmission createFromParcel(Parcel source) {
+            return new QuizSubmission(source);
+        }
+
+        public QuizSubmission[] newArray(int size) {
+            return new QuizSubmission[size];
+        }
+    };
+}
