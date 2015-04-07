@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
 /**
@@ -44,6 +45,9 @@ public class Tab implements Parcelable {
     private String html_url;    // internal url
     private String full_url;         // external url
 
+    @SerializedName("url")
+    private String LTI_url;
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -73,6 +77,10 @@ public class Tab implements Parcelable {
 
     public String getExternalUrl() {
         return full_url;
+    }
+
+    public String getLTIUrl() {
+        return LTI_url;
     }
 
     ///////////////////////////////////////////////////////////////////////////
