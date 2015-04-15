@@ -1,13 +1,19 @@
 package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Quiz;
+import com.instructure.canvasapi.model.QuizQuestion;
+import com.instructure.canvasapi.model.QuizSubmissionQuestionResponse;
+import com.instructure.canvasapi.model.QuizSubmissionResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.Path;
+import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -24,7 +30,17 @@ public class QuizAPI {
         return canvasContext.toAPIString() + "/quizzes/" + quizID;
     }
 
+    public static String getFirstPageQuizQuestionsCacheFilename(CanvasContext canvasContext, long quizID) {
+        return canvasContext.toAPIString() + "/quizzes/" + quizID + "/questions";
+    }
 
+    public static String getFirstPageQuizSubmissionsCacheFilename(CanvasContext canvasContext, long quizID) {
+        return canvasContext.toAPIString() + "/quizzes/" + quizID + "/submissions";
+    }
+
+    public static String getFirstPageSubmissionQuestionsCacheFilename(long quizSubmissionID) {
+        return "/quizSubmissions/" + quizSubmissionID + "/questions";
+    }
 
     interface QuizzesInterface {
         @GET("/{context_id}/quizzes")
@@ -38,6 +54,28 @@ public class QuizAPI {
 
         @GET("/{next}")
         void getDetailedQuizFromURL(@Path(value = "next", encode = false) String quizURL, Callback<Quiz> callback);
+
+        @GET("/{context_id}/quizzes/{quizid}/questions")
+        void getFirstPageQuizQuestions(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<QuizQuestion[]> callback);
+
+        @GET("/{next}")
+        void getNextPageQuizQuestions(@Path(value = "next", encode = false) String nextURL, Callback<QuizQuestion[]> callback);
+
+        @POST("/{context_id}/quizzes/{quizid}/submissions")
+        void startQuiz(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<Response> callback);
+
+        @GET("/{context_id}/quizzes/{quizid}/submissions")
+        void getFirstPageQuizSubmissions(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<QuizSubmissionResponse> callback);
+
+        @GET("/{next}")
+        void getNextPageQuizSubmissions(@Path(value = "next", encode = false) String nextURL, Callback<QuizSubmissionResponse> callback);
+
+        @GET("/quiz_submissions/{quiz_submission_id}/questions")
+        void getFirstPageSubmissionQuestions(@Path("quiz_submission_id") long quizSubmissionId, Callback<QuizSubmissionQuestionResponse> callback);
+
+        @GET("/{next}")
+        void getNextPageSubmissionQuestions(@Path(value = "next", encode = false) String nextURL, Callback<QuizSubmissionQuestionResponse> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -79,5 +117,53 @@ public class QuizAPI {
 
         callback.readFromCache(url);
         buildInterface(callback, null).getDetailedQuizFromURL(url,callback);
+    }
+
+    public static void getFirstPageQuizQuestions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizQuestion[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        callback.readFromCache(getFirstPageQuizQuestionsCacheFilename(canvasContext, quiz_id));
+        buildInterface(callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
+    }
+
+    public static void getNextPageQuizQuestions(String nextURL, CanvasCallback<QuizQuestion[]> callback){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        buildInterface(callback, null).getNextPageQuizQuestions(nextURL, callback);
+    }
+
+    public static void startQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Response> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).startQuiz(canvasContext.getId(), quiz_id, callback);
+    }
+
+    public static void getFirstPageQuizSubmissions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizSubmissionResponse> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        callback.readFromCache(getFirstPageQuizSubmissionsCacheFilename(canvasContext, quiz_id));
+        buildInterface(callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
+    }
+
+    public static void getNextPageQuizSubmissions(String nextURL, CanvasCallback<QuizSubmissionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        buildInterface(callback, null).getNextPageQuizSubmissions(nextURL, callback);
+    }
+
+    public static void getFirstPageSubmissionQuestions(long quizSubmissionId, CanvasCallback<QuizSubmissionQuestionResponse> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        callback.readFromCache(getFirstPageSubmissionQuestionsCacheFilename(quizSubmissionId));
+        buildInterface(callback, null).getFirstPageSubmissionQuestions(quizSubmissionId, callback);
+    }
+
+    public static void getNextPageSubmissionQuestions(String nextURL, CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        buildInterface(callback, null).getNextPageSubmissionQuestions(nextURL, callback);
     }
 }

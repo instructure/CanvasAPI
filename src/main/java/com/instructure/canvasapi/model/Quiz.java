@@ -2,6 +2,8 @@ package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
 
+import com.instructure.canvasapi.utilities.APIHelpers;
+
 import java.util.Date;
 
 /**
@@ -30,6 +32,10 @@ public class Quiz extends CanvasModel<Quiz> {
     private String quiz_type;
     private LockInfo lock_info;
     private QuizPermission permissions;
+    private int allowed_attempts;
+    private int question_count;
+    private int points_possible;
+    private String due_at;
 
     // Helper variables
 
@@ -80,6 +86,38 @@ public class Quiz extends CanvasModel<Quiz> {
         this.lock_info = lockInfo;
     }
 
+    public int getAllowedAttempts() {
+        return allowed_attempts;
+    }
+
+    public void setAllowedAttempts(int allowed_attempts) {
+        this.allowed_attempts = allowed_attempts;
+    }
+
+    public int getQuestionCount() {
+        return question_count;
+    }
+
+    public void setQuestionCount(int question_count) {
+        this.question_count = question_count;
+    }
+
+    public int getPointsPossible() {
+        return points_possible;
+    }
+
+    public void setPointsPossible(int points_possible) {
+        this.points_possible = points_possible;
+    }
+
+    public Date getDueAt() {
+        return APIHelpers.stringToDate(due_at);
+    }
+
+    public void setDueAt(String due_at) {
+        this.due_at = due_at;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
@@ -116,6 +154,10 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeParcelable(this.lock_info, flags);
         dest.writeParcelable(this.assignment, flags);
         dest.writeParcelable(this.permissions, flags);
+        dest.writeInt(this.allowed_attempts);
+        dest.writeInt(this.question_count);
+        dest.writeInt(this.points_possible);
+        dest.writeString(this.due_at);
     }
 
     public Quiz() {
@@ -131,6 +173,10 @@ public class Quiz extends CanvasModel<Quiz> {
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.permissions = in.readParcelable(QuizPermission.class.getClassLoader());
+        this.allowed_attempts = in.readInt();
+        this.question_count = in.readInt();
+        this.points_possible = in.readInt();
+        this.due_at = in.readString();
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {

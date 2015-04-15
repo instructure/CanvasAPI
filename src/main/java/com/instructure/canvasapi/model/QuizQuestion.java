@@ -208,7 +208,7 @@ public class QuizQuestion extends CanvasModel<QuizQuestion> {
         }
     };
 
-    private QUESTION_TYPE parseQuestionType(String questionType) {
+    public static QUESTION_TYPE parseQuestionType(String questionType) {
 
         switch(questionType) {
             case "calculated_question":
