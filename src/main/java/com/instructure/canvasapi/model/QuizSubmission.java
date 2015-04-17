@@ -89,6 +89,10 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
     @SerializedName("quiz_points_possible")
     private int quizPointsPossible;
 
+    //Token used to validate quiz answers when posting
+    @SerializedName("validation_token")
+    private String validationToken;
+
     @Override
     public long getId() {
         return id;
@@ -242,6 +246,14 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.quizPointsPossible = quizPointsPossible;
     }
 
+    public String getValidationToken() {
+        return validationToken;
+    }
+
+    public void setValidationToken(String validationToken) {
+        this.validationToken = validationToken;
+    }
+
     @Override
     public Date getComparisonDate() {
         return getFinishedAt();
@@ -284,6 +296,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         dest.writeByte(hasSeenResults ? (byte) 1 : (byte) 0);
         dest.writeString(this.workflowState);
         dest.writeInt(this.quizPointsPossible);
+        dest.writeString(this.validationToken);
     }
 
     public QuizSubmission() {
@@ -309,6 +322,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.hasSeenResults = in.readByte() != 0;
         this.workflowState = in.readString();
         this.quizPointsPossible = in.readInt();
+        this.validationToken = in.readString();
     }
 
     public static final Creator<QuizSubmission> CREATOR = new Creator<QuizSubmission>() {
