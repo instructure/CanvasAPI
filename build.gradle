@@ -1,3 +1,4 @@
+//This needs to be at the top in order to build on Jenkins
 repositories {
     mavenCentral()
 }
@@ -8,32 +9,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'
-        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.1'
     }
 }
+
+
 apply plugin: 'com.android.library'
-apply plugin: 'org.robolectric'
 
-dependencies {
-    compile('com.mobprofs:retrofit-simplexmlconverter:1.0') {
-        exclude module: 'stax'
-        exclude module: 'stax-api'
-        exclude module: 'xpp3'
-    }
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
-    compile 'com.squareup.okhttp:okhttp:2.1.0'
-    compile 'com.squareup.retrofit:retrofit:1.8.0'
-
-    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
-    compile (group: 'org.apache.httpcomponents' , name: 'httpmime' , version: '4.3.5') {
-        exclude module: 'org.apache.httpcomponents:httpclient'
-    }
-
-    compile 'com.netflix.rxjava:rxjava-android:0.20.6'
-
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.robolectric:robolectric:2.4'
-}
 
 android {
     compileSdkVersion 22
@@ -45,7 +26,10 @@ android {
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -65,10 +49,42 @@ android {
     }
 
     sourceSets {
-        androidTest.setRoot('src/androidTest')
+        test.setRoot("src/androidTest")
     }
 }
 
+afterEvaluate { project ->
+    android.libraryVariants.each { variant ->
+        tasks.getByName("test${ variant.name.capitalize()}") {
+            dependsOn "assemble${ variant.name.capitalize()}"
+        }
+    }
+}
+
+dependencies {
+
+
+    compile('com.mobprofs:retrofit-simplexmlconverter:1.0') {
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
+    compile 'com.squareup.okhttp:okhttp:2.1.0'
+    compile 'com.squareup.retrofit:retrofit:1.8.0'
+
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
+    compile (group: 'org.apache.httpcomponents' , name: 'httpmime' , version: '4.3.5') {
+        exclude module: 'org.apache.httpcomponents:httpclient'
+    }
+
+    compile 'com.netflix.rxjava:rxjava-android:0.20.6'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.0-rc2'
+
+
+}
 //Do some maven stuff
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -84,11 +100,6 @@ configurations {
     all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
 }
 
-robolectric {
-    // Configure includes / excludes
-    include '**/*Test.class'
-    exclude '**/espresso/**/*.class'
-}
 
 signing {
     required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
