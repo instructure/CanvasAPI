@@ -1,7 +1,9 @@
 package com.instructure.canvasapi.api;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Quiz;
 import com.instructure.canvasapi.model.QuizQuestion;
+import com.instructure.canvasapi.model.QuizSubmission;
 import com.instructure.canvasapi.model.QuizSubmissionQuestionResponse;
 import com.instructure.canvasapi.model.QuizSubmissionResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -14,6 +16,7 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -76,6 +79,8 @@ public class QuizAPI {
         @GET("/{next}")
         void getNextPageSubmissionQuestions(@Path(value = "next", encode = false) String nextURL, Callback<QuizSubmissionQuestionResponse> callback);
 
+        @POST("/quiz_submissions/{quiz_submission_id}/questions")
+        void postQuizQuestionMultiChoice(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") long answer, Callback<QuizSubmissionQuestionResponse> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -165,5 +170,11 @@ public class QuizAPI {
 
         callback.setIsNextPage(true);
         buildInterface(callback, null).getNextPageSubmissionQuestions(nextURL, callback);
+    }
+
+    public static void postQuizQuestionMultiChoice(QuizSubmission quizSubmission, long answerId, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        buildInterface(callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, callback);
     }
 }

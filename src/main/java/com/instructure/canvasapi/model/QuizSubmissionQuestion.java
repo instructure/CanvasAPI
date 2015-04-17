@@ -20,7 +20,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
 
     //The possible answers for this question when those possible answers are
     //necessary.  The presence of this parameter is dependent on permissions.
-    private Parcelable[] answers;
+    private QuizSubmissionAnswer[] answers;
 
     private int position;
 
@@ -56,11 +56,11 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.flagged = flagged;
     }
 
-    public Object[] getAnswers() {
+    public QuizSubmissionAnswer[] getAnswers() {
         return answers;
     }
 
-    public void setAnswers(Parcelable[] answers) {
+    public void setAnswers(QuizSubmissionAnswer[] answers) {
         this.answers = answers;
     }
 
@@ -143,7 +143,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
     private QuizSubmissionQuestion(Parcel in) {
         this.id = in.readLong();
         this.flagged = in.readByte() != 0;
-        this.answers = in.readParcelableArray(Parcelable.class.getClassLoader());
+        this.answers = (QuizSubmissionAnswer[])in.readParcelableArray(QuizSubmissionAnswer.class.getClassLoader());
         this.position = in.readInt();
         this.quizId = in.readLong();
         this.questionName = in.readString();
