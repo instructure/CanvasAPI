@@ -1,15 +1,19 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
 import android.util.Log;
-
-import com.instructure.canvasapi.model.Assignment;
+import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Enrollment;
+import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.*;
+import java.io.File;
+import java.util.LinkedHashMap;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.*;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -72,6 +76,16 @@ public class UserAPI {
 
         @GET("/{next}")
         void getNextPagePeopleList(@Path(value = "next", encode = false) String nextURL, Callback<User[]> callback);
+
+        @POST("/users/self/file")
+        void uploadUserFileURL( @Query("url") String fileURL, @Query("name") String fileName, @Query("size") long size, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath, Callback<String> callback);
+
+        @POST("/users/self/files")
+        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_id") Long parentFolderId);
+
+        @Multipart
+        @POST("/")
+        Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -83,6 +97,15 @@ public class UserAPI {
         return restAdapter.create(UsersInterface.class);
     }
 
+    private static UsersInterface buildInterface(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+        return restAdapter.create(UsersInterface.class);
+    }
+
+    private static UsersInterface buildUploadInterface(String hostURL) {
+        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
+        return restAdapter.create(UsersInterface.class);
+    }
     /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
@@ -200,6 +223,20 @@ public class UserAPI {
         buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Synchronous Calls
+    /////////////////////////////////////////////////////////////////////////
+    public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, Long parentFolderId){
+        return buildInterface(context).getFileUploadParams(size, fileName, contentType, parentFolderId);
+    }
+
+    public static Attachment uploadUserFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+        return buildUploadInterface(uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Helpers
+    /////////////////////////////////////////////////////////////////////////
     private static String getEnrollmentTypeString(ENROLLMENT_TYPE enrollment_type){
         String enrollmentType = "";
         switch (enrollment_type){

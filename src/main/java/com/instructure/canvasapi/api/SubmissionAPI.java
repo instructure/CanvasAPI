@@ -1,8 +1,10 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
 import android.text.TextUtils;
-
+import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.LTITool;
 import com.instructure.canvasapi.model.RubricAssessment;
 import com.instructure.canvasapi.model.RubricCriterionRating;
@@ -11,13 +13,14 @@ import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-
+import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.*;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Brady Larson on 9/9/13.
@@ -101,14 +104,33 @@ public class SubmissionAPI {
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, @Query("submission[posted_grade]") String assignmentScore, Callback<Submission> callback);
+
+        /////////////////////////////////////////////////////////////////////////////
+        // Synchronous
+        /////////////////////////////////////////////////////////////////////////////
+        @POST("/courses/{courseId}/assignments/{assignmentId}/submissions/self/files")
+        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Path("assignmentId") long assignmentId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type);
+
+        @Multipart
+        @POST("/")
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
     }
 
     /////////////////////////////////////////////////////////////////////////
     // Build Interface Helpers
     /////////////////////////////////////////////////////////////////////////
-
     private static SubmissionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        return restAdapter.create(SubmissionsInterface.class);
+    }
+
+    private static SubmissionsInterface buildInterface(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+        return restAdapter.create(SubmissionsInterface.class);
+    }
+
+    private static SubmissionsInterface buildUploadInterface(String hostURL) {
+        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
         return restAdapter.create(SubmissionsInterface.class);
     }
 
@@ -239,4 +261,14 @@ public class SubmissionAPI {
         return map;
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Synchronous
+    /////////////////////////////////////////////////////////////////////////////
+    public static FileUploadParams getFileUploadParams(Context context, long courseId, long assignmentId, String fileName, long size, String contentType){
+        return buildInterface(context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType);
+    }
+
+    public static Attachment uploadAssignmentSubmission(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+        return buildUploadInterface(uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+    }
 }

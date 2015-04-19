@@ -2,14 +2,11 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
-
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -252,7 +249,19 @@ public class CanvasRestAdapter {
                 .build();
     }
 
+    /**
+     * Creates a new RestAdapter for a generic endpoint. Useful for 3rd party api calls such as amazon s3 uploads.
+     * @param hostUrl : url for desired endpoint
+     * @return
+     */
+    public static RestAdapter getGenericHostAdapter(String hostUrl){
 
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(hostUrl)
+                .build();
+
+        return restAdapter;
+    }
     /**
      * Class that's used as to inject the user agent, token, and handles masquerading.
      */
@@ -301,7 +310,6 @@ public class CanvasRestAdapter {
             }
         }
     }
-
 
     /**
      * set a new default for the number of items returned per page.
