@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 /**
- * Created by hhoang on 4/17/15.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class FileUploadParams extends CanvasModel<FileUploadParams>{
 
