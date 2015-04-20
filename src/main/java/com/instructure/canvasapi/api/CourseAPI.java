@@ -1,27 +1,32 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-
+import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Favorite;
+import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
 import retrofit.RestAdapter;
 import retrofit.http.DELETE;
+import retrofit.http.Multipart;
+import retrofit.http.Part;
+import retrofit.http.PartMap;
 import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Joshua Dutton on 9/5/13.
@@ -92,6 +97,13 @@ public class CourseAPI {
         /////////////////////////////////////////////////////////////////////////////
         @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=permissions")
         Course[] getCoursesSynchronous(@Query("page") int page);
+
+        @POST("/courses/{courseId}/files")
+        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Query("parent_folder_id") Long parentFolderId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type);
+
+        @Multipart
+        @POST("/")
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -100,6 +112,16 @@ public class CourseAPI {
 
     private static CoursesInterface buildInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+        return restAdapter.create(CoursesInterface.class);
+    }
+
+    private static CoursesInterface buildInterface(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+        return restAdapter.create(CoursesInterface.class);
+    }
+
+    private static CoursesInterface buildUploadInterface(String hostURL) {
+        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
         return restAdapter.create(CoursesInterface.class);
     }
 
@@ -275,5 +297,13 @@ public class CourseAPI {
         } catch (Exception E) {
             return null;
         }
+    }
+
+    public static FileUploadParams getFileUploadParams(Context context, long courseId, Long parentFolderId, String fileName, long size, String contentType){
+        return buildInterface(context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType);
+    }
+
+    public static Attachment uploadCourseFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+        return buildUploadInterface(uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
     }
 }
