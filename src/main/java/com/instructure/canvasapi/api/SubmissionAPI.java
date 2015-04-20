@@ -14,6 +14,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -114,6 +115,9 @@ public class SubmissionAPI {
         @Multipart
         @POST("/")
         Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+
+        @POST("/courses/{courseId}/assignments/{assignmentID}/submissions")
+        Submission postSubmissionAttachments(@Path("courseId") long courseId, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[file_ids][]") ArrayList<String> attachments);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -268,7 +272,11 @@ public class SubmissionAPI {
         return buildInterface(context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType);
     }
 
-    public static Attachment uploadAssignmentSubmission(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+    public static Attachment uploadAssignmentSubmission(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
         return buildUploadInterface(uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+    }
+
+    public static Submission postSubmissionAttachments(Context context, long courseId, long assignmentId, ArrayList<String> attachments){
+        return buildInterface(context).postSubmissionAttachments(courseId, assignmentId, "online_upload",attachments);
     }
 }
