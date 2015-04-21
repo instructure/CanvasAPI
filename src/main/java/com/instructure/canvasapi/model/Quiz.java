@@ -36,6 +36,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private int question_count;
     private int points_possible;
     private String due_at;
+    private int time_limit;
 
     // Helper variables
 
@@ -116,6 +117,14 @@ public class Quiz extends CanvasModel<Quiz> {
 
     public void setDueAt(String due_at) {
         this.due_at = due_at;
+    }
+
+    public int getTimeLimit() {
+        return time_limit;
+    }
+
+    public void setTimeLimit(int time_limit) {
+        this.time_limit = time_limit;
     }
 
     public Assignment getAssignment() {
