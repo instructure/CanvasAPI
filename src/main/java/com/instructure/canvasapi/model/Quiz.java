@@ -36,6 +36,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private int question_count;
     private int points_possible;
     private String due_at;
+    private int time_limit;
 
     // Helper variables
 
@@ -118,6 +119,14 @@ public class Quiz extends CanvasModel<Quiz> {
         this.due_at = due_at;
     }
 
+    public int getTimeLimit() {
+        return time_limit;
+    }
+
+    public void setTimeLimit(int time_limit) {
+        this.time_limit = time_limit;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
@@ -158,6 +167,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeInt(this.question_count);
         dest.writeInt(this.points_possible);
         dest.writeString(this.due_at);
+        dest.writeInt(this.time_limit);
     }
 
     public Quiz() {
@@ -177,6 +187,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.question_count = in.readInt();
         this.points_possible = in.readInt();
         this.due_at = in.readString();
+        this.time_limit = in.readInt();
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {
