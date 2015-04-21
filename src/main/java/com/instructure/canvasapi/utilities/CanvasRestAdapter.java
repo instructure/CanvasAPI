@@ -22,7 +22,11 @@ import retrofit.converter.GsonConverter;
 
 public class CanvasRestAdapter {
 
-    public static int numberOfItemsPerPage = 30;
+    private static int numberOfItemsPerPage = 30;
+
+    public static int getNumberOfItemsPerPage() {
+        return numberOfItemsPerPage;
+    }
 
     /**
      * Returns a RestAdapter Instance that points at :domain/api/v1
