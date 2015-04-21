@@ -12,7 +12,7 @@ import java.util.Date;
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Page extends CanvasComparable<Page> {
+public class Page extends CanvasModel<Page> {
 
     private static final long serialVersionUID = 1L;
 
@@ -157,6 +157,12 @@ public class Page extends CanvasComparable<Page> {
         if (url != null ? !url.equals(page.url) : page.url != null) return false;
 
         return true;
+    }
+
+    @Override
+    public long getId() {
+        // Pages don't have IDs, but the url is always unique, therefore the hashcode is unique
+        return hashCode();
     }
 
     @Override
