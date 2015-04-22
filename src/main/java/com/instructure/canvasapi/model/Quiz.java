@@ -21,6 +21,7 @@ public class Quiz extends CanvasModel<Quiz> {
     public final static String TYPE_GRADED_SURVEY = "graded_survey";
     public final static String TYPE_SURVEY = "survey";
 
+    public enum HIDE_RESULTS_TYPE { NULL, ALWAYS, AFTER_LAST_ATTEMPT }
     // API variables
 
     private long id;
@@ -37,7 +38,13 @@ public class Quiz extends CanvasModel<Quiz> {
     private int points_possible;
     private String due_at;
     private int time_limit;
-
+    private String access_code;
+    private String ip_filter;
+    private boolean locked_for_user;
+    private String lock_explanation;
+    private String hide_results;
+    private String unlock_at;
+    private boolean one_time_results;
     // Helper variables
 
     private Assignment assignment;
@@ -127,6 +134,70 @@ public class Quiz extends CanvasModel<Quiz> {
         this.time_limit = time_limit;
     }
 
+    public String getAccessCode() {
+        return access_code;
+    }
+
+    public void setAccessCode(String access_code) {
+        this.access_code = access_code;
+    }
+
+    public String getIPFilter() {
+        return ip_filter;
+    }
+
+    public void setIPFilter(String ip_filter) {
+        this.ip_filter = ip_filter;
+    }
+
+    public boolean isLockedForUser() {
+        return locked_for_user;
+    }
+
+    public void setLockedForUser(boolean locked_for_user) {
+        this.locked_for_user = locked_for_user;
+    }
+
+    public String getLockExplanation() {
+        return lock_explanation;
+    }
+
+    public void setLockExplanation(String lock_explanation) {
+        this.lock_explanation = lock_explanation;
+    }
+
+    public HIDE_RESULTS_TYPE getHideResults() {
+
+        if(hide_results == null || hide_results.equals("null")) {
+            return HIDE_RESULTS_TYPE.NULL;
+        } else if(hide_results.equals("always")) {
+            return HIDE_RESULTS_TYPE.ALWAYS;
+        } else if(hide_results.equals("until_after_last_attempt")) {
+            return HIDE_RESULTS_TYPE.AFTER_LAST_ATTEMPT;
+        }
+        return HIDE_RESULTS_TYPE.NULL;
+    }
+
+    public void setHideResults(String hide_results) {
+        this.hide_results = hide_results;
+    }
+
+    public Date getUnlockAt() {
+        return APIHelpers.stringToDate(unlock_at);
+    }
+
+    public void setUnlockAt(String unlock_at) {
+        this.unlock_at = unlock_at;
+    }
+
+    public boolean isOneTimeResults() {
+        return one_time_results;
+    }
+
+    public void setOneTimeResults(boolean one_time_results) {
+        this.one_time_results = one_time_results;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
@@ -168,6 +239,13 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeInt(this.points_possible);
         dest.writeString(this.due_at);
         dest.writeInt(this.time_limit);
+        dest.writeString(this.access_code);
+        dest.writeString(this.ip_filter);
+        dest.writeByte(this.locked_for_user ? (byte) 1 : (byte) 0);
+        dest.writeString(this.lock_explanation);
+        dest.writeString(this.hide_results);
+        dest.writeString(this.unlock_at);
+        dest.writeByte(this.one_time_results ? (byte) 1 : (byte) 0);
     }
 
     public Quiz() {
@@ -188,6 +266,13 @@ public class Quiz extends CanvasModel<Quiz> {
         this.points_possible = in.readInt();
         this.due_at = in.readString();
         this.time_limit = in.readInt();
+        this.access_code = in.readString();
+        this.ip_filter = in.readString();
+        this.locked_for_user = in.readByte() != 0;
+        this.lock_explanation = in.readString();
+        this.hide_results = in.readString();
+        this.unlock_at = in.readString();
+        this.one_time_results = in.readByte() != 0;
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {
