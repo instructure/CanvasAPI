@@ -15,6 +15,7 @@ import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -81,6 +82,12 @@ public class QuizAPI {
 
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
         void postQuizQuestionMultiChoice(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") long answer, Callback<QuizSubmissionQuestionResponse> callback);
+
+        @PUT("/quiz_submissions/{quiz_submission_id}/questions/{question_id}/flag")
+        void putFlagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, CanvasCallback<Response> callback);
+
+        @PUT("/quiz_submissions/{quiz_submission_id}/questions/{question_id}/unflag")
+        void putUnflagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, CanvasCallback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -177,4 +184,16 @@ public class QuizAPI {
 
         buildInterface(callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, callback);
     }
+
+    public static void putFlagQuizQuestion(QuizSubmission quizSubmission, long quizQuestionId, boolean shouldFlag, CanvasCallback<Response> callback) {
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        if(shouldFlag) {
+            buildInterface(callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+        } else {
+            buildInterface(callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+
+        }
+    }
+
 }
