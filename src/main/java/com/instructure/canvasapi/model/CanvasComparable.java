@@ -24,6 +24,9 @@ public abstract class CanvasComparable<T extends CanvasComparable> implements Co
     ///////////////////////////////////////////////////////////////////////////
     // Comparisons
     ///////////////////////////////////////////////////////////////////////////
+    public boolean areVisualContentsTheSame(CanvasComparable comparable) {
+        return false;
+    }
 
     @Override
     public int compareTo(CanvasComparable comparable) {
