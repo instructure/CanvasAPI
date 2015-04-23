@@ -123,9 +123,26 @@ public class ModuleObject extends CanvasModel<ModuleObject> {
         return getName();
     }
 
+    @Override
+    public int compareTo(CanvasComparable comparable) {
+        if (getId() == comparable.getId()) {
+            return 0;
+        } else if (getId() > comparable.getId()) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Overrides
     ///////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public boolean areVisualContentsTheSame(CanvasComparable comparable) {
+        return getName().equals(((ModuleObject)comparable).getName());
+    }
 
     @Override
     public boolean equals(Object o) {
