@@ -30,7 +30,7 @@ public class PageAPI {
     }
 
     interface PagesInterface {
-        @GET("/{context_id}/pages")
+        @GET("/{context_id}/pages?sort=title&order=asc")
         void getFirstPagePagesList(@Path("context_id") long context_id, Callback<Page[]> callback);
 
         @GET("/{next}")
