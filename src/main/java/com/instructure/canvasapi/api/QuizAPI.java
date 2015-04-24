@@ -88,6 +88,10 @@ public class QuizAPI {
 
         @PUT("/quiz_submissions/{quiz_submission_id}/questions/{question_id}/unflag")
         void putUnflagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, CanvasCallback<Response> callback);
+
+        @POST("/quiz_submissions/{quiz_submission_id}/questions")
+        void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, Callback<QuizSubmissionQuestionResponse> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -194,6 +198,12 @@ public class QuizAPI {
             buildInterface(callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
 
         }
+    }
+
+    public static void postQuizQuestionEssay(QuizSubmission quizSubmission, String answer, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        buildInterface(callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, callback);
     }
 
 }

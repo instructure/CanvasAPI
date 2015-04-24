@@ -40,6 +40,8 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
     @SerializedName("question_text")
     private String questionText;
 
+    private String answer;
+
     public long getId() {
         return id;
     }
@@ -104,6 +106,13 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.questionText = questionText;
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 
     @Override
     public Date getComparisonDate() {
@@ -135,6 +144,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         dest.writeString(this.questionName);
         dest.writeString(this.questionType);
         dest.writeString(this.questionText);
+        dest.writeString(this.answer);
     }
 
     public QuizSubmissionQuestion() {
@@ -149,6 +159,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.questionName = in.readString();
         this.questionType = in.readString();
         this.questionText = in.readString();
+        this.answer = in.readString();
     }
 
     public static final Parcelable.Creator<QuizSubmissionQuestion> CREATOR = new Parcelable.Creator<QuizSubmissionQuestion>() {
