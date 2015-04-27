@@ -92,6 +92,8 @@ public class QuizAPI {
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
         void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, Callback<QuizSubmissionQuestionResponse> callback);
 
+        @POST("/{context_id}/quizzes/{quizid}/submissions/{submission_id}/complete")
+        void postQuizSubmit(@Path("context_id") long context_id, @Path("quizid") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, Callback<QuizSubmissionResponse> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -204,6 +206,12 @@ public class QuizAPI {
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         buildInterface(callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, callback);
+    }
+
+    public static void postQuizSubmit(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionResponse> callback) {
+        if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        buildInterface(callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
     }
 
 }
