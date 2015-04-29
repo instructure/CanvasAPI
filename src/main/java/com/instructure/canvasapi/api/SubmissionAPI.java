@@ -50,6 +50,10 @@ public class SubmissionAPI {
         return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
     }
 
+    private static String getSubmissionsCacheFilename(CanvasContext canvasContext) {
+        return canvasContext.toAPIString() + "/students/submissions";
+    }
+
     private static String getSubmissionWithCommentsAndHistoryCacheFilename(CanvasContext canvasContext, long assignmentID, long userID) {
         return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
     }
@@ -83,6 +87,12 @@ public class SubmissionAPI {
 
         @GET("/{context_id}/students/submissions?grouped=true&include[]=total_scores")
         void getSubmissionsAndGradesForMultipleStudents(@Path("context_id") long context_id, @Query("student_ids[]") String ids, Callback<StudentSubmission[]> callback);
+
+        @GET("/{context_id}/students/submissions")
+        void getSubmissions(@Path("context_id") long context_id, Callback<Submission[]> callback);
+
+        @GET("/{next}")
+        void getNextPageSubmissions(@Path(value = "next", encode = false) String nextURL, Callback<Submission[]> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[text_comment]") String comment, Callback<Submission> callback);
@@ -175,6 +185,20 @@ public class SubmissionAPI {
 
         callback.readFromCache(getSubmissionCacheFilename(canvasContext, assignmentID, userID));
         buildInterface(callback, canvasContext).getSubmission(canvasContext.getId(), assignmentID, userID, callback);
+    }
+
+    public static void getSubmissions(CanvasContext canvasContext, final CanvasCallback<Submission[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        callback.readFromCache(getSubmissionsCacheFilename(canvasContext));
+        buildInterface(callback, canvasContext).getSubmissions(canvasContext.getId(), callback);
+    }
+
+    public static void getNextPageSubmissions(String nextURL, CanvasCallback<Submission[]> callback){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        buildInterface(callback, null).getNextPageSubmissions(nextURL, callback);
     }
 
     public static void getSubmissionWithCommentsAndHistory(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
