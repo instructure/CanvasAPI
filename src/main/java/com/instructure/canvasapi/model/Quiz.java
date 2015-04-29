@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.instructure.canvasapi.utilities.APIHelpers;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -46,6 +47,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private String unlock_at;
     private boolean one_time_results;
     private String lock_at;
+    private String[] question_types;
     // Helper variables
 
     private Assignment assignment;
@@ -207,12 +209,33 @@ public class Quiz extends CanvasModel<Quiz> {
         this.lock_at = lock_at;
     }
 
+    public ArrayList<QuizQuestion.QUESTION_TYPE> getQuestionTypes() {
+        return parseQuestionTypes(question_types);
+    }
+
+    public void setQuestionTypes(String[] question_types) {
+        this.question_types = question_types;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
 
     public void setAssignment(Assignment assignment) {
         this.assignment = assignment;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    ///////////////////////////////////////////////////////////////////////////
+
+    private ArrayList<QuizQuestion.QUESTION_TYPE> parseQuestionTypes(String[] question_types) {
+        ArrayList<QuizQuestion.QUESTION_TYPE> questionTypesList = new ArrayList<>();
+        for(String question_type : question_types) {
+            questionTypesList.add(QuizQuestion.parseQuestionType(question_type));
+        }
+
+        return questionTypesList;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -256,6 +279,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.unlock_at);
         dest.writeByte(this.one_time_results ? (byte) 1 : (byte) 0);
         dest.writeString(this.lock_at);
+        dest.writeStringArray(this.question_types);
     }
 
     public Quiz() {
@@ -284,6 +308,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.unlock_at = in.readString();
         this.one_time_results = in.readByte() != 0;
         this.lock_at = in.readString();
+        in.readStringArray(this.question_types);
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {
