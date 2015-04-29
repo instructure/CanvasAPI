@@ -10,7 +10,7 @@ import java.util.Date;
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class QuizQuestion extends CanvasModel<QuizQuestion> {
-    public enum QUESTION_TYPE { CALCULATED, ESSAY, FILE_UPLOAD, FILL_IN_MULTIPLE_BLANKS, MATCHING, MULTIPLE_ANSWERS, MUTIPLE_CHOICE, MULTIPLE_DROPDOWNS, NUMERICAL, SHORT_ANSWER, TEXT_ONLY, UNKNOWN }
+    public enum QUESTION_TYPE { CALCULATED, ESSAY, FILE_UPLOAD, FILL_IN_MULTIPLE_BLANKS, MATCHING, MULTIPLE_ANSWERS, MUTIPLE_CHOICE, MULTIPLE_DROPDOWNS, NUMERICAL, SHORT_ANSWER, TEXT_ONLY, TRUE_FALSE, UNKNOWN }
 
     //The ID of the quiz question.
     private long id;
@@ -233,6 +233,8 @@ public class QuizQuestion extends CanvasModel<QuizQuestion> {
                 return QUESTION_TYPE.SHORT_ANSWER;
             case "text_only_question":
                 return QUESTION_TYPE.TEXT_ONLY;
+            case "true_false_question":
+                return QUESTION_TYPE.TRUE_FALSE;
 
         }
         return QUESTION_TYPE.UNKNOWN;
