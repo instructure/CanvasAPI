@@ -11,6 +11,7 @@ import java.util.Date;
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class QuizSubmission extends CanvasModel<QuizSubmission> {
+    public enum WORKFLOW_STATE { UNTAKEN, COMPLETE, PENDING_REVIEW, PREVIEW, SETTINGS_ONLY, UNKNOWN }
     //The ID of the quiz submission.
     private long id;
 
@@ -230,8 +231,8 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.hasSeenResults = hasSeenResults;
     }
 
-    public String getWorkflowState() {
-        return workflowState;
+    public WORKFLOW_STATE getWorkflowState() {
+        return parseWorkflowState(workflowState);
     }
 
     public void setWorkflowState(String workflowState) {
@@ -275,6 +276,22 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         return 0;
     }
 
+    public static WORKFLOW_STATE parseWorkflowState(String workflowState) {
+        switch(workflowState) {
+            case "untaken":
+                return WORKFLOW_STATE.UNTAKEN;
+            case "complete":
+                return WORKFLOW_STATE.COMPLETE;
+            case "preview":
+                return WORKFLOW_STATE.PREVIEW;
+            case "settings_only":
+                return WORKFLOW_STATE.SETTINGS_ONLY;
+            case "pending_review":
+                return WORKFLOW_STATE.PENDING_REVIEW;
+        }
+
+        return WORKFLOW_STATE.UNKNOWN;
+    }
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
