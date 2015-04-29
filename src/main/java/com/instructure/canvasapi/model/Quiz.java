@@ -45,6 +45,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private String hide_results;
     private String unlock_at;
     private boolean one_time_results;
+    private String lock_at;
     // Helper variables
 
     private Assignment assignment;
@@ -198,6 +199,14 @@ public class Quiz extends CanvasModel<Quiz> {
         this.one_time_results = one_time_results;
     }
 
+    public Date getLockAt() {
+        return APIHelpers.stringToDate(lock_at);
+    }
+
+    public void setLockAt(String lock_at) {
+        this.lock_at = lock_at;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
@@ -246,6 +255,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.hide_results);
         dest.writeString(this.unlock_at);
         dest.writeByte(this.one_time_results ? (byte) 1 : (byte) 0);
+        dest.writeString(this.lock_at);
     }
 
     public Quiz() {
@@ -273,6 +283,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.hide_results = in.readString();
         this.unlock_at = in.readString();
         this.one_time_results = in.readByte() != 0;
+        this.lock_at = in.readString();
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {
