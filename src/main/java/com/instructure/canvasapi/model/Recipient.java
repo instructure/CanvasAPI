@@ -3,7 +3,10 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Josh Ruesch
@@ -21,12 +24,45 @@ public class Recipient extends CanvasComparable<Recipient>{
     private String name;
     private String avatar_url;
 
+    @SerializedName("common_courses")
+    private HashMap<String, String[]> commonCourses;
+
+    @SerializedName("common_groups")
+    private HashMap<String, String[]> commonGroups;
     ///////////////////////////////////////////////////////////////////////////
     // Getters
     ///////////////////////////////////////////////////////////////////////////
     public String getStringId(){
         return id;
     }
+
+    public long getIdAsLong(){
+        if(id.startsWith("group_") || id.startsWith("course_")){
+            int indexUnder = id.indexOf("_");
+            try{
+                return Long.parseLong(id.substring(indexUnder+1, id.length()));
+            }catch (NumberFormatException exception){
+                return 0;
+            }
+        }
+        return 0;
+    }
+    public HashMap<String, String[]> getCommonCourses() {
+        return commonCourses;
+    }
+
+    public void setCommonCourses(HashMap<String, String[]> commonCourses) {
+        this.commonCourses = commonCourses;
+    }
+
+    public HashMap<String, String[]> getCommonGroups() {
+        return commonGroups;
+    }
+
+    public void setCommonGroups(HashMap<String, String[]> commonGroups) {
+        this.commonGroups = commonGroups;
+    }
+
     @Override
     public Date getComparisonDate() {
         return null;
@@ -122,12 +158,14 @@ public class Recipient extends CanvasComparable<Recipient>{
 			return null;
 	}
 
-	public void readFromParcel(Parcel in)
-	{
+	public void readFromParcel(Parcel in){
 		id = in.readString();
 		user_count = in.readInt();
 		item_count = in.readInt();
 		name = in.readString();
+        commonCourses = (HashMap<String, String[]>) in.readSerializable();
+        commonGroups = (HashMap<String, String[]>) in.readSerializable();
+
 	}
 
 	@Override
@@ -136,6 +174,8 @@ public class Recipient extends CanvasComparable<Recipient>{
 		dest.writeInt(user_count);
 		dest.writeInt(item_count);
 		dest.writeString(name);
+        dest.writeSerializable(commonCourses);
+        dest.writeSerializable(commonGroups);
 	}
 
     ///////////////////////////////////////////////////////////////////////////
