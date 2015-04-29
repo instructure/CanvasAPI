@@ -3,7 +3,10 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Josh Ruesch
@@ -21,12 +24,41 @@ public class Recipient extends CanvasComparable<Recipient>{
     private String name;
     private String avatar_url;
 
+    @SerializedName("common_courses")
+    private HashMap<String, String[]> commonCourses;
+
+    @SerializedName("common_groups")
+    private HashMap<String, String[]> commonGroups;
     ///////////////////////////////////////////////////////////////////////////
     // Getters
     ///////////////////////////////////////////////////////////////////////////
     public String getStringId(){
         return id;
     }
+
+    public long getIdAsLong(){
+        if(id.startsWith("group_") || id.startsWith("course_")){
+            int indexUnder = id.indexOf("_");
+            return Long.parseLong(id.substring(indexUnder+1, id.length()));
+        }
+        return 0;
+    }
+    public HashMap<String, String[]> getCommonCourses() {
+        return commonCourses;
+    }
+
+    public void setCommonCourses(HashMap<String, String[]> commonCourses) {
+        this.commonCourses = commonCourses;
+    }
+
+    public HashMap<String, String[]> getCommonGroups() {
+        return commonGroups;
+    }
+
+    public void setCommonGroups(HashMap<String, String[]> commonGroups) {
+        this.commonGroups = commonGroups;
+    }
+
     @Override
     public Date getComparisonDate() {
         return null;
