@@ -39,7 +39,11 @@ public class Recipient extends CanvasComparable<Recipient>{
     public long getIdAsLong(){
         if(id.startsWith("group_") || id.startsWith("course_")){
             int indexUnder = id.indexOf("_");
-            return Long.parseLong(id.substring(indexUnder+1, id.length()));
+            try{
+                return Long.parseLong(id.substring(indexUnder+1, id.length()));
+            }catch (NumberFormatException exception){
+                return 0;
+            }
         }
         return 0;
     }
@@ -154,12 +158,14 @@ public class Recipient extends CanvasComparable<Recipient>{
 			return null;
 	}
 
-	public void readFromParcel(Parcel in)
-	{
+	public void readFromParcel(Parcel in){
 		id = in.readString();
 		user_count = in.readInt();
 		item_count = in.readInt();
 		name = in.readString();
+        commonCourses = (HashMap<String, String[]>) in.readSerializable();
+        commonGroups = (HashMap<String, String[]>) in.readSerializable();
+
 	}
 
 	@Override
@@ -168,6 +174,8 @@ public class Recipient extends CanvasComparable<Recipient>{
 		dest.writeInt(user_count);
 		dest.writeInt(item_count);
 		dest.writeString(name);
+        dest.writeSerializable(commonCourses);
+        dest.writeSerializable(commonGroups);
 	}
 
     ///////////////////////////////////////////////////////////////////////////
