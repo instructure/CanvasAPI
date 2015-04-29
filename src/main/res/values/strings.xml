@@ -38,6 +38,7 @@
     <string name="canvasAPI_onlineTextEntry">Online Text Entry</string>
     <string name="canvasAPI_onlineURL">Online URL</string>
     <string name="canvasAPI_mediaRecording">Media Recording</string>
+    <string name="canvasAPI_attendance">Attendance</string>
 
 
 </resources>

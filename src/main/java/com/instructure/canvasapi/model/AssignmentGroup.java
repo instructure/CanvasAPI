@@ -71,6 +71,13 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 
     public AssignmentGroup() {}
 
+    // HACK for assignmentDate headers
+    public AssignmentGroup(String name) {
+        this.name = name;
+        this.id = name.hashCode();
+    }
+    // endHACK
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);

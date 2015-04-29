@@ -341,6 +341,21 @@ public class Assignment extends CanvasModel<Assignment>{
 
     public enum TURN_IN_TYPE {ONLINE, ON_PAPER, NONE, DISCUSSION, QUIZ, EXTERNAL_TOOL}
 
+    private boolean expectsSubmissions() {
+        List<SUBMISSION_TYPE> submissionTypes = getSubmissionTypes();
+        return submissionTypes.size() > 0 && !submissionTypes.contains(SUBMISSION_TYPE.NONE) && !submissionTypes.contains(SUBMISSION_TYPE.NOT_GRADED) && !submissionTypes.contains(SUBMISSION_TYPE.ON_PAPER) && !submissionTypes.contains(SUBMISSION_TYPE.EXTERNAL_TOOL);
+    }
+
+    public boolean isAllowedToSubmit() {
+        List<SUBMISSION_TYPE> submissionTypes = getSubmissionTypes();
+        return expectsSubmissions() && !isLockedForUser() && !submissionTypes.contains(SUBMISSION_TYPE.ONLINE_QUIZ) && !submissionTypes.contains(SUBMISSION_TYPE.ATTENDANCE);
+    }
+
+    public boolean isWithoutGradedSubmission() {
+        Submission submission = getLastActualSubmission();
+        return submission == null || submission.isWithoutGradedSubmission();
+    }
+
     public static TURN_IN_TYPE stringToTurnInType(String turnInType, Context context){
         if(turnInType == null){
             return null;
@@ -453,7 +468,7 @@ public class Assignment extends CanvasModel<Assignment>{
         return rubric.size() > 0;
     }
 
-    public enum SUBMISSION_TYPE {ONLINE_QUIZ, NONE, ON_PAPER, DISCUSSION_TOPIC, EXTERNAL_TOOL, ONLINE_UPLOAD, ONLINE_TEXT_ENTRY, ONLINE_URL, MEDIA_RECORDING}
+    public enum SUBMISSION_TYPE {ONLINE_QUIZ, NONE, ON_PAPER, DISCUSSION_TOPIC, EXTERNAL_TOOL, ONLINE_UPLOAD, ONLINE_TEXT_ENTRY, ONLINE_URL, MEDIA_RECORDING, ATTENDANCE, NOT_GRADED}
 
     private SUBMISSION_TYPE getSubmissionTypeFromAPIString(String submissionType){
         if(submissionType.equals("online_quiz")){
@@ -474,6 +489,10 @@ public class Assignment extends CanvasModel<Assignment>{
             return SUBMISSION_TYPE.ONLINE_URL;
         } else if(submissionType.equals("media_recording")){
             return SUBMISSION_TYPE.MEDIA_RECORDING;
+        } else if(submissionType.equals("attendance")) {
+            return SUBMISSION_TYPE.ATTENDANCE;
+        } else if(submissionType.equals("not_graded")) {
+            return SUBMISSION_TYPE.NOT_GRADED;
         } else {
             return null;
         }
@@ -503,6 +522,10 @@ public class Assignment extends CanvasModel<Assignment>{
                 return "online_url";
             case MEDIA_RECORDING:
                 return "media_recording";
+            case ATTENDANCE:
+                return "attendance";
+            case NOT_GRADED:
+                return "not_graded";
             default:
                 return "";
         }
@@ -532,6 +555,10 @@ public class Assignment extends CanvasModel<Assignment>{
                 return context.getString(R.string.canvasAPI_onlineURL);
             case MEDIA_RECORDING:
                 return context.getString(R.string.canvasAPI_mediaRecording);
+            case ATTENDANCE:
+                return context.getString(R.string.canvasAPI_attendance);
+            case NOT_GRADED:
+                return context.getString(R.string.canvasAPI_notGraded);
             default:
                 return "";
         }

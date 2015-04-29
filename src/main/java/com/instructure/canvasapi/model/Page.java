@@ -127,6 +127,7 @@ public class Page extends CanvasModel<Page> {
     //url to be "front-page"
     @Override
     public int compareTo(Page page) {
+        /*
         if(page.isFrontPage() && this.isFrontPage()) {
             return 0;
         }
@@ -137,8 +138,9 @@ public class Page extends CanvasModel<Page> {
             return -1;
         }
         else {
-            return CanvasComparable.compare(this.getTitle(),page.getTitle());
-        }
+        */
+            return CanvasComparable.compare(this.getTitle().toLowerCase(),page.getTitle().toLowerCase());
+        //}
     }
 
     ///////////////////////////////////////////////////////////////////////////
