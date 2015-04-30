@@ -37,6 +37,7 @@ public class Assignment extends CanvasModel<Assignment>{
     private List<String> allowed_extensions = new ArrayList<String>();
     private Submission submission;
     private long assignment_group_id;
+    private int position;
     private boolean peer_reviews;
 
     //Module lock info
@@ -61,6 +62,7 @@ public class Assignment extends CanvasModel<Assignment>{
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
 
+
     @Override
 	public long getId() {
 		return id;
@@ -74,6 +76,12 @@ public class Assignment extends CanvasModel<Assignment>{
 	public void setName(String name) {
 		this.name = name;
 	}
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
+    }
 	public String getDescription() {
 		return description;
 	}
@@ -322,7 +330,7 @@ public class Assignment extends CanvasModel<Assignment>{
 
     @Override
     public String getComparisonString() {
-        return getName();
+        return getName().toLowerCase();
     }
 
     ///////////////////////////////////////////////////////////////////////////

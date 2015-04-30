@@ -124,7 +124,7 @@ public class ModuleObject extends CanvasModel<ModuleObject> {
     }
 
     @Override
-    public int compareTo(CanvasComparable comparable) {
+    public int compareTo(ModuleObject comparable) {
         if (getId() == comparable.getId()) {
             return 0;
         } else if (getId() > comparable.getId()) {
