@@ -37,15 +37,15 @@ public class Recipient extends CanvasComparable<Recipient>{
     }
 
     public long getIdAsLong(){
-        if(id.startsWith("group_") || id.startsWith("course_")){
-            int indexUnder = id.indexOf("_");
-            try{
+        try{
+            if(id.startsWith("group_") || id.startsWith("course_")){
+                int indexUnder = id.indexOf("_");
                 return Long.parseLong(id.substring(indexUnder+1, id.length()));
-            }catch (NumberFormatException exception){
-                return 0;
             }
+            return Long.parseLong(id);
+        }catch(NumberFormatException ex){
+            return 0;
         }
-        return 0;
     }
     public HashMap<String, String[]> getCommonCourses() {
         return commonCourses;
