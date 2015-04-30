@@ -29,7 +29,7 @@ public abstract class CanvasComparable<T extends CanvasComparable> implements Co
     }
 
     @Override
-    public int compareTo(CanvasComparable comparable) {
+    public int compareTo(T comparable) {
         if (getId() == comparable.getId() && getId() > 0) {
             return 0;
         }

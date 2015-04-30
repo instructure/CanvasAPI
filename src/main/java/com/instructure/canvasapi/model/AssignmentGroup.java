@@ -72,9 +72,10 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
     public AssignmentGroup() {}
 
     // HACK for assignmentDate headers
-    public AssignmentGroup(String name) {
+    public AssignmentGroup(String name, int position) {
         this.name = name;
         this.id = name.hashCode();
+        this.position = position;
     }
     // endHACK
 

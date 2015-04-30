@@ -144,15 +144,8 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public int compareTo(CanvasComparable comparable) {
-        ModuleItem moduleItem = (ModuleItem) comparable;
-        if (getPosition() == moduleItem.getPosition()) {
-            return 0;
-        } else if (getPosition() > moduleItem.getPosition()) {
-            return 1;
-        } else {
-            return -1;
-        }
+    public int compareTo(ModuleItem moduleItem) {
+        return this.getPosition() - moduleItem.getPosition();
     }
 
     @Override

@@ -60,6 +60,9 @@ public class AssignmentAPI {
     private static String getAssignmentGroupsListCacheFilename(long courseID) {
         return  "/courses/" + courseID + "/assignments_groups";
     }
+    private static String getAssignmentGroupsListWithAssignmentsCacheFilename(long courseID) {
+        return  "/courses/" + courseID + "/assignments_groups?include=assignments";
+    }
 
     private static String getAssignmentsListWithBucketCacheFilename(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type) {
         return "/courses/" + courseID + "/assignments?bucket=" + ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type);
@@ -176,7 +179,7 @@ public class AssignmentAPI {
     public static void getAssignmentGroupsListWithAssignments(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentGroupsListCacheFilename(courseID));
+        callback.readFromCache(getAssignmentGroupsListWithAssignmentsCacheFilename(courseID));
         buildInterface(callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
     }
 

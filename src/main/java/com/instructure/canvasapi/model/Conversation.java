@@ -181,7 +181,7 @@ public class Conversation extends CanvasModel<Conversation> {
 
 
     @Override
-    public int compareTo(CanvasComparable comparable) {
+    public int compareTo(Conversation comparable) {
         return comparable.getComparisonDate().compareTo(getComparisonDate()); // Last date first
     }
 
