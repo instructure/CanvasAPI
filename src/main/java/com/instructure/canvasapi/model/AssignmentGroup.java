@@ -55,6 +55,12 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public boolean areVisualContentsTheSame(AssignmentGroup assignmentGroup) {
+        return this.name.equals(assignmentGroup.getName());
+    }
+
     @Override
     public Date getComparisonDate() {
         return null;
@@ -71,13 +77,11 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 
     public AssignmentGroup() {}
 
-    // HACK for assignmentDate headers
     public AssignmentGroup(String name, int position) {
         this.name = name;
         this.id = name.hashCode();
         this.position = position;
     }
-    // endHACK
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

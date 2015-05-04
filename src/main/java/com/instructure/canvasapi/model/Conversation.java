@@ -179,12 +179,6 @@ public class Conversation extends CanvasModel<Conversation> {
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public int compareTo(Conversation comparable) {
-        return comparable.getComparisonDate().compareTo(getComparisonDate()); // Last date first
-    }
-
     // We want opposite of natural sorting order of date since we want the newest one to come first
     @Override
     public Date getComparisonDate() {
