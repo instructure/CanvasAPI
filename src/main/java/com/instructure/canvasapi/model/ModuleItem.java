@@ -144,17 +144,6 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public int compareTo(ModuleItem moduleItem) {
-        return this.getPosition() - moduleItem.getPosition();
-    }
-
-    @Override
-    public boolean areVisualContentsTheSame(CanvasComparable comparable) {
-        ModuleItem moduleItem = (ModuleItem) comparable;
-        return getType().equals(moduleItem.getType()) && getTitle().equals(moduleItem.getTitle());
-    }
-
-    @Override
     public Date getComparisonDate() {
         return null;
     }

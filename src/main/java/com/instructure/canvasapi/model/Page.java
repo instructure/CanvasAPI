@@ -121,27 +121,6 @@ public class Page extends CanvasModel<Page> {
 
     public Date getComparisonDate() { return getCreate_at(); }
     public String getComparisonString() { return title; }
-    //we want the front page to appear on top, but the rest should be alphabetical
-    //Note: there will be a future API change where any page can be a front page. We'll
-    //have to check the api to see what value the front page is. It might just change the
-    //url to be "front-page"
-    @Override
-    public int compareTo(Page page) {
-        /*
-        if(page.isFrontPage() && this.isFrontPage()) {
-            return 0;
-        }
-        else if(page.isFrontPage()) {
-            return 1;
-        }
-        else if(this.isFrontPage()) {
-            return -1;
-        }
-        else {
-        */
-            return CanvasComparable.compare(this.getTitle().toLowerCase(),page.getTitle().toLowerCase());
-        //}
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
