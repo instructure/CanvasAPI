@@ -55,12 +55,6 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public boolean areVisualContentsTheSame(AssignmentGroup assignmentGroup) {
-        return this.name.equals(assignmentGroup.getName());
-    }
-
     @Override
     public Date getComparisonDate() {
         return null;

@@ -62,12 +62,6 @@ public class Assignment extends CanvasModel<Assignment>{
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public boolean areVisualContentsTheSame(Assignment comparable) {
-        return getName().equals(comparable.getName());
-    }
-
     @Override
 	public long getId() {
 		return id;
