@@ -329,7 +329,7 @@ public class Assignment extends CanvasModel<Assignment>{
 
     @Override
     public String getComparisonString() {
-        return getName().toLowerCase();
+        return getName();
     }
 
     ///////////////////////////////////////////////////////////////////////////
