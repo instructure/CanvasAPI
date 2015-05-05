@@ -26,7 +26,7 @@ public class NotificationPreferenceResponse extends CanvasComparable<Notificatio
     }
 
     @Override
-    public int compareTo(CanvasComparable comparable) {
+    public int compareTo(NotificationPreferenceResponse comparable) {
         return super.compareTo(comparable);
     }
 

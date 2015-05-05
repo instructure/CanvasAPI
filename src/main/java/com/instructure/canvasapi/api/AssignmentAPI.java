@@ -60,6 +60,9 @@ public class AssignmentAPI {
     private static String getAssignmentGroupsListCacheFilename(long courseID) {
         return  "/courses/" + courseID + "/assignments_groups";
     }
+    private static String getAssignmentGroupsListWithAssignmentsCacheFilename(long courseID) {
+        return  "/courses/" + courseID + "/assignments_groups?include=assignments";
+    }
 
     private static String getAssignmentsListWithBucketCacheFilename(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type) {
         return "/courses/" + courseID + "/assignments?bucket=" + ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type);
@@ -77,6 +80,9 @@ public class AssignmentAPI {
 
         @GET("/courses/{course_id}/assignment_groups")
         void getAssignmentGroupList(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
+
+        @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&override_assignment_dates=true")
+        void getAssignmentGroupListWithAssignments(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
 
         @GET("/calendar_events/{event_id}")
         void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
@@ -167,6 +173,13 @@ public class AssignmentAPI {
 
         callback.readFromCache(getAssignmentGroupsListCacheFilename(courseID));
         buildInterface(callback, null).getAssignmentGroupList(courseID, callback);
+    }
+
+    public static void getAssignmentGroupsListWithAssignments(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        callback.readFromCache(getAssignmentGroupsListWithAssignmentsCacheFilename(courseID));
+        buildInterface(callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
     }
 
     /*

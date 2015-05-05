@@ -71,6 +71,12 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 
     public AssignmentGroup() {}
 
+    public AssignmentGroup(String name, int position) {
+        this.name = name;
+        this.id = name.hashCode();
+        this.position = position;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
