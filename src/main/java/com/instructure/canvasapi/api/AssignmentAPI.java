@@ -121,7 +121,6 @@ public class AssignmentAPI {
 
     private static AssignmentsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(AssignmentsInterface.class);
     }
 
