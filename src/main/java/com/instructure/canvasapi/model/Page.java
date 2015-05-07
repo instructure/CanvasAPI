@@ -44,6 +44,7 @@ public class Page extends CanvasModel<Page> {
  */
 
 	private String url;
+    private long page_id;
 	private String title;
 	private String created_at;
 	private String updated_at;
@@ -57,7 +58,15 @@ public class Page extends CanvasModel<Page> {
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
 
-	public String getUrl() {
+    public long getPageId() {
+        return page_id;
+    }
+
+    public void setPageId(long pageId) {
+        this.page_id = pageId;
+    }
+
+    public String getUrl() {
 		return url;
 	}
 	public void setUrl(String url) {
@@ -142,8 +151,7 @@ public class Page extends CanvasModel<Page> {
 
     @Override
     public long getId() {
-        // Pages don't have IDs, but the url is always unique, therefore the hashcode is unique
-        return hashCode();
+        return getPageId();
     }
 
     @Override
