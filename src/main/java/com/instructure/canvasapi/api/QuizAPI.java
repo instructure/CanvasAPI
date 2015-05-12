@@ -94,11 +94,11 @@ public class QuizAPI {
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
         void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, Callback<QuizSubmissionQuestionResponse> callback);
 
-        @POST("/{context_id}/quizzes/{quizid}/submissions/{submission_id}/complete")
-        void postQuizSubmit(@Path("context_id") long context_id, @Path("quizid") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, Callback<QuizSubmissionResponse> callback);
+        @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/complete")
+        void postQuizSubmit(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, Callback<QuizSubmissionResponse> callback);
 
-        @POST("/{context_id}/quizzes/{quizid}/submissions/{submission_id}/events")
-        void postQuizStartedEvent(@Path("context_id") long context_id, @Path("quizid") long quizId, @Path("submission_id") long submissionId, @Query("quiz_submission_events[][event_type]") String sessionStartedString, @Query("quiz_submission_events[][event_data][user_agent]") String userAgentString, CanvasCallback<Response> callback);
+        @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/events")
+        void postQuizStartedEvent(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("quiz_submission_events[][event_type]") String sessionStartedString, @Query("quiz_submission_events[][event_data][user_agent]") String userAgentString, CanvasCallback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
