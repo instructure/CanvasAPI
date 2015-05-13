@@ -50,12 +50,33 @@ public class DateHelpers {
         return format.format(date.getTime());
     }
 
+    /**
+     * @param context
+     * @param date
+     * @return first 3 letters of month with day of the month if >24hr ago, else time of day
+     */
+    public static String getDayMonthDateString(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        Format format = getDayMonthDateFormat(context);
+        return format.format(date.getTime());
+    }
+
     public static SimpleDateFormat getPreferredTimeFormat(Context context) {
         if(DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
         }
         return new SimpleDateFormat("hh:mm a", Locale.getDefault());
     }
+
+    public static SimpleDateFormat getDayMonthDateFormat(Context context) {
+        if(DateFormat.is24HourFormat(context)) {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+        return new SimpleDateFormat("MMM d", Locale.getDefault());
+    }
+
 
     public static String getFormattedTime(Context context, Date date) {
         if(context == null) {
