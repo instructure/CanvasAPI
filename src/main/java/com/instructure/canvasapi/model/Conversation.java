@@ -132,8 +132,14 @@ public class Conversation extends CanvasModel<Conversation> {
     public boolean isSubscribed() {
         return subscribed;
     }
+    public void setSubscribed(boolean subscribed){
+        this.subscribed = subscribed;
+    }
     public boolean isStarred() {
         return starred;
+    }
+    public void setStarred(boolean starred) {
+        this.starred = starred;
     }
     public boolean isLastAuthor() {
         for(int i = 0; i < properties.size(); i++)
