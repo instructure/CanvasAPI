@@ -28,7 +28,6 @@ import retrofit.http.Query;
 public class ConversationAPI {
 
     public enum ConversationScope { ALL,UNREAD,ARCHIVED,STARRED,SENT }
-
     private static String conversationScopeToString(ConversationScope scope){
         if(scope == ConversationScope.UNREAD) {
             return "unread";
@@ -38,6 +37,19 @@ public class ConversationAPI {
             return "archived";
         } else if (scope == ConversationScope.SENT) {
             return "sent";
+        }
+        return "";
+    }
+
+    public enum WorkflowState {READ,UNREAD,ARCHIVED}
+
+    private static String conversationStateToString(WorkflowState state){
+        if(state == WorkflowState.UNREAD) {
+            return "unread";
+        } else if (state == WorkflowState.READ) {
+            return "read";
+        } else if (state == WorkflowState.ARCHIVED) {
+            return "archived";
         }
         return "";
     }
@@ -78,6 +90,18 @@ public class ConversationAPI {
 
         @PUT("/conversations/{conversationid}?conversation[workflow_state]=read")
         void unArchiveConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
+
+        @PUT("/conversations/{conversationid}")
+        void setIsStarred(@Path("conversationid")long conversationID, @Query("conversation[starred]") boolean isStarred, CanvasCallback<Conversation>responseCallback);
+
+        @PUT("/conversations/{conversationid}")
+        void setIsSubscribed(@Path("conversationid")long conversationID, @Query("conversation[subscribed]") boolean isSubscribed, CanvasCallback<Conversation>responseCallback);
+
+        @PUT("/conversations/{conversationid}")
+        void setSubject(@Path("conversationid")long conversationID, @Query("conversation[subject]") String subject, CanvasCallback<Conversation>responseCallback);
+
+        @PUT("/conversations/{conversationid}")
+        void setWorkflowState(@Path("conversationid")long conversationID, @Query("conversation[workflow_state]") String workflowState, CanvasCallback<Conversation>responseCallback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -154,32 +178,56 @@ public class ConversationAPI {
         int group = APIHelpers.booleanToInt(groupBoolean);
 
 
-        buildInterface(callback).createConversation(recipientsParameter,message,group,callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, group, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).deleteConversation(conversationId,responseCanvasCallback);
+        buildInterface(responseCanvasCallback).deleteConversation(conversationId, responseCanvasCallback);
     }
 
     public static void markConversationAsUnread(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).markConversationAsUnread(conversationId,responseCanvasCallback);
+        buildInterface(responseCanvasCallback).markConversationAsUnread(conversationId, responseCanvasCallback);
     }
 
 
     public static void archiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).archiveConversation(conversationId,responseCanvasCallback);
+        buildInterface(responseCanvasCallback).archiveConversation(conversationId, responseCanvasCallback);
     }
 
     public static void unArchiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).unArchiveConversation(conversationId,responseCanvasCallback);
+        buildInterface(responseCanvasCallback).unArchiveConversation(conversationId, responseCanvasCallback);
+    }
+
+    public static void subscribeToConversation(long conversationId, boolean isSubscribed, CanvasCallback<Conversation>responseCanvasCallback){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
+    }
+
+    public static void starConversation(long conversationId, boolean isStarred, CanvasCallback<Conversation>responseCanvasCallback){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).setIsStarred(conversationId, isStarred, responseCanvasCallback);
+    }
+
+    public static void setConversationSubject(long conversationId, String newSubject, CanvasCallback<Conversation>responseCanvasCallback){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).setSubject(conversationId, newSubject, responseCanvasCallback);
+    }
+
+    public static void setConversationWorkflowState(long conversationId, WorkflowState workflowState, CanvasCallback<Conversation>responseCanvasCallback){
+        if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
+
+        buildInterface(responseCanvasCallback).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
