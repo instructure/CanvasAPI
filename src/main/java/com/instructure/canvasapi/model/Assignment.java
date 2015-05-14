@@ -683,6 +683,38 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeByte(this.locked_for_user ? (byte)1 : (byte) 0);
     }
 
+    public Assignment createDeepCopy(Assignment in) {
+        Assignment copy = new Assignment();
+        copy.id = in.id;
+        copy.name = in.name;
+        copy.description = in.description;
+        copy.submission_types = in.submission_types;
+        copy.due_at = in.due_at;
+        copy.points_possible = in.points_possible;
+        copy.course_id = in.course_id;
+        copy.grading_type = in.grading_type;
+        copy.html_url = in.html_url;
+        copy.url = in.url;
+        copy.quiz_id = in.quiz_id;
+        copy.use_rubric_for_grading = in.use_rubric_for_grading;
+        copy.submission = in.submission;
+        copy.assignment_group_id = in.assignment_group_id;
+        copy.peer_reviews = in.peer_reviews;
+        copy.lock_info =  in.lock_info;
+        copy.lock_at = in.lock_at;
+        copy.unlock_at = in.unlock_at;
+        copy.discussion_topic = in.discussion_topic;
+        copy.needs_grading_count = in.needs_grading_count;
+        copy.needs_grading_count_by_section = in.needs_grading_count_by_section;
+        copy.free_form_criterion_comments = in.free_form_criterion_comments;
+        copy.published = in.published;
+        copy.group_category_id = in.group_category_id;
+        copy.all_dates = in.all_dates;
+        copy.muted = in.muted;
+        copy.locked_for_user = in.locked_for_user;
+        return copy;
+    }
+
     private Assignment(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
