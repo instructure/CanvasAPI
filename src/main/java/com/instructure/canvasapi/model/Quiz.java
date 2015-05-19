@@ -232,7 +232,9 @@ public class Quiz extends CanvasModel<Quiz> {
     private ArrayList<QuizQuestion.QUESTION_TYPE> parseQuestionTypes(String[] question_types) {
         ArrayList<QuizQuestion.QUESTION_TYPE> questionTypesList = new ArrayList<>();
         for(String question_type : question_types) {
-            questionTypesList.add(QuizQuestion.parseQuestionType(question_type));
+            if(question_type != null) {
+                questionTypesList.add(QuizQuestion.parseQuestionType(question_type));
+            }
         }
 
         return questionTypesList;
