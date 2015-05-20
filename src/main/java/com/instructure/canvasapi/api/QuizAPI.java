@@ -6,6 +6,7 @@ import com.instructure.canvasapi.model.QuizQuestion;
 import com.instructure.canvasapi.model.QuizSubmission;
 import com.instructure.canvasapi.model.QuizSubmissionQuestionResponse;
 import com.instructure.canvasapi.model.QuizSubmissionResponse;
+import com.instructure.canvasapi.model.QuizSubmissionTime;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -99,6 +100,10 @@ public class QuizAPI {
 
         @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/events")
         void postQuizStartedEvent(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("quiz_submission_events[][event_type]") String sessionStartedString, @Query("quiz_submission_events[][event_data][user_agent]") String userAgentString, CanvasCallback<Response> callback);
+
+        @GET("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/time")
+        void getQuizSubmissionTime(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, CanvasCallback<QuizSubmissionTime> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -224,4 +229,12 @@ public class QuizAPI {
 
         buildInterface(callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, callback);
     }
+
+    public static void getQuizSubmissionTime(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionTime> callback) {
+        if(APIHelpers.paramIsNull(canvasContext, callback, quizSubmission)) { return; }
+
+        buildInterface(callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
+    }
+
+
 }
