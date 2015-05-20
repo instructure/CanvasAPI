@@ -115,11 +115,6 @@ public class QuizAPI {
         return restAdapter.create(QuizzesInterface.class);
     }
 
-    private static QuizzesInterface buildInterfaceNoPerPage(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false);
-        return restAdapter.create(QuizzesInterface.class);
-    }
-
     /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
@@ -240,5 +235,6 @@ public class QuizAPI {
 
         buildInterface(callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
     }
+
 
 }
