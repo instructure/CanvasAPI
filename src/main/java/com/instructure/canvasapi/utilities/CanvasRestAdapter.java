@@ -101,6 +101,18 @@ public class CanvasRestAdapter {
 
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
+     **
+     * @param callback A Canvas Callback
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    public static RestAdapter buildAdapter(CanvasCallback callback, boolean addPerPageQueryParam) {
+        callback.setFinished(false);
+        return buildAdapter(callback.getContext(), addPerPageQueryParam);
+    }
+
+    /**
+     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
      *
