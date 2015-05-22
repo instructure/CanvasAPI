@@ -137,6 +137,8 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         this.completion_requirement = completionRequirement;
     }
 
+    public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool}
+
     public ModuleItem() {}
 
     ///////////////////////////////////////////////////////////////////////////
