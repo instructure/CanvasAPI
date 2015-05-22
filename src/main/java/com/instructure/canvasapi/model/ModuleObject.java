@@ -109,6 +109,8 @@ public class ModuleObject extends CanvasModel<ModuleObject> {
         }
     }
 
+    public enum STATE {completed, must_submit, must_view, must_contribute, min_score, unlock_requirements, unlocked, started, locked}
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
