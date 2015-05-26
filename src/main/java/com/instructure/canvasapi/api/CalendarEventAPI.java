@@ -55,6 +55,14 @@ public class CalendarEventAPI {
         return "/users/self/all" + eventType.name() + resultString.substring(0, 7);
     }
 
+    private static String getAllCalendarEventsCacheFilename(String contextIds, EVENT_TYPE eventType){
+        int lengthLimit = contextIds.length();
+        if (lengthLimit > 30) {
+            lengthLimit = 30;
+        }
+        return "/calendar_events?all_events=1&type=" + eventType.name() + "&" + contextIds.substring(0, lengthLimit); // limit the filename length
+    }
+
     public interface CalendarEventsInterface {
         @GET("/calendar_events/{event_id}")
         void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
@@ -67,6 +75,13 @@ public class CalendarEventAPI {
 
         @GET("/{next}")
         void getNextPageCalendarEvents(@Path(value = "next", encode = false) String nextURL, Callback<ScheduleItem[]> callback);
+
+        @GET("/calendar_events/")
+        void getCalendarEvents(
+                @Query("all_events") boolean allEvents,
+                @Query("type") String type,
+                @EncodedQuery("context_codes[]") String contextCodes,
+                Callback<ScheduleItem[]> callback);
 
         @GET("/calendar_events/")
         void getCalendarEvents(
@@ -157,6 +172,27 @@ public class CalendarEventAPI {
         });
 
         eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, bridge);
+    }
+
+    public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        String contextIds = buildContextArray(canvasContextIds);
+        callback.readFromCache(getAllCalendarEventsCacheFilename(contextIds, eventType));
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
+
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
+                CalendarEventAPI.getNextPageCalendarEvents(nextURL, callback);
+            }
+
+            @Override
+            public Class classType() {
+                return ScheduleItem.class;
+            }
+        });
+
+        eventsInterface.getCalendarEvents(true, EVENT_TYPE.getEventTypeName(eventType), contextIds, bridge);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
