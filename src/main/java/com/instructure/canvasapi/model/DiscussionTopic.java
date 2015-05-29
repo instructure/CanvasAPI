@@ -27,6 +27,7 @@ public class DiscussionTopic implements Parcelable, Serializable {
     private List<DiscussionParticipant> participants = new ArrayList<DiscussionParticipant>();
     private HashMap<Long, DiscussionParticipant> participantsMap = new HashMap<Long, DiscussionParticipant>();
     private HashMap<Long, Boolean> unread_entriesMap = new HashMap<Long, Boolean>();
+    private HashMap<Long, Integer> entry_ratings = new HashMap<>();
 
     //List of all the discussion entries (views)
     private List<DiscussionEntry> view;
@@ -90,6 +91,14 @@ public class DiscussionTopic implements Parcelable, Serializable {
 		this.view = views;
 	}
 
+    public HashMap<Long, Integer> getEntryRatings() {
+        return entry_ratings;
+    }
+
+    public void setEntryRatings(HashMap<Long, Integer> entry_ratings) {
+        this.entry_ratings = entry_ratings;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
@@ -119,6 +128,7 @@ public class DiscussionTopic implements Parcelable, Serializable {
         dest.writeSerializable(this.participantsMap);
         dest.writeSerializable(this.unread_entriesMap);
         dest.writeList(this.view);
+        dest.writeSerializable(this.entry_ratings);
     }
 
     private DiscussionTopic(Parcel in) {
@@ -128,6 +138,7 @@ public class DiscussionTopic implements Parcelable, Serializable {
         this.participantsMap = (HashMap<Long, DiscussionParticipant>)in.readSerializable();
         this.unread_entriesMap = (HashMap<Long, Boolean>)in.readSerializable();
         in.readList(this.view, DiscussionEntry.class.getClassLoader());
+        this.entry_ratings = (HashMap<Long, Integer>)in.readSerializable();
     }
 
     public static Creator<DiscussionTopic> CREATOR = new Creator<DiscussionTopic>() {

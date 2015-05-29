@@ -32,6 +32,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     private int unreadChildren = 0;
     private List<DiscussionEntry> replies = new ArrayList<DiscussionEntry>();
     private List<DiscussionAttachment> attachments = new ArrayList<DiscussionAttachment>();
+    private int rating_count;
+    private int rating_sum;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -179,6 +181,22 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.replies = replies;
     }
 
+    public int getRatingCount() {
+        return rating_count;
+    }
+
+    public void setRatingCount(int rating_count) {
+        this.rating_count = rating_count;
+    }
+
+    public int getRatingSum() {
+        return rating_sum;
+    }
+
+    public void setRatingSum(int rating_sum) {
+        this.rating_sum = rating_sum;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -262,6 +280,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         //can't have a circular reference with parcelable, so it needs to be serializable
         dest.writeSerializable((Serializable)this.replies);
         dest.writeList(this.attachments);
+        dest.writeInt(this.rating_count);
+        dest.writeInt(this.rating_sum);
     }
 
     private DiscussionEntry(Parcel in) {
@@ -280,6 +300,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         this.unreadChildren = in.readInt();
         this.replies = (List<DiscussionEntry>)in.readSerializable();
         in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
+        this.rating_count = in.readInt();
+        this.rating_sum = in.readInt();
     }
 
     public static Creator<DiscussionEntry> CREATOR = new Creator<DiscussionEntry>() {
