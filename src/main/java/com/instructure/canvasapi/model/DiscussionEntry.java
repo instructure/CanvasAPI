@@ -32,6 +32,8 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
     private int unreadChildren = 0;
     private List<DiscussionEntry> replies = new ArrayList<DiscussionEntry>();
     private List<DiscussionAttachment> attachments = new ArrayList<DiscussionAttachment>();
+    private int rating_count;
+    private int rating_sum;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -177,6 +179,22 @@ public class DiscussionEntry extends CanvasModel<DiscussionEntry>{
         }
 
         this.replies = replies;
+    }
+
+    public int getRatingCount() {
+        return rating_count;
+    }
+
+    public void setRatingCount(int rating_count) {
+        this.rating_count = rating_count;
+    }
+
+    public int getRatingSum() {
+        return rating_sum;
+    }
+
+    public void setRatingSum(int rating_sum) {
+        this.rating_sum = rating_sum;
     }
 
     ///////////////////////////////////////////////////////////////////////////

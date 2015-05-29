@@ -27,6 +27,7 @@ public class DiscussionTopic implements Parcelable, Serializable {
     private List<DiscussionParticipant> participants = new ArrayList<DiscussionParticipant>();
     private HashMap<Long, DiscussionParticipant> participantsMap = new HashMap<Long, DiscussionParticipant>();
     private HashMap<Long, Boolean> unread_entriesMap = new HashMap<Long, Boolean>();
+    private HashMap<Long, Integer> entry_ratings = new HashMap<>();
 
     //List of all the discussion entries (views)
     private List<DiscussionEntry> view;
@@ -89,6 +90,14 @@ public class DiscussionTopic implements Parcelable, Serializable {
     public void setViews(List<DiscussionEntry> views) {
 		this.view = views;
 	}
+
+    public HashMap<Long, Integer> getEntryRatings() {
+        return entry_ratings;
+    }
+
+    public void setEntryRatings(HashMap<Long, Integer> entry_ratings) {
+        this.entry_ratings = entry_ratings;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructors

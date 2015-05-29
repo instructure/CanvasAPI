@@ -61,6 +61,9 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private Assignment assignment;
     private LockInfo lock_info;
     private boolean published;              //Whether this discussion topic is published (true) or draft state (false)
+    private boolean allow_rating;           //Whether or not users can rate entries in this topic.
+    private boolean only_graders_can_rate;  //Whether or not grade permissions are required to rate entries.
+    private boolean sort_by_rating;         //Whether or not entries should be sorted by rating.
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -256,6 +259,19 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         return published;
     }
 
+    public boolean shouldAllowRating() {
+        return allow_rating;
+    }
+
+    public boolean isOnlyGradersCanRate() {
+        return only_graders_can_rate;
+    }
+
+    public boolean isSortByRating() {
+        return sort_by_rating;
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -350,6 +366,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeParcelable(this.assignment, flags);
         dest.writeParcelable(this.lock_info, flags);
         dest.writeByte(published ? (byte) 1 : (byte) 0);
+        dest.writeByte(allow_rating ? (byte) 1 : (byte) 0);
+        dest.writeByte(only_graders_can_rate ? (byte) 1 : (byte) 0);
+        dest.writeByte(sort_by_rating ? (byte) 1 : (byte) 0);
+
     }
 
     private DiscussionTopicHeader(Parcel in) {
@@ -380,6 +400,9 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.published = in.readByte() != 0;
+        this.allow_rating = in.readByte() != 0;
+        this.only_graders_can_rate = in.readByte() != 0;
+        this.sort_by_rating = in.readByte() != 0;
     }
 
     public static Creator<DiscussionTopicHeader> CREATOR = new Creator<DiscussionTopicHeader>() {

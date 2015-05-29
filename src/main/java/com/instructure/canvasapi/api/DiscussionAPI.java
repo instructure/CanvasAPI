@@ -9,6 +9,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.client.Response;
 import retrofit.http.*;
 
 /**
@@ -67,6 +68,10 @@ public class DiscussionAPI {
 
         @PUT("/{context_id}/discussion_topics/{topic_id}")
         void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("title") String title, @Query("message")String message, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
+
+        @POST("/{context_id}/discussion_topics/{discussionId}/entries/{entryId}/rating")
+        void rateDiscussionEntry(@Path("context_id") long courseId, @Path("discussionId") long discussionId, @Path("entryId") long entryId, @Query("rating") int rating, Callback<Response> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -179,5 +184,14 @@ public class DiscussionAPI {
 
         buildInterface(callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, callback);
 
+    }
+
+    /**
+     * @param rating can only be 1 or 0
+     */
+    public static void rateDiscussionEntry(CanvasContext canvasContext, long discussionId, long entryId, int rating, CanvasCallback<Response> callback){
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, callback);
     }
 }
