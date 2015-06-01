@@ -1,6 +1,5 @@
 package com.instructure.canvasapi.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -165,6 +164,21 @@ public abstract class CanvasContext extends CanvasModel<CanvasContext> implement
         }
 
         return prefix + "_" + getId();
+    }
+
+    public static String makeContextId(Type type, long id) {
+        String prefix = "";
+        if (type == Type.COURSE) {
+            prefix = "course";
+        } else if (type == Type.GROUP) {
+            prefix = "group";
+        } else if(type == Type.USER) {
+            prefix = "user";
+        } else {
+            return null;
+        }
+
+        return prefix + "_" + id;
     }
 
     /**
