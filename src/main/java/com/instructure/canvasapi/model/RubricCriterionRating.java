@@ -29,7 +29,7 @@ public class RubricCriterionRating implements Parcelable,  Serializable , Compar
     ///////////////////////////////////////////////////////////////////////////
 	
 	public String getId() {
-		return id;
+		return id == null ? criterionId : id;
 	}
 	public void setId(String id) {
 		this.id = id;

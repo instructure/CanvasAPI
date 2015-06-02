@@ -123,6 +123,18 @@ public class ToDo extends CanvasComparable<ToDo>{
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public long getId() {
+        if (assignment != null) {
+            return assignment.getId();
+        } else if (scheduleItem != null) {
+            return scheduleItem.getId();
+        } else {
+            return super.getId();
+        }
+    }
+
     public ToDo() {}
 
     /* Example JSON Response
