@@ -123,6 +123,7 @@ public class ToDo extends CanvasComparable<ToDo>{
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
 
+
     public ToDo() {}
 
     /* Example JSON Response
@@ -186,6 +187,17 @@ public class ToDo extends CanvasComparable<ToDo>{
             return getComparisonString().equals(toDo.getComparisonString()) && getComparisonDate().equals(toDo.getComparisonDate());
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public long getId() {
+        if (assignment != null) {
+            return assignment.getId();
+        } else if (scheduleItem != null) {
+            return scheduleItem.getId();
+        } else {
+            return super.getId();
         }
     }
 
