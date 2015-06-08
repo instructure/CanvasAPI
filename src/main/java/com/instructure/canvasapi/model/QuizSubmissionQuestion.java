@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -40,7 +41,8 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
     @SerializedName("question_text")
     private String questionText;
 
-    private String answer;
+    //sometimes is a String, sometimes an array depending on the question type
+    private Object answer;
 
     public long getId() {
         return id;
@@ -106,7 +108,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.questionText = questionText;
     }
 
-    public String getAnswer() {
+    public Object getAnswer() {
         return answer;
     }
 
@@ -144,7 +146,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         dest.writeString(this.questionName);
         dest.writeString(this.questionType);
         dest.writeString(this.questionText);
-        dest.writeString(this.answer);
+        dest.writeSerializable((Serializable)this.answer);
     }
 
     public QuizSubmissionQuestion() {
@@ -159,7 +161,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.questionName = in.readString();
         this.questionType = in.readString();
         this.questionText = in.readString();
-        this.answer = in.readString();
+        this.answer = in.readSerializable();
     }
 
     public static final Parcelable.Creator<QuizSubmissionQuestion> CREATOR = new Parcelable.Creator<QuizSubmissionQuestion>() {

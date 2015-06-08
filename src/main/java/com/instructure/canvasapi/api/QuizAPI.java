@@ -11,6 +11,8 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
+import java.util.ArrayList;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
@@ -104,6 +106,9 @@ public class QuizAPI {
         @GET("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/time")
         void getQuizSubmissionTime(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, CanvasCallback<QuizSubmissionTime> callback);
 
+        @POST("/quiz_submissions/{quiz_submission_id}/questions{query_params}")
+        void postQuizQuestionMultiAnswers(@Path("quiz_submission_id") long quizSubmissionId,  @Path(value = "query_params", encode = false) String queryParams, Callback<QuizSubmissionQuestionResponse> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -112,6 +117,11 @@ public class QuizAPI {
 
     private static QuizzesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        return restAdapter.create(QuizzesInterface.class);
+    }
+
+    private static QuizzesInterface buildInterfaceNoPerPage(CanvasCallback<?> callback, CanvasContext canvasContext) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false);
         return restAdapter.create(QuizzesInterface.class);
     }
 
@@ -235,6 +245,40 @@ public class QuizAPI {
 
         buildInterface(callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
     }
+    public static void postQuizQuestionMultiAnswer(QuizSubmission quizSubmission, long questionId, ArrayList<Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
+        //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
+        buildInterfaceNoPerPage(callback, null).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), callback);
+    }
+
+    private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Integer> answers) {
+        // build the query params because we'll have an unknown amount of answers. It will end up looking like:
+        // ?attempt={attempt}&validation_token={validation_token}&quiz_questions[][id]={question_id}&quiz_questions[][answer][]={answer_id}...
+        StringBuilder builder = new StringBuilder();
+        builder.append("?");
+        builder.append("attempt=");
+        builder.append(Integer.toString(attempt));
+        builder.append("&");
+        builder.append("validation_token=");
+        builder.append(validationToken);
+        builder.append("&");
+        builder.append("quiz_questions[][id]=");
+        builder.append(Long.toString(questionId));
+        builder.append("&");
+        for(Integer answer : answers) {
+            builder.append("quiz_questions[][answer][]");
+
+            builder.append("=");
+            builder.append(Integer.toString(answer));
+            builder.append("&");
+        }
+
+        String answerString = builder.toString();
+        if(answerString.endsWith("&")) {
+            answerString = answerString.substring(0, answerString.length() - 1);
+        }
+        return answerString;
+    }
 
 }
