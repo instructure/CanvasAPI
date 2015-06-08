@@ -1,10 +1,8 @@
 package com.instructure.canvasapi.model;
 
-
 import android.os.Parcel;
-
 import com.google.gson.annotations.SerializedName;
-
+import com.instructure.canvasapi.utilities.APIHelpers;
 import java.util.Date;
 
 /**
@@ -16,14 +14,14 @@ import java.util.Date;
 public class Attachment extends CanvasModel<Attachment> {
 
     private long id;
-    private String display_name;
-
     @SerializedName("content-type")
     private String content_type;
     private String filename;
+    private String display_name;
     private String url;
     private String thumbnail_url;
     private String preview_url;
+    private String created_at;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -56,6 +54,9 @@ public class Attachment extends CanvasModel<Attachment> {
     public void setPreviewURL(String preview_url){
         this.preview_url = preview_url;
     }
+    public Date getCreatedAt(){
+        return APIHelpers.stringToDate(created_at);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -63,7 +64,7 @@ public class Attachment extends CanvasModel<Attachment> {
 
     @Override
     public Date getComparisonDate() {
-        return null;
+        return getCreatedAt();
     }
 
     @Override
@@ -86,6 +87,7 @@ public class Attachment extends CanvasModel<Attachment> {
         dest.writeString(this.url);
         dest.writeString(this.thumbnail_url);
         dest.writeString(this.preview_url);
+        dest.writeString(this.created_at);
     }
 
     private Attachment(Parcel in) {
@@ -96,6 +98,7 @@ public class Attachment extends CanvasModel<Attachment> {
         this.url = in.readString();
         this.thumbnail_url = in.readString();
         this.preview_url = in.readString();
+        this.created_at = in.readString();
     }
 
     public static Creator<Attachment> CREATOR = new Creator<Attachment>() {

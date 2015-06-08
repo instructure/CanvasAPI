@@ -1,9 +1,7 @@
 package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
-
 import com.instructure.canvasapi.utilities.APIHelpers;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,10 +19,10 @@ public class Message extends CanvasModel<Message> {
     private String body;
     private long author_id;
     private boolean generated;
-    private List<Attachment> attachments = new ArrayList<Attachment>();
+    private List<Attachment> attachments = new ArrayList<>();
     private MediaComment media_comment;
     private Submission submission;
-    private List<Message> forwarded_messages = new ArrayList<Message>();
+    private List<Message> forwarded_messages = new ArrayList<>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -58,7 +56,6 @@ public class Message extends CanvasModel<Message> {
     public Submission getSubmission() {
         return submission;
     }
-
     public Date getMessageDate() {
         return APIHelpers.stringToDate(created_at);
     }
@@ -66,10 +63,9 @@ public class Message extends CanvasModel<Message> {
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public Date getComparisonDate() {
-        return null;
+        return APIHelpers.stringToDate(created_at);
     }
 
     @Override
@@ -90,8 +86,7 @@ public class Message extends CanvasModel<Message> {
         dest.writeList(this.forwarded_messages);
     }
 
-    public Message() {
-    }
+    public Message() {}
 
     private Message(Parcel in) {
         this.id = in.readLong();
