@@ -225,7 +225,7 @@ public class UserAPI {
         CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
             public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                UserAPI.getNextPagePeople(nextURL, callback);
+                UserAPI.getNextPagePeople(nextURL, callback); 
             }
 
             @Override
