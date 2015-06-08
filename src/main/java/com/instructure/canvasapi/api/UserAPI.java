@@ -256,7 +256,7 @@ public class UserAPI {
     public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
         if(canvasContext instanceof Course || canvasContext instanceof Group) {
-            setColor(context, canvasContext.getContextId(), hexColor, callback);
+            buildInterface(context, false).setColor(canvasContext.getContextId(), hexColor, callback);
         }
     }
 
