@@ -5,8 +5,10 @@ import android.util.Log;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.CanvasColor;
+import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
+import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.*;
 import java.io.File;
@@ -121,6 +123,7 @@ public class UserAPI {
 
     private static UsersInterface buildInterface(Context context, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(UsersInterface.class);
     }
 
@@ -252,12 +255,16 @@ public class UserAPI {
 
     public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
-        setColor(context, canvasContext.getContextId(), hexColor, callback);
+        if(canvasContext instanceof Course || canvasContext instanceof Group) {
+            setColor(context, canvasContext.getContextId(), hexColor, callback);
+        }
     }
 
     public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, context_id, hexColor, callback)) { return; }
-        buildInterface(context, false).setColor(context_id, hexColor, callback);
+        if(context_id.startsWith("course_") || context_id.startsWith("group_")) {
+            buildInterface(context, false).setColor(context_id, hexColor, callback);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////
