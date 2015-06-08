@@ -123,7 +123,6 @@ public class UserAPI {
 
     private static UsersInterface buildInterface(Context context, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(UsersInterface.class);
     }
 
