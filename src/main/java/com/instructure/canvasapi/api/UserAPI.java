@@ -5,8 +5,10 @@ import android.util.Log;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.CanvasColor;
+import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
+import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.*;
 import java.io.File;
@@ -252,7 +254,7 @@ public class UserAPI {
 
     public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
-        setColor(context, canvasContext.getContextId(), hexColor, callback);
+        buildInterface(context, false).setColor(canvasContext.getContextId(), hexColor, callback);
     }
 
     public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
