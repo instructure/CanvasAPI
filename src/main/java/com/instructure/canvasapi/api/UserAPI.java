@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.CanvasColor;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.User;
@@ -44,6 +45,10 @@ public class UserAPI {
         return canvasContext.toAPIString() + "/users/all";
     }
 
+    private static String getColorCacheFilename(){
+        return "/users/colors";
+    }
+
     private static String getSelfWithPermissionsCacheFileName(){
         return "/users/self";
     }
@@ -65,8 +70,8 @@ public class UserAPI {
         @GET("/users/{userid}/profile")
         void getUserById(@Path("userid")long userId, Callback<User> userCallback);
 
-        @GET("/{context_id}/users/{userid}?include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
-        void getUserById(@Path("context_id") long context_id, @Path("userid")long userId, Callback<User> userCallback);
+        @GET("/{context_id}/users/{userId}?include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
+        void getUserById(@Path("context_id") long context_id, @Path("userId")long userId, Callback<User> userCallback);
 
         @GET("/{context_id}/users?include[]=enrollments&include[]=avatar_url&include[]=user_id&include[]=email&include[]=bio")
         void getFirstPagePeopleList(@Path("context_id") long context_id, Callback<User[]> callback);
@@ -86,6 +91,13 @@ public class UserAPI {
         @Multipart
         @POST("/")
         Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+
+        //Colors
+        @GET("/users/self/colors")
+        void getColors(CanvasCallback<CanvasColor> callback);
+
+        @PUT("/users/self/colors/{context_id}")
+        void setColor(@Path("context_id") String context_id, @Query(value = "hexcode", encodeValue = false) String color, CanvasCallback<CanvasColor> callback); 
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -97,8 +109,18 @@ public class UserAPI {
         return restAdapter.create(UsersInterface.class);
     }
 
+    private static UsersInterface buildInterface(CanvasCallback callback, CanvasContext canvasContext, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, perPageQueryParam);
+        return restAdapter.create(UsersInterface.class);
+    }
+
     private static UsersInterface buildInterface(Context context) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+        return restAdapter.create(UsersInterface.class);
+    }
+
+    private static UsersInterface buildInterface(Context context, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
         return restAdapter.create(UsersInterface.class);
     }
 
@@ -166,7 +188,7 @@ public class UserAPI {
             return;
         }
 
-        buildInterface(userCanvasCallback, null).getUserById(userId,userCanvasCallback);
+        buildInterface(userCanvasCallback, null).getUserById(userId, userCanvasCallback);
     }
 
     public static void getCourseUserById(CanvasContext canvasContext, long userId, CanvasCallback<User> userCanvasCallback){
@@ -221,6 +243,21 @@ public class UserAPI {
         callback.readFromCache(getFirstPagePeopleCacheFilename(canvasContext, enrollment_type));
 
         buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+    }
+
+    public static void getColors(Context context, CanvasCallback<CanvasColor> callback) {
+        callback.readFromCache(getColorCacheFilename());
+        buildInterface(context, false).getColors(callback);
+    }
+
+    public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
+        setColor(context, canvasContext.getContextId(), hexColor, callback);
+    }
+
+    public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, context_id, hexColor, callback)) { return; }
+        buildInterface(context, false).setColor(context_id, hexColor, callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
