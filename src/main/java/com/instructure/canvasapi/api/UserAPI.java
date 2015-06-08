@@ -225,7 +225,7 @@ public class UserAPI {
         CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
             public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                UserAPI.getNextPagePeople(nextURL, callback); 
+                UserAPI.getNextPagePeople(nextURL, callback);
             }
 
             @Override
@@ -251,10 +251,12 @@ public class UserAPI {
     }
 
     public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
         setColor(context, canvasContext.getContextId(), hexColor, callback);
     }
 
     public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, context_id, hexColor, callback)) { return; }
         buildInterface(context, false).setColor(context_id, hexColor, callback);
     }
 
