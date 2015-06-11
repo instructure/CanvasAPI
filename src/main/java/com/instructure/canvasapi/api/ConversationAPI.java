@@ -1,14 +1,12 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-
 import com.instructure.canvasapi.model.Conversation;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-
 import java.util.ArrayList;
-
+import java.util.List;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
@@ -113,6 +111,8 @@ public class ConversationAPI {
         @GET("/conversations/{id}/?interleave_submissions=1")
         Conversation getDetailedConversationSynchronous(@Path("id") long conversation_id);
 
+        @POST("/conversations/{id}/add_message")
+        Conversation addMessageToConversationSynchronous(@Path("id")long conversation_id, @Query("body")String message, @Query("attachment_ids[]") List<String> attachments);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -239,7 +239,6 @@ public class ConversationAPI {
     /////////////////////////////////////////////////////////////////////////////
 
     public static Conversation[] getFirstPageConversationsSynchronous(ConversationScope scope, Context context, int numberToReturn) {
-
         try{
             return buildInterface(context).getFirstPageConversationList(conversationScopeToString(scope), numberToReturn);
         } catch (Exception E){
@@ -247,14 +246,17 @@ public class ConversationAPI {
         }
     }
 
-    public static Conversation getDetailedConversationSynchronous(Context context, long conversation_id){
+    public static Conversation getDetailedConversationSynchronous(Context context, long conversationId){
         try {
-            return buildInterface(context).getDetailedConversationSynchronous(conversation_id);
+            return buildInterface(context).getDetailedConversationSynchronous(conversationId);
         } catch (Exception E){
             return null;
         }
     }
 
+    public static Conversation addMessageToConversationSynchronous(Context context, long conversationId, String messageBody, List<String> attachmentIds){
+        if (APIHelpers.paramIsNull(context, attachmentIds, messageBody)){return null;}
 
-
+        return buildInterface(context).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
+    }
 }
