@@ -30,28 +30,19 @@ public class BookmarkAPI {
         @POST("/users/self/bookmarks")
         void createBookmark(
                 @Query("name") String name,
-                @Query(value = "url", encodeValue = false) String url,
+                @Query(value = "url", encodeValue = true) String url,
                 @Query("position") int position,
-                @Query("data") String data,
-                Callback<Bookmark[]> callback);
+                Callback<Bookmark> callback);
 
-        @POST("/users/self/bookmarks")
-        void createBookmark(
-                @Query("name") String name,
-                @Query("url") String url,
-                @Query("position") int position,
-                Callback<Bookmark[]> callback);
-
-        @PUT("users/self/bookmarks/{id}")
-        void updateBookmark(@Path("id") long id,
+        @PUT("/users/self/bookmarks/{id}")
+        void updateBookmark(@Path("id") long bookmarkId,
                             @Query("name") String name,
                             @Query(value = "url", encodeValue = false) String url,
                             @Query("position") int position,
-                            @Query("data") String data,
-                            Callback<Bookmark[]> callback);
+                            Callback<Bookmark> callback);
 
         @DELETE("/users/self/bookmarks/{id}")
-        void deleteBookmark(@Path("id") long id, Callback<Bookmark[]> callback);
+        void deleteBookmark(@Path("id") long bookmarkId, Callback<Bookmark> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -60,7 +51,6 @@ public class BookmarkAPI {
 
     private static BookmarkInterface buildInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, false);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(BookmarkInterface.class);
     }
 
@@ -78,21 +68,19 @@ public class BookmarkAPI {
         buildInterface(callback).getBookmark(bookmarkId, callback);
     }
 
-    public static void createBookmark(Bookmark bookmark, CanvasCallback<Bookmark[]> callback) {
-        callback.readFromCache(getBookmarksCacheFilename());
-        buildInterface(callback).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), bookmark.getData(), callback);
+    public static void createBookmark(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
+        buildInterface(callback).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
     }
 
-    public static void deleteBookmark(Bookmark bookmark,  CanvasCallback<Bookmark[]> callback) {
+    public static void deleteBookmark(Bookmark bookmark,  CanvasCallback<Bookmark> callback) {
         deleteBookmark(bookmark.getId(), callback);
     }
 
-    public static void deleteBookmark(long bookmarkId, CanvasCallback<Bookmark[]> callback) {
+    public static void deleteBookmark(long bookmarkId, CanvasCallback<Bookmark> callback) {
         buildInterface(callback).deleteBookmark(bookmarkId, callback);
     }
 
-    public static void update(Bookmark bookmark, CanvasCallback<Bookmark[]> callback) {
-        callback.readFromCache(getBookmarksCacheFilename());
-        buildInterface(callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), bookmark.getData(), callback);
+    public static void update(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
+        buildInterface(callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
     }
 }

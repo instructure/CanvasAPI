@@ -10,8 +10,15 @@ public class CanvasColor extends CanvasModel<CanvasColor> implements android.os.
 
     private Map<String, String> custom_colors = new HashMap<>();
 
+    public CanvasColor() {
+    }
+
+    public CanvasColor(Map<String, String> newColorMap) {
+        custom_colors.putAll(newColorMap);
+    }
+
     /**
-     * Map is: Map<CanvasContextId, HexColor>
+     * Map is: Map<Context_ID, HexColor>
      * @return
      */
     public Map<String, String> getColors() {
@@ -46,9 +53,6 @@ public class CanvasColor extends CanvasModel<CanvasColor> implements android.os.
             dest.writeString(entry.getKey());
             dest.writeString(entry.getValue());
         }
-    }
-
-    public CanvasColor() {
     }
 
     private CanvasColor(Parcel in) {
