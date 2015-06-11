@@ -83,6 +83,9 @@ public class UserAPI {
         @POST("/users/self/files")
         FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_id") Long parentFolderId);
 
+        @POST("/users/self/files")
+        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath);
+
         @Multipart
         @POST("/")
         Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
@@ -166,7 +169,7 @@ public class UserAPI {
             return;
         }
 
-        buildInterface(userCanvasCallback, null).getUserById(userId,userCanvasCallback);
+        buildInterface(userCanvasCallback, null).getUserById(userId, userCanvasCallback);
     }
 
     public static void getCourseUserById(CanvasContext canvasContext, long userId, CanvasCallback<User> userCanvasCallback){
@@ -230,7 +233,11 @@ public class UserAPI {
         return buildInterface(context).getFileUploadParams(size, fileName, contentType, parentFolderId);
     }
 
-    public static Attachment uploadUserFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+    public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, String parentFolderPath){
+        return buildInterface(context).getFileUploadParams(size, fileName, contentType, parentFolderPath);
+    }
+
+    public static Attachment uploadUserFile(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
         return buildUploadInterface(uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
     }
 
