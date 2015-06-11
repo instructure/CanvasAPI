@@ -123,6 +123,7 @@ public class UserAPI {
 
     private static UsersInterface buildInterface(Context context, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(UsersInterface.class);
     }
 
@@ -254,11 +255,21 @@ public class UserAPI {
 
     public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
+
+        if(hexColor.contains("#")) {
+            hexColor = hexColor.replaceAll("#", "");
+        }
+
         buildInterface(context, false).setColor(canvasContext.getContextId(), hexColor, callback);
     }
 
     public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
         if (APIHelpers.paramIsNull(context, context_id, hexColor, callback)) { return; }
+
+        if(hexColor.contains("#")) {
+            hexColor = hexColor.replaceAll("#", "");
+        }
+
         buildInterface(context, false).setColor(context_id, hexColor, callback);
     }
 
