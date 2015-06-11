@@ -12,7 +12,6 @@ public class Bookmark extends CanvasModel<Bookmark> implements android.os.Parcel
     private long id = 0;
     private String name;
     private String url;
-    private String data;
     private int position = 0;
 
     //A helper for storing a course id, not part of the API
@@ -21,11 +20,10 @@ public class Bookmark extends CanvasModel<Bookmark> implements android.os.Parcel
     public Bookmark() {
     }
 
-    public Bookmark(String name, String url, int position, String data) {
+    public Bookmark(String name, String url, int position) {
         this.name = name;
         this.url = url;
         this.position = position;
-        this.data = data;
     }
 
     public void setId(long id) {
@@ -54,14 +52,6 @@ public class Bookmark extends CanvasModel<Bookmark> implements android.os.Parcel
 
     public void setPosition(int position) {
         this.position = position;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public long getCourseId() {
@@ -97,14 +87,12 @@ public class Bookmark extends CanvasModel<Bookmark> implements android.os.Parcel
         dest.writeString(this.name);
         dest.writeString(this.url);
         dest.writeInt(this.position);
-        dest.writeString(this.data);
     }
 
     private Bookmark(Parcel in) {
         this.name = in.readString();
         this.url = in.readString();
         this.position = in.readInt();
-        this.data = in.readString();
     }
 
     public static final Creator<Bookmark> CREATOR = new Creator<Bookmark>() {
