@@ -14,6 +14,8 @@ import java.util.List;
 
 public class Message extends CanvasModel<Message> {
 
+
+
     private long id;
     private String created_at;
     private String body;
@@ -32,14 +34,26 @@ public class Message extends CanvasModel<Message> {
     public long getId() {
         return id;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
     public Date getCreationDate() {
         return APIHelpers.stringToDate(created_at);
+    }
+    public void setCreationDate(String createdAt) {
+        this.created_at = createdAt;
     }
     public String getBody() {
         return body;
     }
+    public void setBody(String body) {
+        this.body = body;
+    }
     public long getAuthorID() {
         return author_id;
+    }
+    public void setAuthorId(long authorId) {
+        this.author_id = authorId;
     }
     public boolean isGenerated() {
         return generated;
@@ -47,14 +61,26 @@ public class Message extends CanvasModel<Message> {
     public MediaComment getMediaComment() {
         return media_comment;
     }
+    public void setMediaComment(MediaComment mediaComment) {
+        this.media_comment = mediaComment;
+    }
     public List<Attachment> getAttachments() {
         return attachments;
+    }
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
     public List<Message> getForwardedMessages() {
         return forwarded_messages;
     }
+    public void setForwardedMessages(List<Message> forwardedMessages) {
+        this.forwarded_messages = forwardedMessages;
+    }
     public Submission getSubmission() {
         return submission;
+    }
+    public void setSubmission(Submission submission) {
+        this.submission = submission;
     }
     public Date getMessageDate() {
         return APIHelpers.stringToDate(created_at);
