@@ -14,8 +14,6 @@ import java.util.List;
 
 public class Message extends CanvasModel<Message> {
 
-
-
     private long id;
     private String created_at;
     private String body;
@@ -29,7 +27,6 @@ public class Message extends CanvasModel<Message> {
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public long getId() {
         return id;
