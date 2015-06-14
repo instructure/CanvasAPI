@@ -63,6 +63,20 @@ public class DateHelpers {
         return format.format(date.getTime());
     }
 
+    /**
+     * @param context
+     * @param date
+     * @return abbreviated day format and time, with an '@' symbol if >24hr ago, otherwise time of day
+     *         example: "Mon @ 3:12pm"
+     */
+    public static String getDayHourDateString(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        Format format = getDayAbbreviationFormat(context);
+        return format.format(date.getTime());
+    }
+
     public static SimpleDateFormat getPreferredTimeFormat(Context context) {
         if(DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -77,6 +91,12 @@ public class DateHelpers {
         return new SimpleDateFormat("MMM d", Locale.getDefault());
     }
 
+    public static SimpleDateFormat getDayAbbreviationFormat(Context context) {
+        if(DateFormat.is24HourFormat(context)) {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+        return new SimpleDateFormat("EEE '@' h:mma", Locale.getDefault());
+    }
 
     public static String getFormattedTime(Context context, Date date) {
         if(context == null) {
