@@ -75,7 +75,7 @@ public class ConversationAPI {
         void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
 
         @POST("/conversations?mode=sync")
-        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("group_conversation") int group, CanvasCallback<Response> callback);
+        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("group_conversation") int group, CanvasCallback<Response> callback);
 
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
@@ -161,6 +161,10 @@ public class ConversationAPI {
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean groupBoolean){
+        createConversation(callback, userIDs, message, "", groupBoolean);
+    }
+
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, boolean groupBoolean){
         if(APIHelpers.paramIsNull(callback,userIDs,message)){return;}
 
         //The message has to be sent to somebody.
@@ -169,16 +173,14 @@ public class ConversationAPI {
         //Manually build the recipients string.
         String recipientKey = "recipients[]";
         String recipientsParameter = userIDs.get(0);
-        for(int i = 1; i < userIDs.size();i++)
-        {
+        for(int i = 1; i < userIDs.size();i++){
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
         //Get the boolean parameter.
         int group = APIHelpers.booleanToInt(groupBoolean);
 
-
-        buildInterface(callback).createConversation(recipientsParameter, message, group, callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, subject, group, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
