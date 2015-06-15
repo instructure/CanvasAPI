@@ -75,7 +75,7 @@ public class ConversationAPI {
         void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
 
         @POST("/conversations?mode=sync")
-        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("group_conversation") int group, CanvasCallback<Response> callback);
+        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("group_conversation") boolean isGroup, CanvasCallback<Response> callback);
 
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
@@ -160,11 +160,11 @@ public class ConversationAPI {
         buildInterface(callback).addMessageToConversation(conversation_id, body, callback);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean groupBoolean){
-        createConversation(callback, userIDs, message, "", groupBoolean);
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup){
+        createConversation(callback, userIDs, message, "", isGroup);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, boolean groupBoolean){
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, boolean isGroup){
         if(APIHelpers.paramIsNull(callback,userIDs,message)){return;}
 
         //The message has to be sent to somebody.
@@ -177,10 +177,7 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        //Get the boolean parameter.
-        int group = APIHelpers.booleanToInt(groupBoolean);
-
-        buildInterface(callback).createConversation(recipientsParameter, message, subject, group, callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, subject, isGroup, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
