@@ -2,6 +2,7 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -15,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Joshua Dutton on 8/9/13.
@@ -614,6 +617,36 @@ public class APIHelpers {
 
         return linkHeaders;
     }
+
+    public static LinkHeaders parseLinkHeaderResponse(String linkField) {
+        LinkHeaders linkHeaders = new LinkHeaders();
+        if (TextUtils.isEmpty(linkField)) {
+            return linkHeaders;
+        }
+
+        String[] split = linkField.split(",");
+        for (int j = 0; j < split.length; j++) {
+            int index = split[j].indexOf(">");
+            String url = split[j].substring(0, index);
+            url = url.substring(1);
+
+            //Remove the domain.
+            url = removeDomainFromUrl(url);
+
+            if (split[j].contains("rel=\"next\"")) {
+                linkHeaders.nextURL = url;
+            } else if (split[j].contains("rel=\"prev\"")) {
+                linkHeaders.prevURL = url;
+            } else if (split[j].contains("rel=\"first\"")) {
+                linkHeaders.firstURL = url;
+            } else if (split[j].contains("rel=\"last\"")) {
+                linkHeaders.lastURL = url;
+            }
+        }
+        return linkHeaders;
+    }
+
+
 
     public static APIStatusDelegate statusDelegateWithContext(final Context context) {
         return new APIStatusDelegate() {
