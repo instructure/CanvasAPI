@@ -18,11 +18,6 @@ import retrofit.RestAdapter;
 import retrofit.http.*;
 import retrofit.mime.TypedFile;
 
-/**
- * Created by Josh Ruesch on 8/9/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
- */
 public class UserAPI {
 
     public enum ENROLLMENT_TYPE {STUDENT, TEACHER, TA, OBSERVER, DESIGNER}
@@ -255,18 +250,18 @@ public class UserAPI {
         buildInterface(context, false).getColors(callback);
     }
 
-    public static void setColor(Context context, CanvasContext canvasContext, String hexColor, CanvasCallback<CanvasColor> callback) {
-        if (APIHelpers.paramIsNull(context, canvasContext, hexColor, callback)) { return; }
+    public static void setColor(Context context, CanvasContext canvasContext, int color, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, canvasContext, callback)) { return; }
 
-        if(hexColor.contains("#")) {
-            hexColor = hexColor.replaceAll("#", "");
-        }
-
-        buildInterface(context, false).setColor(canvasContext.getContextId(), hexColor, callback);
+        setColor(context, canvasContext.getContextId(), color, callback);
     }
 
-    public static void setColor(Context context, String context_id, String hexColor, CanvasCallback<CanvasColor> callback) {
-        if (APIHelpers.paramIsNull(context, context_id, hexColor, callback)) { return; }
+    public static void setColor(Context context, String context_id, int color, CanvasCallback<CanvasColor> callback) {
+        if (APIHelpers.paramIsNull(context, context_id, callback)) { return; }
+
+        //Modifies a color into a RRGGBB color string with no #.
+        String hexColor = Integer.toHexString(color);
+        hexColor = hexColor.substring(hexColor.length() - 6);
 
         if(hexColor.contains("#")) {
             hexColor = hexColor.replaceAll("#", "");
