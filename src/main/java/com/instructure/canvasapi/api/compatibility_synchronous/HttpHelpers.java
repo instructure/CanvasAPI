@@ -2,6 +2,8 @@ package com.instructure.canvasapi.api.compatibility_synchronous;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.util.Log;
+
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.Masquerading;
 import org.apache.http.Header;
@@ -18,9 +20,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Josh Ruesch on 10/16/13.
@@ -117,31 +124,22 @@ public class HttpHelpers {
                 getURL = api_protocol + "://"+getURL;
             }
 
-            HttpGet get = new HttpGet(getURL);
+            final HttpURLConnection urlConnection = (HttpURLConnection) new URL(getURL).openConnection();
+            urlConnection.setRequestMethod("GET");
 
             if (includeAuthentication) {
                 String token = APIHelpers.getToken(context);
                 if(token != null)
                 {
                     String headerValue = String.format("Bearer %s", token);
-                    get.addHeader("Authorization",headerValue);
+                    urlConnection.setRequestProperty("Authorization", headerValue);
                 }
             }
 
-            String token = APIHelpers.getToken(context);
-            if(token != null)
-            {
-                String headerValue = String.format("Bearer %s", token);
-                get.addHeader("Authorization",headerValue);
-            }
-
-            HttpClient client = getHttpClient(context);
-            HttpResponse response = client.execute(get);
-
-            return parseLinkHeaderResponse(response);
+            return parseLinkHeaderResponse(urlConnection);
         }
-        catch(Exception E)
-        {
+        catch(Exception e) {
+            Log.e(APIHelpers.LOG_TAG, "Error externalHttpGet: " + e.getMessage());
             return new APIHttpResponse();
         }
 
@@ -237,6 +235,42 @@ public class HttpHelpers {
         catch(Exception E){}
         return urlConnection;
 
+    }
+
+    private static APIHttpResponse parseLinkHeaderResponse(HttpURLConnection urlConnection) {
+        APIHttpResponse httpResponse = new APIHttpResponse();
+        InputStream inputStream = null;
+        try {
+            httpResponse.responseCode = urlConnection.getResponseCode();
+
+            // Check if response is supposed to have a body
+            if (httpResponse.responseCode != 204) {
+                    inputStream = urlConnection.getInputStream();
+                    InputStreamReader isReader = new InputStreamReader(inputStream );
+                    BufferedReader br = new BufferedReader(isReader );
+                    StringBuilder sb = new StringBuilder();
+                    String inputLine = "";
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine);
+                    }
+                    String response = sb.toString();
+                    httpResponse.responseBody = response;
+            }
+
+            httpResponse.linkHeaders = APIHelpers.parseLinkHeaderResponse(urlConnection.getHeaderField("link"));
+        } catch (Exception e) {
+            Log.e(APIHelpers.LOG_TAG, "Failed to get response: " + e.getMessage());
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    Log.e(APIHelpers.LOG_TAG, "Could not close input stream: " + e.getMessage());
+                }
+            }
+        }
+
+        return httpResponse;
     }
 
     /**
