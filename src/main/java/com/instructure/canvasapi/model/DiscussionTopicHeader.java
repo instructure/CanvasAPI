@@ -350,6 +350,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeLong(this.id);
         dest.writeString(this.discussion_type);
         dest.writeString(this.title);
+        dest.writeInt(this.position);
         dest.writeString(this.message);
         dest.writeString(this.html_url);
         dest.writeString(this.posted_at);
@@ -384,6 +385,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.id = in.readLong();
         this.discussion_type = in.readString();
         this.title = in.readString();
+        this.position = in.readInt();
         this.message = in.readString();
         this.html_url = in.readString();
         this.posted_at = in.readString();
