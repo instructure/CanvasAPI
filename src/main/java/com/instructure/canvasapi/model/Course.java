@@ -39,7 +39,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private boolean checkedFinalGrade;
     private String currentGrade;
     private String finalGrade;
-    private boolean isFavorite;
+    private boolean is_favorite;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -107,10 +107,10 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         return default_view;
     }
     public boolean isFavorite() {
-        return isFavorite;
+        return is_favorite;
     }
     public void setFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
+        this.is_favorite = isFavorite;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -360,7 +360,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeByte(checkedFinalGrade ? (byte) 1 : (byte) 0);
         dest.writeString(this.currentGrade);
         dest.writeString(this.finalGrade);
-        dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
+        dest.writeByte(is_favorite ? (byte) 1 : (byte) 0);
         dest.writeString(this.default_view);
         dest.writeParcelable(this.permissions, flags);
         dest.writeLong(this.needs_grading_count);
@@ -386,7 +386,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.checkedFinalGrade = in.readByte() != 0;
         this.currentGrade = in.readString();
         this.finalGrade = in.readString();
-        this.isFavorite = in.readByte() != 0;
+        this.is_favorite = in.readByte() != 0;
         this.default_view = in.readString();
         this.permissions = in.readParcelable(CanvasContextPermission.class.getClassLoader());
         this.needs_grading_count = in.readLong();

@@ -77,10 +77,10 @@ public class CourseAPI {
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=is_favorite")
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/{next}?&include[]=needs_grading_count&include[]=permissions")
+        @GET("/{next}?&include[]=needs_grading_count&include[]=permissions&include[]=is_favorite")
         void getNextPageCourses(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
