@@ -18,6 +18,10 @@ import retrofit.RestAdapter;
 import retrofit.http.*;
 import retrofit.mime.TypedFile;
 
+/**
+ *
+ * Copyright (c) 2014 Instructure. All rights reserved.
+ */
 public class UserAPI {
 
     public enum ENROLLMENT_TYPE {STUDENT, TEACHER, TA, OBSERVER, DESIGNER}
