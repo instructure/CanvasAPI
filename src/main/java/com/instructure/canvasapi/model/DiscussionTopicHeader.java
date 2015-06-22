@@ -36,6 +36,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private int discussion_subentry_count;  // The count of entries in the topic.
     private String read_state;              // Whether or not the topic has been read yet.
     private int unread_count;               // Number of unread messages.
+    private int position;                   // If topic is pinned it'll have a position
     private long assignment_id;             // The unique identifier of the assignment if the topic is for grading, otherwise null.
     private boolean locked;                 // Whether or not the discussion is 'closed for comments'.
     private boolean locked_for_user;        // whether or not this is locked for students to see.
@@ -133,7 +134,13 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 	public void setLastReply(Date last_reply) {
 		this.last_reply_at = APIHelpers.dateToString(last_reply);
 	}
-	public boolean requiresInitialPost() {
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
+    }
+    public boolean requiresInitialPost() {
 		return require_initial_post;
 	}
 	public void setRequireInitialPost(boolean require_initial_post) {
@@ -343,6 +350,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeLong(this.id);
         dest.writeString(this.discussion_type);
         dest.writeString(this.title);
+        dest.writeInt(this.position);
         dest.writeString(this.message);
         dest.writeString(this.html_url);
         dest.writeString(this.posted_at);
@@ -377,6 +385,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         this.id = in.readLong();
         this.discussion_type = in.readString();
         this.title = in.readString();
+        this.position = in.readInt();
         this.message = in.readString();
         this.html_url = in.readString();
         this.posted_at = in.readString();
