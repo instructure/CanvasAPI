@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Josh Ruesch
@@ -119,6 +121,26 @@ public class User extends CanvasContext{
         return getPermissions() != null && getPermissions().canUpdateName();
     }
 
+    // Matches recipents common_courses or common_groups format
+    public HashMap<String, String[]> getEnrollmentsHash() {
+        HashMap<String, List<String>> enrollments = new HashMap<>();
+        for (Enrollment enrollment: getEnrollments()) {
+            String key = enrollment.getCourseId() + "";
+            if (enrollments.containsKey(key)) {
+                enrollments.get(key).add(enrollment.getRole());
+            } else {
+                List<String> newList = new ArrayList<>();
+                newList.add(enrollment.getRole());
+                enrollments.put(key, newList);
+            }
+        }
+
+        HashMap<String, String[]> stringArrayEnrollments = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : enrollments.entrySet()) {
+            stringArrayEnrollments.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
+        }
+        return stringArrayEnrollments;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
