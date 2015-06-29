@@ -80,7 +80,7 @@ public class BookmarkAPI {
         buildInterface(callback).deleteBookmark(bookmarkId, callback);
     }
 
-    public static void update(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
-        buildInterface(callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
+    public static void update(long bookmarkId, String name, String bookmarkUrl, int bookmarkPosition, CanvasCallback<Bookmark> callback) {
+        buildInterface(callback).updateBookmark(bookmarkId, name, bookmarkUrl, bookmarkPosition, callback);
     }
 }
