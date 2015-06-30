@@ -74,8 +74,8 @@ public class ConversationAPI {
         @POST("/conversations/{id}/add_message")
         void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
 
-        @POST("/conversations?mode=sync")
-        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("group_conversation") boolean isGroup, CanvasCallback<Response> callback);
+        @POST("/conversations?group_conversation=true")
+        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("bulk_message") int isGroup, CanvasCallback<Response> callback);
 
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
@@ -177,7 +177,7 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextCode, isGroup, callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextCode, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
