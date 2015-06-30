@@ -35,6 +35,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     private String html_url;
     private String context_code;
     private String effective_context_code;
+    private boolean hidden;
 
     // helper variables
     private CanvasContext.Type contextType;
@@ -243,6 +244,10 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         this.assignment = assignment;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -439,6 +444,8 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         dest.writeString(this.lockedModuleName);
         dest.writeParcelable(this.assignment, flags);
         dest.writeLong(startDate != null ? startDate.getTime() : -1);
+        dest.writeByte(hidden ? (byte) 1 : (byte) 0);
+
     }
 
     private ScheduleItem(Parcel in) {
@@ -478,6 +485,8 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         long tmpStartDate = in.readLong();
         this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
+        this.hidden = in.readByte() != 0;
+
     }
 
     public static Creator<ScheduleItem> CREATOR = new Creator<ScheduleItem>() {
