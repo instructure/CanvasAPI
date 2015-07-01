@@ -138,6 +138,13 @@ public class DateHelpers {
         return createPrefixedDateString(context, context.getResources().getString(prefixResId), date);
     }
 
+    public static String createPrefixedShortDateString(Context context, int prefixResId, Date date) {
+        if(context == null) {
+            return null;
+        }
+        return context.getString(prefixResId) + ": " + getDayMonthDateString(context, date);
+    }
+
     public static String createPrefixedTimeString(Context context, String prefix, Date date) {
         if(context == null) {
             return null;
@@ -171,5 +178,12 @@ public class DateHelpers {
             return null;
         }
         return getFormattedDate(context, date) + " " + getFormattedTime(context, date);
+    }
+
+    public static String getShortDateTimeString(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        return getDayMonthDateString(context, date) + " " + getFormattedTime(context, date);
     }
 }
