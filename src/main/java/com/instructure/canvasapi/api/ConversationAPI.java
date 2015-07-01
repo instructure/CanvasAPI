@@ -160,11 +160,11 @@ public class ConversationAPI {
         buildInterface(callback).addMessageToConversation(conversation_id, body, callback);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextCode){
-        createConversation(callback, userIDs, message, "", contextCode, isGroup);
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
+        createConversation(callback, userIDs, message, "", contextId, isGroup);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, String contextCode, boolean isGroup){
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, String contextId, boolean isGroup){
         if(APIHelpers.paramIsNull(callback,userIDs,message)){return;}
 
         //The message has to be sent to somebody.
@@ -177,7 +177,7 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextCode, isGroup ? 0 : 1, callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextId, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
