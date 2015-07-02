@@ -74,8 +74,8 @@ public class ConversationAPI {
         @POST("/conversations/{id}/add_message")
         void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
 
-        @POST("/conversations?mode=sync")
-        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("group_conversation") boolean isGroup, CanvasCallback<Response> callback);
+        @POST("/conversations?group_conversation=true")
+        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("bulk_message") int isGroup, CanvasCallback<Response> callback);
 
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
@@ -160,11 +160,11 @@ public class ConversationAPI {
         buildInterface(callback).addMessageToConversation(conversation_id, body, callback);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextCode){
-        createConversation(callback, userIDs, message, "", contextCode, isGroup);
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
+        createConversation(callback, userIDs, message, "", contextId, isGroup);
     }
 
-    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, String contextCode, boolean isGroup){
+    public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, String contextId, boolean isGroup){
         if(APIHelpers.paramIsNull(callback,userIDs,message)){return;}
 
         //The message has to be sent to somebody.
@@ -177,7 +177,7 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextCode, isGroup, callback);
+        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextId, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
