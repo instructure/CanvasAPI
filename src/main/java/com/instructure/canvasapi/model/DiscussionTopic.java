@@ -30,7 +30,7 @@ public class DiscussionTopic implements Parcelable, Serializable {
     private HashMap<Long, Integer> entry_ratings = new HashMap<>();
 
     //List of all the discussion entries (views)
-    private List<DiscussionEntry> view;
+    private List<DiscussionEntry> view = new ArrayList<>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters

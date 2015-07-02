@@ -2,8 +2,11 @@ package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -63,6 +66,15 @@ public class DateHelpers {
         return format.format(date.getTime());
     }
 
+    public static String getMessageDateString(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        if (!DateUtils.isToday(date.getTime())) {
+            return DateUtils.getRelativeTimeSpanString(context, date.getTime()).toString() + ", " + getPreferredTimeFormat(context).format(date);
+        }
+        return DateUtils.getRelativeTimeSpanString(context, date.getTime()).toString();
+    }
     /**
      * @param context
      * @param date
@@ -81,7 +93,7 @@ public class DateHelpers {
         if(DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
         }
-        return new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return new SimpleDateFormat("h:mm a", Locale.getDefault());
     }
 
     public static SimpleDateFormat getDayMonthDateFormat(Context context) {
@@ -95,7 +107,14 @@ public class DateHelpers {
         if(DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
         }
-        return new SimpleDateFormat("EEE '@' h:mma", Locale.getDefault());
+        return new SimpleDateFormat("EEE, h:mma", Locale.getDefault());
+    }
+
+    public static SimpleDateFormat getDayMonthTimeAbbreviationFormat(Context context) {
+        if(DateFormat.is24HourFormat(context)) {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+        return new SimpleDateFormat("MMM dd, h:mma", Locale.getDefault());
     }
 
     public static String getFormattedTime(Context context, Date date) {
