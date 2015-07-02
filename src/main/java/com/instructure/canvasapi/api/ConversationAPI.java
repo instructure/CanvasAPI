@@ -5,11 +5,17 @@ import com.instructure.canvasapi.model.Conversation;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
@@ -17,6 +23,8 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedByteArray;
+import retrofit.mime.TypedInput;
 
 /**
  * Created by Josh Ruesch on 8/9/13.
@@ -72,10 +80,10 @@ public class ConversationAPI {
         void getDetailedConversation(@Path("id") long conversation_id, @Query("auto_mark_as_read") int markAsRead, Callback<Conversation> callback);
 
         @POST("/conversations/{id}/add_message")
-        void addMessageToConversation(@Path("id")long conversation_id, @Query("body")String message, CanvasCallback<Conversation> callback);
+        void addMessageToConversation(@Path("id")long conversation_id, @Body TypedInput message, CanvasCallback<Conversation> callback);
 
         @POST("/conversations?group_conversation=true")
-        void createConversation(@EncodedQuery("recipients[]") String recipients, @Query("body") String message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("bulk_message") int isGroup, CanvasCallback<Response> callback);
+        void createConversation(@EncodedQuery("recipients[]") String recipients, @Body TypedInput message, @Query("subject") String subject, @Query("context_code") String contextCode, @Query("bulk_message") int isGroup, CanvasCallback<Response> callback);
 
         @DELETE("/conversations/{conversationid}")
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
@@ -125,6 +133,7 @@ public class ConversationAPI {
 
     private static ConversationsInterface buildInterface(Context context) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(ConversationsInterface.class);
     }
 
@@ -154,10 +163,11 @@ public class ConversationAPI {
         buildInterface(callback).getNextPageConversationList(nextURL, callback);
     }
 
-    public static void addMessageToConversation(CanvasCallback<Conversation> callback, long conversation_id, String body){
-        if (APIHelpers.paramIsNull(callback, body)) return;
+    public static void addMessageToConversation(CanvasCallback<Conversation> callback, long conversation_id, String message){
+        TypedInput typedInput = createTypedInput(message);
+        if (APIHelpers.paramIsNull(callback, typedInput)) return;
 
-        buildInterface(callback).addMessageToConversation(conversation_id, body, callback);
+        buildInterface(callback).addMessageToConversation(conversation_id, createTypedInput(message), callback);
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
@@ -165,7 +175,8 @@ public class ConversationAPI {
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, String subject, String contextId, boolean isGroup){
-        if(APIHelpers.paramIsNull(callback,userIDs,message)){return;}
+        TypedInput typedInput = createTypedInput(message);
+        if(APIHelpers.paramIsNull(callback,userIDs, typedInput)){return;}
 
         //The message has to be sent to somebody.
         if(userIDs.size() == 0){return;}
@@ -177,7 +188,7 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(callback).createConversation(recipientsParameter, message, subject, contextId, isGroup ? 0 : 1, callback);
+        buildInterface(callback).createConversation(recipientsParameter, typedInput, subject, contextId, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
@@ -257,5 +268,24 @@ public class ConversationAPI {
         if (APIHelpers.paramIsNull(context, attachmentIds, messageBody)){return null;}
 
         return buildInterface(context).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
+    }
+
+    private static TypedInput createTypedInput(String message){
+        //In order to form the expected post body we must create a json string
+        JSONObject json = new JSONObject();
+        try {
+            json.put("body", message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Use this json string to create a TypedByteArray using UTF-8
+        TypedInput in = null;
+        try {
+            in = new TypedByteArray("application/json", json.toString().getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return in;
     }
 }
