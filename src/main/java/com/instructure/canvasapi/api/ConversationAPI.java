@@ -2,7 +2,6 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import com.instructure.canvasapi.model.Conversation;
-import com.instructure.canvasapi.model.Message;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
