@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.User;
-import retrofit.client.Header;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import retrofit.client.Header;
 
 /**
  * Created by Joshua Dutton on 8/9/13.
@@ -36,6 +35,8 @@ public class APIHelpers {
 
     private final static String SHARED_PREFERENCES_USER = "user";
     private final static String SHARED_PREFERENCES_DOMAIN = "domain";
+    private final static String SHARED_PREFERENCES_MASQUERADED_DOMAIN = "masq-domain";
+
     private final static String SHARED_PREFERENCES_KALTURA_DOMAIN = "kaltura_domain";
     private final static String SHARED_PREFERENCES_TOKEN = "token";
     private final static String SHARED_PREFERENCES_KALTURA_TOKEN = "kaltura_token";
@@ -300,7 +301,13 @@ public class APIHelpers {
         }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String domain =  sharedPreferences.getString(SHARED_PREFERENCES_DOMAIN, "");
+
+        String sharedPrefsKey = SHARED_PREFERENCES_DOMAIN;
+
+        if(Masquerading.isMasquerading(context)){
+            sharedPrefsKey = SHARED_PREFERENCES_MASQUERADED_DOMAIN;
+        }
+        String domain =  sharedPreferences.getString(sharedPrefsKey, "");
 
         while (domain != null && domain.endsWith("/")) {
             domain = domain.substring(0, domain.length() - 1);
@@ -364,9 +371,13 @@ public class APIHelpers {
 
        domain = removeProtocol(domain);
 
+        String sharedPrefsKey = SHARED_PREFERENCES_DOMAIN;
+        if(Masquerading.isMasquerading(context)){
+            sharedPrefsKey = SHARED_PREFERENCES_MASQUERADED_DOMAIN;
+        }
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SHARED_PREFERENCES_DOMAIN, domain);
+        editor.putString(sharedPrefsKey, domain);
         return editor.commit();
     }
 

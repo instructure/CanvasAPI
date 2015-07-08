@@ -55,7 +55,7 @@ public class Masquerading {
         editor.putLong(MASQUERADE_ID, -1);
         editor.apply();
     }
-    public static void startMasquerading(long masqueradeId, Context context, CanvasCallback<User> masqueradeUser) {
+    public static void startMasquerading(long masqueradeId, Context context, CanvasCallback<User> masqueradeUser, String domain) {
 
         File cacheDir = new File(context.getFilesDir(), "cache");
         FileUtilities.deleteAllFilesInDirectory(cacheDir);
@@ -65,6 +65,11 @@ public class Masquerading {
         editor.putBoolean(IS_MASQUERADING, true);
         editor.putLong(MASQUERADE_ID, masqueradeId);
         editor.apply();
+
+        //Check to see if they're trying to switch domain as site admin
+        if(domain != null && domain.trim().length() != 0) {
+            APIHelpers.setDomain(context, domain);
+        }
 
         UserAPI.getUserById(masqueradeId, masqueradeUser);
 
