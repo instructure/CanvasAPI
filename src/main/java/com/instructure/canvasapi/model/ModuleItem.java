@@ -59,6 +59,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     private String html_url;
     private String url;
     private CompletionRequirement completion_requirement;
+    private ModuleContentDetails content_details;
 
     public class CompletionRequirement implements Serializable {
 
@@ -87,7 +88,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         }
         }
 
-        @Override
+    @Override
     public long getId() {
         return id;
     }
@@ -135,6 +136,10 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     }
     public void setCompletionRequirement(CompletionRequirement completionRequirement) {
         this.completion_requirement = completionRequirement;
+    }
+
+    public ModuleContentDetails getModuleDetails() {
+        return content_details;
     }
 
     public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool}

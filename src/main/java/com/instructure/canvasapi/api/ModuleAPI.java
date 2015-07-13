@@ -36,10 +36,10 @@ public class ModuleAPI {
         @GET("/{next}")
         void getNextPageModuleObjectList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleObject[]> callback);
 
-        @GET("/{context_id}/modules/{moduleid}/items")
+        @GET("/{context_id}/modules/{moduleid}/items?include[]=content_details")
         void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("moduleid") long moduleID, Callback<ModuleItem[]> callback);
 
-        @GET("/{next}")
+        @GET("/{next}?include[]=content_details")
         void getNextPageModuleItemList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleItem[]> callback);
 
         @POST("/{context_id}/modules/{moduleid}/items/{itemid}/mark_read")

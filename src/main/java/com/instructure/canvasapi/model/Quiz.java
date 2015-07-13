@@ -36,7 +36,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private QuizPermission permissions;
     private int allowed_attempts;
     private int question_count;
-    private double points_possible;
+    private String points_possible;
     private String due_at;
     private int time_limit;
     private String access_code;
@@ -114,11 +114,11 @@ public class Quiz extends CanvasModel<Quiz> {
         this.question_count = question_count;
     }
 
-    public double getPointsPossible() {
+    public String getPointsPossible() {
         return points_possible;
     }
 
-    public void setPointsPossible(int points_possible) {
+    public void setPointsPossible(String points_possible) {
         this.points_possible = points_possible;
     }
 
@@ -275,7 +275,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeParcelable(this.permissions, flags);
         dest.writeInt(this.allowed_attempts);
         dest.writeInt(this.question_count);
-        dest.writeDouble(this.points_possible);
+        dest.writeString(this.points_possible);
         dest.writeString(this.due_at);
         dest.writeInt(this.time_limit);
         dest.writeString(this.access_code);
@@ -305,7 +305,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.permissions = in.readParcelable(QuizPermission.class.getClassLoader());
         this.allowed_attempts = in.readInt();
         this.question_count = in.readInt();
-        this.points_possible = in.readDouble();
+        this.points_possible = in.readString();
         this.due_at = in.readString();
         this.time_limit = in.readInt();
         this.access_code = in.readString();
