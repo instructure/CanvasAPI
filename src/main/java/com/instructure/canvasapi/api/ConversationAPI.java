@@ -52,7 +52,7 @@ public class ConversationAPI {
         return "";
     }
 
-    private static String getFirstPageConversationsCacheFilename(ConversationScope scope){
+    public static String getFirstPageConversationsCacheFilename(ConversationScope scope){
         return "/conversations/" + conversationScopeToString(scope);
     }
 
