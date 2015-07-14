@@ -1,14 +1,15 @@
 package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 
 /**
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class ErrorReport implements Parcelable {
+public class ErrorReport extends CanvasModel<ErrorReport> {
 
     //The users problem summary, like an email subject line
     private String subject;
@@ -69,6 +70,20 @@ public class ErrorReport implements Parcelable {
         this.url = url;
     }
 
+    @Override
+    public long getId() {
+        return 0;
+    }
+
+    @Override
+    public Date getComparisonDate() {
+        return null;
+    }
+
+    @Override
+    public String getComparisonString() {
+        return getSubject();
+    }
 
     @Override
     public int describeContents() {
