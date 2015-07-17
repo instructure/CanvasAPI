@@ -1,8 +1,6 @@
 package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
-
-import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,22 +14,16 @@ import java.util.List;
 
 public class Message extends CanvasModel<Message> {
 
-    private long             id;
-    @SerializedName("author_id")
-    private long             authorId;
-    private boolean          generated;
-    private String           body;
-    @SerializedName("created_at")
-    private String           createdAt;
-    private Submission       submission;
-    @SerializedName("media_comment")
-    private MediaComment     mediaComment;
-    private List<Attachment> attachments          = new ArrayList<>();
-    @SerializedName("forwarded_messages")
-    private List<Message>    forwardedMessages    = new ArrayList<>();
-    @SerializedName("participating_user_ids")
-    private List<Long>       participatingUserIds = new ArrayList<>();
-
+    private long id;
+    private String created_at;
+    private String body;
+    private long author_id;
+    private boolean generated;
+    private List<Attachment> attachments = new ArrayList<>();
+    private MediaComment media_comment;
+    private Submission submission;
+    private List<Message> forwarded_messages = new ArrayList<>();
+    private List<Long> participating_user_ids = new ArrayList<>();
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -43,10 +35,10 @@ public class Message extends CanvasModel<Message> {
         this.id = id;
     }
     public Date getCreationDate() {
-        return APIHelpers.stringToDate(createdAt);
+        return APIHelpers.stringToDate(created_at);
     }
     public void setCreationDate(String createdAt) {
-        this.createdAt = createdAt;
+        this.created_at = createdAt;
     }
     public String getBody() {
         return body;
@@ -55,19 +47,19 @@ public class Message extends CanvasModel<Message> {
         this.body = body;
     }
     public long getAuthorID() {
-        return authorId;
+        return author_id;
     }
     public void setAuthorId(long authorId) {
-        this.authorId = authorId;
+        this.author_id = authorId;
     }
     public boolean isGenerated() {
         return generated;
     }
     public MediaComment getMediaComment() {
-        return mediaComment;
+        return media_comment;
     }
     public void setMediaComment(MediaComment mediaComment) {
-        this.mediaComment = mediaComment;
+        this.media_comment = mediaComment;
     }
     public List<Attachment> getAttachments() {
         return attachments;
@@ -76,10 +68,10 @@ public class Message extends CanvasModel<Message> {
         this.attachments = attachments;
     }
     public List<Message> getForwardedMessages() {
-        return forwardedMessages;
+        return forwarded_messages;
     }
     public void setForwardedMessages(List<Message> forwardedMessages) {
-        this.forwardedMessages = forwardedMessages;
+        this.forwarded_messages = forwardedMessages;
     }
     public Submission getSubmission() {
         return submission;
@@ -88,14 +80,7 @@ public class Message extends CanvasModel<Message> {
         this.submission = submission;
     }
     public Date getMessageDate() {
-        return APIHelpers.stringToDate(createdAt);
-    }
-    public List<Long> getParticipatingUserIds() {
-        return participatingUserIds;
-    }
-
-    public void setParticipatingUserIds(List<Long> participating_user_ids) {
-        this.participatingUserIds = participating_user_ids;
+        return APIHelpers.stringToDate(created_at);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -103,7 +88,7 @@ public class Message extends CanvasModel<Message> {
     ///////////////////////////////////////////////////////////////////////////
     @Override
     public Date getComparisonDate() {
-        return APIHelpers.stringToDate(createdAt);
+        return APIHelpers.stringToDate(created_at);
     }
 
     @Override
@@ -114,30 +99,30 @@ public class Message extends CanvasModel<Message> {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
-        dest.writeString(this.createdAt);
+        dest.writeString(this.created_at);
         dest.writeString(this.body);
-        dest.writeLong(this.authorId);
+        dest.writeLong(this.author_id);
         dest.writeByte(generated ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.mediaComment, flags);
-        dest.writeParcelable(this.submission, flags);
         dest.writeList(this.attachments);
-        dest.writeList(this.forwardedMessages);
-        dest.writeList(this.participatingUserIds);
+        dest.writeParcelable(this.media_comment, flags);
+        dest.writeParcelable(this.submission, flags);
+        dest.writeList(this.forwarded_messages);
+        dest.writeList(this.participating_user_ids);
     }
 
     public Message() {}
 
     private Message(Parcel in) {
-        this.id           = in.readLong();
-        this.createdAt    = in.readString();
-        this.body         = in.readString();
-        this.authorId     = in.readLong();
-        this.generated    = in.readByte() != 0;
-        this.mediaComment = in.readParcelable(MediaComment.class.getClassLoader());
-        this.submission   = in.readParcelable(Submission.class.getClassLoader());
+        this.id = in.readLong();
+        this.created_at = in.readString();
+        this.body = in.readString();
+        this.author_id = in.readLong();
+        this.generated = in.readByte() != 0;
         in.readList(this.attachments, Attachment.class.getClassLoader());
-        in.readList(this.forwardedMessages, Message.class.getClassLoader());
-        in.readList(this.participatingUserIds, Long.class.getClassLoader());
+        this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
+        this.submission = in.readParcelable(Submission.class.getClassLoader());
+        in.readList(this.forwarded_messages, Message.class.getClassLoader());
+        in.readList(this.participating_user_ids, Long.class.getClassLoader());
     }
 
     public static Creator<Message> CREATOR = new Creator<Message>() {
