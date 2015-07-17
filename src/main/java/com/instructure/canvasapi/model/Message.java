@@ -23,7 +23,7 @@ public class Message extends CanvasModel<Message> {
     private MediaComment media_comment;
     private Submission submission;
     private List<Message> forwarded_messages = new ArrayList<>();
-
+    private List<Long> participating_user_ids = new ArrayList<>();
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,7 @@ public class Message extends CanvasModel<Message> {
         dest.writeParcelable(this.media_comment, flags);
         dest.writeParcelable(this.submission, flags);
         dest.writeList(this.forwarded_messages);
+        dest.writeList(this.participating_user_ids);
     }
 
     public Message() {}
@@ -121,6 +122,7 @@ public class Message extends CanvasModel<Message> {
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         this.submission = in.readParcelable(Submission.class.getClassLoader());
         in.readList(this.forwarded_messages, Message.class.getClassLoader());
+        in.readList(this.participating_user_ids, Long.class.getClassLoader());
     }
 
     public static Creator<Message> CREATOR = new Creator<Message>() {
