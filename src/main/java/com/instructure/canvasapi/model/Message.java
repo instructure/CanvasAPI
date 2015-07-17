@@ -82,6 +82,13 @@ public class Message extends CanvasModel<Message> {
     public Date getMessageDate() {
         return APIHelpers.stringToDate(created_at);
     }
+    public List<Long> getParticipatingUserIds() {
+        return participating_user_ids;
+    }
+    public void setParticipatingUserIds(List<Long> participating_user_ids) {
+        this.participating_user_ids = participating_user_ids;
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
