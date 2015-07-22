@@ -286,7 +286,9 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.unlock_at);
         dest.writeByte(this.one_time_results ? (byte) 1 : (byte) 0);
         dest.writeString(this.lock_at);
-        dest.writeStringArray(this.question_types);
+        if (this.question_types != null) {
+            dest.writeStringArray(this.question_types);
+        }
         dest.writeByte(this.has_access_code ? (byte) 1 : (byte) 0);
     }
 
@@ -316,7 +318,9 @@ public class Quiz extends CanvasModel<Quiz> {
         this.unlock_at = in.readString();
         this.one_time_results = in.readByte() != 0;
         this.lock_at = in.readString();
-        in.readStringArray(this.question_types);
+        if (this.question_types != null) {
+            in.readStringArray(this.question_types);
+        }
         this.has_access_code = in.readByte() != 0;
     }
 
