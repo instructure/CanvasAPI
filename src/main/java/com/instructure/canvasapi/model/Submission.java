@@ -210,6 +210,10 @@ public class Submission extends CanvasModel<Submission>{
         return assessment;
     }
 
+    public HashMap<String,RubricCriterionRating> getRubricAssessmentHash(){
+        return this.rubric_assessment;
+    }
+
     public void setRubricAssessment(HashMap<String,RubricCriterionRating> ratings){
         this.rubric_assessment = ratings;
     }
