@@ -72,6 +72,9 @@ public class DiscussionAPI {
         @POST("/{context_id}/discussion_topics/{discussionId}/entries/{entryId}/rating")
         void rateDiscussionEntry(@Path("context_id") long courseId, @Path("discussionId") long discussionId, @Path("entryId") long entryId, @Query("rating") int rating, Callback<Response> callback);
 
+        @PUT("/{context_id}/discussion_topics/{topic_id}")
+        void pinDiscussion(@Path("context_id") long courseId, @Path("topic_id") long discussionId, @Query("pinned") boolean pinned, Callback<DiscussionTopicHeader> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -193,5 +196,18 @@ public class DiscussionAPI {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         buildInterface(callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, callback);
+    }
+
+    /**
+     * Allows users with correct permissions to pin a discussion
+     * @param canvasContext A CanvasContext
+     * @param topicId The topic id of the DiscussionTopicHeader (not the root topic id)
+     * @param pin A true/false value to denote if you wish to pin or unpin a discussion
+     * @param callback A java thing that is kind of stinky
+     */
+    public static void pinDiscussion(CanvasContext canvasContext, long topicId, boolean pin, CanvasCallback<DiscussionTopicHeader> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildInterface(callback, canvasContext).pinDiscussion(canvasContext.getId(), topicId, pin, callback);
     }
 }
