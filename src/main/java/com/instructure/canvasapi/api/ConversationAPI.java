@@ -133,7 +133,6 @@ public class ConversationAPI {
 
     private static ConversationsInterface buildInterface(Context context) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(ConversationsInterface.class);
     }
 
