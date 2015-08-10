@@ -285,7 +285,8 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
 
     @Override
     public Date getComparisonDate() {
-        return getLastReply();
+        // Note: In some cases getComparisonDate might be null
+        return getLastReply() != null ? getLastReply() : getPostedAt();
     }
 
     @Override
