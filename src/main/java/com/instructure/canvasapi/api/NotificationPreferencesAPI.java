@@ -6,14 +6,24 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedByteArray;
+import retrofit.mime.TypedOutput;
 
+/**
+ * Copyright (c) 2015 Instructure. All rights reserved.
+ */
 public class NotificationPreferencesAPI {
 
     //Frequency keys
@@ -42,8 +52,14 @@ public class NotificationPreferencesAPI {
         @PUT("/users/self/communication_channels/{type}/{address}/notification_preferences/{notification}")
         void updateSingleNotificationPreferenceForType(@Path("type") String type, @Path("address") String address, @Path("notification") String notification, CanvasCallback<NotificationPreferenceResponse> callback);
 
+        @PUT("/users/self/communication_channels/{type}/{address}/notification_preferences{notification_preferences}")
+        void updateMultipleNotificationPreferencesForType(@Path("type") String type, @Path("address") String address, @Path(value = "notification_preferences", encode = false) String notifications, CanvasCallback<NotificationPreferenceResponse> callback);
+
         @PUT("/users/self/communication_channels/{communication_channel_id}/notification_preferences{notification_preferences}")
         void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Path(value = "notification_preferences", encode = false) String notifications, CanvasCallback<NotificationPreferenceResponse> callback);
+
+        @PUT("/users/self/communication_channels/{communication_channel_id}/notification_preferences")
+        void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Body NotificationPreferenceResponse preferencesToChange, CanvasCallback<NotificationPreferenceResponse> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -52,6 +68,7 @@ public class NotificationPreferencesAPI {
 
     private static NotificationPreferencesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(NotificationPreferencesInterface.class);
     }
 
@@ -91,10 +108,28 @@ public class NotificationPreferencesAPI {
         buildInterface(callback, null).updateSingleNotificationPreferenceForType(type, address, notification, callback);
     }
 
-    public static void updateMultipleNotificationPreferences(final long communicationChannelId, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
+    public static void updateMultipleNotificationPreferencesForType(final String type, final String address, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
+        buildInterface(callback, null).updateMultipleNotificationPreferencesForType(type, address, buildNotificationPreferenceList(notifications, frequency), callback);
+    }
+
+    public static void updateMultipleNotificationPreferences(final long communicationChannelId, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
+        if (APIHelpers.paramIsNull(callback, notifications, frequency)) { return; }
+
         buildInterface(callback, null).updateMultipleNotificationPreferences(communicationChannelId, buildNotificationPreferenceList(notifications, frequency), callback);
+    }
+
+    /**
+     * Updates multiple notifications. Typically used for updating large sets of notification preferences
+     * @param communicationChannelId The id of the communication channel
+     * @param preferencesToChange A list NotificationPreference objects to update, NOTE: frequency should already be set to the desired change.
+     * @param callback A canvas callback
+     */
+    public static void updateMultipleNotificationPreferences(final long communicationChannelId, final NotificationPreferenceResponse preferencesToChange, final CanvasCallback<NotificationPreferenceResponse> callback) {
+        if (APIHelpers.paramIsNull(callback, preferencesToChange)) { return; }
+
+        buildInterface(callback, null).updateMultipleNotificationPreferences(communicationChannelId, preferencesToChange, callback);
     }
 
     private static String buildNotificationPreferenceList(ArrayList<String> notifications, String frequency) {
