@@ -27,9 +27,7 @@ import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class ConversationAPI {
 
@@ -166,7 +164,7 @@ public class ConversationAPI {
         TypedInput typedInput = createTypedInput(message);
         if (APIHelpers.paramIsNull(callback, typedInput)) return;
 
-        buildInterface(callback).addMessageToConversation(conversation_id, createTypedInput(message), callback);
+        buildInterface(callback).addMessageToConversation(conversation_id, typedInput, callback);
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
