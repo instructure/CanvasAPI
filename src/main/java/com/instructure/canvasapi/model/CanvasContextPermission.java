@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 
 /**
  * Copyright (c) 2014 Instructure. All rights reserved.
@@ -24,6 +22,9 @@ public class CanvasContextPermission implements Parcelable {
 
     @SerializedName("can_update_avatar")
     private boolean canUpdateAvatar;
+
+    @SerializedName("create_announcement")
+    private boolean canCreateAnnouncement;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -53,6 +54,14 @@ public class CanvasContextPermission implements Parcelable {
         this.canCreateDiscussionTopic = canCreateDiscussionTopic;
     }
 
+    public boolean canCreateAnnouncement() {
+        return canCreateAnnouncement;
+    }
+
+    public void setCanCreateAnnouncement(boolean canCreateAnnouncement) {
+        this.canCreateAnnouncement = canCreateAnnouncement;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
@@ -68,11 +77,13 @@ public class CanvasContextPermission implements Parcelable {
         dest.writeByte(canUpdateName ? (byte) 1 : (byte) 0);
         dest.writeByte(canUpdateAvatar ? (byte) 1 : (byte) 0);
         dest.writeByte(canCreateDiscussionTopic ? (byte) 1 : (byte) 0);
+        dest.writeByte(canCreateAnnouncement ? (byte) 1 : (byte) 0);
     }
     private CanvasContextPermission(Parcel in) {
         this.canUpdateName = in.readByte() != 0;
         this.canUpdateAvatar = in.readByte() != 0;
         this.canCreateDiscussionTopic = in.readByte() != 0;
+        this.canCreateAnnouncement = in.readByte() != 0;
     }
 
     public static Creator<CanvasContextPermission> CREATOR = new Creator<CanvasContextPermission>() {

@@ -58,7 +58,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
     private List<DiscussionAttachment> attachments = new ArrayList<DiscussionAttachment>();
 
     public boolean unauthorized;
-    private DiscussionTopicPermission permission;
+    private DiscussionTopicPermission permissions;
     private Assignment assignment;
     private LockInfo lock_info;
     private boolean published;              //Whether this discussion topic is published (true) or draft state (false)
@@ -239,10 +239,10 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         }
 	}
 	public DiscussionTopicPermission getPermission() {
-		return permission;
+		return permissions;
 	}
 	public void setPermission(DiscussionTopicPermission permission) {
-		this.permission = permission;
+		this.permissions = permission;
 	}
 
     //During parsing, GSON will try. Which means sometimes we get 'empty' objects
@@ -371,7 +371,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         dest.writeList(this.topic_children);
         dest.writeList(this.attachments);
         dest.writeByte(unauthorized ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.permission, flags);
+        dest.writeParcelable(this.permissions, flags);
         dest.writeParcelable(this.assignment, flags);
         dest.writeParcelable(this.lock_info, flags);
         dest.writeByte(published ? (byte) 1 : (byte) 0);
@@ -406,7 +406,7 @@ public class DiscussionTopicHeader extends CanvasModel<DiscussionTopicHeader>{
         in.readList(this.topic_children, Long.class.getClassLoader());
         in.readList(this.attachments, DiscussionAttachment.class.getClassLoader());
         this.unauthorized = in.readByte() != 0;
-        this.permission =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
+        this.permissions =  in.readParcelable(DiscussionTopicPermission.class.getClassLoader());
         this.assignment = in.readParcelable(Assignment.class.getClassLoader());
         this.lock_info =  in.readParcelable(LockInfo.class.getClassLoader());
         this.published = in.readByte() != 0;
