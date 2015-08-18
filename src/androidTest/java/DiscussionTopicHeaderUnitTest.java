@@ -142,7 +142,7 @@ public class DiscussionTopicHeaderUnitTest extends Assert {
             +"\"title\":\"Which programming language is best?\","
             +"\"user_name\":\"Derrick Hathaway\","
             +"\"discussion_subentry_count\":2,"
-            +"\"permission\":{"
+            +"\"permissions\":{"
                 +"\"attach\":true,"
                 +"\"update\":true,"
                 +"\"delete\":true"
