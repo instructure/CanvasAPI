@@ -38,6 +38,7 @@ public class Submission extends CanvasModel<Submission>{
 	private String submission_type;
 	private String preview_url;
 	private String url;
+    private boolean excused;
 
     private MediaComment media_comment;
 
@@ -130,6 +131,10 @@ public class Submission extends CanvasModel<Submission>{
 
     public long getGraderID(){
         return grader_id;
+    }
+    public boolean getExcused(){ return excused; }
+    public void setExcused(boolean excused){
+        this.excused = excused;
     }
 
 	public Date getSubmitDate() {
@@ -316,6 +321,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeParcelable(this.media_comment, flags);
         dest.writeList(this.discussion_entries);
         dest.writeLong(this.attempt);
+        dest.writeByte(this.excused ? (byte) 1 : (byte) 0);
     }
 
     private Submission(Parcel in) {
@@ -347,6 +353,7 @@ public class Submission extends CanvasModel<Submission>{
         this.media_comment = in.readParcelable(MediaComment.class.getClassLoader());
         in.readList(this.discussion_entries, DiscussionEntry.class.getClassLoader());
         this.attempt = in.readLong();
+        this.excused = in.readByte() != 0;
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
