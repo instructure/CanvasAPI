@@ -132,7 +132,7 @@ public class Submission extends CanvasModel<Submission>{
     public long getGraderID(){
         return grader_id;
     }
-    public boolean getExcused(){ return excused; }
+    public boolean isExcused(){ return excused; }
     public void setExcused(boolean excused){
         this.excused = excused;
     }
