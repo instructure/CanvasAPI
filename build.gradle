@@ -112,10 +112,10 @@ uploadArchives {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
         //Remove everything below this for maven builds.
-        repository(url: sonatypeRepo) {
-            authentication(userName: sonatypeUsername,
-                    password: sonatypePassword)
-        }
+        //repository(url: sonatypeRepo) {
+        //    authentication(userName: sonatypeUsername,
+        //            password: sonatypePassword)
+        //}
         //Remove everything above this for maven builds.
 
         pom.project {
