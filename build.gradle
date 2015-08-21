@@ -89,7 +89,7 @@ dependencies {
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.2.0"
+version = "2.0.1"
 group = "com.instructure"
 
 configurations {
