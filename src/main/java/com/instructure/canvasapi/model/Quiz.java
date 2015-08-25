@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Wesley Smith on 6/10/13.
@@ -47,7 +48,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private String unlock_at;
     private boolean one_time_results;
     private String lock_at;
-    private String[] question_types;
+    private List<String> question_types = new ArrayList<>();
     private boolean has_access_code;
     // Helper variables
 
@@ -214,7 +215,7 @@ public class Quiz extends CanvasModel<Quiz> {
         return parseQuestionTypes(question_types);
     }
 
-    public void setQuestionTypes(String[] question_types) {
+    public void setQuestionTypes(List<String> question_types) {
         this.question_types = question_types;
     }
 
@@ -234,7 +235,7 @@ public class Quiz extends CanvasModel<Quiz> {
     // Helper Methods
     ///////////////////////////////////////////////////////////////////////////
 
-    private ArrayList<QuizQuestion.QUESTION_TYPE> parseQuestionTypes(String[] question_types) {
+    private ArrayList<QuizQuestion.QUESTION_TYPE> parseQuestionTypes(List<String> question_types) {
         ArrayList<QuizQuestion.QUESTION_TYPE> questionTypesList = new ArrayList<>();
         for(String question_type : question_types) {
             if(question_type != null) {
@@ -286,9 +287,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.unlock_at);
         dest.writeByte(this.one_time_results ? (byte) 1 : (byte) 0);
         dest.writeString(this.lock_at);
-        if (this.question_types != null) {
-            dest.writeStringArray(this.question_types);
-        }
+        dest.writeList(this.question_types);
         dest.writeByte(this.has_access_code ? (byte) 1 : (byte) 0);
     }
 
@@ -318,9 +317,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.unlock_at = in.readString();
         this.one_time_results = in.readByte() != 0;
         this.lock_at = in.readString();
-        if (this.question_types != null) {
-            in.readStringArray(this.question_types);
-        }
+        in.readList(this.question_types, String.class.getClassLoader());
         this.has_access_code = in.readByte() != 0;
     }
 
