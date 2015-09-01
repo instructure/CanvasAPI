@@ -1,6 +1,8 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Favorite;
@@ -9,7 +11,12 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
+
 import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
