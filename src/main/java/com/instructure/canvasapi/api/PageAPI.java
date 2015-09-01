@@ -52,6 +52,10 @@ public class PageAPI {
         return restAdapter.create(PagesInterface.class);
     }
 
+    private static PagesInterface buildCacheInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, canvasContext);
+        return restAdapter.create(PagesInterface.class);
+    }
     /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
@@ -59,7 +63,7 @@ public class PageAPI {
     public static void getFirstPagePages(CanvasContext canvasContext, CanvasCallback<Page[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPagePagesCacheFilename(canvasContext));
+        buildCacheInterface(callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
         buildInterface(callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
     }
 
@@ -67,6 +71,7 @@ public class PageAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
+        buildCacheInterface(callback, null).getNextPagePagesList(nextURL, callback);
         buildInterface(callback, null).getNextPagePagesList(nextURL, callback);
     }
 
