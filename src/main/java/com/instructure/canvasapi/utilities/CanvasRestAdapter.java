@@ -1,16 +1,28 @@
 package com.instructure.canvasapi.utilities;
 
+import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.CacheControl;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Response;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
-import retrofit.client.Request;
 import retrofit.converter.GsonConverter;
 
 /**
@@ -24,6 +36,8 @@ public class CanvasRestAdapter {
 
     private static int numberOfItemsPerPage = 30;
 
+    private static OkClient okHttpClient;
+    private static Context mContext;
     public static int getNumberOfItemsPerPage() {
         return numberOfItemsPerPage;
     }
@@ -49,6 +63,36 @@ public class CanvasRestAdapter {
         return buildAdapter(context, true);
     }
 
+    private static final Interceptor mCacheControlInterceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            com.squareup.okhttp.Request request = chain.request();
+
+            Response response = chain.proceed(request);
+
+            // Re-write response CC header to force use of cache
+            // Displayed cached data will always be followed by a response from the server with the latest data.
+            return response.newBuilder()
+                    .header("Cache-Control", "public, max-age=172800") //60*60*24*2 = 172,800 2 weeks; Essentially means cached data will only be valid offline for 2 weeks. When network is available, the cache is always updated on every request.
+                    .build();
+        }
+    };
+
+    public static OkClient getOkHttp(Context context) {
+        if (okHttpClient == null) {
+            mContext = context;
+            File httpCacheDirectory = new File(context.getCacheDir(), "responses");
+            Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024); // cache size
+            OkHttpClient httpClient = new OkHttpClient();
+            httpClient.setCache(cache);
+            /** Dangerous interceptor that rewrites the server's cache-control header. */
+            httpClient.networkInterceptors().add(mCacheControlInterceptor);
+            okHttpClient = new OkClient(httpClient);
+
+        }
+        return okHttpClient;
+    }
+
     /**
      * Returns a RestAdapter Instance
      *
@@ -57,13 +101,17 @@ public class CanvasRestAdapter {
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, final boolean addPerPageQueryParam) {
+        return buildAdapter(context, false, addPerPageQueryParam);
+    }
 
-        if(context == null ){
+    public static RestAdapter buildAdapter(final Context context, final boolean isForcedCache, final boolean addPerPageQueryParam) {
+
+        if (context == null) {
             return null;
         }
 
         if (context instanceof APIStatusDelegate) {
-            ((APIStatusDelegate)context).onCallbackStarted();
+            ((APIStatusDelegate) context).onCallbackStarted();
         }
 
         String domain = APIHelpers.getFullDomain(context);
@@ -76,13 +124,14 @@ public class CanvasRestAdapter {
 
         GsonConverter gsonConverter = new GsonConverter(getGSONParser());
 
+
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/") // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam, isForcedCache))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
-                .build();
-
+                .setClient(getOkHttp(context)).build();
     }
 
     /**
@@ -97,6 +146,11 @@ public class CanvasRestAdapter {
     public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext) {
         callback.setFinished(false);
         return buildAdapter(callback.getContext(), canvasContext);
+    }
+
+    public static RestAdapter buildAdapter(CanvasCallback callback, boolean isForceCache, CanvasContext canvasContext) {
+        callback.setFinished(false);
+        return buildAdapterHelper(callback.getContext(), canvasContext, isForceCache, true);
     }
 
     /**
@@ -163,9 +217,13 @@ public class CanvasRestAdapter {
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, canvasContext, false, addPerPageQueryParam);
+
+    }
+    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean isForcedCache, boolean addPerPageQueryParam) {
         //If not return an adapter with no context.
         if(canvasContext == null){
-            return buildAdapter(context, addPerPageQueryParam);
+            return buildAdapter(context, isForcedCache, addPerPageQueryParam);
         }
 
         //Check for null values or invalid CanvasContext types.
@@ -199,6 +257,7 @@ public class CanvasRestAdapter {
         GsonConverter gsonConverter = new GsonConverter(getGSONParser());
 
         // Set request timeout to 60 seconds
+        /* TODO
         final OkClient httpClient = new OkClient(){
             @Override
             protected HttpURLConnection openConnection(Request request) throws IOException {
@@ -207,15 +266,15 @@ public class CanvasRestAdapter {
                 return connection;
             }
         };
+        */
 
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam, isForcedCache))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
-                .setClient(httpClient)
-                .build();
-
+                .setClient(getOkHttp(context)).build();
     }
 
     /**
@@ -286,10 +345,18 @@ public class CanvasRestAdapter {
 
         Context context;
         boolean addPerPageQueryParam;
+        boolean isForcedCache;
 
         CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam){
             this.context = context;
             this.addPerPageQueryParam = addPerPageQueryParam;
+
+        }
+
+        CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam, boolean isForcedCache){
+            this.context = context;
+            this.addPerPageQueryParam = addPerPageQueryParam;
+            this.isForcedCache = isForcedCache;
         }
 
         @Override
@@ -308,7 +375,11 @@ public class CanvasRestAdapter {
                 requestFacade.addHeader("Authorization", "Bearer " + token);
             }
 
-            requestFacade.addHeader("Cache-Control", "no-cache");
+            if (isForcedCache) {
+                requestFacade.addHeader("Cache-Control", "only-if-cached");
+            } else {
+                requestFacade.addHeader("Cache-Control", "no-cache");
+            }
             //HTTP referer (originally a misspelling of referrer) is an HTTP header field that identifies the address of the webpage that linked to the resource being requested
             //Source: https://en.wikipedia.org/wiki/HTTP_referer
             //Some schools use an LTI tool called SlideShare that whitelists domains to be able to inject content into assignments
@@ -325,6 +396,24 @@ public class CanvasRestAdapter {
                 requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
             }
         }
+    }
+
+    private static boolean isNetworkAvaliable(Context context) {
+        ConnectivityManager connectivity =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
