@@ -53,14 +53,6 @@ android {
     }
 }
 
-afterEvaluate { project ->
-    android.libraryVariants.each { variant ->
-        tasks.getByName("test${ variant.name.capitalize()}UnitTest") {
-            dependsOn "assemble${ variant.name.capitalize()}"
-        }
-    }
-}
-
 dependencies {
     compile('com.mobprofs:retrofit-simplexmlconverter:1.0') {
         exclude module: 'stax'
