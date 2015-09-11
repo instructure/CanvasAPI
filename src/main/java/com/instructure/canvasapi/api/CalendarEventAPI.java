@@ -1,8 +1,8 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+
 import com.instructure.canvasapi.model.CanvasContext;
-import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
@@ -10,14 +10,12 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.Path;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -161,8 +159,10 @@ public class CalendarEventAPI {
         String contextIds = buildContextArray(canvasContextIds);
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                CalendarEventAPI.getNextPageCalendarEvents(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                CalendarEventAPI.getNextPageCalendarEvents(nextURL, bridgeCallback);
             }
 
             @Override
@@ -182,8 +182,9 @@ public class CalendarEventAPI {
 
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                CalendarEventAPI.getNextPageCalendarEvents(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+                CalendarEventAPI.getNextPageCalendarEvents(nextURL, bridgeCallback);
             }
 
             @Override
