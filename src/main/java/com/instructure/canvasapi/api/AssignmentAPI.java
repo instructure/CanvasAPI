@@ -140,8 +140,10 @@ public class AssignmentAPI {
 
         CanvasCallback<Assignment[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                AssignmentAPI.getNextPageAssignmentsList(callback, nextURL);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                AssignmentAPI.getNextPageAssignmentsList(bridgeCallback, nextURL);
             }
 
             @Override

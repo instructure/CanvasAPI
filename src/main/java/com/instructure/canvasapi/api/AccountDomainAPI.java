@@ -69,8 +69,10 @@ public class AccountDomainAPI {
 
         CanvasCallback<AccountDomain[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                AccountDomainAPI.getNextPageAccountDomains(callback, nextURL);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                AccountDomainAPI.getNextPageAccountDomains(bridgeCallback, nextURL);
             }
 
             @Override
