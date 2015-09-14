@@ -195,8 +195,10 @@ public class CourseAPI {
 
         CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                CourseAPI.getNextPageCourses(callback, nextURL);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                CourseAPI.getNextPageCourses(bridgeCallback, nextURL);
             }
 
             @Override
@@ -214,8 +216,10 @@ public class CourseAPI {
 
         CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                CourseAPI.getNextPageCourses(callback, nextURL);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                CourseAPI.getNextPageCourses(bridgeCallback, nextURL);
             }
 
             @Override
