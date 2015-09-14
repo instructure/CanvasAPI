@@ -2,20 +2,33 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.instructure.canvasapi.model.Attachment;
-import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.CanvasColor;
-import com.instructure.canvasapi.model.Course;
+import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
-import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
-import com.instructure.canvasapi.utilities.*;
+import com.instructure.canvasapi.utilities.APIHelpers;
+import com.instructure.canvasapi.utilities.CanvasCallback;
+import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
+import com.instructure.canvasapi.utilities.Masquerading;
+import com.instructure.canvasapi.utilities.UserCallback;
+
 import java.io.File;
 import java.util.LinkedHashMap;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.*;
+import retrofit.http.GET;
+import retrofit.http.Multipart;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
+import retrofit.http.PartMap;
+import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
@@ -223,13 +236,15 @@ public class UserAPI {
         buildInterface(callback, null).getNextPagePeopleList(nextURL, callback);
     }
 
-    public static void getAllUsersForCourseByEnrollmentType(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, CanvasCallback<User[]> callback){
+    public static void getAllUsersForCourseByEnrollmentType(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, final CanvasCallback<User[]> callback){
         if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
 
         CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                UserAPI.getNextPagePeople(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                UserAPI.getNextPagePeople(nextURL, bridgeCallback);
             }
 
             @Override

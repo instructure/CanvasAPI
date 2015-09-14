@@ -2,7 +2,6 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 
-import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -127,8 +126,10 @@ public class GroupAPI {
 
         CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                getNextPageGroups(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                getNextPageGroups(nextURL, bridgeCallback);
             }
 
             @Override
@@ -149,13 +150,15 @@ public class GroupAPI {
         buildInterface(callback).getFirstPageGroupsInCourse(courseID, callback);
     }
 
-    public static void getAllGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
+    public static void getAllGroupsInCourse(long courseID, final CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
         CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                getNextPageGroups(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                getNextPageGroups(nextURL, bridgeCallback);
             }
 
             @Override
@@ -168,13 +171,15 @@ public class GroupAPI {
         getFirstPageGroupsInCourse(courseID, bridge);
     }
 
-    public static void getGroupsForUser(CanvasCallback<Group[]> callback) {
+    public static void getGroupsForUser(final CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
         CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextURL) {
-                getNextPageGroups(nextURL, callback);
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+                if(callback.isCancelled()) { return; }
+
+                getNextPageGroups(nextURL, bridgeCallback);
             }
 
             @Override
