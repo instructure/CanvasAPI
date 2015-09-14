@@ -121,7 +121,7 @@ public class QuizAPI {
     }
 
     private static QuizzesInterface buildInterfaceNoPerPage(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false);
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false, false);
         return restAdapter.create(QuizzesInterface.class);
     }
 

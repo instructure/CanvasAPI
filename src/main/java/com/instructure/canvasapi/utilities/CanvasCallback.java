@@ -4,12 +4,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.instructure.canvasapi.api.BuildInterfaceAPI;
 import com.instructure.canvasapi.model.CanvasError;
 
 import java.io.Serializable;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Header;
 import retrofit.client.Response;
 
 /**
@@ -140,6 +142,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * setShouldCache sets whether or not a call should be cached and the filename where it'll be cached to.
      * Should only be called by the API
      */
+    @Deprecated
     public void setShouldCache(String fileName) {
         cacheFileName = fileName;
     }
@@ -148,6 +151,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * shouldCache is a helper for whether or not a cacheFileName has been set.
      * @return
      */
+    @Deprecated
     public boolean shouldCache() {
         return cacheFileName != null;
     }
@@ -166,12 +170,15 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     /**
      * readFromCache reads from the cache filename and simultaneously sets the cache filename
+     * Use {@link BuildInterfaceAPI#buildCacheInterface} instead
      * @param path
      */
+    @Deprecated
     public void readFromCache(String path) {
         new ReadCacheData().execute(path);
     }
 
+    @Deprecated
     public boolean deleteCache(){
         return FileUtilities.DeleteFile(getContext(), cacheFileName);
     }
@@ -184,7 +191,14 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * cache is a function you can override to get the cached values.
      * @param t
      */
-    public abstract void cache(T t);
+    @Deprecated
+    public void cache(T t) {
+
+    }
+
+    public void cache(T t, LinkHeaders linkHeaders, Response response) {
+        firstPage(t, linkHeaders, response);
+    }
 
     /**
      * firstPage is the first (or only in some cases) of the API response.
@@ -356,9 +370,13 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         protected void onPostExecute(LinkHeaders linkHeaders) {
             super.onPostExecute(linkHeaders);
 
-            if(isNextPage){
+            if (response.getHeaders().contains(new Header(CanvasOkClient.CANVAS_API_CACHE_HEADER, CanvasOkClient.CANVAS_API_CACHE_HEADER_VALUE))) {
+                Log.v("CACHED", "Cache");
+                cache(t);
+                cache(t, linkHeaders, response);
+            } else if(isNextPage){
                 nextPage(t, linkHeaders, response);
-            }else {
+            } else {
                 firstPage(t, linkHeaders, response);
             }
 

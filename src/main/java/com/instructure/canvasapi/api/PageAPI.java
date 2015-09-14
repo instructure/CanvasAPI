@@ -4,9 +4,8 @@ import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.http.Path;
 import retrofit.http.GET;
 
@@ -15,7 +14,7 @@ import retrofit.http.GET;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class PageAPI {
+public class PageAPI extends BuildInterfaceAPI {
 
     private static String getFirstPagePagesCacheFilename(CanvasContext canvasContext){
         return canvasContext.toAPIString() + "/pages";
@@ -44,48 +43,35 @@ public class PageAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static PagesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(PagesInterface.class);
-    }
-
-    private static PagesInterface buildCacheInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, canvasContext);
-        return restAdapter.create(PagesInterface.class);
-    }
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPagePages(CanvasContext canvasContext, CanvasCallback<Page[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildCacheInterface(callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
-        buildInterface(callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
+        buildCacheInterface(PagesInterface.class, callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
+        buildInterface(PagesInterface.class, callback, canvasContext).getFirstPagePagesList(canvasContext.getId(), callback);
     }
 
     public static void getNextPagePages(String nextURL, CanvasCallback<Page[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(callback, null).getNextPagePagesList(nextURL, callback);
-        buildInterface(callback, null).getNextPagePagesList(nextURL, callback);
+        buildCacheInterface(PagesInterface.class, callback, null).getNextPagePagesList(nextURL, callback);
+        buildInterface(PagesInterface.class, callback, null).getNextPagePagesList(nextURL, callback);
     }
 
     public static void getDetailedPage(CanvasContext canvasContext, String page_id, CanvasCallback<Page> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         callback.readFromCache(getDetailedPageCacheFilename(canvasContext,page_id));
-        buildInterface(callback, canvasContext).getDetailedPage(canvasContext.getId(), page_id, callback);
+        buildInterface(PagesInterface.class, callback, canvasContext).getDetailedPage(canvasContext.getId(), page_id, callback);
     }
 
     public static void getFrontPage(CanvasContext canvasContext, CanvasCallback<Page> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         callback.readFromCache(getFrontPageCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
+        buildInterface(PagesInterface.class, callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
     }
 }
