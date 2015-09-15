@@ -16,18 +16,6 @@ import retrofit.http.GET;
  */
 public class PageAPI extends BuildInterfaceAPI {
 
-    private static String getFirstPagePagesCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/pages";
-    }
-
-    private static String getDetailedPageCacheFilename(CanvasContext canvasContext, String pageID){
-        return canvasContext.toAPIString() + "/pages/"+pageID;
-    }
-
-    private static String getFrontPageCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/front_page";
-    }
-
     interface PagesInterface {
         @GET("/{context_id}/pages?sort=title&order=asc")
         void getFirstPagePagesList(@Path("context_id") long context_id, Callback<Page[]> callback);
@@ -64,14 +52,14 @@ public class PageAPI extends BuildInterfaceAPI {
     public static void getDetailedPage(CanvasContext canvasContext, String page_id, CanvasCallback<Page> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getDetailedPageCacheFilename(canvasContext,page_id));
+        buildCacheInterface(PagesInterface.class, callback, canvasContext).getDetailedPage(canvasContext.getId(), page_id, callback);
         buildInterface(PagesInterface.class, callback, canvasContext).getDetailedPage(canvasContext.getId(), page_id, callback);
     }
 
     public static void getFrontPage(CanvasContext canvasContext, CanvasCallback<Page> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFrontPageCacheFilename(canvasContext));
+        buildCacheInterface(PagesInterface.class, callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
         buildInterface(PagesInterface.class, callback, canvasContext).getFrontPage(canvasContext.getId(), callback);
     }
 }
