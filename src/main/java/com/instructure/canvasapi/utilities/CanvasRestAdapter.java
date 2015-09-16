@@ -1,24 +1,20 @@
 package com.instructure.canvasapi.utilities;
 
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.RequestInterceptor;
@@ -143,6 +139,9 @@ public class CanvasRestAdapter {
         return buildAdapterHelper(context, null, false, addPerPageQueryParam);
     }
 
+    public static RestAdapter buildAdapter(final Context context, boolean isOnlyReadFromCache, final boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, null, isOnlyReadFromCache, addPerPageQueryParam);
+    }
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
@@ -335,7 +334,7 @@ public class CanvasRestAdapter {
         }
     }
 
-    private static boolean isNetworkAvaliable(Context context) {
+    public static boolean isNetworkAvaliable(Context context) {
         ConnectivityManager connectivity =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (connectivity == null) {

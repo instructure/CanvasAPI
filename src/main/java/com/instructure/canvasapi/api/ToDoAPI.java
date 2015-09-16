@@ -1,34 +1,30 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.ToDo;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.Path;
 import retrofit.http.GET;
-
-import java.util.*;
+import retrofit.http.Path;
 
 /**
- * Created by Brady Larson on 10/2/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class ToDoAPI {
-    private static String getUserTodosCacheFilename(){
-        return "/users/self/todo";
-    }
-
-    private static String getCourseTodosCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/todo";
-    }
+public class ToDoAPI extends BuildInterfaceAPI {
 
     interface ToDosInterface {
         @GET("/users/self/todo")
@@ -52,19 +48,6 @@ public class ToDoAPI {
 
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static ToDosInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(ToDosInterface.class);
-    }
-
-    private static ToDosInterface buildInterface(Context context, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, canvasContext);
-        return restAdapter.create(ToDosInterface.class);
-    }
 
     /////////////////////////////////////////////////////////////////////////
     // API Calls
@@ -73,15 +56,15 @@ public class ToDoAPI {
     public static void getUserTodos(CanvasCallback<ToDo[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getUserTodosCacheFilename());
-        buildInterface(callback, null).getUserTodos(callback);
+        buildCacheInterface(ToDosInterface.class, callback, null).getUserTodos(callback);
+        buildInterface(ToDosInterface.class, callback, null).getUserTodos(callback);
     }
 
     public static void getCourseTodos(CanvasContext canvasContext, CanvasCallback<ToDo[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getCourseTodosCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getCourseTodos(canvasContext.getId(), callback);
+        buildCacheInterface(ToDosInterface.class, callback, canvasContext).getCourseTodos(canvasContext.getId(), callback);
+        buildInterface(ToDosInterface.class, callback, canvasContext).getCourseTodos(canvasContext.getId(), callback);
     }
 
     public static void getTodos(CanvasContext canvasContext, final CanvasCallback<ToDo[]> callback) {
@@ -98,7 +81,7 @@ public class ToDoAPI {
         if (APIHelpers.paramIsNull(callback, toDo)) return;
 
         String path = APIHelpers.removeDomainFromUrl(toDo.getIgnore());
-        buildInterface(callback, null).dismissTodo(path, callback);
+        buildInterface(ToDosInterface.class, callback, null).dismissTodo(path, callback);
     }
 
 
@@ -216,7 +199,7 @@ public class ToDoAPI {
 
         //If not able to parse (no network for example), this will crash. Handle that case.
         try  {
-            return buildInterface(context, null).getUserTodos();
+            return buildInterface(ToDosInterface.class, context).getUserTodos();
         } catch (Exception E){
             return null;
         }
@@ -231,7 +214,7 @@ public class ToDoAPI {
 
         //If not able to parse (no network for example), this will crash. Handle that case.
         try {
-            return buildInterface(context, canvasContext).getCourseTodos(canvasContext.getId());
+            return buildInterface(ToDosInterface.class, context, canvasContext).getCourseTodos(canvasContext.getId());
         } catch (Exception E){
             return null;
         }

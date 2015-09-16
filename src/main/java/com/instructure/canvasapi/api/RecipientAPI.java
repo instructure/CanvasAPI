@@ -3,20 +3,18 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.Recipient;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.http.Path;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by Josh Ruesch on 10/16/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class RecipientAPI {
+public class RecipientAPI extends BuildInterfaceAPI {
 
     interface RecipientsInterface {
         @GET("/search/recipients?synthetic_contexts=1")
@@ -30,15 +28,6 @@ public class RecipientAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static RecipientsInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(RecipientsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
@@ -46,9 +35,11 @@ public class RecipientAPI {
         if (APIHelpers.paramIsNull(callback, search, context)) { return; }
 
         if(context.trim().equals("")){
-            buildInterface(callback).getFirstPageRecipientsListNoContext(search,callback);
+            buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getFirstPageRecipientsListNoContext(search,callback);
+            buildInterface(RecipientsInterface.class, callback.getContext()).getFirstPageRecipientsListNoContext(search,callback);
         } else {
-            buildInterface(callback).getFirstPageRecipientsList(search,context,callback);
+            buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getFirstPageRecipientsList(search,context,callback);
+            buildInterface(RecipientsInterface.class, callback.getContext()).getFirstPageRecipientsList(search,context,callback);
         }
     }
 
@@ -56,6 +47,7 @@ public class RecipientAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageRecipientsList(nextURL,callback);
+        buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getNextPageRecipientsList(nextURL,callback);
+        buildInterface(RecipientsInterface.class, callback.getContext()).getNextPageRecipientsList(nextURL,callback);
     }
 }

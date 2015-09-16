@@ -12,6 +12,7 @@ public class BuildInterfaceAPI {
 
     /**
      * Creates a rest adapter that will only read from the cache.
+     *
      * @param clazz
      * @param callback
      * @param canvasContext
@@ -20,6 +21,11 @@ public class BuildInterfaceAPI {
      */
     public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, canvasContext);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildCacheInterface(Class<T> clazz, Context context, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, true, perPageQueryParam);
         return restAdapter.create(clazz);
     }
 
@@ -40,6 +46,11 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, Context context, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildInterface(Class<T> clazz, final Context context, CanvasContext canvasContext) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, canvasContext);
         return restAdapter.create(clazz);
     }
 
