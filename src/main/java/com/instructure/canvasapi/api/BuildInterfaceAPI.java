@@ -29,6 +29,11 @@ public class BuildInterfaceAPI {
         return restAdapter.create(clazz);
     }
 
+    public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, null);
+        return restAdapter.create(clazz);
+    }
+
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(clazz);
@@ -51,6 +56,11 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, final Context context, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, canvasContext);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
         return restAdapter.create(clazz);
     }
 

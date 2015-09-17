@@ -35,11 +35,11 @@ public class RecipientAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, search, context)) { return; }
 
         if(context.trim().equals("")){
-            buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getFirstPageRecipientsListNoContext(search,callback);
-            buildInterface(RecipientsInterface.class, callback.getContext()).getFirstPageRecipientsListNoContext(search,callback);
+            buildCacheInterface(RecipientsInterface.class, callback).getFirstPageRecipientsListNoContext(search,callback);
+            buildInterface(RecipientsInterface.class, callback).getFirstPageRecipientsListNoContext(search,callback);
         } else {
             buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getFirstPageRecipientsList(search,context,callback);
-            buildInterface(RecipientsInterface.class, callback.getContext()).getFirstPageRecipientsList(search,context,callback);
+            buildInterface(RecipientsInterface.class, callback).getFirstPageRecipientsList(search,context,callback);
         }
     }
 
@@ -47,7 +47,7 @@ public class RecipientAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getNextPageRecipientsList(nextURL,callback);
-        buildInterface(RecipientsInterface.class, callback.getContext()).getNextPageRecipientsList(nextURL,callback);
+        buildCacheInterface(RecipientsInterface.class, callback).getNextPageRecipientsList(nextURL,callback);
+        buildInterface(RecipientsInterface.class, callback).getNextPageRecipientsList(nextURL,callback);
     }
 }
