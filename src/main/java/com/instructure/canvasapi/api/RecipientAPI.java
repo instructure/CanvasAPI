@@ -38,7 +38,7 @@ public class RecipientAPI extends BuildInterfaceAPI {
             buildCacheInterface(RecipientsInterface.class, callback).getFirstPageRecipientsListNoContext(search,callback);
             buildInterface(RecipientsInterface.class, callback).getFirstPageRecipientsListNoContext(search,callback);
         } else {
-            buildCacheInterface(RecipientsInterface.class, callback.getContext(), true).getFirstPageRecipientsList(search,context,callback);
+            buildCacheInterface(RecipientsInterface.class, callback).getFirstPageRecipientsList(search,context,callback);
             buildInterface(RecipientsInterface.class, callback).getFirstPageRecipientsList(search,context,callback);
         }
     }
