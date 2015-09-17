@@ -17,18 +17,10 @@ import retrofit.http.GET;
 import retrofit.http.Query;
 
 /**
- * Created by Joshua Dutton on 10/22/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class StreamAPI {
-    private static String getUserStreamCacheFilename(){
-        return "/users/self/activity_stream";
-    }
-
-    private static String getCourseStreamCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/activity_stream";
-    }
+public class StreamAPI extends BuildInterfaceAPI {
 
     interface StreamInterface {
         @GET("/users/self/activity_stream")
@@ -51,14 +43,6 @@ public class StreamAPI {
         StreamItem[] getUserStreamSynchronous(@Query("per_page") int number);
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static StreamInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(StreamInterface.class);
-    }
 
     /////////////////////////////////////////////////////////////////////////
     // API Calls
@@ -67,27 +51,29 @@ public class StreamAPI {
     public static void getFirstPageUserStream(CanvasCallback<StreamItem[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getUserStreamCacheFilename());
-        buildInterface(callback, null).getUserStream(callback);
+        buildCacheInterface(StreamInterface.class, callback, null).getUserStream(callback);
+        buildInterface(StreamInterface.class, callback, null).getUserStream(callback);
     }
 
     public static void getFirstPageCourseStream(CanvasContext canvasContext, CanvasCallback<StreamItem[]> callback) {
         if (APIHelpers.paramIsNull(callback ,canvasContext)) { return; }
 
-        callback.readFromCache(getCourseStreamCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getContextStream(canvasContext.getId(), callback);
+        buildCacheInterface(StreamInterface.class, callback, canvasContext).getContextStream(canvasContext.getId(), callback);
+        buildInterface(StreamInterface.class, callback, canvasContext).getContextStream(canvasContext.getId(), callback);
     }
 
     public static void getNextPageStream(String nextUrl, CanvasCallback<StreamItem[]> callback) {
         if (APIHelpers.paramIsNull(callback, nextUrl)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageStream(nextUrl, callback);
+
+        buildCacheInterface(StreamInterface.class, callback, null).getNextPageStream(nextUrl, callback);
+        buildInterface(StreamInterface.class, callback, null).getNextPageStream(nextUrl, callback);
     }
 
     public static void hideStreamItem(long streamId, final CanvasCallback<HiddenStreamItem> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
-        buildInterface(callback, null).hideStreamItem(streamId,callback);
+        buildInterface(StreamInterface.class, callback, null).hideStreamItem(streamId,callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////

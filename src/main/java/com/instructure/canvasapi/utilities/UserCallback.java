@@ -28,12 +28,7 @@ public abstract class UserCallback extends CanvasCallback<User> {
     public abstract void user(User user, Response response);
 
     @Override
-    public void readFromCache(String path) {
-        cachedUser(APIHelpers.getCacheUser(getContext()));
-    }
-
-    @Override
-    public void cache(User user) {
+    public void cache(User user, LinkHeaders linkHeaders, Response response) {
         cachedUser(user);
     }
 
