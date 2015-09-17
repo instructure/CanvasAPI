@@ -62,7 +62,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
     private int timeSpent;
 
     //The score of the quiz submission, if graded.
-    private int score;
+    private double score;
 
     //The original score of the quiz submission prior to any re-grading.
     @SerializedName("score_before_regrade")
@@ -191,11 +191,11 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.timeSpent = timeSpent;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -306,7 +306,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         dest.writeInt(this.extraTime);
         dest.writeByte(manuallyUnlocked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.timeSpent);
-        dest.writeInt(this.score);
+        dest.writeDouble(this.score);
         dest.writeInt(this.scoreBeforeRegrade);
         dest.writeInt(this.keptScore);
         dest.writeInt(this.fudgePoints);
@@ -332,7 +332,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.extraTime = in.readInt();
         this.manuallyUnlocked = in.readByte() != 0;
         this.timeSpent = in.readInt();
-        this.score = in.readInt();
+        this.score = in.readDouble();
         this.scoreBeforeRegrade = in.readInt();
         this.keptScore = in.readInt();
         this.fudgePoints = in.readInt();
