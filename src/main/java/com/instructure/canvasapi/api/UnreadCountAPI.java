@@ -38,15 +38,15 @@ public class UnreadCountAPI extends BuildInterfaceAPI {
     public static void getUnreadConversationCount(CanvasCallback<UnreadConversationCount> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildCacheInterface(UnreadCountsInterface.class, callback.getContext(), true).getUnreadConversationCount(callback);
-        buildInterface(UnreadCountsInterface.class, callback.getContext()).getUnreadConversationCount(callback);
+        buildCacheInterface(UnreadCountsInterface.class, callback).getUnreadConversationCount(callback);
+        buildInterface(UnreadCountsInterface.class, callback).getUnreadConversationCount(callback);
     }
 
     public static void getUnreadNotificationsCount(CanvasCallback<UnreadNotificationCount[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildCacheInterface(UnreadCountsInterface.class, callback.getContext(), true).getNotificationsCount(callback);
-        buildInterface(UnreadCountsInterface.class, callback.getContext()).getNotificationsCount(callback);
+        buildCacheInterface(UnreadCountsInterface.class, callback).getNotificationsCount(callback);
+        buildInterface(UnreadCountsInterface.class, callback).getNotificationsCount(callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
