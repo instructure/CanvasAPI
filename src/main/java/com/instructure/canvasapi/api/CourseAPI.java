@@ -40,7 +40,7 @@ import retrofit.mime.TypedFile;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class CourseAPI {
+public class CourseAPI extends BuildInterfaceAPI {
 
 
     private static String getCourseCacheFilename(long courseId) {
@@ -139,8 +139,8 @@ public class CourseAPI {
     public static void getCourse(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getCourseCacheFilename(courseId));
-        buildInterface(callback).getCourse(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback).getCourse(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).getCourse(courseId, callback);
     }
 
     public static void getCourseWithGrade(long courseId, CanvasCallback<Course> callback) {
@@ -160,22 +160,35 @@ public class CourseAPI {
     public static void getFirstPageCourses(CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getCoursesCacheFilename());
-        buildInterface(callback).getFirstPageCourses(callback);
-    }
-
-    public static void getNextPageCourses(CanvasCallback<Course[]> callback, String nextURL) {
-        if (APIHelpers.paramIsNull(callback, nextURL)) return;
-
-        callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageCourses(nextURL, callback);
+        buildCacheInterface(CoursesInterface.class, callback).getFirstPageCourses(callback);
+        buildInterface(CoursesInterface.class, callback).getFirstPageCourses(callback);
     }
 
     public static void getFirstPageFavoriteCourses(CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getFavoriteCoursesCacheFilename());
-        buildInterface(callback).getFavoriteCourses(callback);
+        buildCacheInterface(CoursesInterface.class, callback).getFavoriteCourses(callback);
+        buildInterface(CoursesInterface.class, callback).getFavoriteCourses(callback);
+    }
+
+
+    public static void getNextPageCourses(CanvasCallback<Course[]> callback, String nextURL) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+        buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+    }
+
+    public static void getNextPageCoursesChained(CanvasCallback<Course[]> callback, String nextURL, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+        } else {
+            buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+        }
     }
 
     public static void addCourseToFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
@@ -193,43 +206,33 @@ public class CourseAPI {
     public static void getAllFavoriteCourses(final CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(Course.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                CourseAPI.getNextPageCourses(bridgeCallback, nextURL);
-            }
-
-            @Override
-            public Class classType() {
-                return Course.class;
+                CourseAPI.getNextPageCoursesChained(bridgeCallback, nextURL, isCached);
             }
         });
 
-        callback.readFromCache(getAllFavoriteCoursesCacheFilename());
-        getFirstPageFavoriteCourses(bridge);
+        buildCacheInterface(CoursesInterface.class, callback).getFavoriteCourses(bridge);
+        buildInterface(CoursesInterface.class, callback).getFavoriteCourses(bridge);
     }
 
     public static void getAllCourses(final CanvasCallback<Course[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(Course.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                CourseAPI.getNextPageCourses(bridgeCallback, nextURL);
-            }
-
-            @Override
-            public Class classType() {
-                return Course.class;
+                CourseAPI.getNextPageCoursesChained(bridgeCallback, nextURL, isCached);
             }
         });
 
-        callback.readFromCache(getAllCoursesCacheFilename());
-        getFirstPageCourses(bridge);
+        buildCacheInterface(CoursesInterface.class, callback).getFirstPageCourses(bridge);
+        buildInterface(CoursesInterface.class, callback).getFirstPageCourses(bridge);
     }
 
     /**

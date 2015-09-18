@@ -179,20 +179,26 @@ public class UserAPI extends BuildInterfaceAPI {
         buildInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
     }
 
+    public static void getNextPagePeopleChained(String nextURL, CanvasCallback<User[]> callback, boolean isCached){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
+        }
+    }
+
     public static void getAllUsersForCourseByEnrollmentType(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, final CanvasCallback<User[]> callback){
         if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
 
-        CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(User.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                UserAPI.getNextPagePeople(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return User.class;
+                UserAPI.getNextPagePeopleChained(nextURL, bridgeCallback, isCached);
             }
         });
         buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), bridge);

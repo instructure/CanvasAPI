@@ -243,6 +243,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     @Override
     public void success(T t, Response response) {
         // check if it's been cancelled or detached
+        Log.d("URL_STATUS", response.getHeaders().get(response.getHeaders().size() - 1).getName() + " " +  response.getUrl() + " isCanceled " + isCancelled);
         if(isCancelled || t == null || getContext() == null) {
             return;
         }
@@ -370,8 +371,12 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         protected void onPostExecute(LinkHeaders linkHeaders) {
             super.onPostExecute(linkHeaders);
 
+            if (isCancelled) {
+                return;
+            }
+
             if (response.getHeaders().contains(new Header(CanvasOkClient.CANVAS_API_CACHE_HEADER, CanvasOkClient.CANVAS_API_CACHE_HEADER_VALUE))) {
-                Log.v("CACHED", "Cache");
+                Log.v(APIHelpers.LOG_TAG, "Cache");
                 cache(t);
                 cache(t, linkHeaders, response);
             } else if(isNextPage){

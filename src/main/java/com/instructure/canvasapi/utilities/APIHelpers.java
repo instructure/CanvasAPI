@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import retrofit.client.Header;
+import retrofit.client.Response;
 
 /**
  * Created by Joshua Dutton on 8/9/13.
@@ -543,6 +544,10 @@ public class APIHelpers {
         return url;
     }
 
+    public static boolean isCachedResponse(Response response) {
+        return response != null && response.getHeaders() != null &&
+                response.getHeaders().contains(new Header(CanvasOkClient.CANVAS_API_CACHE_HEADER, CanvasOkClient.CANVAS_API_CACHE_HEADER_VALUE));
+    }
 
     /**
      * Helper methods for handling ISO 8601 strings of the following format:

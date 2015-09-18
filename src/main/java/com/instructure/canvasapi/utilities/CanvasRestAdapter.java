@@ -23,10 +23,8 @@ import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
 /**
- * @author      Josh Ruesch
- * @since       08/10/13
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
 public class CanvasRestAdapter {
@@ -208,7 +206,6 @@ public class CanvasRestAdapter {
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
                 .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam, isForcedCache))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setConverter(gsonConverter)
                 .setClient(getOkHttp(context)).build();
     }
