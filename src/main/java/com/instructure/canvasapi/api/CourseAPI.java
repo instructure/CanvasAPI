@@ -157,6 +157,21 @@ public class CourseAPI extends BuildInterfaceAPI {
         buildInterface(callback).getCourseWithSyllabus(courseId, callback);
     }
 
+    public static void getFirstPageCourses(CanvasCallback<Course[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, callback).getFirstPageCourses(callback);
+        buildInterface(CoursesInterface.class, callback).getFirstPageCourses(callback);
+    }
+
+    public static void getFirstPageFavoriteCourses(CanvasCallback<Course[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, callback).getFavoriteCourses(callback);
+        buildInterface(CoursesInterface.class, callback).getFavoriteCourses(callback);
+    }
+
+
     public static void getNextPageCourses(CanvasCallback<Course[]> callback, String nextURL) {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
