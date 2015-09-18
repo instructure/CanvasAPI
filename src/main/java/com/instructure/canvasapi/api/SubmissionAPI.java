@@ -222,6 +222,16 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         buildInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
     }
 
+    public static void getLTIFromAuthenticationURLChained(String url, final CanvasCallback<LTITool> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, url)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+        } else {
+            buildInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+        }
+    }
+
     /**
      *
      * @param canvasContext
