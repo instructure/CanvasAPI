@@ -1,30 +1,20 @@
 package com.instructure.canvasapi.api;
 
-import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.NotificationPreferenceResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.mime.TypedByteArray;
-import retrofit.mime.TypedOutput;
 
 /**
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class NotificationPreferencesAPI {
+public class NotificationPreferencesAPI extends BuildInterfaceAPI {
 
     //Frequency keys
     public static final String IMMEDIATELY = "immediately";
@@ -62,62 +52,52 @@ public class NotificationPreferencesAPI {
         void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Body NotificationPreferenceResponse preferencesToChange, CanvasCallback<NotificationPreferenceResponse> callback);
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static NotificationPreferencesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false, false);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        return restAdapter.create(NotificationPreferencesInterface.class);
-    }
-
     public static void getNotificationPreferences(final long userId, final long communicationChannelId, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).getNotificationPreferences(userId, communicationChannelId, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).getNotificationPreferences(userId, communicationChannelId, callback);
     }
 
     public static void getNotificationPreferencesByType(final long userId, final String type, final String address, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).getNotificationPreferencesForType(userId, type, address, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).getNotificationPreferencesForType(userId, type, address, callback);
     }
 
     public static void getSingleNotificationPreference(final long userId, final long communicationChannelId, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).getSingleNotificationPreference(userId, communicationChannelId, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).getSingleNotificationPreference(userId, communicationChannelId, notification, callback);
     }
 
     public static void getSingleNotificationPreferencesForType(final long userId, final String type, final String address, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).getSingleNotificationPreferencesForType(userId, type, address, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).getSingleNotificationPreferencesForType(userId, type, address, notification, callback);
     }
 
     public static void updateSingleNotificationPreference(final long communicationChannelId, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).updateSingleNotificationPreference(communicationChannelId, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreference(communicationChannelId, notification, callback);
     }
 
     public static void updateSingleNotificationPreferenceForType(final String type, final String address, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).updateSingleNotificationPreferenceForType(type, address, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreferenceForType(type, address, notification, callback);
     }
 
     public static void updateMultipleNotificationPreferencesForType(final String type, final String address, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).updateMultipleNotificationPreferencesForType(type, address, buildNotificationPreferenceList(notifications, frequency), callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferencesForType(type, address, buildNotificationPreferenceList(notifications, frequency), callback);
     }
 
     public static void updateMultipleNotificationPreferences(final long communicationChannelId, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback, notifications, frequency)) { return; }
 
-        buildInterface(callback, null).updateMultipleNotificationPreferences(communicationChannelId, buildNotificationPreferenceList(notifications, frequency), callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferences(communicationChannelId, buildNotificationPreferenceList(notifications, frequency), callback);
     }
 
     /**
@@ -129,7 +109,7 @@ public class NotificationPreferencesAPI {
     public static void updateMultipleNotificationPreferences(final long communicationChannelId, final NotificationPreferenceResponse preferencesToChange, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback, preferencesToChange)) { return; }
 
-        buildInterface(callback, null).updateMultipleNotificationPreferences(communicationChannelId, preferencesToChange, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferences(communicationChannelId, preferencesToChange, callback);
     }
 
     private static String buildNotificationPreferenceList(ArrayList<String> notifications, String frequency) {

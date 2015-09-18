@@ -9,12 +9,10 @@ import com.instructure.canvasapi.model.QuizSubmissionResponse;
 import com.instructure.canvasapi.model.QuizSubmissionTime;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import java.util.ArrayList;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -23,33 +21,12 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class QuizAPI {
+public class QuizAPI extends BuildInterfaceAPI {
 
     private static final String QUIZ_SUBMISSION_SESSION_STARTED = "android_session_started";
-
-    public static String getFirstPageQuizzesCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/quizzes";
-    }
-
-    public static String getDetailedQuizCacheFilename(CanvasContext canvasContext, long quizID){
-        return canvasContext.toAPIString() + "/quizzes/" + quizID;
-    }
-
-    public static String getFirstPageQuizQuestionsCacheFilename(CanvasContext canvasContext, long quizID) {
-        return canvasContext.toAPIString() + "/quizzes/" + quizID + "/questions";
-    }
-
-    public static String getFirstPageQuizSubmissionsCacheFilename(CanvasContext canvasContext, long quizID) {
-        return canvasContext.toAPIString() + "/quizzes/" + quizID + "/submissions";
-    }
-
-    public static String getFirstPageSubmissionQuestionsCacheFilename(long quizSubmissionID) {
-        return "/quizSubmissions/" + quizSubmissionID + "/questions";
-    }
 
     interface QuizzesInterface {
         @GET("/{context_id}/quizzes")
@@ -112,112 +89,100 @@ public class QuizAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static QuizzesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(QuizzesInterface.class);
-    }
-
-    private static QuizzesInterface buildInterfaceNoPerPage(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false, false);
-        return restAdapter.create(QuizzesInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageQuizzes(CanvasContext canvasContext, CanvasCallback<Quiz[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizzesCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPageQuizzesList(canvasContext.getId(), callback);
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizzesList(canvasContext.getId(), callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizzesList(canvasContext.getId(), callback);
     }
 
     public static void getNextPageQuizzes(String nextURL, CanvasCallback<Quiz[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageQuizzesList(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
     }
 
     public static void getDetailedQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Quiz> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getDetailedQuizCacheFilename(canvasContext,quiz_id));
-        buildInterface(callback, canvasContext).getDetailedQuiz(canvasContext.getId(), quiz_id, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getDetailedQuiz(canvasContext.getId(), quiz_id, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).getDetailedQuiz(canvasContext.getId(), quiz_id, callback);
     }
 
     public static void getDetailedQuizFromURL(String url, CanvasCallback<Quiz> callback) {
         if (APIHelpers.paramIsNull(callback,url)) { return; }
 
-        callback.readFromCache(url);
-        buildInterface(callback, null).getDetailedQuizFromURL(url,callback);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url,callback);
     }
 
     public static void getFirstPageQuizQuestions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizQuestion[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizQuestionsCacheFilename(canvasContext, quiz_id));
-        buildInterface(callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
     }
 
     public static void getNextPageQuizQuestions(String nextURL, CanvasCallback<QuizQuestion[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageQuizQuestions(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
     }
 
     public static void startQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).startQuiz(canvasContext.getId(), quiz_id, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).startQuiz(canvasContext.getId(), quiz_id, callback);
     }
 
     public static void getFirstPageQuizSubmissions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizSubmissionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizSubmissionsCacheFilename(canvasContext, quiz_id));
-        buildInterface(callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
     }
 
     public static void getNextPageQuizSubmissions(String nextURL, CanvasCallback<QuizSubmissionResponse> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageQuizSubmissions(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
     }
 
     public static void getFirstPageSubmissionQuestions(long quizSubmissionId, CanvasCallback<QuizSubmissionQuestionResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getFirstPageSubmissionQuestionsCacheFilename(quizSubmissionId));
-        buildInterface(callback, null).getFirstPageSubmissionQuestions(quizSubmissionId, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getFirstPageSubmissionQuestions(quizSubmissionId, callback);
     }
 
     public static void getNextPageSubmissionQuestions(String nextURL, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageSubmissionQuestions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, null).getNextPageSubmissionQuestions(nextURL, callback);
     }
 
     public static void postQuizQuestionMultiChoice(QuizSubmission quizSubmission, long answerId, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, callback);
+        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, callback);
     }
 
     public static void putFlagQuizQuestion(QuizSubmission quizSubmission, long quizQuestionId, boolean shouldFlag, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         if(shouldFlag) {
-            buildInterface(callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+            buildInterface(QuizzesInterface.class, callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
         } else {
-            buildInterface(callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+            buildInterface(QuizzesInterface.class, callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
 
         }
     }
@@ -225,31 +190,31 @@ public class QuizAPI {
     public static void postQuizQuestionEssay(QuizSubmission quizSubmission, String answer, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, callback);
+        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, callback);
     }
 
     public static void postQuizSubmit(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionResponse> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
     }
 
     public static void postQuizStartedEvent(CanvasContext canvasContext, QuizSubmission quizSubmission, String userAgentString, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId())) { return; }
 
-        buildInterface(callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, callback);
     }
 
     public static void getQuizSubmissionTime(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionTime> callback) {
         if(APIHelpers.paramIsNull(canvasContext, callback, quizSubmission)) { return; }
 
-        buildInterface(callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
     }
     public static void postQuizQuestionMultiAnswer(QuizSubmission quizSubmission, long questionId, ArrayList<Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
-        buildInterfaceNoPerPage(callback, null).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), callback);
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), callback);
     }
 
     private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Integer> answers) {

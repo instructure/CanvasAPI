@@ -3,30 +3,21 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.PollSessionResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.Path;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by brady on 5/20/14.
+ *
+ * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class PollSessionAPI {
-
-    private static String getFirstPagePollSessionsCacheFilename(long poll_id){
-        return "api/v1/polls/" + poll_id + "/poll_sessions";
-    }
-
-    private static String getSinglePollSessionsCacheFilename(long poll_id, long poll_session_id){
-        return "api/v1/polls/" + poll_id + "/poll_sessions/" + poll_session_id;
-    }
+public class PollSessionAPI extends BuildInterfaceAPI {
 
     interface PollSessionInterface {
         @GET("/polls/{pollid}/poll_sessions")
@@ -61,74 +52,66 @@ public class PollSessionAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static PollSessionInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(PollSessionInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPagePollSessions(long poll_id, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getFirstPagePollSessionsCacheFilename(poll_id));
-        buildInterface(callback).getFirstPagePollSessionsList(poll_id, callback);
+        buildCacheInterface(PollSessionInterface.class, callback).getFirstPagePollSessionsList(poll_id, callback);
+        buildInterface(PollSessionInterface.class, callback).getFirstPagePollSessionsList(poll_id, callback);
     }
 
     public static void getNextPagePollSessions(String nextURL, CanvasCallback<PollSessionResponse> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPagePollSessionsList(nextURL, callback);
+        buildCacheInterface(PollSessionInterface.class, callback).getNextPagePollSessionsList(nextURL, callback);
+        buildInterface(PollSessionInterface.class, callback).getNextPagePollSessionsList(nextURL, callback);
     }
 
     public static void getSinglePollSession(long poll_id, long poll_session_id, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id)) { return; }
 
-        callback.readFromCache(getSinglePollSessionsCacheFilename(poll_id, poll_session_id));
-        buildInterface(callback).getSinglePollSession(poll_id, poll_session_id, callback);
+        buildCacheInterface(PollSessionInterface.class, callback).getSinglePollSession(poll_id, poll_session_id, callback);
+        buildInterface(PollSessionInterface.class, callback).getSinglePollSession(poll_id, poll_session_id, callback);
     }
 
     public static void createPollSession(long poll_id, long course_id, long course_section_id, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, course_id, course_section_id)) { return; }
 
-        buildInterface(callback).createPollSession(poll_id, course_id, course_section_id, callback);
+        buildInterface(PollSessionInterface.class, callback).createPollSession(poll_id, course_id, course_section_id, callback);
     }
 
     public static void updatePollSession(long poll_id, long poll_session_id, long course_id, long course_section_id, boolean has_public_results, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id, course_id, course_section_id, has_public_results)) { return; }
 
-        buildInterface(callback).updatePollSession(poll_id, poll_session_id, course_id, course_section_id, has_public_results, callback);
+        buildInterface(PollSessionInterface.class, callback).updatePollSession(poll_id, poll_session_id, course_id, course_section_id, has_public_results, callback);
     }
 
     public static void deletePollSession(long poll_id, long poll_session_id, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id)) { return; }
 
-        buildInterface(callback).deletePollSession(poll_id, poll_session_id, callback);
+        buildInterface(PollSessionInterface.class, callback).deletePollSession(poll_id, poll_session_id, callback);
     }
 
     public static void openPollSession(long poll_id, long poll_session_id, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id)) { return; }
 
-        buildInterface(callback).openPollSession(poll_id, poll_session_id, callback);
+        buildInterface(PollSessionInterface.class, callback).openPollSession(poll_id, poll_session_id, callback);
     }
 
     public static void closePollSession(long poll_id, long poll_session_id, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id)) { return; }
 
-        buildInterface(callback).closePollSession(poll_id, poll_session_id, callback);
+        buildInterface(PollSessionInterface.class, callback).closePollSession(poll_id, poll_session_id, callback);
     }
 
     public static void getOpenSessions(CanvasCallback<PollSessionResponse> callback) {
-        buildInterface(callback).getOpenSessions(callback);
+        buildInterface(PollSessionInterface.class, callback).getOpenSessions(callback);
     }
 
     public static void getClosedSessions(CanvasCallback<PollSessionResponse> callback) {
-        buildInterface(callback).getClosedSessions(callback);
+        buildInterface(PollSessionInterface.class, callback).getClosedSessions(callback);
     }
 }
