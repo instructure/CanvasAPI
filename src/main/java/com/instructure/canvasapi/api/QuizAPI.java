@@ -95,7 +95,7 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void getFirstPageQuizzes(CanvasContext canvasContext, CanvasCallback<Quiz[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizzesCacheFilename(canvasContext));
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizzesList(canvasContext.getId(), callback);
         buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizzesList(canvasContext.getId(), callback);
     }
 
@@ -103,27 +103,28 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
         buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
     }
 
     public static void getDetailedQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Quiz> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getDetailedQuizCacheFilename(canvasContext,quiz_id));
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getDetailedQuiz(canvasContext.getId(), quiz_id, callback);
         buildInterface(QuizzesInterface.class, callback, canvasContext).getDetailedQuiz(canvasContext.getId(), quiz_id, callback);
     }
 
     public static void getDetailedQuizFromURL(String url, CanvasCallback<Quiz> callback) {
         if (APIHelpers.paramIsNull(callback,url)) { return; }
 
-        callback.readFromCache(url);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url, callback);
         buildInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url,callback);
     }
 
     public static void getFirstPageQuizQuestions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizQuestion[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizQuestionsCacheFilename(canvasContext, quiz_id));
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
         buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizQuestions(canvasContext.getId(), quiz_id, callback);
     }
 
@@ -131,6 +132,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
         buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
     }
 
@@ -143,7 +145,7 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void getFirstPageQuizSubmissions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizSubmissionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageQuizSubmissionsCacheFilename(canvasContext, quiz_id));
+        buildCacheInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
         buildInterface(QuizzesInterface.class, callback, canvasContext).getFirstPageQuizSubmissions(canvasContext.getId(), quiz_id, callback);
     }
 
@@ -151,13 +153,13 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
+        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
         buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
     }
 
     public static void getFirstPageSubmissionQuestions(long quizSubmissionId, CanvasCallback<QuizSubmissionQuestionResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getFirstPageSubmissionQuestionsCacheFilename(quizSubmissionId));
         buildInterface(QuizzesInterface.class, callback, null).getFirstPageSubmissionQuestions(quizSubmissionId, callback);
     }
 

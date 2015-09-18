@@ -4,13 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.KalturaConfig;
 import com.instructure.canvasapi.model.KalturaSession;
 import com.instructure.canvasapi.model.kaltura.xml;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.FileUtilities;
 import com.instructure.canvasapi.utilities.KalturaRestAdapter;
 
@@ -35,13 +33,11 @@ import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- * Created by Nathan Button on 5/22/14.
- * <p/>
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
 //Make caching work
-public class KalturaAPI {
+public class KalturaAPI extends BuildInterfaceAPI {
     private static String getKalturaConfigCache() {
         return "/services/kaltura";
     }
@@ -71,10 +67,6 @@ public class KalturaAPI {
     /////////////////////////////////////////////////////////////////////////
     // Build Interface Helpers
     /////////////////////////////////////////////////////////////////////////
-    private static KalturaConfigurationInterface buildKalturaConfigInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(KalturaConfigurationInterface.class);
-    }
 
     private static KalturaAPIInterface buildKalturaAPIInterface(CanvasCallback<?> callback) {
         RestAdapter restAdapter = KalturaRestAdapter.buildAdapter(callback);
@@ -89,8 +81,7 @@ public class KalturaAPI {
             return;
         }
 
-        callback.readFromCache(getKalturaConfigCache());
-        buildKalturaConfigInterface(callback, null).getKalturaConfigaration(callback);
+        buildInterface(KalturaConfigurationInterface.class, callback, null).getKalturaConfigaration(callback);
     }
 
     public static void startKalturaSession(final CanvasCallback<KalturaSession> callback) {
@@ -98,7 +89,7 @@ public class KalturaAPI {
             return;
         }
 
-        buildKalturaConfigInterface(callback, null).startKalturaSession(callback);
+        buildInterface(KalturaConfigurationInterface.class, callback, null).startKalturaSession(callback);
     }
 
     public static void getKalturaUploadToken(final CanvasCallback<xml> callback) {
