@@ -15,7 +15,7 @@ import retrofit.http.Query;
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
-public class AccountDomainAPI {
+public class AccountDomainAPI extends BuildInterfaceAPI {
 
     private static final String DEFAULT_DOMAIN = "canvas.instructure.com";
 
@@ -61,27 +61,35 @@ public class AccountDomainAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageAccountDomains(nextURL, callback);
+        buildCacheInterface(AccountDomainInterface.class, callback).getNextPageAccountDomains(nextURL, callback);
+        buildInterface(AccountDomainInterface.class, callback).getNextPageAccountDomains(nextURL, callback);
+    }
+
+    public static void getNextPageAccountDomainsChained(CanvasCallback<AccountDomain[]> callback, String nextURL, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
+        } else {
+            buildInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
+        }
     }
 
     public static void getAllAccountDomains(final CanvasCallback<AccountDomain[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<AccountDomain[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<AccountDomain[]> bridge = new ExhaustiveBridgeCallback<>(AccountDomain.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                AccountDomainAPI.getNextPageAccountDomains(bridgeCallback, nextURL);
-            }
-
-            @Override
-            public Class classType() {
-                return AccountDomain.class;
+                AccountDomainAPI.getNextPageAccountDomainsChained(bridgeCallback, nextURL, isCached);
             }
         });
 
-        getFirstPageAccountDomains(bridge);
+        buildCacheInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
+        buildInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
     }
 
 }

@@ -27,7 +27,7 @@ import retrofit.http.Query;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class GroupAPI {
+public class GroupAPI extends BuildInterfaceAPI {
 
     private static String getAllGroupsCacheFilename() {
         return "/users/self/allgroups";
@@ -114,88 +114,71 @@ public class GroupAPI {
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
-    public static void getFirstPageGroups(CanvasCallback<Group[]> callback) {
-        if (APIHelpers.paramIsNull(callback)) return;
-
-        callback.readFromCache(getFirstPageGroupsCacheFilename());
-        buildInterface(callback).getFirstPageGroups(callback);
-    }
-
     public static void getAllGroups(final CanvasCallback<Group[]> callback){
         if(APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                getNextPageGroups(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return Group.class;
+                getNextPageGroupsChained(nextURL, bridgeCallback, isCached);
             }
         });
 
-        //This should handle caching of ALL elements automatically.
-        callback.readFromCache(getAllGroupsCacheFilename());
-        getFirstPageGroups(bridge);
-    }
-
-    public static void getFirstPageGroupsInCourse(long courseID, CanvasCallback<Group[]> callback) {
-        if (APIHelpers.paramIsNull(callback)) return;
-
-        callback.readFromCache(getFirstPageGroupsInCourseCacheFilename(courseID));
-        buildInterface(callback).getFirstPageGroupsInCourse(courseID, callback);
+        buildCacheInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
+        buildInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
     }
 
     public static void getAllGroupsInCourse(long courseID, final CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                getNextPageGroups(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return Group.class;
+                getNextPageGroupsChained(nextURL, bridgeCallback, isCached);
             }
         });
 
-        callback.readFromCache(getAllGroupsInCourseCacheFilename(courseID));
-        getFirstPageGroupsInCourse(courseID, bridge);
+        buildCacheInterface(GroupsInterface.class, callback).getFirstPageGroupsInCourse(courseID, bridge);
+        buildInterface(GroupsInterface.class, callback).getFirstPageGroupsInCourse(courseID, bridge);
     }
 
     public static void getGroupsForUser(final CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                getNextPageGroups(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return Group.class;
+                getNextPageGroupsChained(nextURL, bridgeCallback, isCached);
             }
         });
 
-        getFirstPageGroups(bridge);
+        buildCacheInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
+        buildInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
     }
 
     public static void getNextPageGroups(String nextURL, CanvasCallback<Group[]> callback) {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageGroups(nextURL, callback);
+        buildCacheInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        buildInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+    }
+
+    public static void getNextPageGroupsChained(String nextURL, CanvasCallback<Group[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        } else {
+            buildInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        }
     }
 
     public static void getDetailedGroup(long groupId, CanvasCallback<Group> callback) {

@@ -3,6 +3,7 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -25,7 +26,7 @@ import retrofit.http.Query;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class AssignmentAPI {
+public class AssignmentAPI extends BuildInterfaceAPI {
 
     public enum ASSIGNMENT_BUCKET_TYPE { PAST, OVERDUE, UNDATED, UNGRADED, UPCOMING, FUTURE;
         public static String getEventTypeName(ASSIGNMENT_BUCKET_TYPE eventType) {
@@ -46,26 +47,6 @@ public class AssignmentAPI {
             }
             return "upcoming";
         }
-    }
-
-
-    private static String getAssignmentCacheFilename(long courseID, long assignmentID) {
-        return "/courses/" + courseID + "/assignments/" + assignmentID;
-    }
-
-    private static String getAssignmentsListCacheFilename(long courseID) {
-        return "/courses/" + courseID + "/assignments?include=submission";
-    }
-
-    private static String getAssignmentGroupsListCacheFilename(long courseID) {
-        return  "/courses/" + courseID + "/assignments_groups";
-    }
-    private static String getAssignmentGroupsListWithAssignmentsCacheFilename(long courseID) {
-        return  "/courses/" + courseID + "/assignments_groups?include=assignments";
-    }
-
-    private static String getAssignmentsListWithBucketCacheFilename(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type) {
-        return "/courses/" + courseID + "/assignments?bucket=" + ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type);
     }
 
     public interface AssignmentsInterface {
@@ -114,16 +95,6 @@ public class AssignmentAPI {
         void getAssignmentsWithBucket(@Path("course_id") long course_id, @Query("bucket") String bucket_type, Callback<Assignment[]> callback);
 
     }
-
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static AssignmentsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(AssignmentsInterface.class);
-    }
-
     /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
@@ -131,57 +102,73 @@ public class AssignmentAPI {
     public static void getAssignment(long courseID, long assignmentID, final CanvasCallback<Assignment> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentCacheFilename(courseID, assignmentID));
-        buildInterface(callback, null).getAssignment(courseID, assignmentID, callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
     }
 
-    public static void getAllAssignmentsWithoutPagination(long courseID, final CanvasCallback<Assignment[]> callback) {
+    public static void getAllAssignmentsExhaustive(long courseID, final CanvasCallback<Assignment[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        CanvasCallback<Assignment[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<Assignment[]> bridge = new ExhaustiveBridgeCallback<>(Assignment.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                AssignmentAPI.getNextPageAssignmentsList(bridgeCallback, nextURL);
-            }
-
-            @Override
-            public Class classType() {
-                return Assignment.class;
+                AssignmentAPI.getNextPageAssignmentsListChained(bridgeCallback, nextURL, isCached);
             }
         });
 
-        callback.readFromCache(getAssignmentsListCacheFilename(courseID));
-        buildInterface(callback, null).getAssignmentsList(courseID, bridge);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentsList(courseID, bridge);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentsList(courseID, bridge);
     }
 
     public static void getAssignmentsList(long courseID, final CanvasCallback<Assignment[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentsListCacheFilename(courseID));
-        buildInterface(callback, null).getAssignmentsList(courseID, callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentsList(courseID, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentsList(courseID, callback);
     }
 
     public static void getNextPageAssignmentsList(CanvasCallback<Assignment[]> callback, String nextURL){
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageAssignmentsList(nextURL, callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+    }
+
+    public static void getNextPageAssignmentsListChained(CanvasCallback<Assignment[]> callback, String nextURL, boolean isCached){
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+        } else {
+            buildInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+        }
     }
 
     public static void getAssignmentGroupsList(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentGroupsListCacheFilename(courseID));
-        buildInterface(callback, null).getAssignmentGroupList(courseID, callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupList(courseID, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupList(courseID, callback);
     }
 
     public static void getAssignmentGroupsListWithAssignments(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentGroupsListWithAssignmentsCacheFilename(courseID));
-        buildInterface(callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
+    }
+
+    public static void getAssignmentGroupsListWithAssignmentsChained(long courseID, boolean isCache, final CanvasCallback<AssignmentGroup[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+        if (isCache) {
+            buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
+        } else {
+            buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
+        }
     }
 
     /*
@@ -218,7 +205,7 @@ public class AssignmentAPI {
         Integer newHasPeerReviews = (hasPeerReviews == null) ? null : APIHelpers.booleanToInt(hasPeerReviews);
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
-        buildInterface(callback, null).editAssignment(assignment.getCourseId(), assignment.getId(), assignmentName, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
+        buildInterface(AssignmentsInterface.class, callback, null).editAssignment(assignment.getCourseId(), assignment.getId(), assignmentName, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
                                                         groupId, pointsPossible, newGradingType,dueAt,description,newNotifyOfUpdate,unlockAt,lockAt,null, null, null, assignment.isMuted(), callback );
 
     }
@@ -246,7 +233,7 @@ public class AssignmentAPI {
         Integer newHasPeerReviews = (hasPeerReviews == null) ? null : APIHelpers.booleanToInt(hasPeerReviews);
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
-        buildInterface(callback, null).editAssignment(courseId, assignmentId, name, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
+        buildInterface(AssignmentsInterface.class, callback, null).editAssignment(courseId, assignmentId, name, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
                 groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, isMuted, callback);
 
     }
@@ -254,8 +241,8 @@ public class AssignmentAPI {
     public static void getAssignmentsWithBucket(long courseID, ASSIGNMENT_BUCKET_TYPE bucket_type, final CanvasCallback<Assignment[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getAssignmentsListWithBucketCacheFilename(courseID, bucket_type));
-        buildInterface(callback, null).getAssignmentsWithBucket(courseID, ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type), callback);
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentsWithBucket(courseID, ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type), callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentsWithBucket(courseID, ASSIGNMENT_BUCKET_TYPE.getEventTypeName(bucket_type), callback);
     }
 
 

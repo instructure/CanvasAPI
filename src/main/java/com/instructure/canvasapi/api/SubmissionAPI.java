@@ -6,6 +6,7 @@ import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.LTITool;
+import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.model.RubricAssessment;
 import com.instructure.canvasapi.model.RubricCriterionRating;
 import com.instructure.canvasapi.model.StudentSubmission;
@@ -13,6 +14,8 @@ import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,40 +31,7 @@ import retrofit.mime.TypedFile;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class SubmissionAPI {
-
-    private static String getSubmissionsWithCommentsCacheFilename(CanvasContext canvasContext, long assignmentID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=comments";
-    }
-
-    private static String getSubmissionsWithHistoryCacheFilename(CanvasContext canvasContext, long assignmentID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=submission_history";
-    }
-
-    private static String getSubmissionsWithCommentsAndHistoryCacheFilename(CanvasContext canvasContext, long assignmentID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=comments&include[]=submission_history";
-    }
-
-    private static String getSubmissionsWithCommentsHistoryAndRubricCacheFilename(CanvasContext canvasContext, long assignmentID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions?include[]=comments&include[]=submission_history&include[]=rubric_assessment";
-    }
-
-    private static String getSubmissionCacheFilename(CanvasContext canvasContext, long assignmentID, long userID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
-    }
-
-    private static String getSubmissionsCacheFilename(CanvasContext canvasContext) {
-        return canvasContext.toAPIString() + "/students/submissions";
-    }
-
-    private static String getSubmissionWithCommentsAndHistoryCacheFilename(CanvasContext canvasContext, long assignmentID, long userID) {
-        return canvasContext.toAPIString() + "/assignments/" + assignmentID + "/submissions" + userID + "?include[]=comments&include[]=submission_history";
-    }
-
-    private static String getSubmissionsForMultipleStudents(CanvasContext canvasContext, String ids) {
-        return canvasContext.toAPIString() + "/students/submissions?include[]=assignment" + ids;
-    }
-
+public class SubmissionAPI extends BuildInterfaceAPI {
 
     public interface SubmissionsInterface {
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments")
@@ -131,116 +101,125 @@ public class SubmissionAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-    private static SubmissionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(SubmissionsInterface.class);
-    }
-
-    private static SubmissionsInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(SubmissionsInterface.class);
-    }
-
-    private static SubmissionsInterface buildUploadInterface(String hostURL) {
-        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
-        return restAdapter.create(SubmissionsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getSubmissionsWithComments(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionsWithCommentsCacheFilename(canvasContext, assignmentID));
-        buildInterface(callback, canvasContext).getSubmissionsWithComments(canvasContext.getId(), assignmentID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithComments(canvasContext.getId(), assignmentID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithComments(canvasContext.getId(), assignmentID, callback);
     }
 
     public static void getSubmissionsWithHistory(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionsWithHistoryCacheFilename(canvasContext, assignmentID));
-        buildInterface(callback, canvasContext).getSubmissionsWithHistory(canvasContext.getId(), assignmentID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithHistory(canvasContext.getId(), assignmentID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithHistory(canvasContext.getId(), assignmentID, callback);
     }
 
     public static void getSubmissionsWithCommentsAndHistory(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionsWithCommentsAndHistoryCacheFilename(canvasContext, assignmentID));
-        buildInterface(callback, canvasContext).getSubmissionsWithCommentsAndHistory(canvasContext.getId(), assignmentID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsAndHistory(canvasContext.getId(), assignmentID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsAndHistory(canvasContext.getId(), assignmentID, callback);
     }
 
     public static void getSubmissionsWithCommentsHistoryAndRubric(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionsWithCommentsHistoryAndRubricCacheFilename(canvasContext, assignmentID));
-        buildInterface(callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, callback);
     }
 
     public static void getSubmission(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionCacheFilename(canvasContext, assignmentID, userID));
-        buildInterface(callback, canvasContext).getSubmission(canvasContext.getId(), assignmentID, userID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmission(canvasContext.getId(), assignmentID, userID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmission(canvasContext.getId(), assignmentID, userID, callback);
     }
 
     public static void getSubmissions(CanvasContext canvasContext, final CanvasCallback<Submission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionsCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getSubmissions(canvasContext.getId(), callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissions(canvasContext.getId(), callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissions(canvasContext.getId(), callback);
     }
 
-    public static void getNextPageSubmissions(String nextURL, CanvasCallback<Submission[]> callback){
+    public static void getSubmissionsExhaustive(CanvasContext canvasContext, final CanvasCallback<Submission[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        CanvasCallback<Submission[]> bridge = new ExhaustiveBridgeCallback<>(Submission.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextUrl, boolean isCached) {
+                SubmissionAPI.getNextPageSubmissionsChained(nextUrl, callback, isCached);
+            }
+        });
+
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissions(canvasContext.getId(), bridge);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissions(canvasContext.getId(), bridge);
+    }
+
+    public static void getNextPageSubmissions(String nextURL, CanvasCallback callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageSubmissions(nextURL, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+        buildInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+    }
+
+    public static void getNextPageSubmissionsChained(String nextURL, CanvasCallback callback, boolean isCache){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        if (isCache) {
+            buildCacheInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+        } else {
+            buildInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+        }
     }
 
     public static void getSubmissionWithCommentsAndHistory(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getSubmissionWithCommentsAndHistoryCacheFilename(canvasContext, assignmentID, userID));
-        buildInterface(callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
     }
 
     public static void postSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String comment, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postSubmissionComment(canvasContext.getId(), assignmentID, userID, comment, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionComment(canvasContext.getId(), assignmentID, userID, comment, callback);
     }
     public static void postMediaSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String kalturaMediaId, String mediaType, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postMediaSubmissionComment(canvasContext.getId(), assignmentID, userID, kalturaMediaId, mediaType, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmissionComment(canvasContext.getId(), assignmentID, userID, kalturaMediaId, mediaType, callback);
     }
 
     public static void postTextSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String text, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, submissionType, text, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postTextSubmission(canvasContext.getId(), assignmentID, submissionType, text, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postTextSubmission(canvasContext.getId(), assignmentID, submissionType, text, callback);
     }
 
     public static void postURLSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String url, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, submissionType, url, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postURLSubmission(canvasContext.getId(), assignmentID, submissionType, url, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postURLSubmission(canvasContext.getId(), assignmentID, submissionType, url, callback);
     }
 
     public static void postMediaSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String kalturaId, String mediaType, final  CanvasCallback<Submission> callback){
         if (APIHelpers.paramIsNull(callback, submissionType, kalturaId, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postMediaSubmission(canvasContext.getId(), assignmentID, submissionType, kalturaId, mediaType, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmission(canvasContext.getId(), assignmentID, submissionType, kalturaId, mediaType, callback);
     }
 
     public static void getLTIFromAuthenticationURL(String url, final CanvasCallback<LTITool> callback) {
         if (APIHelpers.paramIsNull(callback, url)) { return; }
 
-        buildInterface(callback, null).getLTIFromAuthenticationURL(url, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+        buildInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
     }
 
     /**
@@ -252,13 +231,10 @@ public class SubmissionAPI {
     public static void getSubmissionsForMultipleStudents(CanvasContext canvasContext, CanvasCallback<Submission[]> callback, String ids) {
         if (APIHelpers.paramIsNull(callback, canvasContext, ids)) { return; }
 
-        callback.readFromCache(getSubmissionsForMultipleStudents(canvasContext, ids));
-        buildInterface(callback, canvasContext).getSubmissionsForMultipleStudents(canvasContext.getId(), ids, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsForMultipleStudents(canvasContext.getId(), ids, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsForMultipleStudents(canvasContext.getId(), ids, callback);
     }
 
-    public static void getSubmissionsForMultipleStudents(CanvasContext canvasContext, String ids, CanvasCallback<Submission[]> callback) {
-        getSubmissionsForMultipleStudents(canvasContext, callback, ids);
-    }
     /**
      *
      * @param canvasContext
@@ -268,14 +244,14 @@ public class SubmissionAPI {
     public static void getSubmissionsAndGradesForMultipleStudents(CanvasContext canvasContext, String ids, CanvasCallback<StudentSubmission[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext, ids)) { return; }
 
-        callback.readFromCache(getSubmissionsForMultipleStudents(canvasContext, ids));
-        buildInterface(callback, canvasContext).getSubmissionsAndGradesForMultipleStudents(canvasContext.getId(), ids, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsAndGradesForMultipleStudents(canvasContext.getId(), ids, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsAndGradesForMultipleStudents(canvasContext.getId(), ids, callback);
     }
 
     public static void postSubmissionRubricAssessmentMap(CanvasContext canvasContext, RubricAssessment rubricAssessment, String assignmentScore, long assignmentId, long userId, CanvasCallback<Submission> callback){
         if (APIHelpers.paramIsNull(canvasContext, rubricAssessment, callback)){return;}
 
-        buildInterface(callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, callback);
     }
 
     private static Map<String, String> generateRubricAssessmentQueryMap(RubricAssessment rubricAssessment){
@@ -293,14 +269,14 @@ public class SubmissionAPI {
     // Synchronous
     /////////////////////////////////////////////////////////////////////////////
     public static FileUploadParams getFileUploadParams(Context context, long courseId, long assignmentId, String fileName, long size, String contentType){
-        return buildInterface(context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType);
+        return buildInterface(SubmissionsInterface.class, context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType);
     }
 
     public static Attachment uploadAssignmentSubmission(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(SubmissionsInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
     }
 
     public static Submission postSubmissionAttachments(Context context, long courseId, long assignmentId, ArrayList<String> attachments){
-        return buildInterface(context).postSubmissionAttachments(courseId, assignmentId, "online_upload",attachments);
+        return buildInterface(SubmissionsInterface.class, context).postSubmissionAttachments(courseId, assignmentId, "online_upload",attachments);
     }
 }

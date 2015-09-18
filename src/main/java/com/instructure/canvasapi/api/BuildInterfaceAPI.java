@@ -10,17 +10,22 @@ import retrofit.RestAdapter;
 
 public class BuildInterfaceAPI {
 
+    public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, true, perPageQueryParam);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback callback, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, null, true, perPageQueryParam);
+        return restAdapter.create(clazz);
+    }
+
     /**
      * Creates a rest adapter that will only read from the cache.
-     *
-     * @param clazz
-     * @param callback
-     * @param canvasContext
-     * @param <T>
-     * @return
      */
-    public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback<?> callback, CanvasContext canvasContext) {
+    public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, canvasContext);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(clazz);
     }
 
@@ -36,6 +41,12 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, null, false, perPageQueryParam);
         return restAdapter.create(clazz);
     }
 
