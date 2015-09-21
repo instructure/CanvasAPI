@@ -1,31 +1,25 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.FileFolder;
 import com.instructure.canvasapi.utilities.APIHelpers;
+import com.instructure.canvasapi.utilities.APIStatusDelegate;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.LinkHeaders;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
-import retrofit.http.Path;
 import retrofit.http.GET;
+import retrofit.http.Path;
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class FileFolderAPI {
-
-    public static String getFirstPageFoldersCacheFilename(long folderID) {
-        return "/folders/" + folderID + "/folders";
-    }
-
-    public static String getFirstPageFilesCacheFilename(long folderID) {
-        return "/folders/" + folderID + "/files";
-    }
+public class FileFolderAPI extends BuildInterfaceAPI {
 
     interface FilesFoldersInterface {
         @GET("/{context_id}/folders/root")
@@ -51,15 +45,6 @@ public class FileFolderAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static FilesFoldersInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(FilesFoldersInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
@@ -68,15 +53,36 @@ public class FileFolderAPI {
             return;
         }
 
-        //Build a callback bridge.
-        Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
+        // Build a callback bridge. Use a CanvasCallback instead of a regular callback so we can use caching appropriately and
+        // not have to make more API calls than necessary
+        Callback<FileFolder> bridgeCallback = new CanvasCallback<FileFolder>(new APIStatusDelegate() {
             @Override
-            public void success(FileFolder fileFolder, Response response) {
+            public void onCallbackStarted() { }
+
+            @Override
+            public void onCallbackFinished(CanvasCallback.SOURCE source) { }
+
+            @Override
+            public void onNoNetwork() { }
+
+            @Override
+            public Context getContext() {
+                return callback.getContext();
+            }
+        }) {
+
+            @Override
+            public void cache(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(fileFolder.getId(), callback);
+            }
+
+            @Override
+            public void firstPage(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+
                 //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
                 if(callback == null || callback.getContext() == null) {return;}
 
-                callback.readFromCache(getFirstPageFoldersCacheFilename(fileFolder.getId()));
-                buildInterface(callback, null).getFirstPageFolders(fileFolder.getId(), callback);
+                buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(fileFolder.getId(), callback);
             }
 
             @Override
@@ -93,15 +99,36 @@ public class FileFolderAPI {
             return;
         }
 
-        //Build a callback bridge.
-        Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
+        // Build a callback bridge. Use a CanvasCallback instead of a regular callback so we can use caching appropriately and
+        // not have to make more API calls than necessary
+        Callback<FileFolder> bridgeCallback = new CanvasCallback<FileFolder>(new APIStatusDelegate() {
             @Override
-            public void success(FileFolder fileFolder, Response response) {
+            public void onCallbackStarted() { }
+
+            @Override
+            public void onCallbackFinished(CanvasCallback.SOURCE source) { }
+
+            @Override
+            public void onNoNetwork() { }
+
+            @Override
+            public Context getContext() {
+                return callback.getContext();
+            }
+        }) {
+
+            @Override
+            public void cache(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(fileFolder.getId(), callback);
+            }
+
+            @Override
+            public void firstPage(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+
                 //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
                 if(callback == null || callback.getContext() == null) {return;}
 
-                callback.readFromCache(getFirstPageFilesCacheFilename(fileFolder.getId()));
-                buildInterface(callback, null).getFirstPageFiles(fileFolder.getId(), callback);
+                buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(fileFolder.getId(), callback);
             }
 
             @Override
@@ -114,11 +141,13 @@ public class FileFolderAPI {
     }
 
     private static void getRootFolder(CanvasContext canvasContext, CanvasCallback callback, Callback<FileFolder> bridgeCallback) {
-        FilesFoldersInterface foldersInterface = buildInterface(callback, canvasContext);
+        FilesFoldersInterface foldersInterface = buildInterface(FilesFoldersInterface.class, callback, canvasContext);
 
         if (canvasContext.getType() == CanvasContext.Type.USER) {
             foldersInterface.getRootUserFolder(bridgeCallback);
+            buildCacheInterface(FilesFoldersInterface.class, callback, canvasContext).getRootUserFolder(bridgeCallback);
         } else {
+            buildCacheInterface(FilesFoldersInterface.class, callback, canvasContext).getRootFolderForContext(canvasContext.getId(), bridgeCallback);
             foldersInterface.getRootFolderForContext(canvasContext.getId(), bridgeCallback);
         }
     }
@@ -128,8 +157,8 @@ public class FileFolderAPI {
             return;
         }
 
-        callback.readFromCache(getFirstPageFoldersCacheFilename(folderid));
-        buildInterface(callback, null).getFirstPageFolders(folderid, callback);
+        buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(folderid, callback);
+        buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(folderid, callback);
     }
 
     public static void getFirstPageFiles(long folderid, CanvasCallback<FileFolder[]> callback) {
@@ -137,8 +166,8 @@ public class FileFolderAPI {
             return;
         }
 
-        callback.readFromCache(getFirstPageFilesCacheFilename(folderid));
-        buildInterface(callback, null).getFirstPageFiles(folderid, callback);
+        buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(folderid, callback);
+        buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(folderid, callback);
     }
 
 
@@ -148,7 +177,8 @@ public class FileFolderAPI {
         }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageFileFoldersList(nextURL, callback);
+        buildCacheInterface(FilesFoldersInterface.class, callback, null).getNextPageFileFoldersList(nextURL, callback);
+        buildInterface(FilesFoldersInterface.class, callback, null).getNextPageFileFoldersList(nextURL, callback);
     }
 
     public static void getFileFolderFromURL(String url, CanvasCallback<FileFolder> callback) {
@@ -156,7 +186,8 @@ public class FileFolderAPI {
             return;
         }
 
-        buildInterface(callback, null).getFileFolderFromURL(url, callback);
+        buildCacheInterface(FilesFoldersInterface.class, callback, null).getFileFolderFromURL(url, callback);
+        buildInterface(FilesFoldersInterface.class, callback, null).getFileFolderFromURL(url, callback);
     }
 
     public static void deleteFile(long fileId, CanvasCallback<Response> callback) {
@@ -164,6 +195,6 @@ public class FileFolderAPI {
             return;
         }
 
-        buildInterface(callback, null).deleteFile(fileId,callback);
+        buildInterface(FilesFoldersInterface.class, callback, null).deleteFile(fileId,callback);
     }
 }

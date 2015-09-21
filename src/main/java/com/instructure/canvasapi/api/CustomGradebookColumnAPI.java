@@ -4,9 +4,7 @@ import com.instructure.canvasapi.model.ColumnDatum;
 import com.instructure.canvasapi.model.CustomColumn;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
-import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -17,15 +15,7 @@ import retrofit.http.Query;
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
-public class CustomGradebookColumnAPI {
-
-    private static String getGradebookColumnsCacheFilename(long courseId){
-        return "api/v1/courses/" + courseId + "/custom_gradebook_columns";
-    }
-
-    private static String getColumnDataCacheFilename(long courseId, long columnId){
-        return "api/v1/courses/" + courseId + "/custom_gradebook_columns/" + columnId + "/data";
-    }
+public class CustomGradebookColumnAPI extends BuildInterfaceAPI {
 
     public interface CustomGradebookInterface {
         @GET("/courses/{course_id}/custom_gradebook_columns")
@@ -42,41 +32,32 @@ public class CustomGradebookColumnAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static CustomGradebookInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(CustomGradebookInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getGradebookColumns(long courseID, CanvasCallback<CustomColumn[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getGradebookColumnsCacheFilename(courseID));
-        buildInterface(callback).getGradebookColumns(courseID, callback);
+        buildCacheInterface(CustomGradebookInterface.class, callback).getGradebookColumns(courseID, callback);
+        buildInterface(CustomGradebookInterface.class, callback).getGradebookColumns(courseID, callback);
     }
 
     public static void createGradebookColumns(long courseId, String title, int position, boolean isHidden, boolean isTeacherNotes, CanvasCallback<CustomColumn> callback) {
         if (APIHelpers.paramIsNull(callback, title)) { return; }
 
-        buildInterface(callback).createGradebookColumn(courseId, title, position, isHidden, isTeacherNotes, callback);
+        buildInterface(CustomGradebookInterface.class, callback).createGradebookColumn(courseId, title, position, isHidden, isTeacherNotes, callback);
     }
 
     public static void getColumnData(long courseID, long columnId, CanvasCallback<ColumnDatum[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getColumnDataCacheFilename(courseID, columnId));
-        buildInterface(callback).getColumnData(courseID, columnId, callback);
+        buildCacheInterface(CustomGradebookInterface.class, callback).getColumnData(courseID, columnId, callback);
+        buildInterface(CustomGradebookInterface.class, callback).getColumnData(courseID, columnId, callback);
     }
 
     public static void updateColumnData(long courseID, long columnId, long userId, String content, CanvasCallback<ColumnDatum> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback).updateColumnData(courseID, columnId, userId, content, callback);
+        buildInterface(CustomGradebookInterface.class, callback).updateColumnData(courseID, columnId, userId, content, callback);
     }
 }
