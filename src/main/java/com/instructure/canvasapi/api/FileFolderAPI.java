@@ -1,9 +1,13 @@
 package com.instructure.canvasapi.api;
 
+import android.content.Context;
+
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.FileFolder;
 import com.instructure.canvasapi.utilities.APIHelpers;
+import com.instructure.canvasapi.utilities.APIStatusDelegate;
 import com.instructure.canvasapi.utilities.CanvasCallback;
+import com.instructure.canvasapi.utilities.LinkHeaders;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -49,14 +53,35 @@ public class FileFolderAPI extends BuildInterfaceAPI {
             return;
         }
 
-        //Build a callback bridge.
-        Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
+        // Build a callback bridge. Use a CanvasCallback instead of a regular callback so we can use caching appropriately and
+        // not have to make more API calls than necessary
+        Callback<FileFolder> bridgeCallback = new CanvasCallback<FileFolder>(new APIStatusDelegate() {
             @Override
-            public void success(FileFolder fileFolder, Response response) {
+            public void onCallbackStarted() { }
+
+            @Override
+            public void onCallbackFinished(CanvasCallback.SOURCE source) { }
+
+            @Override
+            public void onNoNetwork() { }
+
+            @Override
+            public Context getContext() {
+                return callback.getContext();
+            }
+        }) {
+
+            @Override
+            public void cache(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(fileFolder.getId(), callback);
+            }
+
+            @Override
+            public void firstPage(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+
                 //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
                 if(callback == null || callback.getContext() == null) {return;}
 
-                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(fileFolder.getId(), callback);
                 buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFolders(fileFolder.getId(), callback);
             }
 
@@ -74,14 +99,35 @@ public class FileFolderAPI extends BuildInterfaceAPI {
             return;
         }
 
-        //Build a callback bridge.
-        Callback<FileFolder> bridgeCallback = new Callback<FileFolder>() {
+        // Build a callback bridge. Use a CanvasCallback instead of a regular callback so we can use caching appropriately and
+        // not have to make more API calls than necessary
+        Callback<FileFolder> bridgeCallback = new CanvasCallback<FileFolder>(new APIStatusDelegate() {
             @Override
-            public void success(FileFolder fileFolder, Response response) {
+            public void onCallbackStarted() { }
+
+            @Override
+            public void onCallbackFinished(CanvasCallback.SOURCE source) { }
+
+            @Override
+            public void onNoNetwork() { }
+
+            @Override
+            public Context getContext() {
+                return callback.getContext();
+            }
+        }) {
+
+            @Override
+            public void cache(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(fileFolder.getId(), callback);
+            }
+
+            @Override
+            public void firstPage(FileFolder fileFolder, LinkHeaders linkHeaders, Response response) {
+
                 //Handle if the fragment becomes detached. This isn't a CanvasCallback, so it's not automatic.
                 if(callback == null || callback.getContext() == null) {return;}
 
-                buildCacheInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(fileFolder.getId(), callback);
                 buildInterface(FilesFoldersInterface.class, callback, null).getFirstPageFiles(fileFolder.getId(), callback);
             }
 
