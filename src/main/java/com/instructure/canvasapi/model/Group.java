@@ -6,9 +6,8 @@ import android.os.Parcel;
 import java.util.Date;
 
 /**
- * @author Josh Ruesch
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class Group extends CanvasContext{
 
@@ -46,6 +45,7 @@ public class Group extends CanvasContext{
     private long group_category_id;
 
     private long storage_quota_mb;
+    private boolean is_favorite;
 
     public enum JoinLevel {Automatic, Request, Invitation, Unknown}
     public enum GroupRole {Community, Student, Imported, Course}
@@ -161,6 +161,14 @@ public class Group extends CanvasContext{
 
     public long getStorageQuotaMB() {
         return storage_quota_mb;
+    }
+
+    public boolean isFavorite() {
+        return is_favorite;
+    }
+
+    public void setFavorite(boolean isFavorite) {
+        this.is_favorite = isFavorite;
     }
 
     @Override
