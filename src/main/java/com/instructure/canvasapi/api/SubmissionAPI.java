@@ -179,6 +179,16 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         }
     }
 
+    public static void getSubmissionWithCommentsAndHistoryChained(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
+        } else {
+            buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
+        }
+    }
+
     public static void getSubmissionWithCommentsAndHistory(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
