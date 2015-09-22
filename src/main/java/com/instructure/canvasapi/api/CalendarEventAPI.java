@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.ScheduleItem;
@@ -213,7 +214,7 @@ public class CalendarEventAPI {
     }
 
     public static void createCalendarEvent(String contextCode, String title, String description, String startDate, String endDate, String location, final CanvasCallback<ScheduleItem> callback){
-        if(APIHelpers.paramIsNull(callback, contextCode)){return;}
+        if(APIHelpers.paramIsNull(callback, contextCode, startDate, endDate) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
 
         buildInterface(callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
     }
