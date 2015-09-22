@@ -214,7 +214,7 @@ public class CalendarEventAPI {
     }
 
     public static void createCalendarEvent(String contextCode, String title, String description, String startDate, String endDate, String location, final CanvasCallback<ScheduleItem> callback){
-        if(APIHelpers.paramIsNull(callback, contextCode, startDate, endDate) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
+        if(APIHelpers.paramIsNull(callback, contextCode) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
 
         buildInterface(callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
     }
