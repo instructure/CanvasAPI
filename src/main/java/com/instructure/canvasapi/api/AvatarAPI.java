@@ -13,11 +13,10 @@ import retrofit.http.PUT;
 import retrofit.http.Query;
 
 /**
- * Created by Hoa Hoang on 10/15/13.
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class AvatarAPI {
+public class AvatarAPI extends BuildInterfaceAPI {
 
     interface AvatarsInterface{
         @GET("/users/self/avatars")
@@ -28,28 +27,20 @@ public class AvatarAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static AvatarsInterface buildInterface(CanvasCallback<?> callback){
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(AvatarsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageOfAvatarList(CanvasCallback<Avatar[]> callback){
         if(APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback).getFirstPageOfAvatarList( callback);
+        buildInterface(AvatarsInterface.class, callback).getFirstPageOfAvatarList( callback);
+        buildInterface(AvatarsInterface.class, callback).getFirstPageOfAvatarList( callback);
     }
 
     public static void updateAvatar(String avatarURL, CanvasCallback<User> callback){
         if(APIHelpers.paramIsNull(callback,avatarURL)){ return; }
 
-        buildInterface(callback).updateAvatar(avatarURL, callback);
+        buildInterface(AvatarsInterface.class, callback).updateAvatar(avatarURL, callback);
     }
 
 }

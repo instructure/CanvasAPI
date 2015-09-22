@@ -13,7 +13,7 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public class BookmarkAPI {
+public class BookmarkAPI extends BuildInterfaceAPI {
 
     public static String getBookmarksCacheFilename(){
         return "/users/self/bookmarks";
@@ -46,30 +46,21 @@ public class BookmarkAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static BookmarkInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, false);
-        return restAdapter.create(BookmarkInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getBookmarks(CanvasCallback<Bookmark[]> callback) {
-        callback.readFromCache(getBookmarksCacheFilename());
-        buildInterface(callback).getBookmarks(callback);
+        buildCacheInterface(BookmarkInterface.class, callback).getBookmarks(callback);
+        buildInterface(BookmarkInterface.class, callback).getBookmarks(callback);
     }
 
     public static void getBookmark(long bookmarkId, CanvasCallback<Bookmark> callback) {
-        callback.readFromCache(getBookmarksCacheFilename());
-        buildInterface(callback).getBookmark(bookmarkId, callback);
+        buildCacheInterface(BookmarkInterface.class, callback).getBookmark(bookmarkId, callback);
+        buildInterface(BookmarkInterface.class, callback).getBookmark(bookmarkId, callback);
     }
 
     public static void createBookmark(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
-        buildInterface(callback).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
+        buildInterface(BookmarkInterface.class, callback).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
     }
 
     public static void deleteBookmark(Bookmark bookmark,  CanvasCallback<Bookmark> callback) {
@@ -77,10 +68,10 @@ public class BookmarkAPI {
     }
 
     public static void deleteBookmark(long bookmarkId, CanvasCallback<Bookmark> callback) {
-        buildInterface(callback).deleteBookmark(bookmarkId, callback);
+        buildInterface(BookmarkInterface.class, callback).deleteBookmark(bookmarkId, callback);
     }
 
     public static void update(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
-        buildInterface(callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
+        buildInterface(BookmarkInterface.class, callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
     }
 }

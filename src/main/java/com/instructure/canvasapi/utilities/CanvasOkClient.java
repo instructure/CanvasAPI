@@ -27,7 +27,7 @@ import retrofit.mime.TypedOutput;
 public class CanvasOkClient extends OkClient {
     static final int CONNECT_TIMEOUT_MILLIS = 15 * 1000; // 15s
     static final int READ_TIMEOUT_MILLIS = 20 * 1000; // 20s
-    public static final String CANVAS_API_CACHE_HEADER = "Canvas-api";
+    public static final String CANVAS_API_CACHE_HEADER = "Canvas-api-cache";
     public static final String CANVAS_API_CACHE_HEADER_VALUE = "is-cache";
 
     private static OkHttpClient generateDefaultOkHttp() {

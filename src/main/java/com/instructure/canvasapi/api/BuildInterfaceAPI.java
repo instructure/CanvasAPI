@@ -25,7 +25,6 @@ public class BuildInterfaceAPI {
      */
     public static <T> T buildCacheInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, true, canvasContext);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(clazz);
     }
 
@@ -41,7 +40,6 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(clazz);
     }
 

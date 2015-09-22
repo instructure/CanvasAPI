@@ -42,29 +42,6 @@ import retrofit.mime.TypedFile;
  */
 public class CourseAPI extends BuildInterfaceAPI {
 
-
-    private static String getCourseCacheFilename(long courseId) {
-        return "/courses/" + courseId;
-    }
-
-    public static String getAllCoursesCacheFilename() {
-        return "/allcourses";
-    }
-
-
-    private static String getCoursesCacheFilename() {
-        return "/courses";
-    }
-
-
-    private static String getAllFavoriteCoursesCacheFilename() {
-        return "/users/self/favorites/allcourses";
-    }
-
-    private static String getFavoriteCoursesCacheFilename() {
-        return "/users/self/favorites/courses";
-    }
-
     interface CoursesInterface {
 
         @PUT("/courses/{courseid}")
@@ -114,25 +91,6 @@ public class CourseAPI extends BuildInterfaceAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static CoursesInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(CoursesInterface.class);
-    }
-
-    private static CoursesInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(CoursesInterface.class);
-    }
-
-    private static CoursesInterface buildUploadInterface(String hostURL) {
-        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
-        return restAdapter.create(CoursesInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
@@ -146,15 +104,15 @@ public class CourseAPI extends BuildInterfaceAPI {
     public static void getCourseWithGrade(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getCourseCacheFilename(courseId));
-        buildInterface(callback).getCourseWithGrade(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback).getCourseWithGrade(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).getCourseWithGrade(courseId, callback);
     }
 
     public static void getCourseWithSyllabus(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getCourseCacheFilename(courseId));
-        buildInterface(callback).getCourseWithSyllabus(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback).getCourseWithSyllabus(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).getCourseWithSyllabus(courseId, callback);
     }
 
     public static void getFirstPageCourses(CanvasCallback<Course[]> callback) {
@@ -194,13 +152,32 @@ public class CourseAPI extends BuildInterfaceAPI {
     public static void addCourseToFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(callback).addCourseToFavorites(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).addCourseToFavorites(courseId, callback);
     }
 
     public static void removeCourseFromFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(callback).removeCourseFromFavorites(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).removeCourseFromFavorites(courseId, callback);
+    }
+
+    public static void getAllFavoriteCoursesChained(final CanvasCallback<Course[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<Course[]> bridge = new ExhaustiveBridgeCallback<>(Course.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                CourseAPI.getNextPageCoursesChained(bridgeCallback, nextURL, isCached);
+            }
+        });
+
+        if (isCached) {
+            buildCacheInterface(CoursesInterface.class, callback).getFavoriteCourses(bridge);
+        } else {
+            buildInterface(CoursesInterface.class, callback).getFavoriteCourses(bridge);
+        }
     }
 
     public static void getAllFavoriteCourses(final CanvasCallback<Course[]> callback) {
@@ -252,7 +229,7 @@ public class CourseAPI extends BuildInterfaceAPI {
         String newEndAtString = APIHelpers.dateToString(newEndAt);
         Integer newIsPublicInteger = (newIsPublic == null) ? null : APIHelpers.booleanToInt(newIsPublic);
 
-        buildInterface(callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, callback);
+        buildInterface(CoursesInterface.class, callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, callback);
     }
 
 
@@ -314,10 +291,10 @@ public class CourseAPI extends BuildInterfaceAPI {
     }
 
     public static FileUploadParams getFileUploadParams(Context context, long courseId, Long parentFolderId, String fileName, long size, String contentType){
-        return buildInterface(context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType);
+        return buildInterface(CoursesInterface.class, context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType);
     }
 
     public static Attachment uploadCourseFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
     }
 }

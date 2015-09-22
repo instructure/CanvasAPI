@@ -148,6 +148,16 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         }
     }
 
+    public static void getAssignmentGroupsListChained(long courseID, final CanvasCallback<AssignmentGroup[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupList(courseID, callback);
+        } else {
+            buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupList(courseID, callback);
+        }
+    }
+
     public static void getAssignmentGroupsList(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
