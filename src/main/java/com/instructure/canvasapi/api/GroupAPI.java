@@ -29,34 +29,6 @@ import retrofit.http.Query;
  */
 public class GroupAPI extends BuildInterfaceAPI {
 
-    private static String getAllGroupsCacheFilename() {
-        return "/users/self/allgroups";
-    }
-
-    private static String getFirstPageGroupsCacheFilename() {
-        return "/users/self/groups";
-    }
-
-    private static String getGroupCacheFilename(long groupID) {
-        return "/groups/"+groupID;
-    }
-
-    private static String getFirstPageGroupsInCourseCacheFilename(long courseID) {
-        return "/users/courses/"+courseID+"/groups";
-    }
-
-    private static String getAllGroupsInCourseCacheFilename(long courseID) {
-        return "/users/courses/"+courseID+"/allgroups";
-    }
-
-    private static String getGroupUsersCacheFilename(long courseID) {
-        return "/groups/"+courseID+"/users";
-    }
-
-    private static String getGroupUsersWithAvatarsCacheFilename(long courseID) {
-        return "/groups/"+courseID+"/users?include[]=avatar_url";
-    }
-
     interface GroupsInterface {
         @GET("/users/self/groups")
         void getFirstPageGroups(CanvasCallback<Group[]> callback);
@@ -99,18 +71,6 @@ public class GroupAPI extends BuildInterfaceAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static GroupsInterface buildInterface(CanvasCallback<?> callback) {
-        return buildInterface(callback.getContext());
-    }
-    private static GroupsInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(GroupsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
@@ -144,6 +104,25 @@ public class GroupAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(GroupsInterface.class, callback).getFirstPageGroupsInCourse(courseID, bridge);
         buildInterface(GroupsInterface.class, callback).getFirstPageGroupsInCourse(courseID, bridge);
+    }
+
+    public static void getGroupsForUserChained(final CanvasCallback<Group[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                getNextPageGroupsChained(nextURL, bridgeCallback, isCached);
+            }
+        });
+
+        if (isCached) {
+            buildCacheInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
+        } else {
+            buildInterface(GroupsInterface.class, callback).getFirstPageGroups(bridge);
+        }
     }
 
     public static void getGroupsForUser(final CanvasCallback<Group[]> callback) {
@@ -184,53 +163,54 @@ public class GroupAPI extends BuildInterfaceAPI {
     public static void getDetailedGroup(long groupId, CanvasCallback<Group> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getGroupCacheFilename(groupId));
-        buildInterface(callback).getDetailedGroup(groupId,callback);
+        buildCacheInterface(GroupsInterface.class, callback).getDetailedGroup(groupId, callback);
+        buildInterface(GroupsInterface.class, callback).getDetailedGroup(groupId,callback);
     }
 
     public static void getGroupUsers(long groupId, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(groupId, callback)) return;
 
-        callback.readFromCache(getGroupUsersCacheFilename(groupId));
-        buildInterface(callback).getGroupUsers(groupId,callback);
+        buildCacheInterface(GroupsInterface.class, callback).getGroupUsers(groupId, callback);
+        buildInterface(GroupsInterface.class, callback).getGroupUsers(groupId,callback);
     }
 
     public static void getGroupUsersWithAvatars(long groupId, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(groupId, callback)) return;
 
-        callback.readFromCache(getGroupUsersWithAvatarsCacheFilename(groupId));
-        buildInterface(callback).getGroupUsersWithAvatars(groupId,callback);
+        buildCacheInterface(GroupsInterface.class, callback).getGroupUsersWithAvatars(groupId, callback);
+        buildInterface(GroupsInterface.class, callback).getGroupUsersWithAvatars(groupId,callback);
     }
 
     public static void getNextPageGroupUsers(String nextURL, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageGroupUsers(nextURL, callback);
+        buildCacheInterface(GroupsInterface.class, callback).getNextPageGroupUsers(nextURL, callback);
+        buildInterface(GroupsInterface.class, callback).getNextPageGroupUsers(nextURL, callback);
     }
 
     public static void createGroup(String name, boolean isPublic, CanvasCallback<Group> callback) {
         if (APIHelpers.paramIsNull(name, callback)) return;
 
-        buildInterface(callback).createGroup(name, isPublic, callback);
+        buildInterface(GroupsInterface.class, callback).createGroup(name, isPublic, callback);
     }
 
     public static void createGroupWithCategory(long categoryId, String name, boolean isPublic, CanvasCallback<Group> callback) {
         if (APIHelpers.paramIsNull(name, callback)) return;
 
-        buildInterface(callback).createGroupWithCategory(categoryId, name, isPublic, callback);
+        buildInterface(GroupsInterface.class, callback).createGroupWithCategory(categoryId, name, isPublic, callback);
     }
 
     public static void deleteGroup(long groupId, CanvasCallback<Response>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).deleteGroup(groupId,responseCanvasCallback);
+        buildInterface(GroupsInterface.class, responseCanvasCallback).deleteGroup(groupId,responseCanvasCallback);
     }
 
     public static void createMembership(long groupId, String userId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(userId, callback)) return;
 
-        buildInterface(callback).createMembership(groupId, userId, callback);
+        buildInterface(GroupsInterface.class, callback).createMembership(groupId, userId, callback);
     }
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
@@ -260,7 +240,7 @@ public class GroupAPI extends BuildInterfaceAPI {
 
             //for(ever) loop. break once we've run outta stuff;
             for(;;){
-                Group[] groups = buildInterface(context).getGroupsSynchronous(page);
+                Group[] groups = buildInterface(GroupsInterface.class, context).getGroupsSynchronous(page);
                 page++;
 
                 //This is all or nothing. We don't want partial data.

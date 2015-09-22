@@ -10,8 +10,10 @@ import retrofit.RestAdapter;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Path;
-
-public class AccountNotificationAPI {
+/**
+* Copyright (c) 2015 Instructure. All rights reserved.
+*/
+public class AccountNotificationAPI extends BuildInterfaceAPI {
 
     public interface AccountNotificationInterface {
 
@@ -23,25 +25,26 @@ public class AccountNotificationAPI {
 
     }
 
-
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static AccountNotificationInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(AccountNotificationInterface.class);
-    }
-
     public static void getAccountNotifications(final CanvasCallback<AccountNotification[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).getAccountNotifications(callback);
+        buildCacheInterface(AccountNotificationInterface.class, callback, null).getAccountNotifications(callback);
+        buildInterface(AccountNotificationInterface.class, callback, null).getAccountNotifications(callback);
+    }
+
+    public static void getAccountNotificationsChained(final CanvasCallback<AccountNotification[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(AccountNotificationInterface.class, callback, null).getAccountNotifications(callback);
+        } else {
+            buildInterface(AccountNotificationInterface.class, callback, null).getAccountNotifications(callback);
+        }
     }
 
     public static void deleteAccountNotification(long accountNotificationId, CanvasCallback<AccountNotification> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(callback, null).deleteAccountNotification(accountNotificationId, callback);
+        buildInterface(AccountNotificationInterface.class, callback, null).deleteAccountNotification(accountNotificationId, callback);
     }
 }
