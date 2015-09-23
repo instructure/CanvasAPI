@@ -173,8 +173,8 @@ public class FileFolderAPI extends BuildInterfaceAPI {
         }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(FilesFoldersInterface.class, callback, null).getNextPageFileFoldersList(nextURL, callback);
-        buildInterface(FilesFoldersInterface.class, callback, null).getNextPageFileFoldersList(nextURL, callback);
+        buildCacheInterface(FilesFoldersInterface.class, callback, false).getNextPageFileFoldersList(nextURL, callback);
+        buildInterface(FilesFoldersInterface.class, callback, false).getNextPageFileFoldersList(nextURL, callback);
     }
 
     public static void getFileFolderFromURL(String url, CanvasCallback<FileFolder> callback) {

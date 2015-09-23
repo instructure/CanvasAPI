@@ -173,9 +173,9 @@ public class SubmissionAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCache) {
-            buildCacheInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+            buildCacheInterface(SubmissionsInterface.class, callback, false).getNextPageSubmissions(nextURL, callback);
         } else {
-            buildInterface(SubmissionsInterface.class, callback, null).getNextPageSubmissions(nextURL, callback);
+            buildInterface(SubmissionsInterface.class, callback, false).getNextPageSubmissions(nextURL, callback);
         }
     }
 

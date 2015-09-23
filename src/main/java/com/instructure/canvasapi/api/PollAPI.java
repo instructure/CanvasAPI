@@ -54,8 +54,8 @@ public class PollAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(PollInterface.class, callback).getNextPagePollsList(nextURL, callback);
-        buildInterface(PollInterface.class, callback).getNextPagePollsList(nextURL, callback);
+        buildCacheInterface(PollInterface.class, callback, false).getNextPagePollsList(nextURL, callback);
+        buildInterface(PollInterface.class, callback, false).getNextPagePollsList(nextURL, callback);
     }
 
     public static void getSinglePoll(long poll_id, CanvasCallback<PollResponse> callback) {

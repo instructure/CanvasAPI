@@ -145,8 +145,8 @@ public class GroupAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
-        buildInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        buildCacheInterface(GroupsInterface.class, callback, false).getNextPageGroups(nextURL, callback);
+        buildInterface(GroupsInterface.class, callback, false).getNextPageGroups(nextURL, callback);
     }
 
     public static void getNextPageGroupsChained(String nextURL, CanvasCallback<Group[]> callback, boolean isCached) {
@@ -154,9 +154,9 @@ public class GroupAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+            buildCacheInterface(GroupsInterface.class, callback, false).getNextPageGroups(nextURL, callback);
         } else {
-            buildInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+            buildInterface(GroupsInterface.class, callback, false).getNextPageGroups(nextURL, callback);
         }
     }
 
@@ -185,8 +185,8 @@ public class GroupAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(GroupsInterface.class, callback).getNextPageGroupUsers(nextURL, callback);
-        buildInterface(GroupsInterface.class, callback).getNextPageGroupUsers(nextURL, callback);
+        buildCacheInterface(GroupsInterface.class, callback, false).getNextPageGroupUsers(nextURL, callback);
+        buildInterface(GroupsInterface.class, callback, false).getNextPageGroupUsers(nextURL, callback);
     }
 
     public static void createGroup(String name, boolean isPublic, CanvasCallback<Group> callback) {

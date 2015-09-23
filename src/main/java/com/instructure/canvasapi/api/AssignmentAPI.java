@@ -142,9 +142,9 @@ public class AssignmentAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+            buildCacheInterface(AssignmentsInterface.class, callback, false).getNextPageAssignmentsList(nextURL, callback);
         } else {
-            buildInterface(AssignmentsInterface.class, callback, null).getNextPageAssignmentsList(nextURL, callback);
+            buildInterface(AssignmentsInterface.class, callback, false).getNextPageAssignmentsList(nextURL, callback);
         }
     }
 

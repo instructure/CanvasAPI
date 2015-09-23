@@ -134,8 +134,8 @@ public class CourseAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
-        buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+        buildCacheInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
+        buildInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
     }
 
     public static void getNextPageCoursesChained(CanvasCallback<Course[]> callback, String nextURL, boolean isCached) {
@@ -143,9 +143,9 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+            buildCacheInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
         } else {
-            buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+            buildInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
         }
     }
 

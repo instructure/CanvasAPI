@@ -128,9 +128,9 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(CalendarEventsInterface.class, callback).getNextPageCalendarEvents(nextURL, callback);
+            buildCacheInterface(CalendarEventsInterface.class, callback, false).getNextPageCalendarEvents(nextURL, callback);
         } else {
-            buildInterface(CalendarEventsInterface.class, callback).getNextPageCalendarEvents(nextURL, callback);
+            buildInterface(CalendarEventsInterface.class, callback, false).getNextPageCalendarEvents(nextURL, callback);
         }
     }
 

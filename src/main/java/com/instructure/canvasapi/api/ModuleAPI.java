@@ -50,8 +50,8 @@ public class ModuleAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(ModulesInterface.class, callback, null).getNextPageModuleObjectList(nextURL, callback);
-        buildInterface(ModulesInterface.class, callback, null).getNextPageModuleObjectList(nextURL, callback);
+        buildCacheInterface(ModulesInterface.class, callback, false).getNextPageModuleObjectList(nextURL, callback);
+        buildInterface(ModulesInterface.class, callback, false).getNextPageModuleObjectList(nextURL, callback);
     }
 
     public static void getFirstPageModuleItems(CanvasContext canvasContext, long moduleId, CanvasCallback<ModuleItem[]> callback) {
@@ -65,8 +65,8 @@ public class ModuleAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(ModulesInterface.class, callback, null).getNextPageModuleItemList(nextURL, callback);
-        buildInterface(ModulesInterface.class, callback, null).getNextPageModuleItemList(nextURL, callback);
+        buildCacheInterface(ModulesInterface.class, callback, false).getNextPageModuleItemList(nextURL, callback);
+        buildInterface(ModulesInterface.class, callback, false).getNextPageModuleItemList(nextURL, callback);
     }
 
     public static void markModuleItemRead(CanvasContext canvasContext, long moduleId, long itemId, CanvasCallback<Response> callback){

@@ -10,9 +10,8 @@ import retrofit.http.Path;
 import retrofit.http.GET;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class PageAPI extends BuildInterfaceAPI {
 
@@ -45,8 +44,8 @@ public class PageAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(PagesInterface.class, callback, null).getNextPagePagesList(nextURL, callback);
-        buildInterface(PagesInterface.class, callback, null).getNextPagePagesList(nextURL, callback);
+        buildCacheInterface(PagesInterface.class, callback, false).getNextPagePagesList(nextURL, callback);
+        buildInterface(PagesInterface.class, callback, false).getNextPagePagesList(nextURL, callback);
     }
 
     public static void getDetailedPage(CanvasContext canvasContext, String page_id, CanvasCallback<Page> callback) {

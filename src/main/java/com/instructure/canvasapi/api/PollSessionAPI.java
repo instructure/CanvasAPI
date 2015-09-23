@@ -66,8 +66,8 @@ public class PollSessionAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(PollSessionInterface.class, callback).getNextPagePollSessionsList(nextURL, callback);
-        buildInterface(PollSessionInterface.class, callback).getNextPagePollSessionsList(nextURL, callback);
+        buildCacheInterface(PollSessionInterface.class, callback, false).getNextPagePollSessionsList(nextURL, callback);
+        buildInterface(PollSessionInterface.class, callback, false).getNextPagePollSessionsList(nextURL, callback);
     }
 
     public static void getSinglePollSession(long poll_id, long poll_session_id, CanvasCallback<PollSessionResponse> callback) {
