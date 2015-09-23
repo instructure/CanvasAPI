@@ -53,6 +53,17 @@ public class CanvasRestAdapter {
         }
     };
 
+    public static void deleteHttpCache() {
+        if(okHttpClient != null) {
+            try {
+                okHttpClient.getClient().getCache().evictAll();
+            } catch (IOException e) {
+                Log.d(APIHelpers.LOG_TAG, "Failed deleting the cache");
+            }
+
+        }
+    }
+
     private static OkClient getOkHttp(Context context) {
         if (okHttpClient == null) {
             mContext = context;
