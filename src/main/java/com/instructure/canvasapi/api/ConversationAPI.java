@@ -136,8 +136,8 @@ public class ConversationAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(ConversationsInterface.class, callback).getNextPageConversationList(nextURL, callback);
-        buildInterface(ConversationsInterface.class, callback).getNextPageConversationList(nextURL, callback);
+        buildCacheInterface(ConversationsInterface.class, callback, false).getNextPageConversationList(nextURL, callback);
+        buildInterface(ConversationsInterface.class, callback, false).getNextPageConversationList(nextURL, callback);
     }
 
     public static void addMessageToConversation(CanvasCallback<Conversation> callback, long conversation_id, String message){

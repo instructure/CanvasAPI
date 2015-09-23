@@ -103,8 +103,8 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
-        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizzesList(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, false).getNextPageQuizzesList(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, false).getNextPageQuizzesList(nextURL, callback);
     }
 
     public static void getDetailedQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Quiz> callback) {
@@ -132,8 +132,8 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
-        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizQuestions(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, false).getNextPageQuizQuestions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, false).getNextPageQuizQuestions(nextURL, callback);
     }
 
     public static void startQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Response> callback) {
@@ -153,8 +153,8 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
-        buildInterface(QuizzesInterface.class, callback, null).getNextPageQuizSubmissions(nextURL, callback);
+        buildCacheInterface(QuizzesInterface.class, callback, false).getNextPageQuizSubmissions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, false).getNextPageQuizSubmissions(nextURL, callback);
     }
 
     public static void getFirstPageSubmissionQuestions(long quizSubmissionId, CanvasCallback<QuizSubmissionQuestionResponse> callback) {
@@ -167,7 +167,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(QuizzesInterface.class, callback, null).getNextPageSubmissionQuestions(nextURL, callback);
+        buildInterface(QuizzesInterface.class, callback, false).getNextPageSubmissionQuestions(nextURL, callback);
     }
 
     public static void postQuizQuestionMultiChoice(QuizSubmission quizSubmission, long answerId, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){

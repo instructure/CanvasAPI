@@ -67,8 +67,8 @@ public class StreamAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
 
-        buildCacheInterface(StreamInterface.class, callback, null).getNextPageStream(nextUrl, callback);
-        buildInterface(StreamInterface.class, callback, null).getNextPageStream(nextUrl, callback);
+        buildCacheInterface(StreamInterface.class, callback, false).getNextPageStream(nextUrl, callback);
+        buildInterface(StreamInterface.class, callback, false).getNextPageStream(nextUrl, callback);
     }
 
     public static void hideStreamItem(long streamId, final CanvasCallback<HiddenStreamItem> callback) {

@@ -175,8 +175,8 @@ public class UserAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
-        buildInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
+        buildCacheInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
+        buildInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
     }
 
     public static void getNextPagePeopleChained(String nextURL, CanvasCallback<User[]> callback, boolean isCached){
@@ -184,9 +184,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
+            buildCacheInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
         } else {
-            buildInterface(UsersInterface.class, callback, null).getNextPagePeopleList(nextURL, callback);
+            buildInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
         }
     }
 

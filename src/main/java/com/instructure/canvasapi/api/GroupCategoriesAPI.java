@@ -70,8 +70,8 @@ public class GroupCategoriesAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(GroupCategoriesInterface.class, callback).getNextPageGroupCategories(nextURL, callback);
-        buildInterface(GroupCategoriesInterface.class, callback).getNextPageGroupCategories(nextURL, callback);
+        buildCacheInterface(GroupCategoriesInterface.class, callback, false).getNextPageGroupCategories(nextURL, callback);
+        buildInterface(GroupCategoriesInterface.class, callback, false).getNextPageGroupCategories(nextURL, callback);
     }
 
     public static void getFirstPageGroupsFromCategory(long groupCategoryId, CanvasCallback<Group[]> callback) {
@@ -92,6 +92,7 @@ public class GroupCategoriesAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(GroupCategoriesInterface.class, callback).getNextPageUsersInCategory(nextURL, callback);
+        buildCacheInterface(GroupCategoriesInterface.class, callback, false).getNextPageUsersInCategory(nextURL, callback);
+        buildInterface(GroupCategoriesInterface.class, callback, false).getNextPageUsersInCategory(nextURL, callback);
     }
 }

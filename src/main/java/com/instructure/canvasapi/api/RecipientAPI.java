@@ -47,7 +47,7 @@ public class RecipientAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(RecipientsInterface.class, callback).getNextPageRecipientsList(nextURL,callback);
-        buildInterface(RecipientsInterface.class, callback).getNextPageRecipientsList(nextURL,callback);
+        buildCacheInterface(RecipientsInterface.class, callback, false).getNextPageRecipientsList(nextURL,callback);
+        buildInterface(RecipientsInterface.class, callback, false).getNextPageRecipientsList(nextURL,callback);
     }
 }

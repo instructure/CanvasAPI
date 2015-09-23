@@ -69,8 +69,8 @@ public class SectionAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
 
-        buildCacheInterface(SectionsInterface.class, callback, null).getNextPageSectionsList(nextURL, callback);
-        buildInterface(SectionsInterface.class, callback, null).getNextPageSectionsList(nextURL, callback);
+        buildCacheInterface(SectionsInterface.class, callback, false).getNextPageSectionsList(nextURL, callback);
+        buildInterface(SectionsInterface.class, callback, false).getNextPageSectionsList(nextURL, callback);
     }
 
     public static void getAssignmentSubmissionsForSection(CanvasContext canvasContext, long assignment_id, final CanvasCallback<Submission[]> callback){

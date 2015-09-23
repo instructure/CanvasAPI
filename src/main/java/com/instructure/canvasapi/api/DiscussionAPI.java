@@ -133,9 +133,9 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(DiscussionsInterface.class, callback, null).getNextPageDiscussions(nextURL, callback);
+            buildCacheInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
         } else {
-            buildInterface(DiscussionsInterface.class, callback, null).getNextPageDiscussions(nextURL, callback);
+            buildInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
         }
     }
 
@@ -143,8 +143,8 @@ public class DiscussionAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(DiscussionsInterface.class, callback, null).getNextPageDiscussions(nextURL, callback);
-        buildInterface(DiscussionsInterface.class, callback, null).getNextPageDiscussions(nextURL, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
+        buildInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
     }
 
     public static void getDetailedDiscussion(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopicHeader> callback) {

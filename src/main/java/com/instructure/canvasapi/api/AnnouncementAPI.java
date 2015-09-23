@@ -39,7 +39,7 @@ public class AnnouncementAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildCacheInterface(AnnouncementsInterface.class, callback, null).getNextPageAnnouncementsList(nextURL, callback);
-        buildInterface(AnnouncementsInterface.class, callback, null).getNextPageAnnouncementsList(nextURL, callback);
+        buildCacheInterface(AnnouncementsInterface.class, callback, false).getNextPageAnnouncementsList(nextURL, callback);
+        buildInterface(AnnouncementsInterface.class, callback, false).getNextPageAnnouncementsList(nextURL, callback);
     }
 }

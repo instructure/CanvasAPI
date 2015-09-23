@@ -52,8 +52,8 @@ public class AccountDomainAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(AccountDomainInterface.class, callback).getNextPageAccountDomains(nextURL, callback);
-        buildInterface(AccountDomainInterface.class, callback).getNextPageAccountDomains(nextURL, callback);
+        buildCacheInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
+        buildInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
     }
 
     public static void getNextPageAccountDomainsChained(CanvasCallback<AccountDomain[]> callback, String nextURL, boolean isCached) {
