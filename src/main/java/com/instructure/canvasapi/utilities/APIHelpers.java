@@ -93,6 +93,9 @@ public class APIHelpers {
             return false;
         }
 
+        //Clear the cached API Responses
+        CanvasRestAdapter.deleteHttpCache();
+
         //Clear credentials.
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
