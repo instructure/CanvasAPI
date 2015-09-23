@@ -171,6 +171,16 @@ public class UserAPI extends BuildInterfaceAPI {
         buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
     }
 
+    public static void getFirstPagePeopleChained(CanvasContext canvasContext, boolean isCached, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if(isCached) {
+            buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        }
+    }
+
     public static void getNextPagePeople(String nextURL, CanvasCallback<User[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
@@ -209,8 +219,17 @@ public class UserAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
         buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
-
         buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+    }
+
+    public static void getFirstPagePeopleChained(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, boolean isCached, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if(isCached) {
+            buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+        }
     }
 
     public static void getColors(Context context, CanvasCallback<CanvasColor> callback) {
