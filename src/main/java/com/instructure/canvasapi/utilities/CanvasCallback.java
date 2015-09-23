@@ -243,7 +243,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     @Override
     public void success(T t, Response response) {
         // check if it's been cancelled or detached
-        Log.d("URL_STATUS", response.getHeaders().get(response.getHeaders().size() - 1).getName() + " " +  response.getUrl() + " isCanceled " + isCancelled);
+        Log.d("URL_STATUS", APIHelpers.isCachedResponse(response) ?  "From cache " +  response.getUrl() : "From API "  + response.getUrl());
         if(isCancelled || t == null || getContext() == null) {
             return;
         }
