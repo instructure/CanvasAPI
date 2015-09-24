@@ -3,10 +3,8 @@ package com.instructure.canvasapi.api;
 import com.instructure.canvasapi.model.AccountDomain;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
-import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -78,6 +76,8 @@ public class AccountDomainAPI extends BuildInterfaceAPI {
                 AccountDomainAPI.getNextPageAccountDomainsChained(bridgeCallback, nextURL, isCached);
             }
         });
+
+        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
 
         buildCacheInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
         buildInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
