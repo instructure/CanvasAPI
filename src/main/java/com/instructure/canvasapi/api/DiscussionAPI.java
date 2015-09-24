@@ -74,7 +74,7 @@ public class DiscussionAPI extends BuildInterfaceAPI {
     public static void getFirstPageDiscussions(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
         buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
     }
 
