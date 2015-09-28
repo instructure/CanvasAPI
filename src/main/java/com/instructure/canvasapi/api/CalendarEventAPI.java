@@ -184,13 +184,13 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
     public static void createCalendarEvent(String contextCode, String title, String description, String startDate, String endDate, String location, final CanvasCallback<ScheduleItem> callback){
         if(APIHelpers.paramIsNull(callback, contextCode) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
 
-        buildInterface(callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
+        buildInterface(CalendarEventsInterface.class, callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
     }
 
     public static void deleteCalendarEvent(long calendarEventId, String cancelReason, CanvasCallback<ScheduleItem> callback){
         if(APIHelpers.paramIsNull(callback)){return;}
 
-        buildInterface(callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
+        buildInterface(CalendarEventsInterface.class, callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
