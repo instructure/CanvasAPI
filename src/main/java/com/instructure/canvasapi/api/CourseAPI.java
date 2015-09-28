@@ -36,9 +36,7 @@ import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
- * Created by Joshua Dutton on 9/5/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class CourseAPI extends BuildInterfaceAPI {
 
@@ -61,10 +59,10 @@ public class CourseAPI extends BuildInterfaceAPI {
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=is_favorite")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=favorites")
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
-        @GET("/{next}?&include[]=needs_grading_count&include[]=permissions&include[]=is_favorite")
+        @GET("/{next}?&include[]=needs_grading_count&include[]=permissions&include[]=favorites")
         void getNextPageCourses(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
         @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")

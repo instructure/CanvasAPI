@@ -104,10 +104,11 @@ public class DateHelpers {
     }
 
     public static SimpleDateFormat getDayAbbreviationFormat(Context context) {
-        if(DateFormat.is24HourFormat(context)) {
+        if (DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        } else {
+            return new SimpleDateFormat("hh:mm a", Locale.getDefault());
         }
-        return new SimpleDateFormat("EEE, h:mma", Locale.getDefault());
     }
 
     public static SimpleDateFormat getDayMonthTimeAbbreviationFormat(Context context) {
