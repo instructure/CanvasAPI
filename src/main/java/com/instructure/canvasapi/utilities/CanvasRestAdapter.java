@@ -68,7 +68,7 @@ public class CanvasRestAdapter {
         if (okHttpClient == null) {
             mContext = context;
             File httpCacheDirectory = new File(context.getCacheDir(), "responses");
-            Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024); // cache size
+            Cache cache = new Cache(httpCacheDirectory, 20 * 1024 * 1024); // cache size
             OkHttpClient httpClient = new OkHttpClient();
             httpClient.setCache(cache);
             httpClient.setReadTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
