@@ -50,6 +50,7 @@ public class Quiz extends CanvasModel<Quiz> {
     private String lock_at;
     private List<String> question_types = new ArrayList<>();
     private boolean has_access_code;
+    private boolean one_question_at_a_time;
     // Helper variables
 
     private Assignment assignment;
@@ -223,6 +224,10 @@ public class Quiz extends CanvasModel<Quiz> {
         return has_access_code;
     }
 
+    public boolean isOneQuestionAtATime() {
+        return one_question_at_a_time;
+    }
+
     public Assignment getAssignment() {
         return assignment;
     }
@@ -289,6 +294,7 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeString(this.lock_at);
         dest.writeList(this.question_types);
         dest.writeByte(this.has_access_code ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.one_question_at_a_time ? (byte) 1 : (byte) 0);
     }
 
     public Quiz() {
@@ -319,6 +325,7 @@ public class Quiz extends CanvasModel<Quiz> {
         this.lock_at = in.readString();
         in.readList(this.question_types, String.class.getClassLoader());
         this.has_access_code = in.readByte() != 0;
+        this.one_question_at_a_time = in.readByte() != 0;
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {

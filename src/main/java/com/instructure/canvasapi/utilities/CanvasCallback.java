@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Header;
 import retrofit.client.Response;
 
 /**
@@ -23,6 +22,10 @@ import retrofit.client.Response;
 public abstract class CanvasCallback<T> implements Callback<T> {
 
     protected APIStatusDelegate statusDelegate;
+
+    // Controls whether of not the cache callbacks are called. Useful for pull-to-refresh, where the cache results should be ignored
+    protected APICacheStatusDelegate cacheStatusDelegate;
+
     private String cacheFileName;
     private boolean isNextPage = false;
     private boolean isCancelled = false;
@@ -60,6 +63,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         return statusDelegate;
     }
 
+    public APICacheStatusDelegate getCacheStatusDelegate() {
+        return cacheStatusDelegate;
+    }
+
     /**
      * setIsNextPage sets whether you're on the NextPages (2 or more) of pagination.
      * @param nextPage
@@ -88,6 +95,11 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     private void setupDelegates(APIStatusDelegate statusDelegate, ErrorDelegate errorDelegate) {
         this.statusDelegate = statusDelegate;
+
+        if (statusDelegate instanceof APICacheStatusDelegate) {
+            this.cacheStatusDelegate = (APICacheStatusDelegate) statusDelegate;
+        }
+
 
         if (errorDelegate == null) {
             this.errorDelegate = getDefaultErrorDelegate(statusDelegate.getContext());
@@ -370,22 +382,30 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         @Override
         protected void onPostExecute(LinkHeaders linkHeaders) {
             super.onPostExecute(linkHeaders);
-
             if (isCancelled) {
                 return;
             }
+            boolean isCache = APIHelpers.isCachedResponse(response);
+            boolean isIgnoreCache = false;
 
-            if (response.getHeaders().contains(new Header(CanvasOkClient.CANVAS_API_CACHE_HEADER, CanvasOkClient.CANVAS_API_CACHE_HEADER_VALUE))) {
+            if (cacheStatusDelegate != null) {
+                isIgnoreCache = cacheStatusDelegate.shouldIgnoreCache();
+            }
+
+            if (isCache && !isIgnoreCache) {
                 Log.v(APIHelpers.LOG_TAG, "Cache");
                 cache(t);
                 cache(t, linkHeaders, response);
-            } else if(isNextPage){
+                statusDelegate.onCallbackFinished(SOURCE.CACHE);
+            } else if (isNextPage) {
                 nextPage(t, linkHeaders, response);
-            } else {
+                statusDelegate.onCallbackFinished(SOURCE.API);
+            } else if (!isCache) {
                 firstPage(t, linkHeaders, response);
+                statusDelegate.onCallbackFinished(SOURCE.API);
             }
 
-            finishLoading();
+            isFinished = true;
         }
     }
 

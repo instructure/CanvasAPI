@@ -66,12 +66,12 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
 
     //The original score of the quiz submission prior to any re-grading.
     @SerializedName("score_before_regrade")
-    private int scoreBeforeRegrade;
+    private double scoreBeforeRegrade;
 
     //For quizzes that allow multiple attempts, this is the score that will be used,
     //which might be the score of the latest, or the highest, quiz submission.
     @SerializedName("kept_score")
-    private int keptScore;
+    private double keptScore;
 
     //Number of points the quiz submission's score was fudged by.
     @SerializedName("fudge_points")
@@ -199,19 +199,19 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.score = score;
     }
 
-    public int getScoreBeforeRegrade() {
+    public double getScoreBeforeRegrade() {
         return scoreBeforeRegrade;
     }
 
-    public void setScoreBeforeRegrade(int scoreBeforeRegrade) {
+    public void setScoreBeforeRegrade(double scoreBeforeRegrade) {
         this.scoreBeforeRegrade = scoreBeforeRegrade;
     }
 
-    public int getKeptScore() {
+    public double getKeptScore() {
         return keptScore;
     }
 
-    public void setKeptScore(int keptScore) {
+    public void setKeptScore(double keptScore) {
         this.keptScore = keptScore;
     }
 
@@ -307,8 +307,8 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         dest.writeByte(manuallyUnlocked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.timeSpent);
         dest.writeDouble(this.score);
-        dest.writeInt(this.scoreBeforeRegrade);
-        dest.writeInt(this.keptScore);
+        dest.writeDouble(this.scoreBeforeRegrade);
+        dest.writeDouble(this.keptScore);
         dest.writeInt(this.fudgePoints);
         dest.writeByte(hasSeenResults ? (byte) 1 : (byte) 0);
         dest.writeString(this.workflowState);
@@ -333,8 +333,8 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.manuallyUnlocked = in.readByte() != 0;
         this.timeSpent = in.readInt();
         this.score = in.readDouble();
-        this.scoreBeforeRegrade = in.readInt();
-        this.keptScore = in.readInt();
+        this.scoreBeforeRegrade = in.readDouble();
+        this.keptScore = in.readDouble();
         this.fudgePoints = in.readInt();
         this.hasSeenResults = in.readByte() != 0;
         this.workflowState = in.readString();

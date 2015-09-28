@@ -23,20 +23,18 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by Josh Ruesch on 12/27/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class GroupAPI extends BuildInterfaceAPI {
 
     interface GroupsInterface {
-        @GET("/users/self/groups")
+        @GET("/users/self/groups?include[]=favorites")
         void getFirstPageGroups(CanvasCallback<Group[]> callback);
 
         @GET("/courses/{courseid}/groups")
         void getFirstPageGroupsInCourse(@Path("courseid") long courseId, CanvasCallback<Group[]> callback);
 
-        @GET("/{next}")
+        @GET("/{next}?include[]=favorites")
         void getNextPageGroups(@Path(value = "next", encode = false)String nextURL, CanvasCallback<Group[]> callback);
 
         @GET("/groups/{groupid}?include[]=permissions")
