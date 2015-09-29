@@ -336,7 +336,12 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         } else if (response.getStatus() >= 400 && response.getStatus() < 500) {
             errorDelegate.invalidUrlError(retrofitError, getContext());
         } else if (response.getStatus() >= 500 && response.getStatus() < 600) {
-            errorDelegate.serverError(retrofitError, getContext());
+            //don't do anything for a 504 (Unsatisfiable Request (only-if-cached)).
+            //It will happen when we try to read from the http cache and there isn't
+            //anything there
+            if (response.getStatus() != 504) {
+                errorDelegate.serverError(retrofitError, getContext());
+            }
         }
     }
 
@@ -403,6 +408,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             } else if (!isCache) {
                 firstPage(t, linkHeaders, response);
                 statusDelegate.onCallbackFinished(SOURCE.API);
+
+                // since we have had a successful network call, reset the variable that tracks whether the user has seen the
+                // no network error
+                APIHelpers.setHasSeenNetworkErrorMessage(getContext(), false);
             }
 
             isFinished = true;
