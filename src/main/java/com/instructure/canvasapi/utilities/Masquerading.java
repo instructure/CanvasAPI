@@ -49,6 +49,8 @@ public class Masquerading {
         File cacheDir = new File(context.getFilesDir(), "cache");
         FileUtilities.deleteAllFilesInDirectory(cacheDir);
 
+        CanvasRestAdapter.deleteHttpCache();
+
         SharedPreferences settings = context.getSharedPreferences(MASQ_PREF_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(IS_MASQUERADING, false);
@@ -59,6 +61,8 @@ public class Masquerading {
 
         File cacheDir = new File(context.getFilesDir(), "cache");
         FileUtilities.deleteAllFilesInDirectory(cacheDir);
+
+        CanvasRestAdapter.deleteHttpCache();
 
         SharedPreferences settings = context.getSharedPreferences(MASQ_PREF_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
