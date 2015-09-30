@@ -339,7 +339,12 @@ public abstract class CanvasCallback<T> implements Callback<T> {
             //don't do anything for a 504 (Unsatisfiable Request (only-if-cached)).
             //It will happen when we try to read from the http cache and there isn't
             //anything there
-            if (response.getStatus() != 504) {
+            if (response.getStatus() == 504 && APIHelpers.isCachedResponse(response)) {
+                if (!CanvasRestAdapter.isNetworkAvaliable(getContext())) { // Purposely not part of the above if statement. First if statement is prevent the error delegate from a 504 cache response
+                    statusDelegate.onNoNetwork(); // Only call when no items were cached and there isn't a network
+                }
+                // do nothing
+            } else {
                 errorDelegate.serverError(retrofitError, getContext());
             }
         }
@@ -411,7 +416,9 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
                 // since we have had a successful network call, reset the variable that tracks whether the user has seen the
                 // no network error
-                APIHelpers.setHasSeenNetworkErrorMessage(getContext(), false);
+                if (getContext() != null) {
+                    APIHelpers.setHasSeenNetworkErrorMessage(getContext(), false);
+                }
             }
 
             isFinished = true;
