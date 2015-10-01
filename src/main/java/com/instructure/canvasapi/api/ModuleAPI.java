@@ -69,6 +69,17 @@ public class ModuleAPI extends BuildInterfaceAPI {
         buildInterface(ModulesInterface.class, callback, false).getNextPageModuleItemList(nextURL, callback);
     }
 
+    public static void getNextPageModuleItemsChained(String nextURL, CanvasCallback<ModuleItem[]> callback, boolean isCached){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(ModulesInterface.class, callback, false).getNextPageModuleItemList(nextURL, callback);
+        } else {
+            buildInterface(ModulesInterface.class, callback, false).getNextPageModuleItemList(nextURL, callback);
+        }
+    }
+
     public static void markModuleItemRead(CanvasContext canvasContext, long moduleId, long itemId, CanvasCallback<Response> callback){
         if(APIHelpers.paramIsNull(callback, canvasContext)){
             return;
