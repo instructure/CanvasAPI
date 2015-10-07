@@ -3,13 +3,15 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 /**
  * @author Josh Ruesch
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class DiscussionTopicPermission implements Parcelable {
+public class DiscussionTopicPermission extends CanvasModel<DiscussionTopicPermission> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,4 +72,19 @@ public class DiscussionTopicPermission implements Parcelable {
             return new DiscussionTopicPermission[size];
         }
     };
+
+    @Override
+    public long getId() {
+        return 0;
+    }
+
+    @Override
+    public Date getComparisonDate() {
+        return null;
+    }
+
+    @Override
+    public String getComparisonString() {
+        return null;
+    }
 }
