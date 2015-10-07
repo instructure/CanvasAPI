@@ -51,6 +51,8 @@ public class Quiz extends CanvasModel<Quiz> {
     private List<String> question_types = new ArrayList<>();
     private boolean has_access_code;
     private boolean one_question_at_a_time;
+    private boolean require_lockdown_browser;
+    private boolean require_lockdown_browser_for_results;
     // Helper variables
 
     private Assignment assignment;
@@ -236,6 +238,22 @@ public class Quiz extends CanvasModel<Quiz> {
         this.assignment = assignment;
     }
 
+    public boolean getRequireLockdownBrowser() {
+        return require_lockdown_browser;
+    }
+
+    public void setRequireLockdownBrowser(boolean require_lockdown_browser) {
+        this.require_lockdown_browser = require_lockdown_browser;
+    }
+
+    public boolean getRequireLockdownBrowserForResults() {
+        return require_lockdown_browser_for_results;
+    }
+
+    public void setRequireLockdownBrowserForResults(boolean require_lockdown_browser_for_results) {
+        this.require_lockdown_browser_for_results = require_lockdown_browser_for_results;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Helper Methods
     ///////////////////////////////////////////////////////////////////////////
@@ -295,6 +313,8 @@ public class Quiz extends CanvasModel<Quiz> {
         dest.writeList(this.question_types);
         dest.writeByte(this.has_access_code ? (byte) 1 : (byte) 0);
         dest.writeByte(this.one_question_at_a_time ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.require_lockdown_browser ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.require_lockdown_browser ? (byte) 1 : (byte) 0);
     }
 
     public Quiz() {
@@ -326,6 +346,8 @@ public class Quiz extends CanvasModel<Quiz> {
         in.readList(this.question_types, String.class.getClassLoader());
         this.has_access_code = in.readByte() != 0;
         this.one_question_at_a_time = in.readByte() != 0;
+        this.require_lockdown_browser = in.readByte() != 0;
+        this.require_lockdown_browser_for_results = in.readByte() != 0;
     }
 
     public static Creator<Quiz> CREATOR = new Creator<Quiz>() {

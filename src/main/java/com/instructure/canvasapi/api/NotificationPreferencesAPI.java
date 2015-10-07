@@ -68,7 +68,6 @@ public class NotificationPreferencesAPI {
 
     private static NotificationPreferencesInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         return restAdapter.create(NotificationPreferencesInterface.class);
     }
 
