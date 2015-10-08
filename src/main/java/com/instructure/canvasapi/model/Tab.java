@@ -7,13 +7,15 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
+import java.util.Date;
+
 /**
  * Created by Joshua Dutton on 9/6/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
 
-public class Tab implements Parcelable {
+public class Tab extends CanvasModel<Tab> {
 
     public static final String TYPE_INTERNAL = "internal";
     public static final String TYPE_EXTERNAL = "external";
@@ -52,7 +54,23 @@ public class Tab implements Parcelable {
     // Getters & Setters
     ///////////////////////////////////////////////////////////////////////////
 
-    public String getId() {
+
+    @Override
+    public long getId() {
+        return 0;
+    }
+
+    @Override
+    public String getComparisonString() {
+        return null;
+    }
+
+    @Override
+    public Date getComparisonDate() {
+        return null;
+    }
+
+    public String getTabId() {
         return id;
     }
     public String getLabel() {
@@ -104,11 +122,11 @@ public class Tab implements Parcelable {
 
     @Override
     public String toString(){
-        if(this.getId() == null || this.getLabel() == null){
+        if(this.getTabId() == null || this.getLabel() == null){
             return "";
         }
 
-        return this.getId()+":"+this.getLabel();
+        return this.getTabId()+":"+this.getLabel();
     }
 
 
