@@ -48,7 +48,7 @@ public class CanvasRestAdapter {
             // Re-write response CC header to force use of cache
             // Displayed cached data will always be followed by a response from the server with the latest data.
             return response.newBuilder()
-                    .header("Cache-Control", "public, max-age=172800") //60*60*24*2 = 172,800 2 weeks; Essentially means cached data will only be valid offline for 2 weeks. When network is available, the cache is always updated on every request.
+                    .header("Cache-Control", "public, max-age=1209600") //60*60*24*14 = 1209600 2 weeks; Essentially means cached data will only be valid offline for 2 weeks. When network is available, the cache is always updated on every request.
                     .build();
         }
     };
