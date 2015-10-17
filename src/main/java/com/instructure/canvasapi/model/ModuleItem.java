@@ -65,13 +65,13 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
 
         private static final long serialVersionUID = 1L;
         private String type;
-        private int min_score;
+        private double min_score;
         private boolean completed;
 
-        public int getMin_score() {
+        public double getMin_score() {
             return min_score;
         }
-        public void setMin_score(int min_score) {
+        public void setMin_score(double min_score) {
             this.min_score = min_score;
         }
         public boolean isCompleted() {
@@ -193,4 +193,3 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         }
     };
 }
-
