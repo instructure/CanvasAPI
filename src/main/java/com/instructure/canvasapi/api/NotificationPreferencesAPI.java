@@ -52,6 +52,10 @@ public class NotificationPreferencesAPI extends BuildInterfaceAPI {
         void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Body NotificationPreferenceResponse preferencesToChange, CanvasCallback<NotificationPreferenceResponse> callback);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Build Interface Helpers
+    /////////////////////////////////////////////////////////////////////////
+
     public static void getNotificationPreferences(final long userId, final long communicationChannelId, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 

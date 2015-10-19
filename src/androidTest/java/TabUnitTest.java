@@ -24,7 +24,7 @@ public class TabUnitTest extends Assert {
             assertNotNull(tab.getType());
             assertNotNull(tab.getExternalUrl());
             assertNotNull(tab.getLabel());
-            assertNotNull(tab.getId());
+            assertNotNull(tab.getTabId());
         }
     }
 

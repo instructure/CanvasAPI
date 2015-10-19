@@ -51,6 +51,8 @@ android {
     sourceSets {
         test.setRoot("src/androidTest")
     }
+
+//    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
