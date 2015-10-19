@@ -27,7 +27,7 @@ import retrofit.http.Query;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class CalendarEventAPI {
+public class CalendarEventAPI extends BuildInterfaceAPI {
 
     public enum EVENT_TYPE {CALENDAR_EVENT, ASSIGNMENT_EVENT;
 
@@ -116,113 +116,81 @@ public class CalendarEventAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static CalendarEventsInterface buildInterface(CanvasCallback<?> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        return restAdapter.create(CalendarEventsInterface.class);
-    }
-
-    private static CalendarEventsInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(CalendarEventsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getCalendarEvent(long calendarEventId, final CanvasCallback<ScheduleItem> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getCalendarEventCacheFilename(calendarEventId));
-        buildInterface(callback).getCalendarEvent(calendarEventId, callback);
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEvent(calendarEventId, callback);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEvent(calendarEventId, callback);
     }
 
     public static void getCalendarEvents(CanvasContext canvasContext, final CanvasCallback<ScheduleItem[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getCalendarEventsCacheFilename(canvasContext));
-        buildInterface(callback).getCalendarEvents(canvasContext.getContextId(), callback);
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEvents(canvasContext.getContextId(), callback);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEvents(canvasContext.getContextId(), callback);
     }
 
     public static void getUpcomingEvents(final CanvasCallback<ScheduleItem[]> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        callback.readFromCache(getUpcomingEventsCacheFilename());
-        buildInterface(callback).getUpcomingEvents(callback);
+        buildCacheInterface(CalendarEventsInterface.class, callback).getUpcomingEvents(callback);
+        buildInterface(CalendarEventsInterface.class, callback).getUpcomingEvents(callback);
     }
 
-    public static void getNextPageCalendarEvents(String nextURL, CanvasCallback<ScheduleItem[]> callback){
+    public static void getNextPageCalendarEventsChained(String nextURL, CanvasCallback<ScheduleItem[]> callback, boolean isCached){
         if(APIHelpers.paramIsNull(callback, nextURL)){ return;}
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageCalendarEvents(nextURL, callback);
-    }
-
-    public static void getAlCalendarEvents(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
-
-        String contextIds = buildContextArray(canvasContextIds);
-        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, callback);
+        if (isCached) {
+            buildCacheInterface(CalendarEventsInterface.class, callback, false).getNextPageCalendarEvents(nextURL, callback);
+        } else {
+            buildInterface(CalendarEventsInterface.class, callback, false).getNextPageCalendarEvents(nextURL, callback);
+        }
     }
 
     public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
-        callback.readFromCache(getAllEventsCacheFilename(startDate, eventType));
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
         String contextIds = buildContextArray(canvasContextIds);
-        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                CalendarEventAPI.getNextPageCalendarEvents(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return ScheduleItem.class;
+                CalendarEventAPI.getNextPageCalendarEventsChained(nextURL, bridgeCallback, isCached);
             }
         });
 
-        eventsInterface.getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, bridge);
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, bridge);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEvents(false, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, contextIds, bridge);
     }
 
     public static void getAllCalendarEventsExhaustive(EVENT_TYPE eventType, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
         String contextIds = buildContextArray(canvasContextIds);
-        callback.readFromCache(getAllCalendarEventsCacheFilename(contextIds, eventType));
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
-        CalendarEventsInterface eventsInterface = restAdapter.create(CalendarEventsInterface.class);
 
-        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
-                CalendarEventAPI.getNextPageCalendarEvents(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return ScheduleItem.class;
+                CalendarEventAPI.getNextPageCalendarEventsChained(nextURL, bridgeCallback, isCached);
             }
         });
 
-        eventsInterface.getCalendarEvents(true, EVENT_TYPE.getEventTypeName(eventType), contextIds, bridge);
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEvents(true, EVENT_TYPE.getEventTypeName(eventType), contextIds, bridge);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEvents(true, EVENT_TYPE.getEventTypeName(eventType), contextIds, bridge);
     }
 
     public static void createCalendarEvent(String contextCode, String title, String description, String startDate, String endDate, String location, final CanvasCallback<ScheduleItem> callback){
         if(APIHelpers.paramIsNull(callback, contextCode) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
 
-        buildInterface(callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
+        buildInterface(CalendarEventsInterface.class, callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
     }
 
     public static void deleteCalendarEvent(long calendarEventId, String cancelReason, CanvasCallback<ScheduleItem> callback){
         if(APIHelpers.paramIsNull(callback)){return;}
 
-        buildInterface(callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
+        buildInterface(CalendarEventsInterface.class, callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
@@ -251,7 +219,7 @@ public class CalendarEventAPI {
 
     public static ScheduleItem[] getUpcomingEventsSynchronous(Context context) {
         try {
-            return buildInterface(context).getUpcomingEvents();
+            return buildInterface(CalendarEventsInterface.class, context).getUpcomingEvents();
         } catch (Exception E){
             return null;
         }

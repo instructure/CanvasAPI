@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.instructure.canvasapi.api.BuildInterfaceAPI;
 import com.instructure.canvasapi.model.CanvasError;
 
 import java.io.Serializable;
@@ -21,6 +22,10 @@ import retrofit.client.Response;
 public abstract class CanvasCallback<T> implements Callback<T> {
 
     protected APIStatusDelegate statusDelegate;
+
+    // Controls whether of not the cache callbacks are called. Useful for pull-to-refresh, where the cache results should be ignored
+    protected APICacheStatusDelegate cacheStatusDelegate;
+
     private String cacheFileName;
     private boolean isNextPage = false;
     private boolean isCancelled = false;
@@ -58,6 +63,10 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         return statusDelegate;
     }
 
+    public APICacheStatusDelegate getCacheStatusDelegate() {
+        return cacheStatusDelegate;
+    }
+
     /**
      * setIsNextPage sets whether you're on the NextPages (2 or more) of pagination.
      * @param nextPage
@@ -86,6 +95,11 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     private void setupDelegates(APIStatusDelegate statusDelegate, ErrorDelegate errorDelegate) {
         this.statusDelegate = statusDelegate;
+
+        if (statusDelegate instanceof APICacheStatusDelegate) {
+            this.cacheStatusDelegate = (APICacheStatusDelegate) statusDelegate;
+        }
+
 
         if (errorDelegate == null) {
             this.errorDelegate = getDefaultErrorDelegate(statusDelegate.getContext());
@@ -140,6 +154,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * setShouldCache sets whether or not a call should be cached and the filename where it'll be cached to.
      * Should only be called by the API
      */
+    @Deprecated
     public void setShouldCache(String fileName) {
         cacheFileName = fileName;
     }
@@ -148,6 +163,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * shouldCache is a helper for whether or not a cacheFileName has been set.
      * @return
      */
+    @Deprecated
     public boolean shouldCache() {
         return cacheFileName != null;
     }
@@ -166,12 +182,15 @@ public abstract class CanvasCallback<T> implements Callback<T> {
 
     /**
      * readFromCache reads from the cache filename and simultaneously sets the cache filename
+     * Use {@link BuildInterfaceAPI#buildCacheInterface} instead
      * @param path
      */
+    @Deprecated
     public void readFromCache(String path) {
         new ReadCacheData().execute(path);
     }
 
+    @Deprecated
     public boolean deleteCache(){
         return FileUtilities.DeleteFile(getContext(), cacheFileName);
     }
@@ -184,7 +203,14 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      * cache is a function you can override to get the cached values.
      * @param t
      */
-    public abstract void cache(T t);
+    @Deprecated
+    public void cache(T t) {
+
+    }
+
+    public void cache(T t, LinkHeaders linkHeaders, Response response) {
+        firstPage(t, linkHeaders, response);
+    }
 
     /**
      * firstPage is the first (or only in some cases) of the API response.
@@ -229,6 +255,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
     @Override
     public void success(T t, Response response) {
         // check if it's been cancelled or detached
+        Log.d("URL_STATUS", APIHelpers.isCachedResponse(response) ?  "From cache " +  response.getUrl() : "From API "  + response.getUrl());
         if(isCancelled || t == null || getContext() == null) {
             return;
         }
@@ -309,7 +336,17 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         } else if (response.getStatus() >= 400 && response.getStatus() < 500) {
             errorDelegate.invalidUrlError(retrofitError, getContext());
         } else if (response.getStatus() >= 500 && response.getStatus() < 600) {
-            errorDelegate.serverError(retrofitError, getContext());
+            //don't do anything for a 504 (Unsatisfiable Request (only-if-cached)).
+            //It will happen when we try to read from the http cache and there isn't
+            //anything there
+            if (response.getStatus() == 504 && APIHelpers.isCachedResponse(response)) {
+                if (!CanvasRestAdapter.isNetworkAvaliable(getContext())) { // Purposely not part of the above if statement. First if statement is prevent the error delegate from a 504 cache response
+                    statusDelegate.onNoNetwork(); // Only call when no items were cached and there isn't a network
+                }
+                // do nothing
+            } else {
+                errorDelegate.serverError(retrofitError, getContext());
+            }
         }
     }
 
@@ -355,14 +392,36 @@ public abstract class CanvasCallback<T> implements Callback<T> {
         @Override
         protected void onPostExecute(LinkHeaders linkHeaders) {
             super.onPostExecute(linkHeaders);
+            if (isCancelled) {
+                return;
+            }
+            boolean isCache = APIHelpers.isCachedResponse(response);
+            boolean isIgnoreCache = false;
 
-            if(isNextPage){
-                nextPage(t, linkHeaders, response);
-            }else {
-                firstPage(t, linkHeaders, response);
+            if (cacheStatusDelegate != null) {
+                isIgnoreCache = cacheStatusDelegate.shouldIgnoreCache();
             }
 
-            finishLoading();
+            if (isCache && !isIgnoreCache) {
+                Log.v(APIHelpers.LOG_TAG, "Cache");
+                cache(t);
+                cache(t, linkHeaders, response);
+                statusDelegate.onCallbackFinished(SOURCE.CACHE);
+            } else if (isNextPage) {
+                nextPage(t, linkHeaders, response);
+                statusDelegate.onCallbackFinished(SOURCE.API);
+            } else if (!isCache) {
+                firstPage(t, linkHeaders, response);
+                statusDelegate.onCallbackFinished(SOURCE.API);
+
+                // since we have had a successful network call, reset the variable that tracks whether the user has seen the
+                // no network error
+                if (getContext() != null) {
+                    APIHelpers.setHasSeenNetworkErrorMessage(getContext(), false);
+                }
+            }
+
+            isFinished = true;
         }
     }
 

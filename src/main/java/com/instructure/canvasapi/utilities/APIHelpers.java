@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import retrofit.client.Header;
+import retrofit.client.Response;
 
 /**
  * Created by Joshua Dutton on 8/9/13.
@@ -44,6 +45,7 @@ public class APIHelpers {
     private final static String SHARED_PREFERENCES_API_PROTOCOL = "api_protocol";
     private final static String SHARED_PREFERENCES_KALTURA_PROTOCOL = "kaltura_protocol";
     private final static String SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME = "error_delegate_class_name";
+    private final static String SHARED_PREFERENCES_DISMISSED_NETWORK_ERROR = "dismissed_network_error";
 
 
     /**
@@ -91,6 +93,9 @@ public class APIHelpers {
         if(context == null){
             return false;
         }
+
+        //Clear the cached API Responses
+        CanvasRestAdapter.deleteHttpCache();
 
         //Clear credentials.
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -543,6 +548,10 @@ public class APIHelpers {
         return url;
     }
 
+    public static boolean isCachedResponse(Response response) {
+        return response != null && response.getHeaders() != null &&
+                response.getHeaders().contains(new Header(CanvasOkClient.CANVAS_API_CACHE_HEADER, CanvasOkClient.CANVAS_API_CACHE_HEADER_VALUE));
+    }
 
     /**
      * Helper methods for handling ISO 8601 strings of the following format:
@@ -719,6 +728,30 @@ public class APIHelpers {
         else return domain;
     }
 
+    /**
+     * Check to see if the user has seen the network error message so we don't need to display it repeatedly
+     * @param context
+     * @return True if the user has seen the network error message, false otherwise
+     */
+    public static boolean hasSeenNetworkErrorMessage(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 
+        return sharedPreferences.getBoolean(SHARED_PREFERENCES_DISMISSED_NETWORK_ERROR, false);
+    }
+
+    /**
+     * Sets whether the user has seen the network error message
+     *
+     * @param context
+     * @param hasSeenErrorMessage
+     */
+    public static void setHasSeenNetworkErrorMessage(Context context, boolean hasSeenErrorMessage) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String sharedPrefsKey = SHARED_PREFERENCES_DISMISSED_NETWORK_ERROR;
+        editor.putBoolean(sharedPrefsKey, hasSeenErrorMessage);
+        editor.apply();
+    }
 
 }

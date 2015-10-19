@@ -7,36 +7,20 @@ import com.instructure.canvasapi.model.DiscussionTopicHeader;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
+
+import java.util.Dictionary;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.*;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class DiscussionAPI {
-
-    private static String getFirstPageDiscussionsCacheFilename(CanvasContext canvasContext) {
-        return canvasContext.toAPIString() + "/discussion_topics";
-    }
-
-    private static String getFirstPagePinnedDiscussionsCacheFilename(CanvasContext canvasContext) {
-        return canvasContext.toAPIString() + "/discussion_topics?scope=pinned";
-    }
-
-    private static String getStudentGroupDiscussionTopicHeaderFilename(CanvasContext canvasContext, long rootTopicId) {
-        return canvasContext.toAPIString() + "/discussion_topics?root_topic_id=" + rootTopicId;
-    }
-    private static String getDetailedDiscussionsCacheFilename(CanvasContext canvasContext, long discussionID) {
-        return canvasContext.toAPIString() + "/discussion_topics/" + discussionID;
-    }
-
-    private static String getFullDiscussionsCacheFilename(CanvasContext canvasContext, long discussionID) {
-        return canvasContext.toAPIString() + "/discussion_topics/" + discussionID + "/view";
-    }
+public class DiscussionAPI extends BuildInterfaceAPI {
 
     interface DiscussionsInterface {
         @GET("/{context_id}/discussion_topics")
@@ -84,75 +68,126 @@ public class DiscussionAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static DiscussionsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(DiscussionsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getFirstPageDiscussions(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageDiscussionsCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+    }
+
+    public static void getFirstPageDiscussionsChained(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+        } else {
+            buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPageDiscussions(canvasContext.getId(), callback);
+        }
     }
 
     public static void getFirstPagePinnedDiscussions(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPagePinnedDiscussionsCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
+    }
+
+    public static void getAllPinnedDiscussionsExhaustive(CanvasContext canvasContext, final CanvasCallback<DiscussionTopicHeader[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<DiscussionTopicHeader[]> bridge = new ExhaustiveBridgeCallback<>(DiscussionTopicHeader.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                getNextPageDiscussionsChained(nextURL, bridgeCallback, isCached);
+            }
+        });
+
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFirstPagePinnedDiscussions(canvasContext.getId(), callback);
+    }
+
+    public static void getStudentGroupDiscussionTopicHeaderChained(CanvasContext canvasContext, long rootTopicId, final CanvasCallback<DiscussionTopicHeader[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getStudentGroupDiscussionTopicHeader(canvasContext.getId(), rootTopicId, callback);
+        } else {
+            buildInterface(DiscussionsInterface.class, callback, canvasContext).getStudentGroupDiscussionTopicHeader(canvasContext.getId(), rootTopicId, callback);
+        }
     }
 
     public static void getStudentGroupDiscussionTopicHeader(CanvasContext canvasContext, long rootTopicId, final CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getStudentGroupDiscussionTopicHeaderFilename(canvasContext, rootTopicId));
-        buildInterface(callback, canvasContext).getStudentGroupDiscussionTopicHeader(canvasContext.getId(), rootTopicId, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getStudentGroupDiscussionTopicHeader(canvasContext.getId(), rootTopicId, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getStudentGroupDiscussionTopicHeader(canvasContext.getId(), rootTopicId, callback);
     }
+
+    public static void getNextPageDiscussionsChained(String nextURL, CanvasCallback<DiscussionTopicHeader[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
+        } else {
+            buildInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
+        }
+    }
+
     public static void getNextPageDiscussions(String nextURL, CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageDiscussions(nextURL, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
+        buildInterface(DiscussionsInterface.class, callback, false).getNextPageDiscussions(nextURL, callback);
     }
 
     public static void getDetailedDiscussion(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopicHeader> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getDetailedDiscussionsCacheFilename(canvasContext, discussion_id));
-        buildInterface(callback, canvasContext).getDetailedDiscussion(canvasContext.getId(), discussion_id, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getDetailedDiscussion(canvasContext.getId(), discussion_id, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getDetailedDiscussion(canvasContext.getId(), discussion_id, callback);
+    }
+
+    public static void getFullDiscussionTopicChained(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopic> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if (isCached) {
+            buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
+        } else {
+            buildInterface(DiscussionsInterface.class, callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
+        }
     }
 
     public static void getFullDiscussionTopic(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopic> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFullDiscussionsCacheFilename(canvasContext, discussion_id));
-        buildInterface(callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFullDiscussionTopic(canvasContext.getId(), discussion_id, callback);
     }
 
     public static void getFilteredDiscussionTopic(CanvasContext canvasContext, String searchTerm,  CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), searchTerm, callback);
+        buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), searchTerm, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).getFilteredDiscussionTopic(canvasContext.getId(), searchTerm, callback);
     }
 
     public static void postDiscussionEntry(CanvasContext canvasContext, long discussionId, String message, CanvasCallback<DiscussionEntry> callback){
         if (APIHelpers.paramIsNull(callback, message, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postDiscussionEntry(canvasContext.getId(), discussionId, message, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionEntry(canvasContext.getId(), discussionId, message, callback);
     }
 
     public static void postDiscussionReply(CanvasContext canvasContext, long discussionId, long entryId, String message, CanvasCallback<DiscussionEntry> callback){
         if (APIHelpers.paramIsNull(callback, message, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).postDiscussionReply(canvasContext.getId(), discussionId, entryId, message, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionReply(canvasContext.getId(), discussionId, entryId, message, callback);
     }
 
     public static void postNewDiscussion(CanvasContext canvasContext, String  title, String message, boolean threaded, boolean is_announcement, CanvasCallback<DiscussionTopicHeader> callback){
@@ -167,7 +202,7 @@ public class DiscussionAPI {
 
         int announcement = APIHelpers.booleanToInt(is_announcement);
 
-        buildInterface(callback, canvasContext).postNewDiscussion(canvasContext.getId(), title, message, announcement, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussion(canvasContext.getId(), title, message, announcement, type, callback);
     }
 
     public static void postNewDiscussionAndPublish(CanvasContext canvasContext, String  title, String message, boolean threaded, boolean is_announcement, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
@@ -183,7 +218,7 @@ public class DiscussionAPI {
         int announcement = APIHelpers.booleanToInt(is_announcement);
         int publish = APIHelpers.booleanToInt(isPublished);
 
-        buildInterface(callback, canvasContext).postNewDiscussionAndPublish(canvasContext.getId(), title, message, announcement, publish, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussionAndPublish(canvasContext.getId(), title, message, announcement, publish, type, callback);
     }
 
     public static void updateDiscussionTopic(CanvasContext canvasContext, long topicId, String  title, String message, boolean threaded, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
@@ -197,7 +232,7 @@ public class DiscussionAPI {
 
         int publish = APIHelpers.booleanToInt(isPublished);
 
-        buildInterface(callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, callback);
 
     }
 
@@ -207,7 +242,7 @@ public class DiscussionAPI {
     public static void rateDiscussionEntry(CanvasContext canvasContext, long discussionId, long entryId, int rating, CanvasCallback<Response> callback){
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, callback);
     }
 
     /**
@@ -220,6 +255,6 @@ public class DiscussionAPI {
     public static void pinDiscussion(CanvasContext canvasContext, long topicId, boolean pin, CanvasCallback<DiscussionTopicHeader> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(callback, canvasContext).pinDiscussion(canvasContext.getId(), topicId, pin, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).pinDiscussion(canvasContext.getId(), topicId, pin, callback);
     }
 }

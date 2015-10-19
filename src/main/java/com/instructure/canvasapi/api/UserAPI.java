@@ -11,7 +11,6 @@ import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 import com.instructure.canvasapi.utilities.Masquerading;
 import com.instructure.canvasapi.utilities.UserCallback;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.util.LinkedHashMap;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -35,37 +33,10 @@ import retrofit.mime.TypedFile;
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-public class UserAPI {
+public class UserAPI extends BuildInterfaceAPI {
 
     public enum ENROLLMENT_TYPE {STUDENT, TEACHER, TA, OBSERVER, DESIGNER}
 
-    private static String getSelfEnrollmentsCacheFilename(){
-        return "/users/self/enrollments";
-    }
-
-    private static String getUserByIdCacheFilename(long userId){
-        return "/search/recipients/"+userId;
-    }
-
-    private static String getFirstPagePeopleCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/users";
-    }
-
-    private static String getFirstPagePeopleCacheFilename(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type){
-        return canvasContext + "/users/"+enrollment_type;
-    }
-
-    private static String getCourseUserListCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() + "/users/all";
-    }
-
-    private static String getColorCacheFilename(){
-        return "/users/colors";
-    }
-
-    private static String getSelfWithPermissionsCacheFileName(){
-        return "/users/self";
-    }
 
     interface UsersInterface {
         @GET("/users/self/profile")
@@ -118,34 +89,6 @@ public class UserAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static UsersInterface buildInterface(CanvasCallback callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(UsersInterface.class);
-    }
-
-    private static UsersInterface buildInterface(CanvasCallback callback, CanvasContext canvasContext, boolean perPageQueryParam) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, perPageQueryParam);
-        return restAdapter.create(UsersInterface.class);
-    }
-
-    private static UsersInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(UsersInterface.class);
-    }
-
-    private static UsersInterface buildInterface(Context context, boolean perPageQueryParam) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
-        return restAdapter.create(UsersInterface.class);
-    }
-
-    private static UsersInterface buildUploadInterface(String hostURL) {
-        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
-        return restAdapter.create(UsersInterface.class);
-    }
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
@@ -153,16 +96,16 @@ public class UserAPI {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
         //Read cache
-        callback.cache(APIHelpers.getCacheUser(callback.getContext()));
+        callback.cache(APIHelpers.getCacheUser(callback.getContext()), null, null);
 
         //Don't allow this API call to be made while masquerading.
-        //It causes the current user to be overriden with the masqueraded one.
+        //It causes the current user to be overridden with the masqueraded one.
         if (Masquerading.isMasquerading(callback.getContext())) {
             Log.w(APIHelpers.LOG_TAG,"No API call for /users/self/profile can be made while masquerading.");
             return;
         }
 
-        buildInterface(callback, null).getSelf(callback);
+        buildInterface(UsersInterface.class, callback, null).getSelf(callback);
     }
 
     public static void getSelfWithPermissions(CanvasCallback<User> callback) {
@@ -175,43 +118,42 @@ public class UserAPI {
             return;
         }
 
-        callback.readFromCache(getSelfWithPermissionsCacheFileName());
+        buildCacheInterface(UsersInterface.class, callback, null).getSelfWithPermission(callback);
 
-        buildInterface(callback, null).getSelfWithPermission(callback);
+        buildInterface(UsersInterface.class, callback, null).getSelfWithPermission(callback);
     }
 
     public static void getSelfEnrollments(CanvasCallback<Enrollment[]> callback) {
         if(APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getSelfEnrollmentsCacheFilename());
-        buildInterface(callback, null).getSelfEnrollments(callback);
+        buildCacheInterface(UsersInterface.class, callback, null).getSelfEnrollments(callback);
+        buildInterface(UsersInterface.class, callback, null).getSelfEnrollments(callback);
     }
 
 
     public static void updateShortName(String shortName, CanvasCallback<User> callback) {
         if (APIHelpers.paramIsNull(callback, shortName)) { return; }
 
-        buildInterface(callback, null).updateShortName(shortName, callback);
+        buildInterface(UsersInterface.class, callback, null).updateShortName(shortName, callback);
     }
 
     public static void getUserById(long userId, CanvasCallback<User> userCanvasCallback){
         if(APIHelpers.paramIsNull(userCanvasCallback)){return;}
 
-        userCanvasCallback.readFromCache(getUserByIdCacheFilename(userId));
-
+        buildCacheInterface(UsersInterface.class, userCanvasCallback, null).getUserById(userId, userCanvasCallback);
         //Passing UserCallback here will break OUR cache.
         if(userCanvasCallback instanceof UserCallback){
             Log.e(APIHelpers.LOG_TAG, "You cannot pass a User Call back here. It'll break cache for users/self..");
             return;
         }
 
-        buildInterface(userCanvasCallback, null).getUserById(userId, userCanvasCallback);
+        buildInterface(UsersInterface.class, userCanvasCallback, null).getUserById(userId, userCanvasCallback);
     }
 
     public static void getCourseUserById(CanvasContext canvasContext, long userId, CanvasCallback<User> userCanvasCallback){
         if(APIHelpers.paramIsNull(userCanvasCallback)){return;}
 
-        userCanvasCallback.readFromCache(getUserByIdCacheFilename(userId));
+        buildCacheInterface(UsersInterface.class, userCanvasCallback, canvasContext).getUserById(canvasContext.getId(), userId, userCanvasCallback);
 
         //Passing UserCallback here will break OUR cache.
         if(userCanvasCallback instanceof UserCallback){
@@ -219,54 +161,80 @@ public class UserAPI {
             return;
         }
 
-        buildInterface(userCanvasCallback, canvasContext).getUserById(canvasContext.getId(), userId, userCanvasCallback);
+        buildInterface(UsersInterface.class, userCanvasCallback, canvasContext).getUserById(canvasContext.getId(), userId, userCanvasCallback);
     }
 
     public static void getFirstPagePeople(CanvasContext canvasContext, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPagePeopleCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+    }
+
+    public static void getFirstPagePeopleChained(CanvasContext canvasContext, boolean isCached, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if(isCached) {
+            buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleList(canvasContext.getId(), callback);
+        }
     }
 
     public static void getNextPagePeople(String nextURL, CanvasCallback<User[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPagePeopleList(nextURL, callback);
+        buildCacheInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
+        buildInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
+    }
+
+    public static void getNextPagePeopleChained(String nextURL, CanvasCallback<User[]> callback, boolean isCached){
+        if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, false).getNextPagePeopleList(nextURL, callback);
+        }
     }
 
     public static void getAllUsersForCourseByEnrollmentType(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, final CanvasCallback<User[]> callback){
         if(APIHelpers.paramIsNull(callback, canvasContext)){return;}
 
-        CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+        CanvasCallback<User[]> bridge = new ExhaustiveBridgeCallback<>(User.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
-            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL) {
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
                 if(callback.isCancelled()) { return; }
 
-                UserAPI.getNextPagePeople(nextURL, bridgeCallback);
-            }
-
-            @Override
-            public Class classType() {
-                return User.class;
+                UserAPI.getNextPagePeopleChained(nextURL, bridgeCallback, isCached);
             }
         });
-        callback.readFromCache(getCourseUserListCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), bridge);
+        buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), bridge);
+        buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), bridge);
     }
 
     public static void getFirstPagePeople(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPagePeopleCacheFilename(canvasContext, enrollment_type));
+        buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+        buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+    }
 
-        buildInterface(callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+    public static void getFirstPagePeopleChained(CanvasContext canvasContext, ENROLLMENT_TYPE enrollment_type, boolean isCached, CanvasCallback<User[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        if(isCached) {
+            buildCacheInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+        } else {
+            buildInterface(UsersInterface.class, callback, canvasContext).getFirstPagePeopleListWithEnrollmentType(canvasContext.getId(), getEnrollmentTypeString(enrollment_type), callback);
+        }
     }
 
     public static void getColors(Context context, CanvasCallback<CanvasColor> callback) {
-        callback.readFromCache(getColorCacheFilename());
-        buildInterface(context, false).getColors(callback);
+        buildCacheInterface(UsersInterface.class, context, false).getColors(callback);
+        buildInterface(UsersInterface.class, context, false).getColors(callback);
     }
 
     public static void setColor(Context context, CanvasContext canvasContext, int color, CanvasCallback<CanvasColor> callback) {
@@ -286,22 +254,22 @@ public class UserAPI {
             hexColor = hexColor.replaceAll("#", "");
         }
 
-        buildInterface(context, false).setColor(context_id, hexColor, callback);
+        buildInterface(UsersInterface.class, context, false).setColor(context_id, hexColor, callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
     /////////////////////////////////////////////////////////////////////////
     public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, Long parentFolderId){
-        return buildInterface(context).getFileUploadParams(size, fileName, contentType, parentFolderId);
+        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderId);
     }
 
     public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, String parentFolderPath){
-        return buildInterface(context).getFileUploadParams(size, fileName, contentType, parentFolderPath);
+        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderPath);
     }
 
     public static Attachment uploadUserFile(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(UsersInterface.class, uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
     }
 
     /////////////////////////////////////////////////////////////////////////

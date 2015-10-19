@@ -1,6 +1,7 @@
 package com.instructure.canvasapi.utilities;
 
 import com.instructure.canvasapi.model.CanvasModel;
+import com.squareup.okhttp.Request;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -21,51 +22,55 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
 
     private CanvasCallback<T[]> callback;
     private ExhaustiveBridgeEvents eventsCallback;
-    private List<T> allItems = new ArrayList<T>();
+    private List<T> networkItems = new ArrayList<>();
+    private List<T> cacheItems = new ArrayList<>();
+    private Class<T> clazz;
 
     public interface ExhaustiveBridgeEvents {
-        public void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextUrl);
-        public Class classType();
+        void performApiCallWithExhaustiveCallback(CanvasCallback callback, String nextUrl, boolean isCached);
     }
 
-    public ExhaustiveBridgeCallback(CanvasCallback<T[]> callback, ExhaustiveBridgeEvents eventsCallback) {
+    public ExhaustiveBridgeCallback(Class<T> clazz, CanvasCallback<T[]> callback, ExhaustiveBridgeEvents exhaustiveBridgeEvents) {
         super(callback.statusDelegate);
         this.callback = callback;
-        this.eventsCallback = eventsCallback;
+        this.clazz = clazz;
+        this.eventsCallback = exhaustiveBridgeEvents;
 
         if(eventsCallback == null) {
             throw new UnsupportedOperationException("ExhaustiveBridgeEvents cannot be null");
         }
+
     }
 
     @Override
-    public void cache(T[] ts) {
-        //Do Nothing.
+    public void cache(T[] ts, LinkHeaders linkHeaders, Response response) {
+        if (callback.isCancelled()) {
+            return;
+        }
+        String nextURL = linkHeaders.nextURL;
+        Collections.addAll(cacheItems, ts);
+
+        if(nextURL == null) {  // Items exhaustively paginated
+            T[] toArray =  cacheItems.toArray((T[]) Array.newInstance(clazz, networkItems.size()));
+            callback.cache(toArray, linkHeaders, response);
+        } else { // Get the next page
+            eventsCallback.performApiCallWithExhaustiveCallback(this, nextURL, true);
+        }
     }
 
     @Override
     public void firstPage(T[] ts, LinkHeaders linkHeaders, Response response) {
+        if (callback.isCancelled()) {
+            return;
+        }
         String nextURL = linkHeaders.nextURL;
-        Collections.addAll(allItems, ts);
+        Collections.addAll(networkItems, ts);
 
-        if(nextURL == null) {
-            //Done
-            if (allItems.size() > 0) {
-                //Create an array of generics from our list.
-                T[] toArray = (T[]) Array.newInstance(eventsCallback.classType(), allItems.size());
-                for (int i = 0; i < allItems.size(); i++) {
-                    toArray[i] = allItems.get(i);
-                }
-
-                callback.success(toArray, response);
-            } else {
-                //No items were retrieved.
-                T[] toArray = (T[]) Array.newInstance(eventsCallback.classType(), allItems.size());
-                callback.success(toArray, response);
-            }
-        } else {
-            //Do more api calls
-            eventsCallback.performApiCallWithExhaustiveCallback(this, nextURL);
+        if(nextURL == null) {  // Items exhaustively paginated
+            T[] toArray =  networkItems.toArray((T[]) Array.newInstance(clazz, networkItems.size()));
+            callback.firstPage(toArray, linkHeaders, response);
+        } else { // Get the next page
+            eventsCallback.performApiCallWithExhaustiveCallback(this, nextURL, false);
         }
     }
 
@@ -73,4 +78,16 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
     public boolean onFailure(RetrofitError retrofitError) {
         return super.onFailure(retrofitError);
     }
+
+    // region Getter & Setters
+
+    public ExhaustiveBridgeEvents getEventsCallback() {
+        return eventsCallback;
+    }
+
+    public void setEventsCallback(ExhaustiveBridgeEvents eventsCallback) {
+        this.eventsCallback = eventsCallback;
+    }
+
+    // endregion
 }

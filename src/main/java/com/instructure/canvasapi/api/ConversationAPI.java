@@ -1,10 +1,10 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
+
 import com.instructure.canvasapi.model.Conversation;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -29,7 +29,7 @@ import retrofit.mime.TypedInput;
 /**
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class ConversationAPI {
+public class ConversationAPI extends BuildInterfaceAPI {
 
     public enum ConversationScope { ALL,UNREAD,ARCHIVED,STARRED,SENT }
     private static String conversationScopeToString(ConversationScope scope){
@@ -56,14 +56,6 @@ public class ConversationAPI {
             return "archived";
         }
         return "";
-    }
-
-    public static String getFirstPageConversationsCacheFilename(ConversationScope scope){
-        return "/conversations/" + conversationScopeToString(scope);
-    }
-
-    private static String getDetailedConversationCacheFilename(long conversation_id){
-        return "/conversations/" + conversation_id;
     }
 
     interface ConversationsInterface {
@@ -122,34 +114,21 @@ public class ConversationAPI {
     }
 
     /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static ConversationsInterface buildInterface(CanvasCallback<?> callback) {
-        return buildInterface(callback.getContext());
-    }
-
-    private static ConversationsInterface buildInterface(Context context) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        return restAdapter.create(ConversationsInterface.class);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
     public static void getDetailedConversation(CanvasCallback<Conversation> callback, long conversation_id, boolean markAsRead) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getDetailedConversationCacheFilename(conversation_id));
-        buildInterface(callback).getDetailedConversation(conversation_id, APIHelpers.booleanToInt(markAsRead), callback);
+        buildCacheInterface(ConversationsInterface.class, callback).getDetailedConversation(conversation_id, APIHelpers.booleanToInt(markAsRead), callback);
+        buildInterface(ConversationsInterface.class, callback).getDetailedConversation(conversation_id, APIHelpers.booleanToInt(markAsRead), callback);
     }
 
     public static void getFirstPageConversations(CanvasCallback<Conversation[]> callback, ConversationScope scope) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        callback.readFromCache(getFirstPageConversationsCacheFilename(scope));
-        buildInterface(callback).getFirstPageConversationList(conversationScopeToString(scope), callback);
+        buildCacheInterface(ConversationsInterface.class, callback).getFirstPageConversationList(conversationScopeToString(scope), callback);
+        buildInterface(ConversationsInterface.class, callback).getFirstPageConversationList(conversationScopeToString(scope), callback);
     }
 
 
@@ -157,14 +136,15 @@ public class ConversationAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildInterface(callback).getNextPageConversationList(nextURL, callback);
+        buildCacheInterface(ConversationsInterface.class, callback, false).getNextPageConversationList(nextURL, callback);
+        buildInterface(ConversationsInterface.class, callback, false).getNextPageConversationList(nextURL, callback);
     }
 
     public static void addMessageToConversation(CanvasCallback<Conversation> callback, long conversation_id, String message){
         TypedInput typedInput = createTypedInput(message);
         if (APIHelpers.paramIsNull(callback, typedInput)) return;
 
-        buildInterface(callback).addMessageToConversation(conversation_id, typedInput, callback);
+        buildInterface(ConversationsInterface.class, callback).addMessageToConversation(conversation_id, typedInput, callback);
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
@@ -185,56 +165,56 @@ public class ConversationAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(callback).createConversation(recipientsParameter, typedInput, subject, contextId, isGroup ? 0 : 1, callback);
+        buildInterface(ConversationsInterface.class, callback).createConversation(recipientsParameter, typedInput, subject, contextId, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).deleteConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).deleteConversation(conversationId, responseCanvasCallback);
     }
 
     public static void markConversationAsUnread(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).markConversationAsUnread(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).markConversationAsUnread(conversationId, responseCanvasCallback);
     }
 
 
     public static void archiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).archiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).archiveConversation(conversationId, responseCanvasCallback);
     }
 
     public static void unArchiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).unArchiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).unArchiveConversation(conversationId, responseCanvasCallback);
     }
 
     public static void subscribeToConversation(long conversationId, boolean isSubscribed, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
     }
 
     public static void starConversation(long conversationId, boolean isStarred, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).setIsStarred(conversationId, isStarred, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).setIsStarred(conversationId, isStarred, responseCanvasCallback);
     }
 
     public static void setConversationSubject(long conversationId, String newSubject, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).setSubject(conversationId, newSubject, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).setSubject(conversationId, newSubject, responseCanvasCallback);
     }
 
     public static void setConversationWorkflowState(long conversationId, WorkflowState workflowState, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(responseCanvasCallback).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -247,7 +227,7 @@ public class ConversationAPI {
 
     public static Conversation[] getFirstPageConversationsSynchronous(ConversationScope scope, Context context, int numberToReturn) {
         try{
-            return buildInterface(context).getFirstPageConversationList(conversationScopeToString(scope), numberToReturn);
+            return buildInterface(ConversationsInterface.class, context).getFirstPageConversationList(conversationScopeToString(scope), numberToReturn);
         } catch (Exception E){
             return null;
         }
@@ -255,7 +235,7 @@ public class ConversationAPI {
 
     public static Conversation getDetailedConversationSynchronous(Context context, long conversationId){
         try {
-            return buildInterface(context).getDetailedConversationSynchronous(conversationId);
+            return buildInterface(ConversationsInterface.class, context).getDetailedConversationSynchronous(conversationId);
         } catch (Exception E){
             return null;
         }
@@ -264,7 +244,7 @@ public class ConversationAPI {
     public static Conversation addMessageToConversationSynchronous(Context context, long conversationId, String messageBody, List<String> attachmentIds){
         if (APIHelpers.paramIsNull(context, attachmentIds, messageBody)){return null;}
 
-        return buildInterface(context).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
+        return buildInterface(ConversationsInterface.class, context).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
     }
 
     private static TypedInput createTypedInput(String message){

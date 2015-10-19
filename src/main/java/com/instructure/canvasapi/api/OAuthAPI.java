@@ -13,7 +13,6 @@ import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
  * Copyright (c) 2014 Instructure. All rights reserved.
  */

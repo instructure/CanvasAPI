@@ -1,31 +1,92 @@
 package com.instructure.canvasapi.utilities;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Response;
+
+import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
-import retrofit.client.Request;
 import retrofit.converter.GsonConverter;
 
 /**
- * @author      Josh Ruesch
- * @since       08/10/13
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
 public class CanvasRestAdapter {
 
     private static int numberOfItemsPerPage = 30;
+    private static int TIMEOUT_IN_SECONDS = 60;
 
+    private static CanvasOkClient okHttpClient;
+    private static Context mContext;
     public static int getNumberOfItemsPerPage() {
         return numberOfItemsPerPage;
+    }
+
+    private static final Interceptor mCacheControlInterceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            com.squareup.okhttp.Request request = chain.request();
+
+            Response response = chain.proceed(request);
+
+            // Re-write response CC header to force use of cache
+            // Displayed cached data will always be followed by a response from the server with the latest data.
+            return response.newBuilder()
+                    .header("Cache-Control", "public, max-age=1209600") //60*60*24*14 = 1209600 2 weeks; Essentially means cached data will only be valid offline for 2 weeks. When network is available, the cache is always updated on every request.
+                    .build();
+        }
+    };
+
+    public static void deleteHttpCache() {
+        if(okHttpClient != null) {
+            try {
+                okHttpClient.getClient().getCache().evictAll();
+            } catch (IOException e) {
+                Log.d(APIHelpers.LOG_TAG, "Failed deleting the cache");
+            }
+
+        }
+    }
+
+    private static OkClient getOkHttp(Context context) {
+        if (okHttpClient == null) {
+            mContext = context;
+            File httpCacheDirectory = new File(context.getCacheDir(), "responses");
+            Cache cache = new Cache(httpCacheDirectory, 20 * 1024 * 1024); // cache size
+            OkHttpClient httpClient = new OkHttpClient();
+            httpClient.setCache(cache);
+            httpClient.setReadTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            /** Dangerous interceptor that rewrites the server's cache-control header. */
+            httpClient.networkInterceptors().add(mCacheControlInterceptor);
+            okHttpClient = new CanvasOkClient(httpClient);
+        }
+        return okHttpClient;
+    }
+
+    /**
+     * Returns a RestAdapter Instance that points at :domain/api/v1
+     *
+     * @param context An Android context.
+     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     */
+    public static RestAdapter buildAdapter(final Context context) {
+        return buildAdapterHelper(context, null, false, true);
     }
 
     /**
@@ -36,53 +97,7 @@ public class CanvasRestAdapter {
      */
     public static RestAdapter buildAdapter(CanvasCallback callback) {
         callback.setFinished(false);
-        return buildAdapter(callback.getContext());
-    }
-
-    /**
-     * Returns a RestAdapter Instance that points at :domain/api/v1
-     *
-     * @param context An Android context.
-     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
-     */
-    public static RestAdapter buildAdapter(final Context context) {
-        return buildAdapter(context, true);
-    }
-
-    /**
-     * Returns a RestAdapter Instance
-     *
-     * @param context An Android context.
-     * @param addPerPageQueryParam Specify if you want to add the per page query param
-     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
-     */
-    public static RestAdapter buildAdapter(final Context context, final boolean addPerPageQueryParam) {
-
-        if(context == null ){
-            return null;
-        }
-
-        if (context instanceof APIStatusDelegate) {
-            ((APIStatusDelegate)context).onCallbackStarted();
-        }
-
-        String domain = APIHelpers.getFullDomain(context);
-
-        //Can make this check as we KNOW that the setter doesn't allow empty strings.
-        if (domain == null || domain.equals("")) {
-            Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
-            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
-        }
-
-        GsonConverter gsonConverter = new GsonConverter(getGSONParser());
-
-        //Sets the auth token, user agent, and handles masquerading.
-        return new RestAdapter.Builder()
-                .setEndpoint(domain + "/api/v1/") // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
-                .setConverter(gsonConverter)
-                .build();
-
+        return buildAdapterHelper(callback.getContext(), null, false, true);
     }
 
     /**
@@ -96,7 +111,12 @@ public class CanvasRestAdapter {
      */
     public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext) {
         callback.setFinished(false);
-        return buildAdapter(callback.getContext(), canvasContext);
+        return buildAdapterHelper(callback.getContext(), canvasContext, false, true);
+    }
+
+    public static RestAdapter buildAdapter(CanvasCallback callback, boolean isOnlyReadFromCache, CanvasContext canvasContext) {
+        callback.setFinished(false);
+        return buildAdapterHelper(callback.getContext(), canvasContext, isOnlyReadFromCache, true);
     }
 
     /**
@@ -108,22 +128,7 @@ public class CanvasRestAdapter {
      */
     public static RestAdapter buildAdapter(CanvasCallback callback, boolean addPerPageQueryParam) {
         callback.setFinished(false);
-        return buildAdapter(callback.getContext(), addPerPageQueryParam);
-    }
-
-    /**
-     * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
-     *
-     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
-     *
-     * @param callback A Canvas Callback
-     * @param canvasContext A Canvas Context
-     * @param addPerPageQueryParam Specify if you want to add the per page query param
-     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
-     */
-    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext, boolean addPerPageQueryParam) {
-        callback.setFinished(false);
-        return buildAdapter(callback.getContext(), canvasContext, addPerPageQueryParam);
+        return buildAdapterHelper(callback.getContext(), null, false, addPerPageQueryParam);
     }
 
     /**
@@ -136,38 +141,46 @@ public class CanvasRestAdapter {
      * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
      */
     public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext) {
-        return buildAdapterHelper(context, canvasContext, true);
+        return buildAdapterHelper(context, canvasContext, false, true);
     }
 
+    public static RestAdapter buildAdapter(final Context context, final boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, null, false, addPerPageQueryParam);
+    }
+
+    public static RestAdapter buildAdapter(final Context context, boolean isOnlyReadFromCache, final boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, null, isOnlyReadFromCache, addPerPageQueryParam);
+    }
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
-     * @param context An Android context.
+     * @param callback A Canvas Callback
      * @param canvasContext A Canvas Context
+     * @param isOnlyReadFromCache Specify if you only want to read from cache
      * @param addPerPageQueryParam Specify if you want to add the per page query param
      * @return
      */
-    public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
-        return buildAdapterHelper(context, canvasContext, addPerPageQueryParam);
+    public static RestAdapter buildAdapter(CanvasCallback callback, CanvasContext canvasContext, boolean isOnlyReadFromCache, boolean addPerPageQueryParam) {
+        callback.setFinished(false);
+        return buildAdapterHelper(callback.getContext(), canvasContext, isOnlyReadFromCache, addPerPageQueryParam);
     }
 
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
      * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
-     *
      * @param context An Android context.
      * @param canvasContext A Canvas Context
+     * @param isOnlyReadFromCache Specify if you only want to read from cache
      * @param addPerPageQueryParam Specify if you want to add the per page query param
-     * @return A Canvas RestAdapterInstance. If setupInstance() hasn't been called, returns an invalid RestAdapter.
+     * @return
      */
-    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean addPerPageQueryParam) {
-        //If not return an adapter with no context.
-        if(canvasContext == null){
-            return buildAdapter(context, addPerPageQueryParam);
-        }
+    public static RestAdapter buildAdapter(final Context context, CanvasContext canvasContext, boolean isOnlyReadFromCache, boolean addPerPageQueryParam) {
+        return buildAdapterHelper(context, canvasContext, isOnlyReadFromCache, addPerPageQueryParam);
+    }
 
+    private static RestAdapter buildAdapterHelper(final Context context, CanvasContext canvasContext, boolean isForcedCache, boolean addPerPageQueryParam) {
         //Check for null values or invalid CanvasContext types.
         if(context == null) {
             return null;
@@ -185,37 +198,27 @@ public class CanvasRestAdapter {
             return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
         }
 
-        String apiContext;
-        if(canvasContext.getType() == CanvasContext.Type.COURSE){
-            apiContext = "courses/";
-        } else if (canvasContext.getType() == CanvasContext.Type.GROUP) {
-            apiContext = "groups/";
-        } else if (canvasContext.getType() == CanvasContext.Type.SECTION){
-            apiContext = "sections/";
-        }else {
-            apiContext = "users/";
+        String apiContext = "";
+        if (canvasContext != null) {
+            if (canvasContext.getType() == CanvasContext.Type.COURSE) {
+                apiContext = "courses/";
+            } else if (canvasContext.getType() == CanvasContext.Type.GROUP) {
+                apiContext = "groups/";
+            } else if (canvasContext.getType() == CanvasContext.Type.SECTION) {
+                apiContext = "sections/";
+            } else {
+                apiContext = "users/";
+            }
         }
 
         GsonConverter gsonConverter = new GsonConverter(getGSONParser());
 
-        // Set request timeout to 60 seconds
-        final OkClient httpClient = new OkClient(){
-            @Override
-            protected HttpURLConnection openConnection(Request request) throws IOException {
-                HttpURLConnection connection = super.openConnection(request);
-                connection.setReadTimeout(60 * 1000);
-                return connection;
-            }
-        };
-
         //Sets the auth token, user agent, and handles masquerading.
         return new RestAdapter.Builder()
                 .setEndpoint(domain + "/api/v1/" + apiContext) // The base API endpoint.
-                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam))
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam, isForcedCache))
                 .setConverter(gsonConverter)
-                .setClient(httpClient)
-                .build();
-
+                .setClient(getOkHttp(context)).build();
     }
 
     /**
@@ -286,10 +289,18 @@ public class CanvasRestAdapter {
 
         Context context;
         boolean addPerPageQueryParam;
+        boolean isForcedCache;
 
         CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam){
             this.context = context;
             this.addPerPageQueryParam = addPerPageQueryParam;
+
+        }
+
+        CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam, boolean isForcedCache){
+            this.context = context;
+            this.addPerPageQueryParam = addPerPageQueryParam;
+            this.isForcedCache = isForcedCache;
         }
 
         @Override
@@ -308,7 +319,11 @@ public class CanvasRestAdapter {
                 requestFacade.addHeader("Authorization", "Bearer " + token);
             }
 
-            requestFacade.addHeader("Cache-Control", "no-cache");
+            if (isForcedCache) {
+                requestFacade.addHeader("Cache-Control", "only-if-cached");
+            } else {
+                requestFacade.addHeader("Cache-Control", "no-cache");
+            }
             //HTTP referer (originally a misspelling of referrer) is an HTTP header field that identifies the address of the webpage that linked to the resource being requested
             //Source: https://en.wikipedia.org/wiki/HTTP_referer
             //Some schools use an LTI tool called SlideShare that whitelists domains to be able to inject content into assignments
@@ -325,6 +340,24 @@ public class CanvasRestAdapter {
                 requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
             }
         }
+    }
+
+    public static boolean isNetworkAvaliable(Context context) {
+        ConnectivityManager connectivity =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

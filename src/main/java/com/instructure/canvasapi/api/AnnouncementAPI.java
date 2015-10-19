@@ -11,15 +11,10 @@ import retrofit.http.Path;
 import retrofit.http.GET;
 
 /**
- * Created by Josh Ruesch on 8/9/13.
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
-public class AnnouncementAPI {
-
-    private static String getFirstPageAnnouncementsCacheFilename(CanvasContext canvasContext){
-        return canvasContext.toAPIString() +"/announcements";
-    }
+public class AnnouncementAPI extends BuildInterfaceAPI {
 
     interface AnnouncementsInterface {
         @GET("/{context_id}/discussion_topics?only_announcements=1")
@@ -27,14 +22,6 @@ public class AnnouncementAPI {
 
         @GET("/{next}")
         void getNextPageAnnouncementsList(@Path(value = "next", encode = false) String nextURL, Callback<DiscussionTopicHeader[]> callback);
-    }
-    /////////////////////////////////////////////////////////////////////////
-    // Build Interface Helpers
-    /////////////////////////////////////////////////////////////////////////
-
-    private static AnnouncementsInterface buildInterface(CanvasCallback<?> callback, CanvasContext canvasContext) {
-        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
-        return restAdapter.create(AnnouncementsInterface.class);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -44,14 +31,15 @@ public class AnnouncementAPI {
     public static void getFirstPageAnnouncements(CanvasContext canvasContext, CanvasCallback<DiscussionTopicHeader[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        callback.readFromCache(getFirstPageAnnouncementsCacheFilename(canvasContext));
-        buildInterface(callback, canvasContext).getFirstPageAnnouncementsList(canvasContext.getId(), callback);
+        buildCacheInterface(AnnouncementsInterface.class, callback, canvasContext).getFirstPageAnnouncementsList(canvasContext.getId(), callback);
+        buildInterface(AnnouncementsInterface.class, callback, canvasContext).getFirstPageAnnouncementsList(canvasContext.getId(), callback);
     }
 
     public static void getNextPageAnnouncements(String nextURL, CanvasCallback<DiscussionTopicHeader[]> callback){
         if (APIHelpers.paramIsNull(callback, nextURL)) { return; }
 
         callback.setIsNextPage(true);
-        buildInterface(callback, null).getNextPageAnnouncementsList(nextURL, callback);
+        buildCacheInterface(AnnouncementsInterface.class, callback, false).getNextPageAnnouncementsList(nextURL, callback);
+        buildInterface(AnnouncementsInterface.class, callback, false).getNextPageAnnouncementsList(nextURL, callback);
     }
 }
