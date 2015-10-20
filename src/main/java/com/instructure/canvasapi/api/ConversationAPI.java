@@ -144,7 +144,7 @@ public class ConversationAPI extends BuildInterfaceAPI {
         TypedInput typedInput = createTypedInput(message);
         if (APIHelpers.paramIsNull(callback, typedInput)) return;
 
-        buildInterface(ConversationsInterface.class, callback).addMessageToConversation(conversation_id, typedInput, callback);
+        buildInterface(ConversationsInterface.class, callback, false).addMessageToConversation(conversation_id, typedInput, callback);
     }
 
     public static void createConversation(CanvasCallback<Response> callback, ArrayList<String> userIDs, String message, boolean isGroup, String contextId){
@@ -165,56 +165,56 @@ public class ConversationAPI extends BuildInterfaceAPI {
             recipientsParameter += "&"+recipientKey+"="+userIDs.get(i);
         }
 
-        buildInterface(ConversationsInterface.class, callback).createConversation(recipientsParameter, typedInput, subject, contextId, isGroup ? 0 : 1, callback);
+        buildInterface(ConversationsInterface.class, callback, false).createConversation(recipientsParameter, typedInput, subject, contextId, isGroup ? 0 : 1, callback);
     }
 
     public static void deleteConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).deleteConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).deleteConversation(conversationId, responseCanvasCallback);
     }
 
     public static void markConversationAsUnread(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).markConversationAsUnread(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).markConversationAsUnread(conversationId, responseCanvasCallback);
     }
 
 
     public static void archiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).archiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).archiveConversation(conversationId, responseCanvasCallback);
     }
 
     public static void unArchiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).unArchiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).unArchiveConversation(conversationId, responseCanvasCallback);
     }
 
     public static void subscribeToConversation(long conversationId, boolean isSubscribed, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
     }
 
     public static void starConversation(long conversationId, boolean isStarred, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).setIsStarred(conversationId, isStarred, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsStarred(conversationId, isStarred, responseCanvasCallback);
     }
 
     public static void setConversationSubject(long conversationId, String newSubject, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).setSubject(conversationId, newSubject, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setSubject(conversationId, newSubject, responseCanvasCallback);
     }
 
     public static void setConversationWorkflowState(long conversationId, WorkflowState workflowState, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ public class ConversationAPI extends BuildInterfaceAPI {
     public static Conversation addMessageToConversationSynchronous(Context context, long conversationId, String messageBody, List<String> attachmentIds){
         if (APIHelpers.paramIsNull(context, attachmentIds, messageBody)){return null;}
 
-        return buildInterface(ConversationsInterface.class, context).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
+        return buildInterface(ConversationsInterface.class, context, false).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
     }
 
     private static TypedInput createTypedInput(String message){
