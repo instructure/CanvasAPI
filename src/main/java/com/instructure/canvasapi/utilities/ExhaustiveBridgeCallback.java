@@ -1,7 +1,6 @@
 package com.instructure.canvasapi.utilities;
 
 import com.instructure.canvasapi.model.CanvasModel;
-import com.squareup.okhttp.Request;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
         if(eventsCallback == null) {
             throw new UnsupportedOperationException("ExhaustiveBridgeEvents cannot be null");
         }
-
     }
 
     @Override
@@ -76,7 +74,7 @@ public class ExhaustiveBridgeCallback<T extends CanvasModel> extends CanvasCallb
 
     @Override
     public boolean onFailure(RetrofitError retrofitError) {
-        return super.onFailure(retrofitError);
+        return callback.onFailure(retrofitError);
     }
 
     // region Getter & Setters

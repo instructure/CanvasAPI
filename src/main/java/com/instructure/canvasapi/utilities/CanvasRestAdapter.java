@@ -33,7 +33,6 @@ public class CanvasRestAdapter {
     private static int TIMEOUT_IN_SECONDS = 60;
 
     private static CanvasOkClient okHttpClient;
-    private static Context mContext;
     public static int getNumberOfItemsPerPage() {
         return numberOfItemsPerPage;
     }
@@ -66,7 +65,6 @@ public class CanvasRestAdapter {
 
     private static OkClient getOkHttp(Context context) {
         if (okHttpClient == null) {
-            mContext = context;
             File httpCacheDirectory = new File(context.getCacheDir(), "responses");
             Cache cache = new Cache(httpCacheDirectory, 20 * 1024 * 1024); // cache size
             OkHttpClient httpClient = new OkHttpClient();
