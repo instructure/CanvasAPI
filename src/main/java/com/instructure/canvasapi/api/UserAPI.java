@@ -150,6 +150,18 @@ public class UserAPI extends BuildInterfaceAPI {
         buildInterface(UsersInterface.class, userCanvasCallback, null).getUserById(userId, userCanvasCallback);
     }
 
+    public static void getUserByIdNoCache(long userId, CanvasCallback<User> userCanvasCallback){
+        if(APIHelpers.paramIsNull(userCanvasCallback)){return;}
+
+        //Passing UserCallback here will break OUR cache.
+        if(userCanvasCallback instanceof UserCallback){
+            Log.e(APIHelpers.LOG_TAG, "You cannot pass a User Call back here. It'll break cache for users/self..");
+            return;
+        }
+
+        buildInterface(UsersInterface.class, userCanvasCallback, null).getUserById(userId, userCanvasCallback);
+    }
+
     public static void getCourseUserById(CanvasContext canvasContext, long userId, CanvasCallback<User> userCanvasCallback){
         if(APIHelpers.paramIsNull(userCanvasCallback)){return;}
 

@@ -95,22 +95,22 @@ public class CourseAPI extends BuildInterfaceAPI {
     public static void getCourse(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildCacheInterface(CoursesInterface.class, callback).getCourse(courseId, callback);
-        buildInterface(CoursesInterface.class, callback).getCourse(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback, false).getCourse(courseId, callback);
+        buildInterface(CoursesInterface.class, callback, false).getCourse(courseId, callback);
     }
 
     public static void getCourseWithGrade(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildCacheInterface(CoursesInterface.class, callback).getCourseWithGrade(courseId, callback);
-        buildInterface(CoursesInterface.class, callback).getCourseWithGrade(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback, false).getCourseWithGrade(courseId, callback);
+        buildInterface(CoursesInterface.class, callback, false).getCourseWithGrade(courseId, callback);
     }
 
     public static void getCourseWithSyllabus(long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildCacheInterface(CoursesInterface.class, callback).getCourseWithSyllabus(courseId, callback);
-        buildInterface(CoursesInterface.class, callback).getCourseWithSyllabus(courseId, callback);
+        buildCacheInterface(CoursesInterface.class, callback, false).getCourseWithSyllabus(courseId, callback);
+        buildInterface(CoursesInterface.class, callback, false).getCourseWithSyllabus(courseId, callback);
     }
 
     public static void getFirstPageCourses(CanvasCallback<Course[]> callback) {
@@ -132,8 +132,8 @@ public class CourseAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
-        buildCacheInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
-        buildInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
+        buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
+        buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
     }
 
     public static void getNextPageCoursesChained(CanvasCallback<Course[]> callback, String nextURL, boolean isCached) {
@@ -141,9 +141,9 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
+            buildCacheInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
         } else {
-            buildInterface(CoursesInterface.class, callback, false).getNextPageCourses(nextURL, callback);
+            buildInterface(CoursesInterface.class, callback).getNextPageCourses(nextURL, callback);
         }
     }
 
