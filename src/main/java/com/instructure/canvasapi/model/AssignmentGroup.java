@@ -62,7 +62,7 @@ public class AssignmentGroup extends CanvasModel<AssignmentGroup> {
 
     @Override
     public String getComparisonString() {
-        return getName();
+        return Integer.toString(position);
     }
 
     ///////////////////////////////////////////////////////////////////////////
