@@ -85,7 +85,16 @@ public class UserAPI extends BuildInterfaceAPI {
         void getColors(CanvasCallback<CanvasColor> callback);
 
         @PUT("/users/self/colors/{context_id}")
-        void setColor(@Path("context_id") String context_id, @Query(value = "hexcode", encodeValue = false) String color, CanvasCallback<CanvasColor> callback); 
+        void setColor(@Path("context_id") String context_id, @Query(value = "hexcode", encodeValue = false) String color, CanvasCallback<CanvasColor> callback);
+
+        @POST("/accounts/{account_id}/self_registration")
+        void createSelfRegistrationUser(@Path("account_id") long account_id, @Query("user[name]") String userName, @Query("pseudonym[unique_id]") String emailAddress, @Query("user[terms_of_use]") int acceptsTerms, Callback<User> callback);
+
+        @POST("/users/self/observees")
+        void addObserveeWithToken(@Query("access_token") String token, CanvasCallback<User> callback);
+
+        @GET("/users/self/observees?include[]=avatar_url")
+        void getObservees(CanvasCallback<User[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -269,6 +278,24 @@ public class UserAPI extends BuildInterfaceAPI {
         buildInterface(UsersInterface.class, context, false).setColor(context_id, hexColor, callback);
     }
 
+    public static void createSelfRegistrationUser(long accountId, String userName, String emailAddress, CanvasCallback<User> callback) {
+        if (APIHelpers.paramIsNull(userName, emailAddress, callback)) { return; }
+
+        buildInterface(UsersInterface.class, callback, false).createSelfRegistrationUser(accountId, userName, emailAddress, 1, callback);
+    }
+
+    public static void addObserveeByToken(String token, CanvasCallback<User> callback) {
+        if(APIHelpers.paramIsNull(token, callback)) { return; }
+
+        buildInterface(UsersInterface.class, callback, false).addObserveeWithToken(token, callback);
+    }
+
+    public static void getObservees(CanvasCallback<User[]> callback) {
+        if(APIHelpers.paramIsNull(callback)) { return; }
+
+        buildCacheInterface(UsersInterface.class, callback).getObservees(callback);
+        buildInterface(UsersInterface.class, callback).getObservees(callback);
+    }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
     /////////////////////////////////////////////////////////////////////////
