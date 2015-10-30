@@ -27,12 +27,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by Josh Ruesch on 10/16/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class HttpHelpers {
 
@@ -43,16 +40,13 @@ public class HttpHelpers {
      * @param context
      * @return
      */
-    public static APIHttpResponse httpPut(String putURL, Context context)
-    {
+    public static APIHttpResponse httpPut(String putURL, Context context) {
         //Explicit check for null.
-        if(context == null)
-        {
+        if(context == null) {
             return new APIHttpResponse();
         }
 
-        try
-        {
+        try {
             putURL = Masquerading.addMasqueradeId(putURL, context);
             //Remove spaces from the URL
             putURL = putURL.replace(" ", "%20");
@@ -76,9 +70,7 @@ public class HttpHelpers {
             HttpResponse response = client.execute(get);
 
             return parseLinkHeaderResponse(response);
-        }
-        catch(Exception E)
-        {
+        } catch(Exception E) {
             return new APIHttpResponse();
         }
     }
@@ -103,16 +95,13 @@ public class HttpHelpers {
      * @param includeAuthentication whether or not the should be authenticated using the CanvasToken saved.
      * @return
      */
-    public static APIHttpResponse externalHttpGet(Context context, String getURL, boolean includeAuthentication)
-    {
+    public static APIHttpResponse externalHttpGet(Context context, String getURL, boolean includeAuthentication) {
         //Explicit check for null.
-        if(context == null)
-        {
+        if(context == null) {
             return new APIHttpResponse();
         }
 
-        try
-        {
+        try {
             getURL = Masquerading.addMasqueradeId(getURL, context);
             //Remove spaces from the URL
             getURL = getURL.replace(" ", "%20");
@@ -137,12 +126,10 @@ public class HttpHelpers {
             }
 
             return parseLinkHeaderResponse(urlConnection);
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             Log.e(APIHelpers.LOG_TAG, "Error externalHttpGet: " + e.getMessage());
             return new APIHttpResponse();
         }
-
     }
 
     /**
@@ -153,16 +140,13 @@ public class HttpHelpers {
      * @param context
      * @return
      */
-    public static APIHttpResponse httpPost(String postURL, List<BasicNameValuePair> postVars, Context context)
-    {
+    public static APIHttpResponse httpPost(String postURL, List<BasicNameValuePair> postVars, Context context) {
         //Explicit check for null.
-        if(context == null)
-        {
+        if(context == null) {
             return new APIHttpResponse();
         }
 
-        try
-        {
+        try {
             postURL = Masquerading.addMasqueradeId(postURL, context);
             //Remove spaces from the URL
             postURL = postURL.replace(" ", "%20");
@@ -189,12 +173,9 @@ public class HttpHelpers {
             HttpResponse response = client.execute(post);
 
             return parseLinkHeaderResponse(response);
-        }
-        catch(Exception E)
-        {
+        } catch(Exception E) {
             return new APIHttpResponse();
         }
-
     }
 
     /**
@@ -203,8 +184,7 @@ public class HttpHelpers {
      * @return
      */
 
-    private static HttpClient getHttpClient(Context context)
-    {
+    private static HttpClient getHttpClient(Context context) {
         HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, APIHelpers.getUserAgent(context));
         return httpclient;
@@ -216,11 +196,9 @@ public class HttpHelpers {
      * @return
      */
     @TargetApi(9)
-    public static HttpURLConnection redirectURL(HttpURLConnection urlConnection)
-    {
+    public static HttpURLConnection redirectURL(HttpURLConnection urlConnection) {
         HttpURLConnection.setFollowRedirects(true);
-        try
-        {
+        try {
             urlConnection.connect();
 
             String currentURL = urlConnection.getURL().toString();
@@ -231,8 +209,7 @@ public class HttpHelpers {
                 urlConnection = (HttpURLConnection) new URL(currentURL).openConnection();
             }
             while (!urlConnection.getURL().toString().equals(currentURL));
-        }
-        catch(Exception E){}
+        } catch(Exception E){}
         return urlConnection;
 
     }
@@ -273,13 +250,19 @@ public class HttpHelpers {
         return httpResponse;
     }
 
+    public static String getHtml(String url) throws IOException {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(url);
+        HttpResponse response = client.execute(request);
+        return EntityUtils.toString(response.getEntity());
+    }
+
     /**
      * parseLinkHeaderResponse is the old way of parsing the pagination URLs out of the response.
      * @param response
      * @return
      */
-    private static APIHttpResponse parseLinkHeaderResponse(HttpResponse response)
-    {
+    private static APIHttpResponse parseLinkHeaderResponse(HttpResponse response) {
         APIHttpResponse httpResponse = new APIHttpResponse();
 
         //Get status code.
@@ -295,27 +278,21 @@ public class HttpHelpers {
         }
 
         Header[] linkHeader = response.getHeaders("Link");
-        for(int j = 0; j < linkHeader.length; j++)
-        {
+        for(int j = 0; j < linkHeader.length; j++) {
             HeaderElement[] elements = linkHeader[j].getElements();
-            for(int i = 0; i < elements.length;i ++)
-            {
+            for(int i = 0; i < elements.length;i ++) {
                 String first = elements[i].getName();
                 String last = elements[i].getValue();
 
                 //Seems to strip out the equals between name and value
                 String url = first+"="+last;
-                if(url.startsWith("<") && url.endsWith(">"))
-                {
+                if(url.startsWith("<") && url.endsWith(">")) {
                     url = url.substring(1, url.length()-1);
-                }
-                else
-                {
+                } else {
                     continue;
                 }
 
-                for(int k = 0; k < elements[i].getParameterCount(); k++)
-                {
+                for(int k = 0; k < elements[i].getParameterCount(); k++) {
                     NameValuePair nvp = elements[i].getParameter(k);
                     if(nvp.getName().equals("rel"))
                     {
@@ -339,7 +316,6 @@ public class HttpHelpers {
                 }
             }
         }
-
         return httpResponse;
     }
 }
