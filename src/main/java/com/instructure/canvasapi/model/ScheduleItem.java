@@ -12,9 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Joshua Dutton
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
 //could be a calendar event or an assignment
@@ -43,7 +41,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     private String userName;
     private long courseId = -1;
     private long groupId = -1;
-	private Type type = Type.TYPE_CALENDAR;
+	private Type itemType = Type.TYPE_CALENDAR;
 
 	private List<Assignment.SUBMISSION_TYPE> submissionTypes = new ArrayList<Assignment.SUBMISSION_TYPE>();
 	private double pointsPossible;
@@ -173,10 +171,10 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         this.groupId = groupId;
     }
     public Type getType() {
-		return type;
+		return itemType;
 	}
 	public void setType(Type type) {
-		this.type = type;
+		this.itemType = type;
 	}
     public Date getStartDate() {
         if(start_at == null) {
@@ -428,7 +426,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         dest.writeString(this.userName);
         dest.writeLong(this.courseId);
         dest.writeLong(this.groupId);
-        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+        dest.writeInt(this.itemType == null ? -1 : this.itemType.ordinal());
 
         //Hack to make ENUMS list parcelable
         //http://stackoverflow.com/questions/15016259/how-to-make-a-listenum-parcelable
@@ -468,7 +466,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         this.courseId = in.readLong();
         this.groupId = in.readLong();
         int tmpType = in.readInt();
-        this.type = tmpType == -1 ? null : Type.values()[tmpType];
+        this.itemType = tmpType == -1 ? null : Type.values()[tmpType];
 
         //Hack to make ENUMS list parcelable
         //http://stackoverflow.com/questions/15016259/how-to-make-a-listenum-parcelable
