@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 
 import retrofit.Callback;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -95,6 +96,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @GET("/users/self/observees?include[]=avatar_url")
         void getObservees(CanvasCallback<User[]> callback);
+
+        @DELETE("/users/self/observees/{observee_id}")
+        void removeObservee(@Path("observee_id") long observee_id, Callback<User> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -295,6 +299,12 @@ public class UserAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(UsersInterface.class, callback).getObservees(callback);
         buildInterface(UsersInterface.class, callback).getObservees(callback);
+    }
+
+    public static void removeObservee(long observeeId, CanvasCallback<User> callback) {
+        if(APIHelpers.paramIsNull(callback)) { return; }
+
+        buildInterface(UsersInterface.class, callback).removeObservee(observeeId, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
