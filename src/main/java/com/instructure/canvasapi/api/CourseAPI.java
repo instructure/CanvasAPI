@@ -1,7 +1,6 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Course;
@@ -11,27 +10,24 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import retrofit.RestAdapter;
 import retrofit.http.DELETE;
+import retrofit.http.GET;
 import retrofit.http.Multipart;
+import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.PartMap;
 import retrofit.http.Path;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.PUT;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
@@ -73,6 +69,12 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         @DELETE("/users/self/favorites/courses/{courseId}")
         void removeCourseFromFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
+
+        @GET("/users/{user_id}/courses")
+        void getCoursesForUser(@Path("user_id") long userId, CanvasCallback<Course[]> callback);
+
+        @GET("/{next}")
+        void getNextPageCoursesForUser(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -230,7 +232,22 @@ public class CourseAPI extends BuildInterfaceAPI {
         buildInterface(CoursesInterface.class, callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, callback);
     }
 
+    public static void getCoursesForUser(long userId, CanvasCallback<Course[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
 
+        buildCacheInterface(CoursesInterface.class, callback).getCoursesForUser(userId, callback);
+        buildInterface(CoursesInterface.class, callback).getCoursesForUser(userId, callback);
+
+    }
+
+    public static void getNextPageCoursesForUser(String nextURL, CanvasCallback<Course[]> callback) {
+        if (APIHelpers.paramIsNull(nextURL, callback)) { return; }
+
+        callback.setIsNextPage(true);
+
+        buildCacheInterface(CoursesInterface.class, callback).getNextPageCoursesForUser(nextURL, callback);
+        buildInterface(CoursesInterface.class, callback).getNextPageCoursesForUser(nextURL, callback);
+    }
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
     ////////////////////////////////////////////////////////////////////////////
