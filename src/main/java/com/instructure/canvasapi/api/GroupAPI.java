@@ -2,11 +2,11 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 
+import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.model.Group;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -31,13 +30,13 @@ public class GroupAPI extends BuildInterfaceAPI {
         @GET("/users/self/groups?include[]=favorites")
         void getFirstPageGroups(CanvasCallback<Group[]> callback);
 
-        @GET("/courses/{courseid}/groups")
+        @GET("/courses/{courseid}/groups?include[]=favorites")
         void getFirstPageGroupsInCourse(@Path("courseid") long courseId, CanvasCallback<Group[]> callback);
 
         @GET("/{next}?include[]=favorites")
         void getNextPageGroups(@Path(value = "next", encode = false)String nextURL, CanvasCallback<Group[]> callback);
 
-        @GET("/groups/{groupid}?include[]=permissions")
+        @GET("/groups/{groupid}?include[]=permissions&include[]=favorites")
         void getDetailedGroup(@Path("groupid") long groupId, CanvasCallback<Group> callback);
 
         @GET("/groups/{groupid}/users")
@@ -46,10 +45,10 @@ public class GroupAPI extends BuildInterfaceAPI {
         @GET("/groups/{groupid}/users?include[]=avatar_url")
         void getGroupUsersWithAvatars(@Path("groupid") long groupId, CanvasCallback<User[]> callback);
 
-        @GET("/{next}")
+        @GET("/{next}?[]=favorites")
         void getNextPageGroupUsers(@Path(value = "next", encode = false) String nextURL, CanvasCallback<User[]> callback);
 
-        @POST("/groups")
+        @POST("/groups?[]=favorites")
         void createGroup(@Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
 
         @DELETE("/groups/{groupid}")
@@ -60,6 +59,16 @@ public class GroupAPI extends BuildInterfaceAPI {
 
         @POST("/group_categories/{group_category_id}/groups")
         void createGroupWithCategory(@Path("group_category_id") long groupCategoryId, @Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
+
+        @GET("/users/self/favorites/groups?[]=favorites")
+        void getFavoriteGroups(CanvasCallback<Group[]> callback);
+
+        @POST("/users/self/favorites/groups/{groupId}")
+        void addGroupToFavorites(@Path("groupId") long groupId, CanvasCallback<Favorite> callback);
+
+        @DELETE("/users/self/favorites/groups/{groupId}")
+        void removeGroupFromFavorites(@Path("groupId") long groupId, CanvasCallback<Favorite> callback);
+
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -162,21 +171,21 @@ public class GroupAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback)) return;
 
         buildCacheInterface(GroupsInterface.class, callback).getDetailedGroup(groupId, callback);
-        buildInterface(GroupsInterface.class, callback).getDetailedGroup(groupId,callback);
+        buildInterface(GroupsInterface.class, callback).getDetailedGroup(groupId, callback);
     }
 
     public static void getGroupUsers(long groupId, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(groupId, callback)) return;
 
         buildCacheInterface(GroupsInterface.class, callback).getGroupUsers(groupId, callback);
-        buildInterface(GroupsInterface.class, callback).getGroupUsers(groupId,callback);
+        buildInterface(GroupsInterface.class, callback).getGroupUsers(groupId, callback);
     }
 
     public static void getGroupUsersWithAvatars(long groupId, CanvasCallback<User[]> callback) {
         if (APIHelpers.paramIsNull(groupId, callback)) return;
 
         buildCacheInterface(GroupsInterface.class, callback).getGroupUsersWithAvatars(groupId, callback);
-        buildInterface(GroupsInterface.class, callback).getGroupUsersWithAvatars(groupId,callback);
+        buildInterface(GroupsInterface.class, callback).getGroupUsersWithAvatars(groupId, callback);
     }
 
     public static void getNextPageGroupUsers(String nextURL, CanvasCallback<User[]> callback) {
@@ -202,7 +211,7 @@ public class GroupAPI extends BuildInterfaceAPI {
     public static void deleteGroup(long groupId, CanvasCallback<Response>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(GroupsInterface.class, responseCanvasCallback).deleteGroup(groupId,responseCanvasCallback);
+        buildInterface(GroupsInterface.class, responseCanvasCallback).deleteGroup(groupId, responseCanvasCallback);
     }
 
     public static void createMembership(long groupId, String userId, CanvasCallback<Response> callback) {
@@ -210,6 +219,65 @@ public class GroupAPI extends BuildInterfaceAPI {
 
         buildInterface(GroupsInterface.class, callback).createMembership(groupId, userId, callback);
     }
+
+    public static void addGroupToFavorites(final long groupId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(GroupsInterface.class, callback).addGroupToFavorites(groupId, callback);
+    }
+
+    public static void removeGroupFromFavorites(final long groupId, final CanvasCallback<Favorite> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildInterface(GroupsInterface.class, callback).removeGroupFromFavorites(groupId, callback);
+    }
+
+    public static void getNextPageGroupsChained(CanvasCallback<Group[]> callback, String nextURL, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback, nextURL)) return;
+
+        callback.setIsNextPage(true);
+        if (isCached) {
+            buildCacheInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        } else {
+            buildInterface(GroupsInterface.class, callback).getNextPageGroups(nextURL, callback);
+        }
+    }
+
+    public static void getAllFavoriteGroupsChained(final CanvasCallback<Group[]> callback, boolean isCached) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                GroupAPI.getNextPageGroupsChained(bridgeCallback, nextURL, isCached);
+            }
+        });
+
+        if (isCached) {
+            buildCacheInterface(GroupsInterface.class, callback).getFavoriteGroups(bridge);
+        } else {
+            buildInterface(GroupsInterface.class, callback).getFavoriteGroups(bridge);
+        }
+    }
+
+    public static void getAllFavoriteGroups(final CanvasCallback<Group[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        CanvasCallback<Group[]> bridge = new ExhaustiveBridgeCallback<>(Group.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                GroupAPI.getNextPageGroupsChained(bridgeCallback, nextURL, isCached);
+            }
+        });
+
+        buildCacheInterface(GroupsInterface.class, callback).getFavoriteGroups(bridge);
+        buildInterface(GroupsInterface.class, callback).getFavoriteGroups(bridge);
+    }
+
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
     ////////////////////////////////////////////////////////////////////////////
