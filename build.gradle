@@ -61,8 +61,8 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
     compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
