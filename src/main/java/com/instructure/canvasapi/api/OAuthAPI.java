@@ -7,14 +7,14 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.EncodedQuery;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class OAuthAPI {
 
@@ -24,7 +24,7 @@ public class OAuthAPI {
         void deleteToken(Callback<Response> callback);
 
         @POST("/login/oauth2/token")
-        void getToken(@Query("client_id") String clientId, @Query("client_secret") String clientSecret, @Query("code") String oAuthRequest, @EncodedQuery("redirect_uri")String redirectURI, CanvasCallback<OAuthToken>canvasCallback);
+        void getToken(@Query("client_id") String clientId, @Query("client_secret") String clientSecret, @Query("code") String oAuthRequest, @Query(value = "redirect_uri", encodeValue = true) String redirectURI, @Body String body, CanvasCallback<OAuthToken>canvasCallback);
 
     }
 
@@ -54,6 +54,6 @@ public class OAuthAPI {
 
         RestAdapter restAdapter = CanvasRestAdapter.buildTokenRestAdapter(callback.getContext());
         OAuthInterface oAuthInterface = restAdapter.create(OAuthInterface.class);
-        oAuthInterface.getToken(clientId, clientSecret, oAuthRequest, "urn:ietf:wg:oauth:2.0:oob", callback);
+        oAuthInterface.getToken(clientId, clientSecret, oAuthRequest, "urn:ietf:wg:oauth:2.0:oob", "", callback);
     }
 }
