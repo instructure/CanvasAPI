@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -30,10 +31,10 @@ public class PollSessionAPI extends BuildInterfaceAPI {
         void getSinglePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id, Callback<PollSessionResponse> callback);
 
         @POST("/polls/{pollid}/poll_sessions")
-        void createPollSession(@Path("pollid") long poll_id, @Query("poll_sessions[][course_id]") long course_id, @Query("poll_sessions[][course_section_id]") long course_section_id, Callback<PollSessionResponse> callback);
+        void createPollSession(@Path("pollid") long poll_id, @Query("poll_sessions[][course_id]") long course_id, @Query("poll_sessions[][course_section_id]") long course_section_id, @Body String body, Callback<PollSessionResponse> callback);
 
         @PUT("/polls/{pollid}/poll_sessions/{poll_session_id}")
-        void updatePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id,  @Query("poll_sessions[][course_id]") long course_id, @Query("poll_sessions[][course_section_id]") long course_section_id, @Query("poll_sessions[][has_public_results]") boolean has_public_results, Callback<PollSessionResponse> callback);
+        void updatePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id,  @Query("poll_sessions[][course_id]") long course_id, @Query("poll_sessions[][course_section_id]") long course_section_id, @Query("poll_sessions[][has_public_results]") boolean has_public_results, @Body String body, Callback<PollSessionResponse> callback);
 
         @DELETE("/polls/{pollid}/poll_sessions/{poll_session_id}")
         void deletePollSession(@Path("pollid") long poll_id, @Path("poll_session_id") long poll_session_id, Callback<Response> callback);
@@ -80,13 +81,13 @@ public class PollSessionAPI extends BuildInterfaceAPI {
     public static void createPollSession(long poll_id, long course_id, long course_section_id, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, course_id, course_section_id)) { return; }
 
-        buildInterface(PollSessionInterface.class, callback).createPollSession(poll_id, course_id, course_section_id, callback);
+        buildInterface(PollSessionInterface.class, callback).createPollSession(poll_id, course_id, course_section_id, "", callback);
     }
 
     public static void updatePollSession(long poll_id, long poll_session_id, long course_id, long course_section_id, boolean has_public_results, CanvasCallback<PollSessionResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, poll_session_id, course_id, course_section_id, has_public_results)) { return; }
 
-        buildInterface(PollSessionInterface.class, callback).updatePollSession(poll_id, poll_session_id, course_id, course_section_id, has_public_results, callback);
+        buildInterface(PollSessionInterface.class, callback).updatePollSession(poll_id, poll_session_id, course_id, course_section_id, has_public_results, "", callback);
     }
 
     public static void deletePollSession(long poll_id, long poll_session_id, CanvasCallback<Response> callback) {

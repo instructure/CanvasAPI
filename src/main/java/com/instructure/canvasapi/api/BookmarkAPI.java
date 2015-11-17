@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -32,6 +33,7 @@ public class BookmarkAPI extends BuildInterfaceAPI {
                 @Query("name") String name,
                 @Query(value = "url", encodeValue = true) String url,
                 @Query("position") int position,
+                @Body String body,
                 Callback<Bookmark> callback);
 
         @PUT("/users/self/bookmarks/{id}")
@@ -39,6 +41,7 @@ public class BookmarkAPI extends BuildInterfaceAPI {
                             @Query("name") String name,
                             @Query(value = "url", encodeValue = false) String url,
                             @Query("position") int position,
+                            @Body String body,
                             Callback<Bookmark> callback);
 
         @DELETE("/users/self/bookmarks/{id}")
@@ -60,7 +63,7 @@ public class BookmarkAPI extends BuildInterfaceAPI {
     }
 
     public static void createBookmark(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
-        buildInterface(BookmarkInterface.class, callback).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
+        buildInterface(BookmarkInterface.class, callback, false).createBookmark(bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), "", callback);
     }
 
     public static void deleteBookmark(Bookmark bookmark,  CanvasCallback<Bookmark> callback) {
@@ -68,10 +71,10 @@ public class BookmarkAPI extends BuildInterfaceAPI {
     }
 
     public static void deleteBookmark(long bookmarkId, CanvasCallback<Bookmark> callback) {
-        buildInterface(BookmarkInterface.class, callback).deleteBookmark(bookmarkId, callback);
+        buildInterface(BookmarkInterface.class, callback, false).deleteBookmark(bookmarkId, callback);
     }
 
     public static void update(Bookmark bookmark, CanvasCallback<Bookmark> callback) {
-        buildInterface(BookmarkInterface.class, callback).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), callback);
+        buildInterface(BookmarkInterface.class, callback, false).updateBookmark(bookmark.getId(), bookmark.getName(), bookmark.getUrl(), bookmark.getPosition(), "", callback);
     }
 }

@@ -45,25 +45,25 @@ public class DiscussionAPI extends BuildInterfaceAPI {
         void getFilteredDiscussionTopic(@Path("context_id") long courseId, @Query("search_term") String searchTerm, Callback<DiscussionTopicHeader[]> callback);
 
         @POST("/{context_id}/discussion_topics/{discussionid}/entries/")
-        void postDiscussionEntry(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("message") String message, Callback<DiscussionEntry> callback);
+        void postDiscussionEntry(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Query("message") String message, @Body String body, Callback<DiscussionEntry> callback);
 
         @POST("/{context_id}/discussion_topics/{discussionid}/entries/{entryid}/replies")
-        void postDiscussionReply(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Path("entryid") long entryId, @Query("message")String message, Callback<DiscussionEntry> callback);
+        void postDiscussionReply(@Path("context_id") long courseId, @Path("discussionid") long discussionId, @Path("entryid") long entryId, @Query("message")String message, @Body String body, Callback<DiscussionEntry> callback);
 
         @POST("/{context_id}/discussion_topics/")
-        void postNewDiscussion(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
+        void postNewDiscussion(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("discussion_type")String discussion_type, @Body String body, Callback<DiscussionTopicHeader> callback);
 
         @POST("/{context_id}/discussion_topics/")
-        void postNewDiscussionAndPublish(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
+        void postNewDiscussionAndPublish(@Path("context_id")long courseId, @Query("title") String title, @Query("message")String message, @Query("is_announcement")int announcement, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, @Body String body, Callback<DiscussionTopicHeader> callback);
 
         @PUT("/{context_id}/discussion_topics/{topic_id}")
-        void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("title") String title, @Query("message")String message, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, Callback<DiscussionTopicHeader> callback);
+        void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("title") String title, @Query("message")String message, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, @Body String body, Callback<DiscussionTopicHeader> callback);
 
         @POST("/{context_id}/discussion_topics/{discussionId}/entries/{entryId}/rating")
-        void rateDiscussionEntry(@Path("context_id") long courseId, @Path("discussionId") long discussionId, @Path("entryId") long entryId, @Query("rating") int rating, Callback<Response> callback);
+        void rateDiscussionEntry(@Path("context_id") long courseId, @Path("discussionId") long discussionId, @Path("entryId") long entryId, @Query("rating") int rating, @Body String body, Callback<Response> callback);
 
         @PUT("/{context_id}/discussion_topics/{topic_id}")
-        void pinDiscussion(@Path("context_id") long courseId, @Path("topic_id") long discussionId, @Query("pinned") boolean pinned, Callback<DiscussionTopicHeader> callback);
+        void pinDiscussion(@Path("context_id") long courseId, @Path("topic_id") long discussionId, @Query("pinned") boolean pinned, @Body String body, Callback<DiscussionTopicHeader> callback);
 
     }
 
@@ -181,13 +181,13 @@ public class DiscussionAPI extends BuildInterfaceAPI {
     public static void postDiscussionEntry(CanvasContext canvasContext, long discussionId, String message, CanvasCallback<DiscussionEntry> callback){
         if (APIHelpers.paramIsNull(callback, message, canvasContext)) { return; }
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionEntry(canvasContext.getId(), discussionId, message, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionEntry(canvasContext.getId(), discussionId, message, "", callback);
     }
 
     public static void postDiscussionReply(CanvasContext canvasContext, long discussionId, long entryId, String message, CanvasCallback<DiscussionEntry> callback){
         if (APIHelpers.paramIsNull(callback, message, canvasContext)) { return; }
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionReply(canvasContext.getId(), discussionId, entryId, message, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postDiscussionReply(canvasContext.getId(), discussionId, entryId, message, "", callback);
     }
 
     public static void postNewDiscussion(CanvasContext canvasContext, String  title, String message, boolean threaded, boolean is_announcement, CanvasCallback<DiscussionTopicHeader> callback){
@@ -202,7 +202,7 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         int announcement = APIHelpers.booleanToInt(is_announcement);
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussion(canvasContext.getId(), title, message, announcement, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussion(canvasContext.getId(), title, message, announcement, type, "", callback);
     }
 
     public static void postNewDiscussionAndPublish(CanvasContext canvasContext, String  title, String message, boolean threaded, boolean is_announcement, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
@@ -218,7 +218,7 @@ public class DiscussionAPI extends BuildInterfaceAPI {
         int announcement = APIHelpers.booleanToInt(is_announcement);
         int publish = APIHelpers.booleanToInt(isPublished);
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussionAndPublish(canvasContext.getId(), title, message, announcement, publish, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).postNewDiscussionAndPublish(canvasContext.getId(), title, message, announcement, publish, type, "", callback);
     }
 
     public static void updateDiscussionTopic(CanvasContext canvasContext, long topicId, String  title, String message, boolean threaded, boolean isPublished, CanvasCallback<DiscussionTopicHeader> callback){
@@ -232,7 +232,7 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         int publish = APIHelpers.booleanToInt(isPublished);
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, "", callback);
 
     }
 
@@ -242,7 +242,7 @@ public class DiscussionAPI extends BuildInterfaceAPI {
     public static void rateDiscussionEntry(CanvasContext canvasContext, long discussionId, long entryId, int rating, CanvasCallback<Response> callback){
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).rateDiscussionEntry(canvasContext.getId(), discussionId, entryId, rating, "", callback);
     }
 
     /**
@@ -255,6 +255,6 @@ public class DiscussionAPI extends BuildInterfaceAPI {
     public static void pinDiscussion(CanvasContext canvasContext, long topicId, boolean pin, CanvasCallback<DiscussionTopicHeader> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(DiscussionsInterface.class, callback, canvasContext).pinDiscussion(canvasContext.getId(), topicId, pin, callback);
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).pinDiscussion(canvasContext.getId(), topicId, pin, "", callback);
     }
 }

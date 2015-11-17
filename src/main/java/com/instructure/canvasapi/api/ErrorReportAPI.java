@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
@@ -16,7 +17,7 @@ public class ErrorReportAPI {
 
     public interface ErrorReportInterface {
         @POST("/error_reports.json")
-        void postErrorReport(@Query("error[subject]") String subject, @Query("error[url]") String url, @Query("error[email]") String email, @Query("error[comments]") String comments, @Query("error[user_perceived_severity") String userPerceivedSeverity, CanvasCallback<ErrorReportResult> callback);
+        void postErrorReport(@Query("error[subject]") String subject, @Query("error[url]") String url, @Query("error[email]") String email, @Query("error[comments]") String comments, @Query("error[user_perceived_severity") String userPerceivedSeverity, @Body String body, CanvasCallback<ErrorReportResult> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,6 @@ public class ErrorReportAPI {
     public static void postErrorReport(String subject, String url, String email, String comments, String userPerceivedSeverity, CanvasCallback<ErrorReportResult> callback) {
         if(APIHelpers.paramIsNull(callback, subject, url, email, comments, userPerceivedSeverity)) return;
 
-        buildInterface(callback).postErrorReport(subject, url, email, comments, userPerceivedSeverity, callback);
+        buildInterface(callback).postErrorReport(subject, url, email, comments, userPerceivedSeverity, "", callback);
     }
 }

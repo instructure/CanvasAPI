@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -48,7 +49,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         void getNextPageQuizQuestions(@Path(value = "next", encode = false) String nextURL, Callback<QuizQuestion[]> callback);
 
         @POST("/{context_id}/quizzes/{quizid}/submissions")
-        void startQuiz(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<Response> callback);
+        void startQuiz(@Path("context_id") long context_id, @Path("quizid") long quizid, @Body String body, Callback<Response> callback);
 
         @GET("/{context_id}/quizzes/{quizid}/submissions")
         void getFirstPageQuizSubmissions(@Path("context_id") long context_id, @Path("quizid") long quizid, Callback<QuizSubmissionResponse> callback);
@@ -63,28 +64,28 @@ public class QuizAPI extends BuildInterfaceAPI {
         void getNextPageSubmissionQuestions(@Path(value = "next", encode = false) String nextURL, Callback<QuizSubmissionQuestionResponse> callback);
 
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
-        void postQuizQuestionMultiChoice(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") long answer, Callback<QuizSubmissionQuestionResponse> callback);
+        void postQuizQuestionMultiChoice(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") long answer, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
 
         @PUT("/quiz_submissions/{quiz_submission_id}/questions/{question_id}/flag")
-        void putFlagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, CanvasCallback<Response> callback);
+        void putFlagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Body String body, CanvasCallback<Response> callback);
 
         @PUT("/quiz_submissions/{quiz_submission_id}/questions/{question_id}/unflag")
-        void putUnflagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, CanvasCallback<Response> callback);
+        void putUnflagQuizQuestion(@Path("quiz_submission_id") long quizSubmissionId, @Path("question_id") long questionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Body String body, CanvasCallback<Response> callback);
 
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
-        void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, Callback<QuizSubmissionQuestionResponse> callback);
+        void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
 
         @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/complete")
-        void postQuizSubmit(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, Callback<QuizSubmissionResponse> callback);
+        void postQuizSubmit(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Body String body, Callback<QuizSubmissionResponse> callback);
 
         @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/events")
-        void postQuizStartedEvent(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("quiz_submission_events[][event_type]") String sessionStartedString, @Query("quiz_submission_events[][event_data][user_agent]") String userAgentString, CanvasCallback<Response> callback);
+        void postQuizStartedEvent(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("quiz_submission_events[][event_type]") String sessionStartedString, @Query("quiz_submission_events[][event_data][user_agent]") String userAgentString, @Body String body, CanvasCallback<Response> callback);
 
         @GET("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/time")
         void getQuizSubmissionTime(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, CanvasCallback<QuizSubmissionTime> callback);
 
         @POST("/quiz_submissions/{quiz_submission_id}/questions{query_params}")
-        void postQuizQuestionMultiAnswers(@Path("quiz_submission_id") long quizSubmissionId,  @Path(value = "query_params", encode = false) String queryParams, Callback<QuizSubmissionQuestionResponse> callback);
+        void postQuizQuestionMultiAnswers(@Path("quiz_submission_id") long quizSubmissionId,  @Path(value = "query_params", encode = false) String queryParams, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
 
     }
 
@@ -139,7 +140,7 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void startQuiz(CanvasContext canvasContext, long quiz_id, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, canvasContext).startQuiz(canvasContext.getId(), quiz_id, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).startQuiz(canvasContext.getId(), quiz_id, "", callback);
     }
 
     public static void getFirstPageQuizSubmissions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizSubmissionResponse> callback) {
@@ -173,16 +174,16 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void postQuizQuestionMultiChoice(QuizSubmission quizSubmission, long answerId, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, callback);
+        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, "", callback);
     }
 
     public static void putFlagQuizQuestion(QuizSubmission quizSubmission, long quizQuestionId, boolean shouldFlag, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         if(shouldFlag) {
-            buildInterface(QuizzesInterface.class, callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+            buildInterface(QuizzesInterface.class, callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
         } else {
-            buildInterface(QuizzesInterface.class, callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+            buildInterface(QuizzesInterface.class, callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
 
         }
     }
@@ -190,19 +191,19 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void postQuizQuestionEssay(QuizSubmission quizSubmission, String answer, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, callback);
+        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, "", callback);
     }
 
     public static void postQuizSubmit(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionResponse> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
     }
 
     public static void postQuizStartedEvent(CanvasContext canvasContext, QuizSubmission quizSubmission, String userAgentString, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, "", callback);
     }
 
     public static void getQuizSubmissionTime(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionTime> callback) {
@@ -214,7 +215,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
-        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), callback);
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
     }
 
     private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Integer> answers) {
