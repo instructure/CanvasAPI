@@ -7,6 +7,7 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -30,7 +31,7 @@ public class GroupCategoriesAPI extends BuildInterfaceAPI {
         void getNextPageGroupCategories(@Path(value = "next", encode = false) String nextURL, Callback<GroupCategory[]> callback);
 
         @POST("/courses/{course_id}/group_categories")
-        void createGroupCategoryForCourse(@Path("course_id") long courseId, @Query("name") String name, CanvasCallback<GroupCategory> callback);
+        void createGroupCategoryForCourse(@Path("course_id") long courseId, @Query("name") String name, @Body String body, CanvasCallback<GroupCategory> callback);
 
         @GET("/group_categories/{group_category_id}/groups")
         void getFirstPageGroupsFromCategory(@Path("group_category_id") long groupCategoryId, CanvasCallback<Group[]> callback);
@@ -56,7 +57,7 @@ public class GroupCategoriesAPI extends BuildInterfaceAPI {
     public static void createGroupCategoryForCourse(long courseId, String name, CanvasCallback<GroupCategory> callback) {
         if(APIHelpers.paramIsNull(name, callback)) return;
 
-        buildInterface(GroupCategoriesInterface.class, callback).createGroupCategoryForCourse(courseId, name, callback);
+        buildInterface(GroupCategoriesInterface.class, callback).createGroupCategoryForCourse(courseId, name, "", callback);
     }
 
     public static void getFirstPageGroupCategoriesInCourse(long courseId, CanvasCallback<GroupCategory[]> callback) {

@@ -37,16 +37,16 @@ public class NotificationPreferencesAPI extends BuildInterfaceAPI {
         void getSingleNotificationPreferencesForType(@Path("user_id") long userId, @Path("type") String type, @Path("address") String address, @Path("notification") String notification, CanvasCallback<NotificationPreferenceResponse> callback);
 
         @PUT("/users/self/communication_channels/{communication_channel_id}/notification_preferences/{notification}")
-        void updateSingleNotificationPreference(@Path("communication_channel_id") long communicationChannelId, @Path("notification") String notification, CanvasCallback<NotificationPreferenceResponse> callback);
+        void updateSingleNotificationPreference(@Path("communication_channel_id") long communicationChannelId, @Path("notification") String notification, @Body String body, CanvasCallback<NotificationPreferenceResponse> callback);
 
         @PUT("/users/self/communication_channels/{type}/{address}/notification_preferences/{notification}")
-        void updateSingleNotificationPreferenceForType(@Path("type") String type, @Path("address") String address, @Path("notification") String notification, CanvasCallback<NotificationPreferenceResponse> callback);
+        void updateSingleNotificationPreferenceForType(@Path("type") String type, @Path("address") String address, @Path("notification") String notification, @Body String body, CanvasCallback<NotificationPreferenceResponse> callback);
 
         @PUT("/users/self/communication_channels/{type}/{address}/notification_preferences{notification_preferences}")
-        void updateMultipleNotificationPreferencesForType(@Path("type") String type, @Path("address") String address, @Path(value = "notification_preferences", encode = false) String notifications, CanvasCallback<NotificationPreferenceResponse> callback);
+        void updateMultipleNotificationPreferencesForType(@Path("type") String type, @Path("address") String address, @Path(value = "notification_preferences", encode = false) String notifications, @Body String body, CanvasCallback<NotificationPreferenceResponse> callback);
 
         @PUT("/users/self/communication_channels/{communication_channel_id}/notification_preferences{notification_preferences}")
-        void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Path(value = "notification_preferences", encode = false) String notifications, CanvasCallback<NotificationPreferenceResponse> callback);
+        void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Path(value = "notification_preferences", encode = false) String notifications, @Body String body, CanvasCallback<NotificationPreferenceResponse> callback);
 
         @PUT("/users/self/communication_channels/{communication_channel_id}/notification_preferences")
         void updateMultipleNotificationPreferences(@Path("communication_channel_id") long communicationChannelId, @Body NotificationPreferenceResponse preferencesToChange, CanvasCallback<NotificationPreferenceResponse> callback);
@@ -83,25 +83,25 @@ public class NotificationPreferencesAPI extends BuildInterfaceAPI {
     public static void updateSingleNotificationPreference(final long communicationChannelId, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreference(communicationChannelId, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreference(communicationChannelId, notification, "", callback);
     }
 
     public static void updateSingleNotificationPreferenceForType(final String type, final String address, final String notification, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreferenceForType(type, address, notification, callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateSingleNotificationPreferenceForType(type, address, notification, "", callback);
     }
 
     public static void updateMultipleNotificationPreferencesForType(final String type, final String address, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferencesForType(type, address, buildNotificationPreferenceList(notifications, frequency), callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferencesForType(type, address, buildNotificationPreferenceList(notifications, frequency), "", callback);
     }
 
     public static void updateMultipleNotificationPreferences(final long communicationChannelId, final ArrayList<String> notifications, final String frequency, final CanvasCallback<NotificationPreferenceResponse> callback) {
         if (APIHelpers.paramIsNull(callback, notifications, frequency)) { return; }
 
-        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferences(communicationChannelId, buildNotificationPreferenceList(notifications, frequency), callback);
+        buildInterface(NotificationPreferencesInterface.class, callback, null, false).updateMultipleNotificationPreferences(communicationChannelId, buildNotificationPreferenceList(notifications, frequency), "", callback);
     }
 
     /**

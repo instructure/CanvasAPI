@@ -5,6 +5,7 @@ import com.instructure.canvasapi.model.Tab;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -19,7 +20,7 @@ public class TabAPI extends BuildInterfaceAPI {
     interface TabsInterface {
 
         @PUT("{/context_id}/tabs{tab_id}")
-        void updateTab(@Query("hidden") Integer hidden, @Query("position") Integer oneBasedIndexPosition, CanvasCallback<Tab> callback);
+        void updateTab(@Query("hidden") Integer hidden, @Query("position") Integer oneBasedIndexPosition, @Body String body, CanvasCallback<Tab> callback);
 
         @GET("/{context_id}/tabs?include[]=external")
         void getTabs(@Path("context_id") long context_id, CanvasCallback<Tab[]> callback);
@@ -51,7 +52,7 @@ public class TabAPI extends BuildInterfaceAPI {
 
         Integer hiddenInteger = newIsHidden == null ? null : APIHelpers.booleanToInt(newIsHidden);
 
-        buildInterface(TabsInterface.class, callback,canvasContext).updateTab(hiddenInteger, newOneBasedIndexPosition, callback);
+        buildInterface(TabsInterface.class, callback,canvasContext).updateTab(hiddenInteger, newOneBasedIndexPosition, "", callback);
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
@@ -101,6 +102,7 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
                                  @Query("calendar_event[start_at]") String startDate,
                                  @Query("calendar_event[end_at]") String endDate,
                                  @Query("calendar_event[location_name]") String locationName,
+                                 @Body String body,
                                  CanvasCallback<ScheduleItem> callback);
 
         @DELETE("/calendar_events/{event_id}")
@@ -184,7 +186,7 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
     public static void createCalendarEvent(String contextCode, String title, String description, String startDate, String endDate, String location, final CanvasCallback<ScheduleItem> callback){
         if(APIHelpers.paramIsNull(callback, contextCode) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)){return;}
 
-        buildInterface(CalendarEventsInterface.class, callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, callback);
+        buildInterface(CalendarEventsInterface.class, callback).createCalendarEvent(contextCode, title, description, startDate, endDate, location, "", callback);
     }
 
     public static void deleteCalendarEvent(long calendarEventId, String cancelReason, CanvasCallback<ScheduleItem> callback){

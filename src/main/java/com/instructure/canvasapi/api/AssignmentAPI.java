@@ -16,6 +16,7 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -89,6 +90,7 @@ public class AssignmentAPI extends BuildInterfaceAPI {
                             @Query(value = "assignment[url]", encodeValue = false) String url,
                             @Query("assignment[quiz_id]") Long quizId,
                             @Query(value = "assignment[muted]", encodeValue = false) boolean isMuted,
+                            @Body String body,
                             Callback<Assignment> callback);
 
         @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
@@ -216,7 +218,7 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
         buildInterface(AssignmentsInterface.class, callback, null).editAssignment(assignment.getCourseId(), assignment.getId(), assignmentName, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
-                                                        groupId, pointsPossible, newGradingType,dueAt,description,newNotifyOfUpdate,unlockAt,lockAt,null, null, null, assignment.isMuted(), callback );
+                                                        groupId, pointsPossible, newGradingType,dueAt,description,newNotifyOfUpdate,unlockAt,lockAt,null, null, null, assignment.isMuted(), "", callback );
 
     }
     public static void editAssignment(Assignment editedAssignment, Boolean notifyOfUpdate, final CanvasCallback<Assignment> callback){
@@ -244,7 +246,7 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         Integer newNotifyOfUpdate = APIHelpers.booleanToInt(notifyOfUpdate);
 
         buildInterface(AssignmentsInterface.class, callback, null).editAssignment(courseId, assignmentId, name, assignmentGroupId, newSubmissionTypes, newHasPeerReviews,
-                groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, isMuted, callback);
+                groupCategoryId, pointsPossible, newGradingType, stringDueAt, description, newNotifyOfUpdate, stringUnlockAt, stringLockAt, htmlUrl, url, quizId, isMuted, "", callback);
 
     }
 

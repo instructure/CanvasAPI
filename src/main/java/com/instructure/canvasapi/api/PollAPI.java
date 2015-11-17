@@ -6,6 +6,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -30,10 +31,10 @@ public class PollAPI extends BuildInterfaceAPI {
         void getSinglePoll(@Path("pollid") long poll_id, Callback<PollResponse> callback);
 
         @POST("/polls")
-        void createPoll(@Query("polls[][question]") String pollTitle, Callback<PollResponse> callback);
+        void createPoll(@Query("polls[][question]") String pollTitle, @Body String body, Callback<PollResponse> callback);
 
         @PUT("/polls/{pollid}")
-        void updatePoll(@Path("pollid") long poll_id, @Query("polls[][question]") String pollTitle, Callback<PollResponse> callback);
+        void updatePoll(@Path("pollid") long poll_id, @Query("polls[][question]") String pollTitle, @Body String body, Callback<PollResponse> callback);
 
         @DELETE("/polls/{pollid}")
         void deletePoll(@Path("pollid") long poll_id, Callback<Response> callback);
@@ -68,13 +69,13 @@ public class PollAPI extends BuildInterfaceAPI {
     public static void createPoll(String title, CanvasCallback<PollResponse> callback) {
         if (APIHelpers.paramIsNull(callback, title)) { return; }
 
-        buildInterface(PollInterface.class, callback).createPoll(title, callback);
+        buildInterface(PollInterface.class, callback).createPoll(title, "", callback);
     }
 
     public static void updatePoll(long poll_id, String title, CanvasCallback<PollResponse> callback) {
         if (APIHelpers.paramIsNull(callback, poll_id, title)) { return; }
 
-        buildInterface(PollInterface.class, callback).updatePoll(poll_id, title, callback);
+        buildInterface(PollInterface.class, callback).updatePoll(poll_id, title, "", callback);
     }
 
     public static void deletePoll(long poll_id, CanvasCallback<Response> callback) {

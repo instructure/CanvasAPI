@@ -65,39 +65,39 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         void getNextPageSubmissions(@Path(value = "next", encode = false) String nextURL, Callback<Submission[]> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
-        void postSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[text_comment]") String comment, Callback<Submission> callback);
+        void postSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[text_comment]") String comment, @Body String body, Callback<Submission> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
         void postMediaSubmissionComment(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @Query("comment[media_comment_id]") String media_id,
-                                        @Query("comment[media_comment_type]") String commentType, Callback<Submission> callback);
+                                        @Query("comment[media_comment_type]") String commentType, @Body String body, Callback<Submission> callback);
         @POST("/{context_id}/assignments/{assignmentID}/submissions")
-        void postTextSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[body]") String text, Callback<Submission> callback);
+        void postTextSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[body]") String text, @Body String body, Callback<Submission> callback);
 
         @POST("/{context_id}/assignments/{assignmentID}/submissions")
-        void postURLSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[url]") String url, Callback<Submission> callback);
+        void postURLSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[url]") String url, @Body String body, Callback<Submission> callback);
 
         @POST("/{context_id}/assignments/{assignmentID}/submissions")
         void postMediaSubmission(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType,
-                                 @Query("submission[media_comment_id]") String kalturaId,@Query("submission[media_comment_type]") String mediaType, CanvasCallback<Submission> callback);
+                                 @Query("submission[media_comment_id]") String kalturaId,@Query("submission[media_comment_type]") String mediaType, @Body String body, CanvasCallback<Submission> callback);
 
         @GET("/{path}")
         void getLTIFromAuthenticationURL(@Path(value = "path", encode = false) String url, Callback<LTITool> callback);
 
         @PUT("/{context_id}/assignments/{assignmentID}/submissions/{userID}")
-        void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, @Query("submission[posted_grade]") String assignmentScore, Callback<Submission> callback);
+        void postSubmissionRubricAssessmentMap(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("userID") long userID, @QueryMap Map<String, String> rubricAssessment, @Query("submission[posted_grade]") String assignmentScore, @Body String body, Callback<Submission> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
         @POST("/courses/{courseId}/assignments/{assignmentId}/submissions/self/files")
-        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Path("assignmentId") long assignmentId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type);
+        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Path("assignmentId") long assignmentId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Body String body);
 
         @Multipart
         @POST("/")
-        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
 
         @POST("/courses/{courseId}/assignments/{assignmentID}/submissions")
-        Submission postSubmissionAttachments(@Path("courseId") long courseId, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[file_ids][]") ArrayList<String> attachments);
+        Submission postSubmissionAttachments(@Path("courseId") long courseId, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[file_ids][]") ArrayList<String> attachments, @Body String body);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -199,30 +199,30 @@ public class SubmissionAPI extends BuildInterfaceAPI {
     public static void postSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String comment, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionComment(canvasContext.getId(), assignmentID, userID, comment, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionComment(canvasContext.getId(), assignmentID, userID, comment, "", callback);
     }
     public static void postMediaSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String kalturaMediaId, String mediaType, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmissionComment(canvasContext.getId(), assignmentID, userID, kalturaMediaId, mediaType, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmissionComment(canvasContext.getId(), assignmentID, userID, kalturaMediaId, mediaType, "", callback);
     }
 
     public static void postTextSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String text, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, submissionType, text, canvasContext)) { return; }
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postTextSubmission(canvasContext.getId(), assignmentID, submissionType, text, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postTextSubmission(canvasContext.getId(), assignmentID, submissionType, text, "", callback);
     }
 
     public static void postURLSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String url, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, submissionType, url, canvasContext)) { return; }
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postURLSubmission(canvasContext.getId(), assignmentID, submissionType, url, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postURLSubmission(canvasContext.getId(), assignmentID, submissionType, url, "", callback);
     }
 
     public static void postMediaSubmission(CanvasContext canvasContext, long assignmentID, String submissionType, String kalturaId, String mediaType, final  CanvasCallback<Submission> callback){
         if (APIHelpers.paramIsNull(callback, submissionType, kalturaId, canvasContext)) { return; }
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmission(canvasContext.getId(), assignmentID, submissionType, kalturaId, mediaType, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postMediaSubmission(canvasContext.getId(), assignmentID, submissionType, kalturaId, mediaType, "", callback);
     }
 
     public static void getLTIFromAuthenticationURL(String url, final CanvasCallback<LTITool> callback) {
@@ -271,7 +271,7 @@ public class SubmissionAPI extends BuildInterfaceAPI {
     public static void postSubmissionRubricAssessmentMap(CanvasContext canvasContext, RubricAssessment rubricAssessment, String assignmentScore, long assignmentId, long userId, CanvasCallback<Submission> callback){
         if (APIHelpers.paramIsNull(canvasContext, rubricAssessment, callback)){return;}
 
-        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, "", callback);
     }
 
     private static Map<String, String> generateRubricAssessmentQueryMap(RubricAssessment rubricAssessment){
@@ -289,14 +289,14 @@ public class SubmissionAPI extends BuildInterfaceAPI {
     // Synchronous
     /////////////////////////////////////////////////////////////////////////////
     public static FileUploadParams getFileUploadParams(Context context, long courseId, long assignmentId, String fileName, long size, String contentType){
-        return buildInterface(SubmissionsInterface.class, context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType);
+        return buildInterface(SubmissionsInterface.class, context).getFileUploadParams(courseId, assignmentId, size, fileName, contentType, "");
     }
 
     public static Attachment uploadAssignmentSubmission(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(SubmissionsInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(SubmissionsInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file), "");
     }
 
     public static Submission postSubmissionAttachments(Context context, long courseId, long assignmentId, ArrayList<String> attachments){
-        return buildInterface(SubmissionsInterface.class, context).postSubmissionAttachments(courseId, assignmentId, "online_upload",attachments);
+        return buildInterface(SubmissionsInterface.class, context).postSubmissionAttachments(courseId, assignmentId, "online_upload", attachments, "");
     }
 }
