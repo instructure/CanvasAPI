@@ -8,6 +8,7 @@ import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Query;
@@ -23,7 +24,7 @@ public class AvatarAPI extends BuildInterfaceAPI {
         void getFirstPageOfAvatarList( Callback<Avatar[]> callback);
 
         @PUT("/users/self")
-        void updateAvatar(@Query("user[avatar][url]") String avatarURL, Callback<User> callback);
+        void updateAvatar(@Query("user[avatar][url]") String avatarURL, @Body String body, Callback<User> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ public class AvatarAPI extends BuildInterfaceAPI {
     public static void updateAvatar(String avatarURL, CanvasCallback<User> callback){
         if(APIHelpers.paramIsNull(callback,avatarURL)){ return; }
 
-        buildInterface(AvatarsInterface.class, callback).updateAvatar(avatarURL, callback);
+        buildInterface(AvatarsInterface.class, callback).updateAvatar(avatarURL, "", callback);
     }
 
 }

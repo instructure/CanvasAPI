@@ -10,6 +10,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import java.util.Date;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -17,17 +18,20 @@ import retrofit.http.Query;
 
 /**
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class SectionAPI extends BuildInterfaceAPI {
 
     interface SectionsInterface {
 
         @PUT("{courseid}/sections/{sectionid}")
-        void updateSection(@Path("courseid") long courseID, @Path("sectionid") long sectionID,
-                @Query("course_section[name]") String name,
-                @Query("course_section[start_at]") String startAt, @Query("course_section[end_at]") String endAt,
-                CanvasCallback<Section> callback
+        void updateSection(@Path("courseid") long courseID,
+                           @Path("sectionid") long sectionID,
+                           @Query("course_section[name]") String name,
+                           @Query("course_section[start_at]") String startAt,
+                           @Query("course_section[end_at]") String endAt,
+                           @Body String body,
+                           CanvasCallback<Section> callback
         );
 
         @GET("/{courseid}/sections")
@@ -96,7 +100,7 @@ public class SectionAPI extends BuildInterfaceAPI {
         String startAtString = APIHelpers.dateToString(newStartAt);
         String endAtString = APIHelpers.dateToString(newEndAt);
 
-        buildInterface(SectionsInterface.class, callback,course).updateSection(course.getId(), section.getId(), newSectionName, startAtString, endAtString, callback);
+        buildInterface(SectionsInterface.class, callback,course).updateSection(course.getId(), section.getId(), newSectionName, startAtString, endAtString, "", callback);
 
     }
 

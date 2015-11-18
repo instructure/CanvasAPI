@@ -8,6 +8,7 @@ import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.squareup.okhttp.Response;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -32,7 +33,7 @@ public class ModuleAPI extends BuildInterfaceAPI {
         void getNextPageModuleItemList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleItem[]> callback);
 
         @POST("/{context_id}/modules/{moduleid}/items/{itemid}/mark_read")
-        void markModuleItemRead(@Path("context_id") long context_id, @Path("moduleid") long module_id, @Path("itemid") long item_id, Callback<Response> callback);
+        void markModuleItemRead(@Path("context_id") long context_id, @Path("moduleid") long module_id, @Path("itemid") long item_id, @Body String body, Callback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -85,6 +86,6 @@ public class ModuleAPI extends BuildInterfaceAPI {
             return;
         }
 
-        buildInterface(ModulesInterface.class, callback, canvasContext).markModuleItemRead(canvasContext.getId(), moduleId, itemId, callback);
+        buildInterface(ModulesInterface.class, callback, canvasContext).markModuleItemRead(canvasContext.getId(), moduleId, itemId, "", callback);
     }
 }

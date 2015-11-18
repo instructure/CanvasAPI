@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
@@ -43,6 +44,7 @@ public class CourseAPI extends BuildInterfaceAPI {
                           @Query("course[name]") String name, @Query("course[course_code]") String courseCode,
                           @Query("course[start_at]") String startAt, @Query("course[end_at]") String endAt,
                           @Query("course[license]") String license, @Query("course[is_public]") Integer isPublic,
+                          @Body String body,
                           CanvasCallback<Course> callback);
 
         @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count")
@@ -65,7 +67,7 @@ public class CourseAPI extends BuildInterfaceAPI {
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
 
         @POST("/users/self/favorites/courses/{courseId}")
-        void addCourseToFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
+        void addCourseToFavorites(@Path("courseId") long courseId, @Body String body, CanvasCallback<Favorite> callback);
 
         @DELETE("/users/self/favorites/courses/{courseId}")
         void removeCourseFromFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
@@ -83,11 +85,11 @@ public class CourseAPI extends BuildInterfaceAPI {
         Course[] getCoursesSynchronous(@Query("page") int page);
 
         @POST("/courses/{courseId}/files")
-        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Query("parent_folder_id") Long parentFolderId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type);
+        FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Query("parent_folder_id") Long parentFolderId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Body String body);
 
         @Multipart
         @POST("/")
-        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -152,7 +154,7 @@ public class CourseAPI extends BuildInterfaceAPI {
     public static void addCourseToFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(CoursesInterface.class, callback).addCourseToFavorites(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).addCourseToFavorites(courseId, "", callback);
     }
 
     public static void removeCourseFromFavorites(final long courseId, final CanvasCallback<Favorite> callback) {
@@ -229,7 +231,7 @@ public class CourseAPI extends BuildInterfaceAPI {
         String newEndAtString = APIHelpers.dateToString(newEndAt);
         Integer newIsPublicInteger = (newIsPublic == null) ? null : APIHelpers.booleanToInt(newIsPublic);
 
-        buildInterface(CoursesInterface.class, callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, callback);
+        buildInterface(CoursesInterface.class, callback).updateCourse(course.getId(), newCourseName, newCourseCode, newStartAtString, newEndAtString, Course.licenseToAPIString(license), newIsPublicInteger, "", callback);
     }
 
     public static void getCoursesForUser(long userId, CanvasCallback<Course[]> callback) {
@@ -306,10 +308,10 @@ public class CourseAPI extends BuildInterfaceAPI {
     }
 
     public static FileUploadParams getFileUploadParams(Context context, long courseId, Long parentFolderId, String fileName, long size, String contentType){
-        return buildInterface(CoursesInterface.class, context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType);
+        return buildInterface(CoursesInterface.class, context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType, "");
     }
 
     public static Attachment uploadCourseFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file), "");
     }
 }

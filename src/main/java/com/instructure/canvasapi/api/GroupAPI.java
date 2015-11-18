@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -49,22 +50,22 @@ public class GroupAPI extends BuildInterfaceAPI {
         void getNextPageGroupUsers(@Path(value = "next", encode = false) String nextURL, CanvasCallback<User[]> callback);
 
         @POST("/groups?[]=favorites")
-        void createGroup(@Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
+        void createGroup(@Query("name") String name, @Query("is_public") boolean isPublic, @Body String body, CanvasCallback<Group> callback);
 
         @DELETE("/groups/{groupid}")
         void deleteGroup(@Path("groupid") long groupId, CanvasCallback<Response> callback);
 
         @POST("/groups/{groupid}/memberships")
-        void createMembership(@Path("groupid") long groupId, @Query("user_id") String userId, CanvasCallback<Response> callback);
+        void createMembership(@Path("groupid") long groupId, @Query("user_id") String userId, @Body String body, CanvasCallback<Response> callback);
 
         @POST("/group_categories/{group_category_id}/groups")
-        void createGroupWithCategory(@Path("group_category_id") long groupCategoryId, @Query("name") String name, @Query("is_public") boolean isPublic, CanvasCallback<Group> callback);
+        void createGroupWithCategory(@Path("group_category_id") long groupCategoryId, @Query("name") String name, @Query("is_public") boolean isPublic, @Body String body, CanvasCallback<Group> callback);
 
         @GET("/users/self/favorites/groups?[]=favorites")
         void getFavoriteGroups(CanvasCallback<Group[]> callback);
 
         @POST("/users/self/favorites/groups/{groupId}")
-        void addGroupToFavorites(@Path("groupId") long groupId, CanvasCallback<Favorite> callback);
+        void addGroupToFavorites(@Path("groupId") long groupId, @Body String body, CanvasCallback<Favorite> callback);
 
         @DELETE("/users/self/favorites/groups/{groupId}")
         void removeGroupFromFavorites(@Path("groupId") long groupId, CanvasCallback<Favorite> callback);
@@ -199,13 +200,13 @@ public class GroupAPI extends BuildInterfaceAPI {
     public static void createGroup(String name, boolean isPublic, CanvasCallback<Group> callback) {
         if (APIHelpers.paramIsNull(name, callback)) return;
 
-        buildInterface(GroupsInterface.class, callback).createGroup(name, isPublic, callback);
+        buildInterface(GroupsInterface.class, callback).createGroup(name, isPublic, "", callback);
     }
 
     public static void createGroupWithCategory(long categoryId, String name, boolean isPublic, CanvasCallback<Group> callback) {
         if (APIHelpers.paramIsNull(name, callback)) return;
 
-        buildInterface(GroupsInterface.class, callback).createGroupWithCategory(categoryId, name, isPublic, callback);
+        buildInterface(GroupsInterface.class, callback).createGroupWithCategory(categoryId, name, isPublic, "", callback);
     }
 
     public static void deleteGroup(long groupId, CanvasCallback<Response>responseCanvasCallback){
@@ -217,13 +218,13 @@ public class GroupAPI extends BuildInterfaceAPI {
     public static void createMembership(long groupId, String userId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(userId, callback)) return;
 
-        buildInterface(GroupsInterface.class, callback).createMembership(groupId, userId, callback);
+        buildInterface(GroupsInterface.class, callback).createMembership(groupId, userId, "", callback);
     }
 
     public static void addGroupToFavorites(final long groupId, final CanvasCallback<Favorite> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(GroupsInterface.class, callback).addGroupToFavorites(groupId, callback);
+        buildInterface(GroupsInterface.class, callback).addGroupToFavorites(groupId, "", callback);
     }
 
     public static void removeGroupFromFavorites(final long groupId, final CanvasCallback<Favorite> callback) {

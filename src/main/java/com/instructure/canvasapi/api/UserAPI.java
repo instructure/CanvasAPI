@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
@@ -32,7 +33,7 @@ import retrofit.mime.TypedFile;
 
 /**
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class UserAPI extends BuildInterfaceAPI {
 
@@ -51,7 +52,7 @@ public class UserAPI extends BuildInterfaceAPI {
         void getSelfWithPermission(CanvasCallback<User> callback);
 
         @PUT("/users/self")
-        void updateShortName(@Query("user[short_name]") String shortName, Callback<User> callback);
+        void updateShortName(@Query("user[short_name]") String shortName, @Body String body, Callback<User> callback);
 
         @GET("/users/{userid}/profile")
         void getUserById(@Path("userid")long userId, Callback<User> userCallback);
@@ -69,30 +70,30 @@ public class UserAPI extends BuildInterfaceAPI {
         void getNextPagePeopleList(@Path(value = "next", encode = false) String nextURL, Callback<User[]> callback);
 
         @POST("/users/self/file")
-        void uploadUserFileURL( @Query("url") String fileURL, @Query("name") String fileName, @Query("size") long size, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath, Callback<String> callback);
+        void uploadUserFileURL( @Query("url") String fileURL, @Query("name") String fileName, @Query("size") long size, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath, @Body String body, Callback<String> callback);
 
         @POST("/users/self/files")
-        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_id") Long parentFolderId);
+        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_id") Long parentFolderId, @Body String body);
 
         @POST("/users/self/files")
-        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath);
+        FileUploadParams getFileUploadParams( @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Query("parent_folder_path") String parentFolderPath, @Body String body);
 
         @Multipart
         @POST("/")
-        Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+        Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
 
         //Colors
         @GET("/users/self/colors")
         void getColors(CanvasCallback<CanvasColor> callback);
 
         @PUT("/users/self/colors/{context_id}")
-        void setColor(@Path("context_id") String context_id, @Query(value = "hexcode", encodeValue = false) String color, CanvasCallback<CanvasColor> callback);
+        void setColor(@Path("context_id") String context_id, @Query(value = "hexcode", encodeValue = false) String color, @Body String body, CanvasCallback<CanvasColor> callback);
 
         @POST("/accounts/{account_id}/self_registration")
-        void createSelfRegistrationUser(@Path("account_id") long account_id, @Query("user[name]") String userName, @Query("pseudonym[unique_id]") String emailAddress, @Query("user[terms_of_use]") int acceptsTerms, Callback<User> callback);
+        void createSelfRegistrationUser(@Path("account_id") long account_id, @Query("user[name]") String userName, @Query("pseudonym[unique_id]") String emailAddress, @Query("user[terms_of_use]") int acceptsTerms, @Body String body, Callback<User> callback);
 
         @POST("/users/self/observees")
-        void addObserveeWithToken(@Query("access_token") String token, CanvasCallback<User> callback);
+        void addObserveeWithToken(@Query("access_token") String token, @Body String body, CanvasCallback<User> callback);
 
         @GET("/users/self/observees?include[]=avatar_url")
         void getObservees(CanvasCallback<User[]> callback);
@@ -147,7 +148,7 @@ public class UserAPI extends BuildInterfaceAPI {
     public static void updateShortName(String shortName, CanvasCallback<User> callback) {
         if (APIHelpers.paramIsNull(callback, shortName)) { return; }
 
-        buildInterface(UsersInterface.class, callback, null).updateShortName(shortName, callback);
+        buildInterface(UsersInterface.class, callback, null).updateShortName(shortName, "", callback);
     }
 
     public static void getUserById(long userId, CanvasCallback<User> userCanvasCallback){
@@ -279,19 +280,19 @@ public class UserAPI extends BuildInterfaceAPI {
             hexColor = hexColor.replaceAll("#", "");
         }
 
-        buildInterface(UsersInterface.class, context, false).setColor(context_id, hexColor, callback);
+        buildInterface(UsersInterface.class, context, false).setColor(context_id, hexColor, "", callback);
     }
 
     public static void createSelfRegistrationUser(long accountId, String userName, String emailAddress, CanvasCallback<User> callback) {
         if (APIHelpers.paramIsNull(userName, emailAddress, callback)) { return; }
 
-        buildInterface(UsersInterface.class, callback, false).createSelfRegistrationUser(accountId, userName, emailAddress, 1, callback);
+        buildInterface(UsersInterface.class, callback, false).createSelfRegistrationUser(accountId, userName, emailAddress, 1, "", callback);
     }
 
     public static void addObserveeByToken(String token, CanvasCallback<User> callback) {
         if(APIHelpers.paramIsNull(token, callback)) { return; }
 
-        buildInterface(UsersInterface.class, callback, false).addObserveeWithToken(token, callback);
+        buildInterface(UsersInterface.class, callback, false).addObserveeWithToken(token, "", callback);
     }
 
     public static void getObservees(CanvasCallback<User[]> callback) {
@@ -310,15 +311,15 @@ public class UserAPI extends BuildInterfaceAPI {
     // Synchronous Calls
     /////////////////////////////////////////////////////////////////////////
     public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, Long parentFolderId){
-        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderId);
+        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderId, "");
     }
 
     public static FileUploadParams getFileUploadParams(Context context, String fileName, long size, String contentType, String parentFolderPath){
-        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderPath);
+        return buildInterface(UsersInterface.class, context).getFileUploadParams(size, fileName, contentType, parentFolderPath, "");
     }
 
     public static Attachment uploadUserFile(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(UsersInterface.class, uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
+        return buildUploadInterface(UsersInterface.class, uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file), "");
     }
 
     /////////////////////////////////////////////////////////////////////////

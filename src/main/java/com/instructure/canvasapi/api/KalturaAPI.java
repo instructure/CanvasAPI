@@ -27,13 +27,14 @@ import java.io.File;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.Body;
 import retrofit.http.EncodedQuery;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
 //Make caching work
@@ -48,7 +49,7 @@ public class KalturaAPI extends BuildInterfaceAPI {
         void getKalturaConfigaration(Callback<KalturaConfig> callback);
 
         @POST("/services/kaltura_session")
-        void startKalturaSession(Callback<KalturaSession> callback);
+        void startKalturaSession(@Body String body, Callback<KalturaSession> callback);
 
     }
     
@@ -56,11 +57,11 @@ public class KalturaAPI extends BuildInterfaceAPI {
     public interface KalturaAPIInterface {
 
         @POST("/index.php?service=uploadtoken&action=add")
-        void getKalturaUploadToken(@EncodedQuery("ks") String ks, Callback<xml> callback);
+        void getKalturaUploadToken(@Query(value = "ks", encodeValue = true) String ks, @Body String body, Callback<xml> callback);
 
 
         @POST("/index.php?service=media&action=addFromUploadedFile")
-        xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @Query("mediaEntry:name") String name, @Query("mediaEntry:mediaType") String mediaType);
+        xml getMediaIdForUploadedFileTokenSynchronous(@Query("ks") String ks, @Query("uploadTokenId") String uploadToken, @Query("mediaEntry:name") String name, @Query("mediaEntry:mediaType") String mediaType, @Body String body);
 
     }
 
@@ -89,7 +90,7 @@ public class KalturaAPI extends BuildInterfaceAPI {
             return;
         }
 
-        buildInterface(KalturaConfigurationInterface.class, callback, null).startKalturaSession(callback);
+        buildInterface(KalturaConfigurationInterface.class, callback, null).startKalturaSession("", callback);
     }
 
     public static void getKalturaUploadToken(final CanvasCallback<xml> callback) {
@@ -99,7 +100,7 @@ public class KalturaAPI extends BuildInterfaceAPI {
 
         String kalturaToken = APIHelpers.getKalturaToken(callback.getContext());
 
-        buildKalturaAPIInterface(callback).getKalturaUploadToken(kalturaToken, callback);
+        buildKalturaAPIInterface(callback).getKalturaUploadToken(kalturaToken, "", callback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -161,7 +162,7 @@ public class KalturaAPI extends BuildInterfaceAPI {
         try {
             RestAdapter restAdapter = KalturaRestAdapter.buildAdapter(context);
             String mediaTypeConverted = FileUtilities.kalturaCodeFromMimeType(mimetype); 
-            return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadToken, fileName, mediaTypeConverted);
+            return restAdapter.create(KalturaAPIInterface.class).getMediaIdForUploadedFileTokenSynchronous(ks, uploadToken, fileName, mediaTypeConverted, "");
         } catch (Exception E) {
             Log.e(APIHelpers.LOG_TAG, E.toString());
             return null;

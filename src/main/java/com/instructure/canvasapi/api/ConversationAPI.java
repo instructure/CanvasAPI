@@ -79,25 +79,25 @@ public class ConversationAPI extends BuildInterfaceAPI {
         void deleteConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
 
         @PUT("/conversations/{conversationid}?conversation[workflow_state]=unread")
-        void markConversationAsUnread(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
+        void markConversationAsUnread(@Path("conversationid")long conversationID, @Body String body, CanvasCallback<Response>responseCallback);
 
         @PUT("/conversations/{conversationid}?conversation[workflow_state]=archived")
-        void archiveConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
+        void archiveConversation(@Path("conversationid")long conversationID, @Body String body, CanvasCallback<Response>responseCallback);
 
         @PUT("/conversations/{conversationid}?conversation[workflow_state]=read")
-        void unArchiveConversation(@Path("conversationid")long conversationID, CanvasCallback<Response>responseCallback);
+        void unArchiveConversation(@Path("conversationid")long conversationID, @Body String body, CanvasCallback<Response>responseCallback);
 
         @PUT("/conversations/{conversationid}")
-        void setIsStarred(@Path("conversationid")long conversationID, @Query("conversation[starred]") boolean isStarred, CanvasCallback<Conversation>responseCallback);
+        void setIsStarred(@Path("conversationid")long conversationID, @Query("conversation[starred]") boolean isStarred, @Body String body, CanvasCallback<Conversation>responseCallback);
 
         @PUT("/conversations/{conversationid}")
-        void setIsSubscribed(@Path("conversationid")long conversationID, @Query("conversation[subscribed]") boolean isSubscribed, CanvasCallback<Conversation>responseCallback);
+        void setIsSubscribed(@Path("conversationid")long conversationID, @Query("conversation[subscribed]") boolean isSubscribed, @Body String body, CanvasCallback<Conversation>responseCallback);
 
         @PUT("/conversations/{conversationid}")
-        void setSubject(@Path("conversationid")long conversationID, @Query("conversation[subject]") String subject, CanvasCallback<Conversation>responseCallback);
+        void setSubject(@Path("conversationid")long conversationID, @Query("conversation[subject]") String subject, @Body String body, CanvasCallback<Conversation>responseCallback);
 
         @PUT("/conversations/{conversationid}")
-        void setWorkflowState(@Path("conversationid")long conversationID, @Query("conversation[workflow_state]") String workflowState, CanvasCallback<Conversation>responseCallback);
+        void setWorkflowState(@Path("conversationid")long conversationID, @Query("conversation[workflow_state]") String workflowState, @Body String body, CanvasCallback<Conversation>responseCallback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -177,44 +177,44 @@ public class ConversationAPI extends BuildInterfaceAPI {
     public static void markConversationAsUnread(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).markConversationAsUnread(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).markConversationAsUnread(conversationId, "", responseCanvasCallback);
     }
 
 
     public static void archiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).archiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).archiveConversation(conversationId, "", responseCanvasCallback);
     }
 
     public static void unArchiveConversation(CanvasCallback<Response>responseCanvasCallback, long conversationId){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).unArchiveConversation(conversationId, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).unArchiveConversation(conversationId, "", responseCanvasCallback);
     }
 
     public static void subscribeToConversation(long conversationId, boolean isSubscribed, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsSubscribed(conversationId, isSubscribed, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsSubscribed(conversationId, isSubscribed, "", responseCanvasCallback);
     }
 
     public static void starConversation(long conversationId, boolean isStarred, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsStarred(conversationId, isStarred, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setIsStarred(conversationId, isStarred, "", responseCanvasCallback);
     }
 
     public static void setConversationSubject(long conversationId, String newSubject, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setSubject(conversationId, newSubject, responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setSubject(conversationId, newSubject, "", responseCanvasCallback);
     }
 
     public static void setConversationWorkflowState(long conversationId, WorkflowState workflowState, CanvasCallback<Conversation>responseCanvasCallback){
         if(APIHelpers.paramIsNull(responseCanvasCallback)){return;}
 
-        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setWorkflowState(conversationId, conversationStateToString(workflowState), responseCanvasCallback);
+        buildInterface(ConversationsInterface.class, responseCanvasCallback, false).setWorkflowState(conversationId, conversationStateToString(workflowState), "", responseCanvasCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////
