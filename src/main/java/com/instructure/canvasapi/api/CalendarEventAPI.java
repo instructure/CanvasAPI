@@ -7,14 +7,11 @@ import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.ArrayList;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.EncodedQuery;
@@ -109,6 +106,15 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
         void deleteCalendarEvent(@Path("event_id") long event_id, @Query("cancel_reason") String cancelReason,
                                  CanvasCallback<ScheduleItem> callback);
 
+        @GET("/users/{user_id}/calendar_events/")
+        void getCalendarEventsForUser(
+                @Path("user_id") long user_id,
+                @Query("type") String type,
+                @Query("start_date") String startDate,
+                @Query("end_date") String endDate,
+                @EncodedQuery("context_codes[]") String contextCodes,
+                Callback<ScheduleItem[]> callback);
+
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -193,6 +199,13 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(callback)){return;}
 
         buildInterface(CalendarEventsInterface.class, callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
+    }
+
+    public static void getFirstPageCalendarEventsForUser(long userId, EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        if(APIHelpers.paramIsNull(callback, startDate, endDate, canvasContextIds)){return;}
+
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUser(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), callback);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUser(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), callback);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
