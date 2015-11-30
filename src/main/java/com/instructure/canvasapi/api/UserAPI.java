@@ -32,7 +32,6 @@ import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
- *
  * Copyright (c) 2015 Instructure. All rights reserved.
  */
 public class UserAPI extends BuildInterfaceAPI {
