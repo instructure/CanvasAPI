@@ -201,7 +201,6 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
         buildInterface(CalendarEventsInterface.class, callback).deleteCalendarEvent(calendarEventId, cancelReason, callback);
     }
 
-
     public static void getAllCalendarEventsForUserExhaustive(long userId, EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
