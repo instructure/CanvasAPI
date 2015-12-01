@@ -27,13 +27,13 @@ public class CourseNicknameAPI extends BuildInterfaceAPI {
         @GET("/users/self/course_nicknames/{course_id}")
         void getNickname(@Path("course_id") long courseId, Callback<CourseNickname> callback);
 
-        @PUT("/user/self/course_nicknames/{course_id}")
+        @PUT("/users/self/course_nicknames/{course_id}")
         void setNickname(@Path("course_id") long courseId, @Query("nickname") String nickname, @Body String body, Callback<CourseNickname> callback);
 
-        @DELETE("/user/self/course_nicknames/{course_id}")
+        @DELETE("/users/self/course_nicknames/{course_id}")
         void deleteNickname(@Path("course_id") long courseId, Callback<CourseNickname> callback);
 
-        @DELETE("/user/self/course_nicknames/")
+        @DELETE("/users/self/course_nicknames/")
         void deleteAllNicknames(Callback<CourseNickname> callback);
     }
 
@@ -50,7 +50,10 @@ public class CourseNicknameAPI extends BuildInterfaceAPI {
     }
 
     public static void setNickname(long courseId, String nickname, CanvasCallback<CourseNickname> callback) {
-        if (APIHelpers.paramIsNull(callback, nickname)) { return; }
+        if (APIHelpers.paramIsNull(callback, nickname) || nickname.length() == 0) { return; }
+
+        //Reduces the nickname to only 60 max chars per the api docs.
+        nickname = nickname.substring(0, Math.min(nickname.length(), 60));
 
         buildInterface(NicknameInterface.class, callback, false).setNickname(courseId, nickname, "", callback);
     }
