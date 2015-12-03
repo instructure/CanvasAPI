@@ -189,6 +189,22 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         }
     }
 
+    public static void getSubmissionsWithCommentsHistoryAndRubricExhaustive(CanvasContext canvasContext, long assignmentID, final CanvasCallback<Submission[]> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        CanvasCallback<Submission[]> bridge = new ExhaustiveBridgeCallback<>(Submission.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextUrl, boolean isCached) {
+                if(callback.isCancelled()){ return; }
+
+                SubmissionAPI.getNextPageSubmissionsChained(nextUrl, bridgeCallback, isCached);
+            }
+        });
+
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, bridge);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionsWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, bridge);
+    }
+
     public static void getSubmissionWithCommentsAndHistory(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
 
