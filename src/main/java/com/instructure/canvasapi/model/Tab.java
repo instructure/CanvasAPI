@@ -10,12 +10,9 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import java.util.Date;
 
 /**
- * Created by Joshua Dutton on 9/6/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
-
-public class Tab extends CanvasModel<Tab> {
+public class Tab extends CanvasModel<Tab> implements Parcelable {
 
     public static final String TYPE_INTERNAL = "internal";
     public static final String TYPE_EXTERNAL = "external";
@@ -44,8 +41,11 @@ public class Tab extends CanvasModel<Tab> {
     private String id;
     private String label;
     private String type;
-    private String html_url;    // internal url
-    private String full_url;         // external url
+    private String html_url;                // internal url
+    private String full_url;                // external url
+    private String visibility = "none";     // possible values are: public, members, admins, and none
+    private boolean hidden;                 // only included when true
+    private int position = 0;
 
     @SerializedName("url")
     private String LTI_url;
@@ -99,6 +99,34 @@ public class Tab extends CanvasModel<Tab> {
 
     public String getLTIUrl() {
         return LTI_url;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public boolean isPublic() {
+        return "public".equals(visibility);
+    }
+
+    public boolean isMembers() {
+        return "members".equals(visibility);
+    }
+
+    public boolean isAdmin() {
+        return "admin".equals(visibility);
+    }
+
+    public boolean isNone() {
+        return "none".equals(visibility);
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -155,6 +183,10 @@ public class Tab extends CanvasModel<Tab> {
         dest.writeString(this.type);
         dest.writeString(this.html_url);
         dest.writeString(this.full_url);
+        dest.writeString(this.visibility);
+        dest.writeByte(hidden ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.position);
+        dest.writeString(this.LTI_url);
     }
 
     private Tab(Parcel in) {
@@ -163,9 +195,13 @@ public class Tab extends CanvasModel<Tab> {
         this.type = in.readString();
         this.html_url = in.readString();
         this.full_url = in.readString();
+        this.visibility = in.readString();
+        this.hidden = in.readByte() != 0;
+        this.position = in.readInt();
+        this.LTI_url = in.readString();
     }
 
-    public static Parcelable.Creator<Tab> CREATOR = new Parcelable.Creator<Tab>() {
+    public static final Creator<Tab> CREATOR = new Creator<Tab>() {
         public Tab createFromParcel(Parcel source) {
             return new Tab(source);
         }
