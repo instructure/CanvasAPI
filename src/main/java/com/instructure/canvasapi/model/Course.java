@@ -10,9 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
- * Created by Joshua Dutton on 9/5/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2015 Instructure. All rights reserved.
  */
 
 public class Course extends CanvasContext implements Comparable<CanvasContext>{
@@ -31,6 +29,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private List<Enrollment> enrollments = new ArrayList<Enrollment>();
     private long needs_grading_count;
     private boolean apply_assignment_group_weights;
+    private String original_name;
 
     // Helper variables
     private Double currentScore;
@@ -91,6 +90,10 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     }
     public boolean isFinalGradeHidden() {
         return hide_final_grades;
+    }
+
+    public String getOriginalName() {
+        return this.original_name;
     }
 
     public void setHideFinalGrades(boolean hide_final_grades) {
@@ -345,6 +348,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.name);
+        dest.writeString(this.original_name);
         dest.writeString(this.course_code);
         dest.writeString(this.start_at);
         dest.writeString(this.end_at);
@@ -371,6 +375,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
 
         this.id = in.readLong();
         this.name = in.readString();
+        this.original_name = in.readString();
         this.course_code = in.readString();
         this.start_at = in.readString();
         this.end_at = in.readString();
