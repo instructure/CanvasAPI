@@ -1,20 +1,21 @@
-//This needs to be at the top in order to build on Jenkins
+// This needs to be at the top in order to build on Jenkins
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 buildscript {
+    ext.androidGradlePluginVersion = '1.5.0'
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
     }
 }
 
-
 apply plugin: 'com.android.library'
-
 
 android {
     compileSdkVersion 23
@@ -73,7 +74,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0-rc2'
 }
-//Do some maven stuff
+// Do some maven stuff
 apply plugin: 'maven'
 apply plugin: 'signing'
 
