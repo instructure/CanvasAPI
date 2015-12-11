@@ -94,7 +94,7 @@ public class SubmissionAPI extends BuildInterfaceAPI {
 
         @Multipart
         @POST("/")
-        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
 
         @POST("/courses/{courseId}/assignments/{assignmentID}/submissions")
         Submission postSubmissionAttachments(@Path("courseId") long courseId, @Path("assignmentID") long assignmentID, @Query("submission[submission_type]") String submissionType, @Query("submission[file_ids][]") ArrayList<String> attachments, @Body String body);
@@ -309,7 +309,7 @@ public class SubmissionAPI extends BuildInterfaceAPI {
     }
 
     public static Attachment uploadAssignmentSubmission(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(SubmissionsInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file), "");
+        return buildUploadInterface(SubmissionsInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
     }
 
     public static Submission postSubmissionAttachments(Context context, long courseId, long assignmentId, ArrayList<String> attachments){
