@@ -89,7 +89,7 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         @Multipart
         @POST("/")
-        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
+        Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -312,6 +312,6 @@ public class CourseAPI extends BuildInterfaceAPI {
     }
 
     public static Attachment uploadCourseFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file), "");
+        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
     }
 }

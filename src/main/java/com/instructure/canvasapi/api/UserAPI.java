@@ -79,7 +79,7 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @Multipart
         @POST("/")
-        Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file, @Body String body);
+        Attachment uploadUserFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
 
         //Colors
         @GET("/users/self/colors")
@@ -318,7 +318,7 @@ public class UserAPI extends BuildInterfaceAPI {
     }
 
     public static Attachment uploadUserFile(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
-        return buildUploadInterface(UsersInterface.class, uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file), "");
+        return buildUploadInterface(UsersInterface.class, uploadUrl).uploadUserFile(uploadParams, new TypedFile(mimeType, file));
     }
 
     /////////////////////////////////////////////////////////////////////////
