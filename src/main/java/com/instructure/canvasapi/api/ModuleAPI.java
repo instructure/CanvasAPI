@@ -5,17 +5,19 @@ import com.instructure.canvasapi.model.ModuleItem;
 import com.instructure.canvasapi.model.ModuleObject;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
+import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 import com.squareup.okhttp.Response;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 /**
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2016 Instructure. All rights reserved.
  */
 public class ModuleAPI extends BuildInterfaceAPI {
 
@@ -26,19 +28,41 @@ public class ModuleAPI extends BuildInterfaceAPI {
         @GET("/{next}")
         void getNextPageModuleObjectList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleObject[]> callback);
 
-        @GET("/{context_id}/modules/{moduleid}/items?include[]=content_details")
-        void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("moduleid") long moduleID, Callback<ModuleItem[]> callback);
+        @GET("/{context_id}/modules/{module_id}/items?include[]=content_details")
+        void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("module_id") long moduleID, Callback<ModuleItem[]> callback);
 
         @GET("/{next}?include[]=content_details")
         void getNextPageModuleItemList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleItem[]> callback);
 
-        @POST("/{context_id}/modules/{moduleid}/items/{itemid}/mark_read")
-        void markModuleItemRead(@Path("context_id") long context_id, @Path("moduleid") long module_id, @Path("itemid") long item_id, @Body String body, Callback<Response> callback);
+        @POST("/{context_id}/modules/{module_id}/items/{item_id}/mark_read")
+        void markModuleItemRead(@Path("context_id") long context_id, @Path("module_id") long module_id, @Path("item_id") long item_id, @Body String body, Callback<Response> callback);
+
+        @PUT("/{context_id}/modules/{module_id}/items/{item_id}/done")
+        void markModuleAsDone(@Path("context_id") long context_id, @Path("module_id") long module_id, @Path("item_id") long item_id, @Body String body, Callback<Response> callback);
+
+        @DELETE("/{context_id}/modules/{module_id}/items/{item_id}/done")
+        void markModuleAsNotDone(@Path("context_id") long context_id, @Path("module_id") long module_id, @Path("item_id") long item_id, Callback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
     // API Calls
     /////////////////////////////////////////////////////////////////////////
+
+    public static void getModuleItemsExhaustive(CanvasContext canvasContext, long moduleId, final CanvasCallback<ModuleItem[]> callback) {
+        if (APIHelpers.paramIsNull(canvasContext, callback)) { return; }
+
+        CanvasCallback<ModuleItem[]> bridge = new ExhaustiveBridgeCallback<>(ModuleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                ModuleAPI.getNextPageModuleItemsChained(nextURL, bridgeCallback, isCached);
+            }
+        });
+
+        buildCacheInterface(ModulesInterface.class, callback, canvasContext).getFirstPageModuleItems(canvasContext.getId(), moduleId, bridge);
+        buildInterface(ModulesInterface.class, callback, canvasContext).getFirstPageModuleItems(canvasContext.getId(), moduleId, bridge);
+    }
 
     public static void getFirstPageModuleObjects(CanvasContext canvasContext, CanvasCallback<ModuleObject[]> callback) {
         if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
@@ -87,5 +111,21 @@ public class ModuleAPI extends BuildInterfaceAPI {
         }
 
         buildInterface(ModulesInterface.class, callback, canvasContext).markModuleItemRead(canvasContext.getId(), moduleId, itemId, "", callback);
+    }
+
+    public static void markModuleAsDone(CanvasContext canvasContext, long moduleId, long itemId, CanvasCallback<Response> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){
+            return;
+        }
+
+        buildInterface(ModulesInterface.class, callback, canvasContext, false).markModuleAsDone(canvasContext.getId(), moduleId, itemId, "", callback);
+    }
+
+    public static void markModuleAsNotDone(CanvasContext canvasContext, long moduleId, long itemId, CanvasCallback<Response> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){
+            return;
+        }
+
+        buildInterface(ModulesInterface.class, callback, canvasContext, false).markModuleAsNotDone(canvasContext.getId(), moduleId, itemId, callback);
     }
 }
