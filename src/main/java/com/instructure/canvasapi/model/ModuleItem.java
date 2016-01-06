@@ -6,9 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by Brady Larson on 10/15/13.
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2016 Instructure. All rights reserved.
  */
 public class ModuleItem extends CanvasModel<ModuleItem> {
 
@@ -52,6 +50,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
      }
      */
     private long id;
+    private long module_id;
     private int position;
     private String title;
     private int indent;
@@ -95,6 +94,11 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     public void setId(long id) {
         this.id = id;
     }
+
+    public long getModuleId() {
+        return module_id;
+    }
+
     public int getPosition() {
         return position;
     }
@@ -163,6 +167,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
+        dest.writeLong(this.module_id);
         dest.writeInt(this.position);
         dest.writeString(this.title);
         dest.writeInt(this.indent);
@@ -174,6 +179,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
 
     private ModuleItem(Parcel in) {
         this.id = in.readLong();
+        this.module_id = in.readLong();
         this.position = in.readInt();
         this.title = in.readString();
         this.indent = in.readInt();
