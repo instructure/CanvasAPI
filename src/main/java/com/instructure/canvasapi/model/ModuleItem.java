@@ -37,7 +37,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
 
      // Completion requirement for this module item
      completion_requirement: {
-     // one of "must_view", "must_submit", "must_contribute", "min_score"
+     // one of "must_view", "must_submit", "must_contribute", "min_score", "must_mark_done"
      type: "min_score",
 
      // minimum score required to complete (only present when type == 'min_score')
@@ -49,6 +49,14 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
      }
      }
      */
+
+    public static final String MUST_VIEW = "must_view";
+    public static final String MUST_SUBMIT = "must_submit";
+    public static final String MUST_CONTRIBUTE = "must_contribute";
+    public static final String MIN_SCORE = "min_score";
+    public static final String MUST_MARK_DONE = "must_mark_done";
+
+
     private long id;
     private long module_id;
     private int position;
