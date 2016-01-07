@@ -58,8 +58,9 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.1'
+    compile 'com.squareup.okio:okio:1.6.0'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
     compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
@@ -142,11 +143,6 @@ uploadArchives {
                     id 'mrice'
                     name 'Matthew Rice'
                     email 'mrice@instructure.com'
-                }
-                developer {
-                    id 'dwilloughby'
-                    name 'Dan Willoughby'
-                    email 'dwilloughby@instructure.com'
                 }
             }
         }
