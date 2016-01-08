@@ -110,7 +110,7 @@ public class ConversationAPI extends BuildInterfaceAPI {
         Conversation getDetailedConversationSynchronous(@Path("id") long conversation_id);
 
         @POST("/conversations/{id}/add_message")
-        Conversation addMessageToConversationSynchronous(@Path("id")long conversation_id, @Query("body")String message, @Query("attachment_ids[]") List<String> attachments);
+        Conversation addMessageToConversationSynchronous(@Path("id")long conversation_id, @Query("body")String message, @Body String body, @Query("attachment_ids[]") List<String> attachments);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ public class ConversationAPI extends BuildInterfaceAPI {
     public static Conversation addMessageToConversationSynchronous(Context context, long conversationId, String messageBody, List<String> attachmentIds){
         if (APIHelpers.paramIsNull(context, attachmentIds, messageBody)){return null;}
 
-        return buildInterface(ConversationsInterface.class, context, false).addMessageToConversationSynchronous(conversationId, messageBody, attachmentIds);
+        return buildInterface(ConversationsInterface.class, context, false).addMessageToConversationSynchronous(conversationId, messageBody, "", attachmentIds);
     }
 
     private static TypedInput createTypedInput(String message){
