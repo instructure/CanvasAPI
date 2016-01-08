@@ -49,6 +49,11 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
     @SerializedName("extra_attempts")
     private int extraAttempts;
 
+    //The number of attempts left. Note: the quiz object does not get updated with this information
+    //in the allowed_attempts field.
+    @SerializedName("attempts_left")
+    private int attemptsLeft;
+
     //Amount of extra time allowed for the quiz submission, in minutes.
     @SerializedName("extra_time")
     private int extraTime;
@@ -165,6 +170,14 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
 
     public void setExtraAttempts(int extraAttempts) {
         this.extraAttempts = extraAttempts;
+    }
+
+    public int getAttemptsLeft() {
+        return attemptsLeft;
+    }
+
+    public void setAttemptsLeft(int attemptsLeft) {
+        this.attemptsLeft = attemptsLeft;
     }
 
     public int getExtraTime() {
