@@ -12,13 +12,14 @@ public class Alert extends CanvasModel<Alert>{
     private long id;
     private boolean read;
     private boolean dismissed;
-    private String type;
+    private String alert_type;
     private String title;
     private String action_date;
     private String creation_date;
     private long observer_id;
     private long student_id;
     private long course_id;
+    private long alert_criteria_id;
     private String asset_url;
 
     @Override
@@ -56,12 +57,12 @@ public class Alert extends CanvasModel<Alert>{
         return this.dismissed;
     }
 
-    public void setType(String type){
-        this.type = type;
+    public void setAlertType(String alert_type){
+        this.alert_type = alert_type;
     }
 
-    public String getType(){
-        return this.type;
+    public String getAlertType(){
+        return this.alert_type;
     }
 
     public void setTitle(String title){
@@ -120,6 +121,14 @@ public class Alert extends CanvasModel<Alert>{
         return this.asset_url;
     }
 
+    public long getAlertCriteriaId() {
+        return alert_criteria_id;
+    }
+
+    public void setAlertCriteriaId(long alert_criteria_id) {
+        this.alert_criteria_id = alert_criteria_id;
+    }
+
 
     //endregion
 
@@ -129,9 +138,10 @@ public class Alert extends CanvasModel<Alert>{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(this.id);
+        parcel.writeLong(this.alert_criteria_id);
         parcel.writeByte(this.read ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.dismissed ? (byte) 1 : (byte) 0);
-        parcel.writeString(this.type);
+        parcel.writeString(this.alert_type);
         parcel.writeString(this.title);
         parcel.writeString(this.action_date);
         parcel.writeString(this.creation_date);
@@ -142,10 +152,11 @@ public class Alert extends CanvasModel<Alert>{
     }
 
     private Alert(Parcel parcel){
+        this.alert_criteria_id = parcel.readLong();
         this.id = parcel.readLong();
         this.read = parcel.readByte() != 0;
         this.dismissed = parcel.readByte() != 0;
-        this.type = parcel.readString();
+        this.alert_type = parcel.readString();
         this.title = parcel.readString();
         this.action_date = parcel.readString();
         this.creation_date = parcel.readString();
