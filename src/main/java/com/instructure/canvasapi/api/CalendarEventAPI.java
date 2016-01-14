@@ -115,6 +115,14 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
                 @EncodedQuery("context_codes[]") String contextCodes,
                 Callback<ScheduleItem[]> callback);
 
+        @GET("/users/{user_id}/calendar_events?include[]=submission")
+        void getCalendarEventsForUserWithSubmissions(
+                @Path("user_id") long user_id,
+                @Query("type") String type,
+                @Query("start_date") String startDate,
+                @Query("end_date") String endDate,
+                @EncodedQuery("context_codes[]") String contextCodes,
+                Callback<ScheduleItem[]> callback);
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -213,6 +221,20 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUser(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
         buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUser(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
+    }
+
+    public static void getAllCalendarEventsForUserWithSubmissionsExhaustive(long userId, EVENT_TYPE eventType, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                CalendarEventAPI.getNextPageCalendarEventsChained(nextURL, bridgeCallback, isCached);
+            }
+        });
+
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUserWithSubmissions(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUserWithSubmissions(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
