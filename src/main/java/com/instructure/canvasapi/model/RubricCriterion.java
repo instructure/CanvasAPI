@@ -2,7 +2,6 @@ package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +61,14 @@ public class RubricCriterion implements Serializable , Comparable<RubricCriterio
 	public List<RubricCriterionRating> getRatings() {
 		return ratings;
 	}
+
+    public List<RubricCriterionRating> getRatingsWithCriterionIds(){
+        for(RubricCriterionRating rating : ratings){
+            rating.setCriterionId(this.id);
+        }
+        return ratings;
+    }
+
 	public void setRatings(List<RubricCriterionRating> ratings) {
 		this.ratings = ratings;
 	}
