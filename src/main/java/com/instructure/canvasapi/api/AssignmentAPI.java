@@ -61,7 +61,7 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         @GET("/courses/{course_id}/assignment_groups")
         void getAssignmentGroupList(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
 
-        @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&override_assignment_dates=true")
+        @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&include[]=submission&override_assignment_dates=true")
         void getAssignmentGroupListWithAssignments(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
 
         @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&include[]=submission&override_assignment_dates=true")
