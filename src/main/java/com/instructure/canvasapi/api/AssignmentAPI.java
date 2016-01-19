@@ -64,6 +64,9 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&override_assignment_dates=true")
         void getAssignmentGroupListWithAssignments(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
 
+        @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&include[]=submission&override_assignment_dates=true")
+        void getAssignmentGroupListWithAssignmentsAndSubmissions(@Path("course_id") long course_id, Callback<AssignmentGroup[]> callback);
+
         @GET("/calendar_events/{event_id}")
         void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
 
@@ -179,6 +182,11 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         } else {
             buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignments(courseID, callback);
         }
+    }
+
+    public static void getAssignmentGroupsListWithAssignmentsAndSubmissions(long courseID, final CanvasCallback<AssignmentGroup[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListWithAssignmentsAndSubmissions(courseID, callback);
     }
 
     /*
