@@ -20,6 +20,12 @@ public class BuildInterfaceAPI {
         return restAdapter.create(clazz);
     }
 
+    public static <T> T buildCacheInterface(Class<T> clazz, String domain, CanvasCallback callback, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, domain, null, true, perPageQueryParam);
+        return restAdapter.create(clazz);
+    }
+
+
     /**
      * Creates a rest adapter that will only read from the cache.
      */
@@ -38,6 +44,10 @@ public class BuildInterfaceAPI {
         return restAdapter.create(clazz);
     }
 
+    public static <T> T buildCacheInterface(Class<T> clazz, String domain, CanvasCallback callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, domain, true, null);
+        return restAdapter.create(clazz);
+    }
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext);
         return restAdapter.create(clazz);
@@ -45,6 +55,11 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, null, false, perPageQueryParam);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildInterface(Class<T> clazz, String domain, CanvasCallback callback, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, domain, null, false, perPageQueryParam);
         return restAdapter.create(clazz);
     }
 
@@ -70,6 +85,11 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildInterface(Class<T> clazz, String domain, CanvasCallback callback) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(domain, callback);
         return restAdapter.create(clazz);
     }
 
