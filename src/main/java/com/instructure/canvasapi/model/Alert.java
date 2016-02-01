@@ -6,6 +6,10 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 
 import java.util.Date;
 
+/**
+ * Copyright (c) 2016 Instructure. All rights reserved.
+ */
+
 public class Alert extends CanvasModel<Alert>{
 
     //Variables from API
