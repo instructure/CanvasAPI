@@ -244,17 +244,17 @@ public class SubmissionAPI extends BuildInterfaceAPI {
     public static void getLTIFromAuthenticationURL(String url, final CanvasCallback<LTITool> callback) {
         if (APIHelpers.paramIsNull(callback, url)) { return; }
 
-        buildCacheInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
-        buildInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+        buildCacheInterface(SubmissionsInterface.class, callback, null, false).getLTIFromAuthenticationURL(url, callback);
+        buildInterface(SubmissionsInterface.class, callback, null, false).getLTIFromAuthenticationURL(url, callback);
     }
 
     public static void getLTIFromAuthenticationURLChained(String url, final CanvasCallback<LTITool> callback, boolean isCached) {
         if (APIHelpers.paramIsNull(callback, url)) { return; }
 
         if (isCached) {
-            buildCacheInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+            buildCacheInterface(SubmissionsInterface.class, callback, null, false).getLTIFromAuthenticationURL(url, callback);
         } else {
-            buildInterface(SubmissionsInterface.class, callback, null).getLTIFromAuthenticationURL(url, callback);
+            buildInterface(SubmissionsInterface.class, callback, null, false).getLTIFromAuthenticationURL(url, callback);
         }
     }
 
