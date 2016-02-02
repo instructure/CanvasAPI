@@ -290,12 +290,47 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, "", callback);
     }
 
+    public static void postSubmissionRubricAssessmentMap(CanvasContext canvasContext, HashMap<String, RubricCriterionRating> rubricAssessment, String assignmentScore, long assignmentId, long userId, CanvasCallback<Submission> callback){
+        if (APIHelpers.paramIsNull(canvasContext, rubricAssessment, callback)){return;}
+
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).postSubmissionRubricAssessmentMap(canvasContext.getId(), assignmentId, userId, generateRubricAssessmentQueryMap(rubricAssessment), assignmentScore, "", callback);
+    }
+
+    /**
+     * We generate a map given a rubric assessment in order to save a submission assessment with retrofit
+     *
+     * Rubric Assessment points can be rewarded in the form:
+     *     - rubric_assessment[criterion_id][points]
+     *
+     * Rubric Assessment comments can be rewarded in the form:
+     *     - rubric_assessment[criterion_id][comments]
+     *
+     * Example assessment :
+     *     - rubric_assessment[crit1][points]=3&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][comments]=Well%20Done.
+     */
+
+    private static final String assessmentPrefix = "rubric_assessment[";
+    private static final String pointsPostFix = "][points]";
+    private static final String commentsPostFix = "][comments]";
+
+    private static Map<String, String> generateRubricAssessmentQueryMap(HashMap<String, RubricCriterionRating> rubricAssessment){
+        Map<String, String> map = new HashMap<>();
+        for (Map.Entry<String, RubricCriterionRating> entry : rubricAssessment.entrySet()) {
+            RubricCriterionRating rating = entry.getValue();
+            map.put(assessmentPrefix +rating.getCriterionId() +pointsPostFix, String.valueOf(rating.getPoints()));
+            if(rating.getComments() != null && !TextUtils.isEmpty(rating.getComments())){
+                map.put(assessmentPrefix +rating.getCriterionId() +commentsPostFix, rating.getComments());
+            }
+        }
+        return map;
+    }
+
     private static Map<String, String> generateRubricAssessmentQueryMap(RubricAssessment rubricAssessment){
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (RubricCriterionRating entry : rubricAssessment.getRatings()) {
-            map.put("rubric_assessment[" +entry.getCriterionId() +"][points]", String.valueOf(entry.getPoints()));
+            map.put(assessmentPrefix +entry.getCriterionId() +pointsPostFix, String.valueOf(entry.getPoints()));
             if(entry.getComments() != null && !TextUtils.isEmpty(entry.getComments())){
-                map.put("rubric_assessment[" +entry.getCriterionId() +"][comments]", entry.getComments());
+                map.put(assessmentPrefix +entry.getCriterionId() +commentsPostFix, entry.getComments());
             }
         }
         return map;
