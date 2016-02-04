@@ -265,8 +265,7 @@ public class Submission extends CanvasModel<Submission>{
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    public ArrayList<Long> getUserIds()
-    {
+    public ArrayList<Long> getUserIds() {
         ArrayList<Long> ids = new ArrayList<Long>();
 
         for(int i = 0; i < submission_comments.size(); i++)
@@ -281,16 +280,14 @@ public class Submission extends CanvasModel<Submission>{
      * We want to see if any are not dummy submissions
      */
     public boolean hasRealSubmission(){
-
-        for(Submission submission : submission_history){
-
-            if(submission.getSubmissionType() != null){
-                return true;
+        if(submission_history != null) {
+            for (Submission submission : submission_history) {
+                if (submission != null && submission.getSubmissionType() != null) {
+                    return true;
+                }
             }
         }
-
         return false;
-
     }
 
     @Override
