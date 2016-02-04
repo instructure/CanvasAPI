@@ -19,7 +19,7 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
         return observer_id;
     }
 
-    public String getAlert_type() {
+    public String getAlertType() {
         return alert_type;
     }
 
