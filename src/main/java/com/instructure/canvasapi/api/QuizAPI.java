@@ -11,6 +11,8 @@ import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -87,6 +89,9 @@ public class QuizAPI extends BuildInterfaceAPI {
         @POST("/quiz_submissions/{quiz_submission_id}/questions{query_params}")
         void postQuizQuestionMultiAnswers(@Path("quiz_submission_id") long quizSubmissionId,  @Path(value = "query_params", encode = false) String queryParams, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
 
+        @POST("/quiz_submissions/{quiz_submission_id}/questions{query_params}")
+        void postQuizQuestionMatching(@Path("quiz_submission_id") long quizSubmissionId,  @Path(value = "query_params", encode = false) String queryParams, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
+
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -119,7 +124,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback,url)) { return; }
 
         buildCacheInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url, callback);
-        buildInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url,callback);
+        buildInterface(QuizzesInterface.class, callback, null).getDetailedQuizFromURL(url, callback);
     }
 
     public static void getFirstPageQuizQuestions(CanvasContext canvasContext, long quiz_id, CanvasCallback<QuizQuestion[]> callback) {
@@ -218,6 +223,13 @@ public class QuizAPI extends BuildInterfaceAPI {
         buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
     }
 
+    public static void postQuizQuestionMatching(QuizSubmission quizSubmission, long questionId, HashMap<Integer, Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMatchingList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
+    }
+
     private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Integer> answers) {
         // build the query params because we'll have an unknown amount of answers. It will end up looking like:
         // ?attempt={attempt}&validation_token={validation_token}&quiz_questions[][id]={question_id}&quiz_questions[][answer][]={answer_id}...
@@ -247,4 +259,38 @@ public class QuizAPI extends BuildInterfaceAPI {
         return answerString;
     }
 
+    private static String buildMatchingList(int attempt, String validationToken, long questionId, HashMap<Integer, Integer> answers) {
+        // build the query params. It will end up looking like:
+        // ?attempt={attempt}&validation_token={validation_token}&quiz_questions[][id]={question_id}&quiz_questions[][answer][][answer_id]={answer_id}&quiz_questions[][answer][][match_id]={match_id}...
+        StringBuilder builder = new StringBuilder();
+        builder.append("?");
+        builder.append("attempt=");
+        builder.append(Integer.toString(attempt));
+        builder.append("&");
+        builder.append("validation_token=");
+        builder.append(validationToken);
+        builder.append("&");
+        builder.append("quiz_questions[][id]=");
+        builder.append(Long.toString(questionId));
+        builder.append("&");
+        //loop through the HashMap that contains the list of answers and their matches that the user selected
+        for(Map.Entry<Integer, Integer> answer : answers.entrySet()) {
+            builder.append("quiz_questions[][answer][][answer_id]");
+
+            builder.append("=");
+            builder.append(Integer.toString(answer.getKey()));
+            builder.append("&");
+            builder.append("quiz_questions[][answer][][match_id]");
+            builder.append("=");
+            builder.append(Integer.toString(answer.getValue()));
+            builder.append("&");
+
+        }
+
+        String answerString = builder.toString();
+        if(answerString.endsWith("&")) {
+            answerString = answerString.substring(0, answerString.length() - 1);
+        }
+        return answerString;
+    }
 }

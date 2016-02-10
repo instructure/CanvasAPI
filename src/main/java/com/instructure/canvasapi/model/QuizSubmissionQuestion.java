@@ -44,6 +44,8 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
     //sometimes is a String, sometimes an array depending on the question type
     private Object answer;
 
+    private QuizSubmissionMatch[] matches;
+
     public long getId() {
         return id;
     }
@@ -112,8 +114,16 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         return answer;
     }
 
-    public void setAnswer(String answer) {
+    public void setAnswer(Object answer) {
         this.answer = answer;
+    }
+
+    public QuizSubmissionMatch[] getMatches() {
+        return matches;
+    }
+
+    public void setMatches(QuizSubmissionMatch[] matches) {
+        this.matches = matches;
     }
 
     @Override
@@ -146,7 +156,8 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         dest.writeString(this.questionName);
         dest.writeString(this.questionType);
         dest.writeString(this.questionText);
-        dest.writeSerializable((Serializable)this.answer);
+        dest.writeSerializable((Serializable) this.answer);
+        dest.writeParcelableArray(this.matches, flags);
     }
 
     public QuizSubmissionQuestion() {
@@ -162,6 +173,7 @@ public class QuizSubmissionQuestion extends CanvasModel<QuizSubmissionQuestion> 
         this.questionType = in.readString();
         this.questionText = in.readString();
         this.answer = in.readSerializable();
+        this.matches = (QuizSubmissionMatch[])in.readParcelableArray(QuizSubmissionMatch.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<QuizSubmissionQuestion> CREATOR = new Parcelable.Creator<QuizSubmissionQuestion>() {
