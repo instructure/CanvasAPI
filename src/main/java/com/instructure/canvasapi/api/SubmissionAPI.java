@@ -52,6 +52,9 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment&include[]=submission_comments&include[]=submission_history")
         void getSubmissionWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("submissionID") long userID, Callback<Submission> callback);
 
+        @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment&include[]=submission_comments&include[]=submission_history&include[]=user")
+        void getUserSubmissionWithCommentsHistoryAndRubric(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, @Path("submissionID") long userID, Callback<Submission> callback);
+
         @GET("/{context_id}/students/submissions?include[]=assignment")
         void getSubmissionsForMultipleStudents(@Path("context_id") long context_id, @Query("student_ids[]") String ids, Callback<Submission[]> callback);
 
@@ -210,6 +213,13 @@ public class SubmissionAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
         buildInterface(SubmissionsInterface.class, callback, canvasContext).getSubmissionWithCommentsAndHistory(canvasContext.getId(), assignmentID, userID, callback);
+    }
+
+    public static void getUserSubmissionWithCommentsHistoryAndRubric(CanvasContext canvasContext, long assignmentID, long userID, final CanvasCallback<Submission> callback) {
+        if (APIHelpers.paramIsNull(callback, canvasContext)) { return; }
+
+        buildCacheInterface(SubmissionsInterface.class, callback, canvasContext).getUserSubmissionWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, userID, callback);
+        buildInterface(SubmissionsInterface.class, callback, canvasContext).getUserSubmissionWithCommentsHistoryAndRubric(canvasContext.getId(), assignmentID, userID, callback);
     }
 
     public static void postSubmissionComment(CanvasContext canvasContext, long assignmentID, long userID, String comment, final CanvasCallback<Submission> callback) {
