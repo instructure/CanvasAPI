@@ -2,19 +2,24 @@
 repositories {
     mavenCentral()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 buildscript {
-    ext.androidGradlePluginVersion = '1.5.0'
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
+        // https://bintray.com/android/android-tools/com.android.tools.build.gradle/view
+        classpath 'com.android.tools.build:gradle:2.0.0-beta4'
+        // https://github.com/JakeWharton/sdk-manager-plugin
+        classpath 'com.github.JakeWharton:sdk-manager-plugin:e05218601b1274ea0721e13b33a426f641156f69'
     }
 }
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
 
 android {
