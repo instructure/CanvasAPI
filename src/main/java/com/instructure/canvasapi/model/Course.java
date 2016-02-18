@@ -187,8 +187,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public double getCurrentScore() {
         if (currentScore == null) {
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    currentScore = enrollment.getCurrentScore();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if(enrollment.isMultiple_grading_periods_enabled()) {
+                        currentScore = enrollment.getCurrent_period_computed_current_score();
+                    } else {
+                        currentScore = enrollment.getCurrentScore();
+                    }
                     return currentScore;
                 }
             }
@@ -202,8 +206,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         if (!checkedCurrentGrade) {
             checkedCurrentGrade = true;
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    currentGrade = enrollment.getCurrentGrade();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultiple_grading_periods_enabled()) {
+                        currentGrade = enrollment.getCurrent_period_computed_current_grade();
+                    } else {
+                        currentGrade = enrollment.getCurrentGrade();
+                    }
                     return currentGrade;
                 }
             }
@@ -215,8 +223,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public double getFinalScore() {
         if (finalScore == null) {
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    finalScore = enrollment.getFinalScore();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultiple_grading_periods_enabled()) {
+                        finalScore = enrollment.getCurrent_period_computed_final_score();
+                    } else {
+                        finalScore = enrollment.getFinalScore();
+                    }
                     return finalScore;
                 }
             }
@@ -230,8 +242,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         if (!checkedFinalGrade) {
             checkedFinalGrade = true;
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    finalGrade = enrollment.getFinalGrade();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultiple_grading_periods_enabled()) {
+                       finalGrade = enrollment.getCurrent_period_computed_final_grade();
+                    } else {
+                        finalGrade = enrollment.getFinalGrade();
+                    }
                 }
             }
         }
