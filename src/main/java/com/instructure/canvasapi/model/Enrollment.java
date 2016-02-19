@@ -142,75 +142,75 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     }
 
 
-    public String getCurrent_grading_period_title() {
+    public String getCurrentGradingPeriodTitle() {
         return current_grading_period_title;
     }
 
-    public void setCurrent_grading_period_title(String current_grading_period_title) {
+    public void setCurrentGradingPeriodTitle(String current_grading_period_title) {
         this.current_grading_period_title = current_grading_period_title;
     }
 
-    public boolean isMultiple_grading_periods_enabled() {
+    public boolean isMultipleGradingPeriodsEnabled() {
         return multiple_grading_periods_enabled;
     }
 
-    public void setMultiple_grading_periods_enabled(boolean multiple_grading_periods_enabled) {
+    public void setMultipleGradingPeriodsEnabled(boolean multiple_grading_periods_enabled) {
         this.multiple_grading_periods_enabled = multiple_grading_periods_enabled;
     }
 
-    public boolean isTotals_for_all_grading_periods_option() {
+    public boolean isTotalsForAllGradingPeriodsOption() {
         return totals_for_all_grading_periods_option;
     }
 
-    public void setTotals_for_all_grading_periods_option(boolean totals_for_all_grading_periods_option) {
+    public void setTotalsForAllGradingPeriodsOption(boolean totals_for_all_grading_periods_option) {
         this.totals_for_all_grading_periods_option = totals_for_all_grading_periods_option;
     }
 
-    public Double getCurrent_period_computed_current_score() {
+    public Double getCurrentPeriodComputedCurrentScore() {
         return current_period_computed_current_score;
     }
 
-    public void setCurrent_period_computed_current_score(Double current_period_computed_current_score) {
+    public void setCurrentPeriodComputedCurrentScore(Double current_period_computed_current_score) {
         this.current_period_computed_current_score = current_period_computed_current_score;
     }
 
-    public Double getCurrent_period_computed_final_score() {
+    public Double getCurrentPeriodComputedFinalScore() {
         return current_period_computed_final_score;
     }
 
-    public void setCurrent_period_computed_final_score(Double current_period_computed_final_score) {
+    public void setCurrentPeriodComputedFinalScore(Double current_period_computed_final_score) {
         this.current_period_computed_final_score = current_period_computed_final_score;
     }
 
-    public String getCurrent_period_computed_current_grade() {
+    public String getCurrentPeriodComputedCurrentGrade() {
         return current_period_computed_current_grade;
     }
 
-    public void setCurrent_period_computed_current_grade(String current_period_computed_current_grade) {
+    public void setCurrentPeriodComputedCurrentGrade(String current_period_computed_current_grade) {
         this.current_period_computed_current_grade = current_period_computed_current_grade;
     }
 
-    public String getCurrent_period_computed_final_grade() {
+    public String getCurrentPeriodComputedFinalGrade() {
         return current_period_computed_final_grade;
     }
 
-    public void setCurrent_period_computed_final_grade(String current_period_computed_final_grade) {
+    public void setCurrentPeriodComputedFinalGrade(String current_period_computed_final_grade) {
         this.current_period_computed_final_grade = current_period_computed_final_grade;
     }
 
-    public long getCurrent_grading_period_id() {
+    public long getCurrentGradingPeriodId() {
         return current_grading_period_id;
     }
 
-    public void setCurrent_grading_period_id(long current_grading_period_id) {
+    public void setCurrentGradingPeriodId(long current_grading_period_id) {
         this.current_grading_period_id = current_grading_period_id;
     }
 
-    public long getAssociated_user_id() {
+    public long getAssociatedUserId() {
         return associated_user_id;
     }
 
-    public void setAssociated_user_id(long associated_user_id) {
+    public void setAssociatedUserId(long associated_user_id) {
         this.associated_user_id = associated_user_id;
     }
 

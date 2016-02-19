@@ -9,6 +9,8 @@ public class GradingPeriod extends CanvasModel<GradingPeriod> {
     private long id;
     private String title;
     private String start_date;
+    private String end_date;
+    private int weight;
 
     public void setId(long id) {
         this.id = id;
@@ -22,19 +24,19 @@ public class GradingPeriod extends CanvasModel<GradingPeriod> {
         this.title = title;
     }
 
-    public String getStart_date() {
+    public String getStartDate() {
         return start_date;
     }
 
-    public void setStart_date(String start_date) {
+    public void setStartDate(String start_date) {
         this.start_date = start_date;
     }
 
-    public String getEnd_date() {
+    public String getEndDate() {
         return end_date;
     }
 
-    public void setEnd_date(String end_date) {
+    public void setEndDate(String end_date) {
         this.end_date = end_date;
     }
 
@@ -45,9 +47,6 @@ public class GradingPeriod extends CanvasModel<GradingPeriod> {
     public void setWeight(int weight) {
         this.weight = weight;
     }
-
-    private String end_date;
-    private int weight;
 
     @Override
     public long getId() {
