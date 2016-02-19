@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
-@Config(emulateSdk = 17)
+@Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class DiscussionEntryUnitTest extends Assert {
 

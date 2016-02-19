@@ -9,7 +9,7 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
-@Config(emulateSdk = 17)
+@Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class SectionUnitTest extends Assert {
 

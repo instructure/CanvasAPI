@@ -14,7 +14,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@Config(emulateSdk = 17)
+@Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class ConversationUnitTest extends Assert {
 
