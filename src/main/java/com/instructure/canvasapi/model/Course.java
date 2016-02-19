@@ -187,8 +187,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public double getCurrentScore() {
         if (currentScore == null) {
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    currentScore = enrollment.getCurrentScore();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if(enrollment.isMultipleGradingPeriodsEnabled()) {
+                        currentScore = enrollment.getCurrentPeriodComputedCurrentScore();
+                    } else {
+                        currentScore = enrollment.getCurrentScore();
+                    }
                     return currentScore;
                 }
             }
@@ -202,8 +206,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         if (!checkedCurrentGrade) {
             checkedCurrentGrade = true;
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    currentGrade = enrollment.getCurrentGrade();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultipleGradingPeriodsEnabled()) {
+                        currentGrade = enrollment.getCurrentPeriodComputedCurrentGrade();
+                    } else {
+                        currentGrade = enrollment.getCurrentGrade();
+                    }
                     return currentGrade;
                 }
             }
@@ -215,8 +223,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     public double getFinalScore() {
         if (finalScore == null) {
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    finalScore = enrollment.getFinalScore();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultipleGradingPeriodsEnabled()) {
+                        finalScore = enrollment.getCurrentPeriodComputedFinalScore();
+                    } else {
+                        finalScore = enrollment.getFinalScore();
+                    }
                     return finalScore;
                 }
             }
@@ -230,8 +242,12 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         if (!checkedFinalGrade) {
             checkedFinalGrade = true;
             for (Enrollment enrollment : enrollments) {
-                if (enrollment.isStudent()) {
-                    finalGrade = enrollment.getFinalGrade();
+                if (enrollment.isStudent() || enrollment.isObserver()) {
+                    if (enrollment.isMultipleGradingPeriodsEnabled()) {
+                       finalGrade = enrollment.getCurrentPeriodComputedFinalGrade();
+                    } else {
+                        finalGrade = enrollment.getFinalGrade();
+                    }
                 }
             }
         }
