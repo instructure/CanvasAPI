@@ -11,13 +11,13 @@ import java.util.List;
 public class GradingPeriodResponse extends CanvasModel<GradingPeriodResponse>{
 
     @SerializedName("grading_periods")
-    List<GradingPeriod> gradingPeriodList = new ArrayList<>();
+    ArrayList<GradingPeriod> gradingPeriodList = new ArrayList<>();
 
     public List<GradingPeriod> getGradingPeriodList() {
         return gradingPeriodList;
     }
 
-    public void setGradingPeriodList(List<GradingPeriod> gradingPeriodList) {
+    public void setGradingPeriodList(ArrayList<GradingPeriod> gradingPeriodList) {
         this.gradingPeriodList = gradingPeriodList;
     }
 
@@ -36,6 +36,9 @@ public class GradingPeriodResponse extends CanvasModel<GradingPeriodResponse>{
         return null;
     }
 
+    public GradingPeriodResponse() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -44,9 +47,6 @@ public class GradingPeriodResponse extends CanvasModel<GradingPeriodResponse>{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(gradingPeriodList);
-    }
-
-    public GradingPeriodResponse() {
     }
 
     protected GradingPeriodResponse(Parcel in) {

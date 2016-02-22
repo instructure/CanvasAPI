@@ -3,31 +3,12 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.Date;
 
-
 /**
- * @author Brady Larson
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2016 Instructure. All rights reserved.
  */
-
 public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
-
-    // grades object when the enrollment is from a user
-    private class Grades implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        private String html_url;
-        private double current_score;
-        private double final_score;
-        private String current_grade;
-        private String final_grade;
-        }
-
-    private static final long serialVersionUID = 1L;
 
     public Enrollment(){
         type = "";
@@ -118,25 +99,25 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     }
     public double getCurrentScore() {
         if (grades != null) {
-            return grades.current_score;
+            return grades.getCurrentScore();
         }
         return computed_current_score;
     }
     public double getFinalScore() {
         if (grades != null) {
-            return grades.final_score;
+            return grades.getFinalScore();
         }
         return computed_final_score;
     }
     public String getCurrentGrade() {
         if (grades != null) {
-            return grades.current_grade;
+            return grades.getCurrentGrade();
         }
         return computed_current_grade;
     }
     public String getFinalGrade() {
         if (grades != null) {
-            return grades.final_grade;
+            return grades.getFinalGrade();
         }
         return computed_final_grade;
     }
@@ -293,7 +274,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         dest.writeLong(this.course_section_id);
         dest.writeString(this.enrollment_state);
         dest.writeLong(this.user_id);
-        dest.writeSerializable(this.grades);
+        dest.writeParcelable(this.grades, 0);
         dest.writeDouble(this.computed_current_score);
         dest.writeDouble(this.computed_final_score);
         dest.writeString(this.computed_current_grade);
@@ -317,7 +298,7 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         this.course_section_id = in.readLong();
         this.enrollment_state = in.readString();
         this.user_id = in.readLong();
-        this.grades = (Grades) in.readSerializable();
+        this.grades = in.readParcelable(Grades.class.getClassLoader());
         this.computed_current_score = in.readDouble();
         this.computed_final_score = in.readDouble();
         this.computed_current_grade = in.readString();
