@@ -14,7 +14,7 @@ import org.robolectric.annotation.Config;
 /**
  * Copyright (c) 2014 Instructure. All rights reserved.
  */
-@Config(emulateSdk = 17)
+@Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class CanvasContextPermissionUnitTest extends Assert {
 

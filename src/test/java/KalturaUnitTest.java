@@ -9,7 +9,7 @@ import org.robolectric.annotation.Config;
 import retrofit.Callback;
 import retrofit.http.GET;
 
-@Config(emulateSdk = 17)
+@Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
 public class KalturaUnitTest extends Assert {
 
