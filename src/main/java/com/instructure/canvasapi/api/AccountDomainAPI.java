@@ -58,10 +58,12 @@ public class AccountDomainAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
 
         callback.setIsNextPage(true);
+        String protocol = "https://";
+
         if (isCached) {
-            buildCacheInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
+            buildCacheGenericInterface(AccountDomainInterface.class, callback.getContext(), protocol + DEFAULT_DOMAIN, false, true).getNextPageAccountDomains(nextURL, callback);
         } else {
-            buildInterface(AccountDomainInterface.class, callback, false).getNextPageAccountDomains(nextURL, callback);
+            buildGenericInterface(AccountDomainInterface.class, callback.getContext(), protocol + DEFAULT_DOMAIN, false, true).getNextPageAccountDomains(nextURL, callback);
         }
     }
 
@@ -77,10 +79,10 @@ public class AccountDomainAPI extends BuildInterfaceAPI {
             }
         });
 
-        APIHelpers.setDomain(callback.getContext(), DEFAULT_DOMAIN);
+        String protocol = "https://";
 
-        buildCacheInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
-        buildInterface(AccountDomainInterface.class, callback).getFirstPageAccountDomains(bridge);
+        buildCacheGenericInterface(AccountDomainInterface.class, callback.getContext(), protocol + DEFAULT_DOMAIN, true, true).getFirstPageAccountDomains(bridge);
+        buildGenericInterface(AccountDomainInterface.class, callback.getContext(), protocol + DEFAULT_DOMAIN, true, true).getFirstPageAccountDomains(bridge);
     }
 
 }
