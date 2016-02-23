@@ -3,31 +3,12 @@ package com.instructure.canvasapi.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.Date;
 
-
 /**
- * @author Brady Larson
- *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2016 Instructure. All rights reserved.
  */
-
 public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
-
-    // grades object when the enrollment is from a user
-    private class Grades implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        private String html_url;
-        private double current_score;
-        private double final_score;
-        private String current_grade;
-        private String final_grade;
-        }
-
-    private static final long serialVersionUID = 1L;
 
     public Enrollment(){
         type = "";
@@ -51,6 +32,14 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     private double computed_final_score;
     private String computed_current_grade;
     private String computed_final_grade;
+    private boolean multiple_grading_periods_enabled;
+    private boolean totals_for_all_grading_periods_option;
+    private double current_period_computed_current_score;
+    private double current_period_computed_final_score;
+    private String current_period_computed_current_grade;
+    private String current_period_computed_final_grade;
+    private long current_grading_period_id;
+    private String current_grading_period_title;
 
     //The unique id of the associated user. Will be null unless type is
     //ObserverEnrollment.
@@ -110,34 +99,99 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     }
     public double getCurrentScore() {
         if (grades != null) {
-            return grades.current_score;
+            return grades.getCurrentScore();
         }
         return computed_current_score;
     }
     public double getFinalScore() {
         if (grades != null) {
-            return grades.final_score;
+            return grades.getFinalScore();
         }
         return computed_final_score;
     }
     public String getCurrentGrade() {
         if (grades != null) {
-            return grades.current_grade;
+            return grades.getCurrentGrade();
         }
         return computed_current_grade;
     }
     public String getFinalGrade() {
         if (grades != null) {
-            return grades.final_grade;
+            return grades.getFinalGrade();
         }
         return computed_final_grade;
     }
 
-    public long getAssociated_user_id() {
+
+    public String getCurrentGradingPeriodTitle() {
+        return current_grading_period_title;
+    }
+
+    public void setCurrentGradingPeriodTitle(String current_grading_period_title) {
+        this.current_grading_period_title = current_grading_period_title;
+    }
+
+    public boolean isMultipleGradingPeriodsEnabled() {
+        return multiple_grading_periods_enabled;
+    }
+
+    public void setMultipleGradingPeriodsEnabled(boolean multiple_grading_periods_enabled) {
+        this.multiple_grading_periods_enabled = multiple_grading_periods_enabled;
+    }
+
+    public boolean isTotalsForAllGradingPeriodsOption() {
+        return totals_for_all_grading_periods_option;
+    }
+
+    public void setTotalsForAllGradingPeriodsOption(boolean totals_for_all_grading_periods_option) {
+        this.totals_for_all_grading_periods_option = totals_for_all_grading_periods_option;
+    }
+
+    public Double getCurrentPeriodComputedCurrentScore() {
+        return current_period_computed_current_score;
+    }
+
+    public void setCurrentPeriodComputedCurrentScore(Double current_period_computed_current_score) {
+        this.current_period_computed_current_score = current_period_computed_current_score;
+    }
+
+    public Double getCurrentPeriodComputedFinalScore() {
+        return current_period_computed_final_score;
+    }
+
+    public void setCurrentPeriodComputedFinalScore(Double current_period_computed_final_score) {
+        this.current_period_computed_final_score = current_period_computed_final_score;
+    }
+
+    public String getCurrentPeriodComputedCurrentGrade() {
+        return current_period_computed_current_grade;
+    }
+
+    public void setCurrentPeriodComputedCurrentGrade(String current_period_computed_current_grade) {
+        this.current_period_computed_current_grade = current_period_computed_current_grade;
+    }
+
+    public String getCurrentPeriodComputedFinalGrade() {
+        return current_period_computed_final_grade;
+    }
+
+    public void setCurrentPeriodComputedFinalGrade(String current_period_computed_final_grade) {
+        this.current_period_computed_final_grade = current_period_computed_final_grade;
+    }
+
+    public long getCurrentGradingPeriodId() {
+        return current_grading_period_id;
+    }
+
+    public void setCurrentGradingPeriodId(long current_grading_period_id) {
+        this.current_grading_period_id = current_grading_period_id;
+    }
+
+    public long getAssociatedUserId() {
         return associated_user_id;
     }
 
-    public void setAssociated_user_id(long associated_user_id) {
+    public void setAssociatedUserId(long associated_user_id) {
         this.associated_user_id = associated_user_id;
     }
 
@@ -207,6 +261,11 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.role);
         dest.writeString(this.type);
@@ -215,15 +274,23 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         dest.writeLong(this.course_section_id);
         dest.writeString(this.enrollment_state);
         dest.writeLong(this.user_id);
-        dest.writeSerializable(this.grades);
+        dest.writeParcelable(this.grades, 0);
         dest.writeDouble(this.computed_current_score);
         dest.writeDouble(this.computed_final_score);
         dest.writeString(this.computed_current_grade);
         dest.writeString(this.computed_final_grade);
+        dest.writeByte(multiple_grading_periods_enabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(totals_for_all_grading_periods_option ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.current_period_computed_current_score);
+        dest.writeDouble(this.current_period_computed_final_score);
+        dest.writeString(this.current_period_computed_current_grade);
+        dest.writeString(this.current_period_computed_final_grade);
+        dest.writeLong(this.current_grading_period_id);
+        dest.writeString(this.current_grading_period_title);
         dest.writeLong(this.associated_user_id);
     }
 
-    private Enrollment(Parcel in) {
+    protected Enrollment(Parcel in) {
         this.role = in.readString();
         this.type = in.readString();
         this.id = in.readLong();
@@ -231,15 +298,23 @@ public class Enrollment extends CanvasModel<Enrollment> implements Parcelable {
         this.course_section_id = in.readLong();
         this.enrollment_state = in.readString();
         this.user_id = in.readLong();
-        this.grades = (Grades) in.readSerializable();
+        this.grades = in.readParcelable(Grades.class.getClassLoader());
         this.computed_current_score = in.readDouble();
         this.computed_final_score = in.readDouble();
         this.computed_current_grade = in.readString();
         this.computed_final_grade = in.readString();
+        this.multiple_grading_periods_enabled = in.readByte() != 0;
+        this.totals_for_all_grading_periods_option = in.readByte() != 0;
+        this.current_period_computed_current_score = in.readDouble();
+        this.current_period_computed_final_score = in.readDouble();
+        this.current_period_computed_current_grade = in.readString();
+        this.current_period_computed_final_grade = in.readString();
+        this.current_grading_period_id = in.readLong();
+        this.current_grading_period_title = in.readString();
         this.associated_user_id = in.readLong();
     }
 
-    public static Parcelable.Creator<Enrollment> CREATOR = new Parcelable.Creator<Enrollment>() {
+    public static final Creator<Enrollment> CREATOR = new Creator<Enrollment>() {
         public Enrollment createFromParcel(Parcel source) {
             return new Enrollment(source);
         }

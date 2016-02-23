@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.Course;
+import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.model.FileUploadParams;
+import com.instructure.canvasapi.model.GradingPeriod;
+import com.instructure.canvasapi.model.GradingPeriodResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -50,21 +53,27 @@ public class CourseAPI extends BuildInterfaceAPI {
         @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count")
         void getCourse(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
-        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=total_scores")
+        @GET("/courses/{courseid}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=total_scores&include[]=current_grading_period_scores")
         void getCourseWithGrade(@Path("courseid") long courseId, CanvasCallback<Course> callback);
+
+        @GET("/courses/{courseid}/enrollments")
+        void getEnrollmentsForGradingPeriod(@Path("courseid") long courseId, @Query("grading_period_id") long gradingPeriodId, CanvasCallback<Enrollment[]> callback);
 
         @GET("/courses/{courseid}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public&include[]=permissions")
         void getCourseWithSyllabus(@Path("courseid") long courseId, CanvasCallback<Course> callback);
 
         // I don't see why we wouldn't want to always get the grades
-        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=favorites")
+        @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=favorites&include[]=current_grading_period_scores")
         void getFirstPageCourses(CanvasCallback<Course[]> callback);
 
         @GET("/{next}?&include[]=needs_grading_count&include[]=permissions&include[]=favorites")
         void getNextPageCourses(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
-        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions")
+        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=permissions&include[]=current_grading_period_scores")
         void getFavoriteCourses(CanvasCallback<Course[]> callback);
+
+        @GET("/courses/{courseId}/grading_periods")
+        void getGradingPeriodsForCourse(@Path("courseId") long courseId, CanvasCallback<GradingPeriodResponse> callback);
 
         @POST("/users/self/favorites/courses/{courseId}")
         void addCourseToFavorites(@Path("courseId") long courseId, @Body String body, CanvasCallback<Favorite> callback);
@@ -131,6 +140,19 @@ public class CourseAPI extends BuildInterfaceAPI {
         buildInterface(CoursesInterface.class, callback).getFavoriteCourses(callback);
     }
 
+    public static void getGradingPeriodsForCourse(long courseId, CanvasCallback<GradingPeriodResponse> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, callback).getGradingPeriodsForCourse(courseId, callback);
+        buildInterface(CoursesInterface.class, callback).getGradingPeriodsForCourse(courseId, callback);
+    }
+
+    public static void getEnrollmentsForGradingPeriod(long courseId, long gradingPeriodId, CanvasCallback<Enrollment[]> callback) {
+        if (APIHelpers.paramIsNull(callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, callback).getEnrollmentsForGradingPeriod(courseId, gradingPeriodId, callback);
+        buildInterface(CoursesInterface.class, callback).getEnrollmentsForGradingPeriod(courseId, gradingPeriodId, callback);
+    }
 
     public static void getNextPageCourses(CanvasCallback<Course[]> callback, String nextURL) {
         if (APIHelpers.paramIsNull(callback, nextURL)) return;
