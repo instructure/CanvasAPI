@@ -304,6 +304,42 @@ public class CanvasRestAdapter {
 
 
     /**
+     * This adapter can be used for generic canvas requests that don't require a token. For example, getting account domains requires that you don't have
+     * a token set
+     *
+     * @param context   Android context
+     * @param isForcedCache Specify if you only want to read from cache
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return
+     */
+
+    public static RestAdapter buildGenericAdapter(final Context context, String domain, boolean isForcedCache, boolean addPerPageQueryParam, boolean shouldIgnoreToken) {
+        //Check for null values or invalid CanvasContext types.
+        if(context == null) {
+            return null;
+        }
+
+        if (context instanceof APIStatusDelegate) {
+            ((APIStatusDelegate)context).onCallbackStarted();
+        }
+
+        //Can make this check as we KNOW that the setter doesn't allow empty strings.
+        if (domain == null || domain.equals("")) {
+            Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
+            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
+        }
+
+        GsonConverter gsonConverter = new GsonConverter(getGSONParser());
+
+        //Sets the auth token, user agent, and handles masquerading.
+        return new RestAdapter.Builder()
+                .setEndpoint(domain + "/api/v1/") // The base API endpoint.
+                .setRequestInterceptor(new CanvasRequestInterceptor(context, addPerPageQueryParam, isForcedCache, shouldIgnoreToken))
+                .setConverter(gsonConverter)
+                .setClient(getOkHttp(context)).build();
+    }
+
+    /**
      * Returns a RestAdapter Instance that points at :domain/
      *
      * Used ONLY in the login flow!
@@ -372,6 +408,7 @@ public class CanvasRestAdapter {
         Context context;
         boolean addPerPageQueryParam;
         boolean isForcedCache;
+        boolean shouldIgnoreToken;
 
         CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam){
             this.context = context;
@@ -385,6 +422,12 @@ public class CanvasRestAdapter {
             this.isForcedCache = isForcedCache;
         }
 
+        CanvasRequestInterceptor(Context context, boolean addPerPageQueryParam, boolean isForcedCache, boolean shouldIgnoreToken){
+            this.context = context;
+            this.addPerPageQueryParam = addPerPageQueryParam;
+            this.isForcedCache = isForcedCache;
+            this.shouldIgnoreToken = shouldIgnoreToken;
+        }
         @Override
         public void intercept(RequestFacade requestFacade) {
 
@@ -397,7 +440,7 @@ public class CanvasRestAdapter {
                 requestFacade.addHeader("User-Agent", userAgent);
 
             //Authenticate if possible
-            if(token != null && !token.equals("")){
+            if(!shouldIgnoreToken && token != null && !token.equals("")){
                 requestFacade.addHeader("Authorization", "Bearer " + token);
             }
 

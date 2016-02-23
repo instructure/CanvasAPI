@@ -25,6 +25,11 @@ public class BuildInterfaceAPI {
         return restAdapter.create(clazz);
     }
 
+    public static <T> T buildCacheGenericInterface(Class<T> clazz, final Context context, String domain, boolean perPageQueryParam, boolean shouldIgnoreToken) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildGenericAdapter(context, domain, true, perPageQueryParam, shouldIgnoreToken);
+        return restAdapter.create(clazz);
+    }
+
 
     /**
      * Creates a rest adapter that will only read from the cache.
@@ -90,6 +95,11 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, String domain, CanvasCallback callback) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(domain, callback);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildGenericInterface(Class<T> clazz, final Context context, String domain, boolean perPageQueryParam, boolean shouldIgnoreToken) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildGenericAdapter(context, domain, false, perPageQueryParam, shouldIgnoreToken);
         return restAdapter.create(clazz);
     }
 

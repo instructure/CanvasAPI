@@ -72,7 +72,7 @@ public class CourseAPI extends BuildInterfaceAPI {
         @DELETE("/users/self/favorites/courses/{courseId}")
         void removeCourseFromFavorites(@Path("courseId") long courseId, CanvasCallback<Favorite> callback);
 
-        @GET("/users/{user_id}/courses?include[]=total_scores")
+        @GET("/users/{user_id}/courses?include[]=total_scores&include[]=syllabus_body")
         void getCoursesForUser(@Path("user_id") long userId, CanvasCallback<Course[]> callback);
 
         @GET("/{next}")
