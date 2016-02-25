@@ -53,9 +53,6 @@ android {
             shrinkResources false
         }
     }
-    sourceSets {  //this one may not be needed. But wont hurt.
-        androidTest.setRoot('src/debug')
-    }
 
     useLibrary 'org.apache.http.legacy'
 }

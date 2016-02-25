@@ -12,4 +12,9 @@ public class EspressoIdlingUtils {
     public static void decrementCounter() {
         // Stub
     }
+
+    public static IdlingResource getIdlingResource() {
+        return null;
+    }
+
 }
