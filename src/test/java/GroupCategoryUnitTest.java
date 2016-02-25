@@ -18,7 +18,7 @@ public class GroupCategoryUnitTest extends Assert {
         assertNotNull(groupCateogries);
 
         assertEquals(3, groupCateogries.length);
-        
+
         for(GroupCategory groupCategory : groupCateogries){
             assertNotNull(groupCategory.getId());
             assertNotNull(groupCategory.getName());

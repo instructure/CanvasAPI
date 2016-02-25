@@ -226,7 +226,7 @@ public class DiscussionTopicHeaderUnitTest extends Assert {
                 +"\"needs_grading_count\":1,"
                 +"\"locked_for_user\":false}"
             +"}";
-    
+
     private static final String lockedDiscussionTopicJSON = "{"
             +"\"assignment_id\": null,"
             +"\"delayed_post_at\": null,"

@@ -1,13 +1,10 @@
 import com.google.gson.Gson;
 import com.instructure.canvasapi.model.AccountDomain;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
-
 
 @Config(sdk = 17)
 @RunWith(RobolectricGradleTestRunner.class)
