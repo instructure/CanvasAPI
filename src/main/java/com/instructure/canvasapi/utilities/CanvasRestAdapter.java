@@ -217,6 +217,8 @@ public class CanvasRestAdapter {
             return null;
         }
 
+        EspressoIdlingUtils.incrementCounter();
+
         if (context instanceof APIStatusDelegate) {
             ((APIStatusDelegate)context).onCallbackStarted();
         }
@@ -268,6 +270,8 @@ public class CanvasRestAdapter {
         if(context == null) {
             return null;
         }
+
+        EspressoIdlingUtils.incrementCounter();
 
         if (context instanceof APIStatusDelegate) {
             ((APIStatusDelegate)context).onCallbackStarted();

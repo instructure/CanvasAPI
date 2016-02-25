@@ -68,7 +68,7 @@ public class FileFolderUnitTest extends Assert {
         assertNotNull(fileFolder.isHiddenForUser());
     }
 
-    public static final String filesJSON = "[" 
+    public static final String filesJSON = "["
         +"{\"id\": 63383591,"
             +"\"folder_id\": 2873264,"
             +"\"content-type\": \"video/mp4\","
