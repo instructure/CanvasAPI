@@ -217,8 +217,6 @@ public class CanvasRestAdapter {
             return null;
         }
 
-        EspressoIdlingUtils.incrementCounter();
-
         if (context instanceof APIStatusDelegate) {
             ((APIStatusDelegate)context).onCallbackStarted();
         }
@@ -271,8 +269,6 @@ public class CanvasRestAdapter {
             return null;
         }
 
-        EspressoIdlingUtils.incrementCounter();
-
         if (context instanceof APIStatusDelegate) {
             ((APIStatusDelegate)context).onCallbackStarted();
         }
@@ -322,8 +318,6 @@ public class CanvasRestAdapter {
         if(context == null) {
             return null;
         }
-
-        EspressoIdlingUtils.incrementCounter();
 
         if (context instanceof APIStatusDelegate) {
             ((APIStatusDelegate)context).onCallbackStarted();
@@ -379,7 +373,7 @@ public class CanvasRestAdapter {
             return null;
         }
 
-
+        EspressoIdlingUtils.incrementCounter();
 
         return new RestAdapter.Builder()
                 .setEndpoint(protocol + "://" + domain) // The base API endpoint.
@@ -398,6 +392,8 @@ public class CanvasRestAdapter {
      * @return
      */
     public static RestAdapter getGenericHostAdapter(String hostUrl){
+
+        EspressoIdlingUtils.incrementCounter();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(hostUrl)
@@ -436,6 +432,8 @@ public class CanvasRestAdapter {
         }
         @Override
         public void intercept(RequestFacade requestFacade) {
+
+            EspressoIdlingUtils.incrementCounter();
 
             final String token = APIHelpers.getToken(context);
             final String userAgent = APIHelpers.getUserAgent(context);
