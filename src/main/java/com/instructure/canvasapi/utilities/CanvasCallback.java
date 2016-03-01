@@ -254,7 +254,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      */
     @Override
     public void success(T t, Response response) {
-        EspressoIdlingUtils.decrementCounter();
+        RetrofitCounter.decrement();
 
         // check if it's been cancelled or detached
         Log.d("URL_STATUS", APIHelpers.isCachedResponse(response) ?  "From cache " +  response.getUrl() : "From API "  + response.getUrl());
@@ -271,7 +271,7 @@ public abstract class CanvasCallback<T> implements Callback<T> {
      */
     @Override
     public void failure(RetrofitError retrofitError) {
-        EspressoIdlingUtils.decrementCounter();
+        RetrofitCounter.decrement();
 
         // check if it's cancelled or detached
         if (isCancelled || getContext() == null) {

@@ -373,7 +373,7 @@ public class CanvasRestAdapter {
             return null;
         }
 
-        EspressoIdlingUtils.incrementCounter();
+        RetrofitCounter.increment();
 
         return new RestAdapter.Builder()
                 .setEndpoint(protocol + "://" + domain) // The base API endpoint.
@@ -393,7 +393,7 @@ public class CanvasRestAdapter {
      */
     public static RestAdapter getGenericHostAdapter(String hostUrl){
 
-        EspressoIdlingUtils.incrementCounter();
+        RetrofitCounter.increment();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(hostUrl)
@@ -433,7 +433,7 @@ public class CanvasRestAdapter {
         @Override
         public void intercept(RequestFacade requestFacade) {
 
-            EspressoIdlingUtils.incrementCounter();
+            RetrofitCounter.increment();
 
             final String token = APIHelpers.getToken(context);
             final String userAgent = APIHelpers.getUserAgent(context);
