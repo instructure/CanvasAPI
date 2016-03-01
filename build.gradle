@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         // https://bintray.com/android/android-tools/com.android.tools.build.gradle/view
-        classpath 'com.android.tools.build:gradle:2.0.0-beta4'
+        classpath 'com.android.tools.build:gradle:2.0.0-beta6'
         // https://github.com/JakeWharton/sdk-manager-plugin
         classpath 'com.github.JakeWharton:sdk-manager-plugin:e05218601b1274ea0721e13b33a426f641156f69'
     }
