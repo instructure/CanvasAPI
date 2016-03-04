@@ -13,17 +13,17 @@ import java.util.Date;
 public class Alert extends CanvasModel<Alert>{
 
     //Variables from API
-    private long id;
-    private boolean read;
+    private String id;
+    private boolean marked_read;
     private boolean dismissed;
     private String alert_type;
     private String title;
     private String action_date;
     private String creation_date;
-    private long observer_id;
-    private long student_id;
-    private long course_id;
-    private long alert_criteria_id;
+    private String observer_id;
+    private String student_id;
+    private String course_id;
+    private String alert_criteria_id;
     private String asset_url;
 
     public enum ALERT_TYPE { COURSE_ANNOUNCEMENT, INSTITUTION_ANNOUNCEMENT, ASSIGNMENT_GRADE_HIGH,
@@ -31,7 +31,7 @@ public class Alert extends CanvasModel<Alert>{
 
     @Override
     public long getId() {
-        return id;
+        return -1;
     }
     @Override
     public Date getComparisonDate() {
@@ -44,16 +44,20 @@ public class Alert extends CanvasModel<Alert>{
 
     //region Getters/Setters
 
-    public void setId(long id){
+    public String getStringId(){
+        return id;
+    }
+
+    public void setId(String id){
         this.id = id;
     }
 
-    public void setRead(boolean isRead){
-        this.read = isRead;
+    public void setMarkedRead(boolean isRead){
+        this.marked_read = isRead;
     }
 
-    public boolean isRead(){
-        return this.read;
+    public boolean isMarkedRead(){
+        return this.marked_read;
     }
 
     public void setDismissed(boolean dismissed){
@@ -96,27 +100,27 @@ public class Alert extends CanvasModel<Alert>{
         return APIHelpers.stringToDate(this.creation_date);
     }
 
-    public void setObserverId(long observerId){
+    public void setObserverId(String observerId){
         this.observer_id = observerId;
     }
 
-    public long getObserverId(){
+    public String getObserverId(){
         return this.observer_id;
     }
 
-    public void setStudentId(long studentId){
+    public void setStudentId(String studentId){
         this.student_id = studentId;
     }
 
-    public long getStudentId(){
+    public String getStudentId(){
         return this.student_id;
     }
 
-    public void setCourseId(long courseId){
+    public void setCourseId(String courseId){
         this.course_id = courseId;
     }
 
-    public long getCourseId(){
+    public String getCourseId(){
         return this.course_id;
     }
 
@@ -128,11 +132,11 @@ public class Alert extends CanvasModel<Alert>{
         return this.asset_url;
     }
 
-    public long getAlertCriteriaId() {
+    public String getAlertCriteriaId() {
         return alert_criteria_id;
     }
 
-    public void setAlertCriteriaId(long alert_criteria_id) {
+    public void setAlertCriteriaId(String alert_criteria_id) {
         this.alert_criteria_id = alert_criteria_id;
     }
 
@@ -186,32 +190,32 @@ public class Alert extends CanvasModel<Alert>{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(this.id);
-        parcel.writeLong(this.alert_criteria_id);
-        parcel.writeByte(this.read ? (byte) 1 : (byte) 0);
+        parcel.writeString(this.id);
+        parcel.writeString(this.alert_criteria_id);
+        parcel.writeByte(this.marked_read ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.dismissed ? (byte) 1 : (byte) 0);
         parcel.writeString(this.alert_type);
         parcel.writeString(this.title);
         parcel.writeString(this.action_date);
         parcel.writeString(this.creation_date);
-        parcel.writeLong(this.observer_id);
-        parcel.writeLong(this.student_id);
-        parcel.writeLong(this.course_id);
+        parcel.writeString(this.observer_id);
+        parcel.writeString(this.student_id);
+        parcel.writeString(this.course_id);
         parcel.writeString(this.asset_url);
     }
 
     private Alert(Parcel parcel){
-        this.alert_criteria_id = parcel.readLong();
-        this.id = parcel.readLong();
-        this.read = parcel.readByte() != 0;
+        this.alert_criteria_id = parcel.readString();
+        this.id = parcel.readString();
+        this.marked_read = parcel.readByte() != 0;
         this.dismissed = parcel.readByte() != 0;
         this.alert_type = parcel.readString();
         this.title = parcel.readString();
         this.action_date = parcel.readString();
         this.creation_date = parcel.readString();
-        this.observer_id = parcel.readLong();
-        this.student_id = parcel.readLong();
-        this.course_id = parcel.readLong();
+        this.observer_id = parcel.readString();
+        this.student_id = parcel.readString();
+        this.course_id = parcel.readString();
         this.asset_url = parcel.readString();
     }
 

@@ -29,11 +29,11 @@ public class AlertAPI extends BuildInterfaceAPI {
 
         @FormUrlEncoded
         @POST("/alert/{observerId}/{alertId}")
-        void markAlertAsRead(@Path("observerId") long observerId, @Path("alertId") long alertId, @Field("read") String isRead, CanvasCallback<Response> callback);
+        void markAlertAsRead(@Path("observerId") long observerId, @Path("alertId") String alertId, @Field("read") String isRead, CanvasCallback<Response> callback);
 
         @FormUrlEncoded
         @POST("/alert/{observerId}/{alertId}")
-        void markAlertAsDismissed(@Path("observerId") long observerId, @Path("alertId") long alertId, @Field("dismissed") String isDismissed, CanvasCallback<Response> callback);
+        void markAlertAsDismissed(@Path("observerId") long observerId, @Path("alertId") String alertId, @Field("dismissed") String isDismissed, CanvasCallback<Response> callback);
 
     }
 
@@ -68,14 +68,14 @@ public class AlertAPI extends BuildInterfaceAPI {
         }
     }
 
-    public static void markAlertAsRead(long observerId, long alertId, CanvasCallback<Response> callback) {
+    public static void markAlertAsRead(long observerId, String alertId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
 
         buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsRead(observerId, alertId, "true", callback);
     }
 
-    public static void markAlertAsDismissed(long observerId, long alertId, CanvasCallback<Response> callback) {
+    public static void markAlertAsDismissed(long observerId, String alertId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
         buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsDismissed(observerId, alertId, "true", callback);

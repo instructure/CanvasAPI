@@ -36,7 +36,7 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
 
         @FormUrlEncoded
         @POST("/alertthreshold/{observerId}/{thresholdId}")
-        void updateAlertThreshold(@Path("observerId") long observerIdPath, @Path("thresholdId") long thresholdIdPath, @Field("observer_id") long observerId, @Field("threshold_id") long thresholdId, @Field("alert_type") String alertType, @Field("threshold") String threshold, CanvasCallback<AlertThreshold> callback);
+        void updateAlertThreshold(@Path("observerId") long observerIdPath, @Path("thresholdId") String thresholdIdPath, @Field("observer_id") long observerId, @Field("threshold_id") String thresholdId, @Field("alert_type") String alertType, @Field("threshold") String threshold, CanvasCallback<AlertThreshold> callback);
 
         //threshold field is optional
         @FormUrlEncoded
@@ -46,11 +46,11 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
         //threshold field is optional
         @FormUrlEncoded
         @POST("/alertthreshold/{observerId}/{thresholdId}")
-        void updateAlertThreshold(@Path("observerId") long observerIdPath, @Path("thresholdId") long thresholdIdPath, @Field("observer_id") long observerId, @Field("threshold_id") long thresholdId, @Field("alert_type") String alertType, CanvasCallback<AlertThreshold> callback);
+        void updateAlertThreshold(@Path("observerId") long observerIdPath, @Path("thresholdId") String thresholdIdPath, @Field("observer_id") long observerId, @Field("threshold_id") String thresholdId, @Field("alert_type") String alertType, CanvasCallback<AlertThreshold> callback);
 
 
         @DELETE("/alertthreshold/{observerId}/{thresholdId}")
-        void deleteAlertThreshold(@Path("observerId") long observerId, @Path("thresholdId") long studentId, Callback<Response> callback);
+        void deleteAlertThreshold(@Path("observerId") long observerId, @Path("thresholdId") String thresholdId, Callback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
         buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).createAlertThreshold(observerId, studentId, alertType, threshold, callback);
     }
 
-    public static void updateAlertThreshold(long observerId, long thresholdId, String alertType, String threshold, CanvasCallback<AlertThreshold> callback) {
+    public static void updateAlertThreshold(long observerId, String thresholdId, String alertType, String threshold, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(callback, alertType, threshold)) return;
 
         buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).updateAlertThreshold(observerId, thresholdId, observerId, thresholdId, alertType, threshold, callback);
@@ -92,12 +92,12 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
         buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).createAlertThreshold(observerId, studentId, alertType, callback);
     }
 
-    public static void updateAlertThreshold(long observerId, long thresholdId, String alertType, CanvasCallback<AlertThreshold> callback) {
+    public static void updateAlertThreshold(long observerId, String thresholdId, String alertType, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(callback, alertType)) return;
 
         buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).updateAlertThreshold(observerId, thresholdId, observerId, thresholdId, alertType, callback);
     }
-    public static void deleteAlertThreshold(long observerId, long thresholdId, CanvasCallback<Response> callback) {
+    public static void deleteAlertThreshold(long observerId, String thresholdId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
         buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).deleteAlertThreshold(observerId, thresholdId, callback);

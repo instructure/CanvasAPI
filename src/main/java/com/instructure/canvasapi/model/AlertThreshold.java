@@ -9,13 +9,13 @@ import java.util.Date;
  */
 public class AlertThreshold extends CanvasModel<AlertThreshold> {
 
-    private long observer_id;
+    private String observer_id;
     private String alert_type;	//Description and key of the threshold this record defines.
-    private long student_id;
-    private long id;            //AlertThreshold unique ID.
+    private String student_id;
+    private String id;            //AlertThreshold unique ID.
     private String threshold;   //Threshold for creating an alert.
 
-    public long getObserver_id() {
+    public String getObserver_id() {
         return observer_id;
     }
 
@@ -23,7 +23,7 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
         return alert_type;
     }
 
-    public long getStudent_id() {
+    public String getStudent_id() {
         return student_id;
     }
 
@@ -37,6 +37,10 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
 
     @Override
     public long getId() {
+        return -1;
+    }
+
+    public String getStringId() {
         return id;
     }
 
@@ -57,10 +61,10 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.observer_id);
+        dest.writeString(this.observer_id);
         dest.writeString(this.alert_type);
-        dest.writeLong(this.student_id);
-        dest.writeLong(this.id);
+        dest.writeString(this.student_id);
+        dest.writeString(this.id);
         dest.writeString(this.threshold);
     }
 
@@ -68,10 +72,10 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
     }
 
     protected AlertThreshold(Parcel in) {
-        this.observer_id = in.readLong();
+        this.observer_id = in.readString();
         this.alert_type = in.readString();
-        this.student_id = in.readLong();
-        this.id = in.readLong();
+        this.student_id = in.readString();
+        this.id = in.readString();
         this.threshold = in.readString();
     }
 
