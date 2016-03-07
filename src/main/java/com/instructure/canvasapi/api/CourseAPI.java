@@ -91,7 +91,10 @@ public class CourseAPI extends BuildInterfaceAPI {
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
         @GET("/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=permissions")
-        Course[] getCoursesSynchronous(@Query("page") int page);
+        Course[] getAllCoursesSynchronous(@Query("page") int page);
+
+        @GET("/users/self/favorites/courses?include[]=term&include[]=total_scores&include[]=license&include[]=is_public&include[]=permissions")
+        Course[] getFavCoursesSynchronous(@Query("page") int page);
 
         @POST("/courses/{courseId}/files")
         FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Query("parent_folder_id") Long parentFolderId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Body String body);
@@ -299,13 +302,48 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         //If not able to parse (no network for example), this will crash. Handle that case.
         try {
-            ArrayList<Course> allCourses = new ArrayList<Course>();
+            ArrayList<Course> allCourses = new ArrayList<>();
             int page = 1;
             long firstItemId = -1;
 
             //for(ever) loop. break once we've run outta stuff;
             for (;;) {
-                Course[] courses = restAdapter.create(CoursesInterface.class).getCoursesSynchronous(page);
+                Course[] courses = restAdapter.create(CoursesInterface.class).getAllCoursesSynchronous(page);
+                page++;
+
+                //This is all or nothing. We don't want partial data.
+                if(courses == null){
+                    return null;
+                } else if (courses.length == 0) {
+                    break;
+                } else if(courses[0].getId() == firstItemId){
+                    break;
+                } else {
+                    firstItemId = courses[0].getId();
+
+                    Collections.addAll(allCourses, courses);
+                }
+            }
+
+            return allCourses.toArray(new Course[allCourses.size()]);
+
+        } catch (Exception E) {
+            return null;
+        }
+    }
+
+    public static Course[] getFavCoursesSynchronous(Context context) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
+
+        //If not able to parse (no network for example), this will crash. Handle that case.
+        try {
+            ArrayList<Course> allCourses = new ArrayList<>();
+            int page = 1;
+            long firstItemId = -1;
+
+            //for(ever) loop. break once we've run outta stuff;
+            for (;;) {
+                Course[] courses = restAdapter.create(CoursesInterface.class).getFavCoursesSynchronous(page);
                 page++;
 
                 //This is all or nothing. We don't want partial data.
