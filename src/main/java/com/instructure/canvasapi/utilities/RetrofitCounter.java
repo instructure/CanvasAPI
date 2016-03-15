@@ -1,12 +1,13 @@
 package com.instructure.canvasapi.utilities;
 
 public class RetrofitCounter {
+    private static MockCounter counter = new MockCounter();
 
     public static void increment(){
-        // Stub
+        counter.increment();
     }
 
     public static void decrement() {
-        // Stub
+        counter.decrement();
     }
 }
