@@ -80,7 +80,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
 
     //Number of points the quiz submission's score was fudged by.
     @SerializedName("fudge_points")
-    private int fudgePoints;
+    private double fudgePoints;
 
     //Whether the student has viewed their results to the quiz.
     @SerializedName("has_seen_results")
@@ -228,7 +228,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.keptScore = keptScore;
     }
 
-    public int getFudgePoints() {
+    public double getFudgePoints() {
         return fudgePoints;
     }
 
@@ -322,7 +322,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         dest.writeDouble(this.score);
         dest.writeDouble(this.scoreBeforeRegrade);
         dest.writeDouble(this.keptScore);
-        dest.writeInt(this.fudgePoints);
+        dest.writeDouble(this.fudgePoints);
         dest.writeByte(hasSeenResults ? (byte) 1 : (byte) 0);
         dest.writeString(this.workflowState);
         dest.writeInt(this.quizPointsPossible);
@@ -348,7 +348,7 @@ public class QuizSubmission extends CanvasModel<QuizSubmission> {
         this.score = in.readDouble();
         this.scoreBeforeRegrade = in.readDouble();
         this.keptScore = in.readDouble();
-        this.fudgePoints = in.readInt();
+        this.fudgePoints = in.readDouble();
         this.hasSeenResults = in.readByte() != 0;
         this.workflowState = in.readString();
         this.quizPointsPossible = in.readInt();

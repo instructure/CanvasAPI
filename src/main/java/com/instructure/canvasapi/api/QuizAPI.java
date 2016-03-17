@@ -25,7 +25,7 @@ import retrofit.http.Query;
 
 /**
  *
- * Copyright (c) 2014 Instructure. All rights reserved.
+ * Copyright (c) 2016 Instructure. All rights reserved.
  */
 public class QuizAPI extends BuildInterfaceAPI {
 
@@ -179,16 +179,16 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void postQuizQuestionMultiChoice(QuizSubmission quizSubmission, long answerId, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, "", callback);
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiChoice(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answerId, "", callback);
     }
 
     public static void putFlagQuizQuestion(QuizSubmission quizSubmission, long quizQuestionId, boolean shouldFlag, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         if(shouldFlag) {
-            buildInterface(QuizzesInterface.class, callback, null).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
+            buildInterface(QuizzesInterface.class, callback, null, false).putFlagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
         } else {
-            buildInterface(QuizzesInterface.class, callback, null).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
+            buildInterface(QuizzesInterface.class, callback, null, false).putUnflagQuizQuestion(quizSubmission.getId(), quizQuestionId, quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
 
         }
     }
@@ -196,19 +196,19 @@ public class QuizAPI extends BuildInterfaceAPI {
     public static void postQuizQuestionEssay(QuizSubmission quizSubmission, String answer, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, null).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, "", callback);
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionEssay(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answer, "", callback);
     }
 
     public static void postQuizSubmit(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionResponse> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext, false).postQuizSubmit(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), "", callback);
     }
 
     public static void postQuizStartedEvent(CanvasContext canvasContext, QuizSubmission quizSubmission, String userAgentString, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(canvasContext, callback, quizSubmission, quizSubmission.getSubmissionId())) { return; }
 
-        buildInterface(QuizzesInterface.class, callback, canvasContext).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, "", callback);
+        buildInterface(QuizzesInterface.class, callback, canvasContext, false).postQuizStartedEvent(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), QUIZ_SUBMISSION_SESSION_STARTED, userAgentString, "", callback);
     }
 
     public static void getQuizSubmissionTime(CanvasContext canvasContext, QuizSubmission quizSubmission, CanvasCallback<QuizSubmissionTime> callback) {
@@ -216,21 +216,21 @@ public class QuizAPI extends BuildInterfaceAPI {
 
         buildInterface(QuizzesInterface.class, callback, canvasContext).getQuizSubmissionTime(canvasContext.getId(), quizSubmission.getQuizId(), quizSubmission.getId(), callback);
     }
-    public static void postQuizQuestionMultiAnswer(QuizSubmission quizSubmission, long questionId, ArrayList<Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
+    public static void postQuizQuestionMultiAnswer(QuizSubmission quizSubmission, long questionId, ArrayList<Long> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
         buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMultiAnswerList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
     }
 
-    public static void postQuizQuestionMatching(QuizSubmission quizSubmission, long questionId, HashMap<Integer, Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
+    public static void postQuizQuestionMatching(QuizSubmission quizSubmission, long questionId, HashMap<Long, Integer> answers,  CanvasCallback<QuizSubmissionQuestionResponse> callback){
         if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
 
         //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
-        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMultiAnswers(quizSubmission.getId(), buildMatchingList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMatching(quizSubmission.getId(), buildMatchingList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
     }
 
-    private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Integer> answers) {
+    private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Long> answers) {
         // build the query params because we'll have an unknown amount of answers. It will end up looking like:
         // ?attempt={attempt}&validation_token={validation_token}&quiz_questions[][id]={question_id}&quiz_questions[][answer][]={answer_id}...
         StringBuilder builder = new StringBuilder();
@@ -244,11 +244,11 @@ public class QuizAPI extends BuildInterfaceAPI {
         builder.append("quiz_questions[][id]=");
         builder.append(Long.toString(questionId));
         builder.append("&");
-        for(Integer answer : answers) {
+        for(Long answer : answers) {
             builder.append("quiz_questions[][answer][]");
 
             builder.append("=");
-            builder.append(Integer.toString(answer));
+            builder.append(Long.toString(answer));
             builder.append("&");
         }
 
@@ -259,7 +259,7 @@ public class QuizAPI extends BuildInterfaceAPI {
         return answerString;
     }
 
-    private static String buildMatchingList(int attempt, String validationToken, long questionId, HashMap<Integer, Integer> answers) {
+    private static String buildMatchingList(int attempt, String validationToken, long questionId, HashMap<Long, Integer> answers) {
         // build the query params. It will end up looking like:
         // ?attempt={attempt}&validation_token={validation_token}&quiz_questions[][id]={question_id}&quiz_questions[][answer][][answer_id]={answer_id}&quiz_questions[][answer][][match_id]={match_id}...
         StringBuilder builder = new StringBuilder();
@@ -274,11 +274,11 @@ public class QuizAPI extends BuildInterfaceAPI {
         builder.append(Long.toString(questionId));
         builder.append("&");
         //loop through the HashMap that contains the list of answers and their matches that the user selected
-        for(Map.Entry<Integer, Integer> answer : answers.entrySet()) {
+        for(Map.Entry<Long, Integer> answer : answers.entrySet()) {
             builder.append("quiz_questions[][answer][][answer_id]");
 
             builder.append("=");
-            builder.append(Integer.toString(answer.getKey()));
+            builder.append(Long.toString(answer.getKey()));
             builder.append("&");
             builder.append("quiz_questions[][answer][][match_id]");
             builder.append("=");
