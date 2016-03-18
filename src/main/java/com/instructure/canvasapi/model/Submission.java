@@ -38,6 +38,7 @@ public class Submission extends CanvasModel<Submission>{
 	private String submission_type;
 	private String preview_url;
 	private String url;
+    private boolean late;
     private boolean excused;
 
     private MediaComment media_comment;
@@ -240,6 +241,10 @@ public class Submission extends CanvasModel<Submission>{
     public void setAttempt(long attempt) {
         this.attempt = attempt;
     }
+    public boolean isLate() { return late; }
+    public void setIslate(boolean late){
+        this.late = late;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
@@ -319,6 +324,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeList(this.discussion_entries);
         dest.writeLong(this.attempt);
         dest.writeByte(this.excused ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.late ? (byte) 1 : (byte) 0);
     }
 
     private Submission(Parcel in) {
@@ -351,6 +357,7 @@ public class Submission extends CanvasModel<Submission>{
         in.readList(this.discussion_entries, DiscussionEntry.class.getClassLoader());
         this.attempt = in.readLong();
         this.excused = in.readByte() != 0;
+        this.late = in.readByte() != 0;
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
