@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -99,6 +100,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @DELETE("/users/self/observees/{observee_id}")
         void removeObservee(@Path("observee_id") long observee_id, Callback<User> callback);
+
+        @DELETE("/student/{observer_id}/{student_id}")
+        void removeStudent(@Path("observer_id") long observer_id, @Path("student_id") long student_id, Callback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -305,6 +309,19 @@ public class UserAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(callback)) { return; }
 
         buildInterface(UsersInterface.class, callback).removeObservee(observeeId, callback);
+    }
+
+    /**
+     * Remove student from Airwolf. Currently only used in the parent app
+     * 
+     * @param observerId
+     * @param studentId
+     * @param callback - 200 if successful
+     */
+    public static void removeStudent(long observerId, long studentId, CanvasCallback<Response> callback) {
+        if(APIHelpers.paramIsNull(callback)) { return; }
+
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).removeStudent(observerId, studentId, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
