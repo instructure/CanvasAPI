@@ -5,6 +5,7 @@ import android.util.Log;
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasColor;
 import com.instructure.canvasapi.model.CanvasContext;
+import com.instructure.canvasapi.model.Domain;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.Parent;
@@ -105,6 +106,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @PUT("/newparent")
         void addParent(@Body ParentWrapper body, Callback<Response> callback);
+
+        @GET("/account/{observer_username}")
+        void getParentUserDomain(@Path("observer_username") String email, Callback<Domain> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -339,6 +343,16 @@ public class UserAPI extends BuildInterfaceAPI {
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).addParent(parentWrapper, callback);
     }
 
+    /**
+     * Get the parent's domain based on their email from Airwolf. Currently only used in the Parent App.
+     * @param email - Parent's username
+     * @param callback
+     */
+    public static void getParentUserDomain(String email, CanvasCallback<Domain> callback) {
+        if(APIHelpers.paramIsNull(email, callback)) { return; }
+
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getParentUserDomain(email, callback);
+    }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
     /////////////////////////////////////////////////////////////////////////
