@@ -2,22 +2,21 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasColor;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
+import com.instructure.canvasapi.model.Parent;
+import com.instructure.canvasapi.model.ParentWrapper;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 import com.instructure.canvasapi.utilities.Masquerading;
 import com.instructure.canvasapi.utilities.UserCallback;
-
 import java.io.File;
 import java.util.LinkedHashMap;
-
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -103,6 +102,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @DELETE("/student/{observer_id}/{student_id}")
         void removeStudent(@Path("observer_id") long observer_id, @Path("student_id") long student_id, Callback<Response> callback);
+
+        @PUT("/newparent")
+        void addParent(@Body ParentWrapper body, Callback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -312,7 +314,7 @@ public class UserAPI extends BuildInterfaceAPI {
     }
 
     /**
-     * Remove student from Airwolf. Currently only used in the parent app
+     * Remove student from Airwolf. Currently only used in the Parent App
      * 
      * @param observerId
      * @param studentId
@@ -323,6 +325,20 @@ public class UserAPI extends BuildInterfaceAPI {
 
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).removeStudent(observerId, studentId, callback);
     }
+
+    /**
+     * Add parent to Airwolf/Canvas. Currently only used in the Parent App.
+     * @param body
+     * @param callback
+     */
+    public static void addParent(Parent body, CanvasCallback<Response> callback) {
+        if(APIHelpers.paramIsNull(body, callback)) { return; }
+        ParentWrapper parentWrapper = new ParentWrapper();
+        parentWrapper.setParent(body);
+
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).addParent(parentWrapper, callback);
+    }
+
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
     /////////////////////////////////////////////////////////////////////////
