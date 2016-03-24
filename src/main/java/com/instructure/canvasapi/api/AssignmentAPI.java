@@ -2,20 +2,17 @@ package com.instructure.canvasapi.api;
 
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
-import com.instructure.canvasapi.model.CanvasContext;
-import com.instructure.canvasapi.model.Page;
+import com.instructure.canvasapi.model.AssignmentWithListSubmission;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
@@ -51,6 +48,9 @@ public class AssignmentAPI extends BuildInterfaceAPI {
     public interface AssignmentsInterface {
         @GET("/courses/{course_id}/assignments/{assignmentid}?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
         void getAssignment(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<Assignment> callback);
+
+        @GET("/courses/{course_id}/assignments/{assignmentid}?include[]=submission&include[]=rubric_assessment&include[]=all_dates&include[]=observed_users")
+        void getAssignmentForObservedUsers(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<AssignmentWithListSubmission> callback);
 
         @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
@@ -113,6 +113,20 @@ public class AssignmentAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
         buildInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
+    }
+
+    /**
+     * Note that this call requires AssignmentWithListSubmission object callback, see said model object
+     * for explanation
+     * @param courseID
+     * @param assignmentID
+     * @param callback
+     */
+    public static void getAssignmentForObservedUsers(long courseID, long assignmentID, final CanvasCallback<AssignmentWithListSubmission> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentForObservedUsers(courseID, assignmentID, callback);
+        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentForObservedUsers(courseID, assignmentID, callback);
     }
 
     public static void getAllAssignmentsExhaustive(long courseID, final CanvasCallback<Assignment[]> callback) {

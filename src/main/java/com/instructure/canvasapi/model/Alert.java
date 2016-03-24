@@ -31,7 +31,7 @@ public class Alert extends CanvasModel<Alert>{
 
     @Override
     public long getId() {
-        return -1;
+        return id.hashCode();
     }
     @Override
     public Date getComparisonDate() {

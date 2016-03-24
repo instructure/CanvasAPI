@@ -37,7 +37,7 @@ public class AlertThreshold extends CanvasModel<AlertThreshold> {
 
     @Override
     public long getId() {
-        return -1;
+        return id.hashCode();
     }
 
     public String getStringId() {
