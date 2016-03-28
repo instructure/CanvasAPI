@@ -2,18 +2,17 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.LTITool;
-import com.instructure.canvasapi.model.Page;
 import com.instructure.canvasapi.model.RubricAssessment;
 import com.instructure.canvasapi.model.RubricCriterionRating;
 import com.instructure.canvasapi.model.StudentSubmission;
 import com.instructure.canvasapi.model.Submission;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
 import java.io.File;
@@ -21,9 +20,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.http.*;
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.Multipart;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
+import retrofit.http.PartMap;
+import retrofit.http.Path;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 import retrofit.mime.TypedFile;
 
 /**
@@ -43,7 +51,7 @@ public class SubmissionAPI extends BuildInterfaceAPI {
         @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments&include[]=submission_history")
         void getSubmissionsWithCommentsAndHistory(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
-        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments&include[]=submission_history&include[]=rubric_assessment&include[]=user")
+        @GET("/{context_id}/assignments/{assignmentID}/submissions?include[]=submission_comments&include[]=submission_history&include[]=rubric_assessment&include[]=user&include[]=group")
         void getSubmissionsWithCommentsHistoryAndRubric(@Path("context_id") long context_id, @Path("assignmentID") long assignmentID, Callback<Submission[]> callback);
 
         @GET("/{context_id}/assignments/{assignmentID}/submissions/{submissionID}?include[]=rubric_assessment")

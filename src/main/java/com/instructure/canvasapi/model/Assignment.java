@@ -4,6 +4,7 @@ package com.instructure.canvasapi.model;
 import android.content.Context;
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 
@@ -25,6 +26,9 @@ public class Assignment extends CanvasModel<Assignment>{
 	private String due_at;
 	private double points_possible;
 	private long course_id;
+
+    @SerializedName("grade_group_students_individually")
+    private boolean isGradeGroupsIndividually;
 
     private String grading_type;
     private long needs_grading_count;
@@ -318,6 +322,13 @@ public class Assignment extends CanvasModel<Assignment>{
         return lock_explanation;
     }
 
+    public boolean isGradeGroupsIndividually() {
+        return isGradeGroupsIndividually;
+    }
+
+    public void setGradeGroupsIndividually(boolean isGradeGroupsIndividually) {
+        this.isGradeGroupsIndividually = isGradeGroupsIndividually;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -681,6 +692,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeList(this.all_dates);
         dest.writeByte(this.muted ? (byte)1 : (byte) 0);
         dest.writeByte(this.locked_for_user ? (byte)1 : (byte) 0);
+        dest.writeByte(this.isGradeGroupsIndividually ? (byte)1 : (byte) 0);
     }
 
     public Assignment createDeepCopy(Assignment in) {
@@ -712,6 +724,7 @@ public class Assignment extends CanvasModel<Assignment>{
         copy.all_dates = in.all_dates;
         copy.muted = in.muted;
         copy.locked_for_user = in.locked_for_user;
+        copy.isGradeGroupsIndividually = in.isGradeGroupsIndividually;
         return copy;
     }
 
@@ -751,6 +764,7 @@ public class Assignment extends CanvasModel<Assignment>{
         in.readList(this.all_dates, AssignmentDueDate.class.getClassLoader());
         this.muted = in.readByte() != 0;
         this.locked_for_user = in.readByte() != 0;
+        this.isGradeGroupsIndividually = in.readByte() != 0;
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {
