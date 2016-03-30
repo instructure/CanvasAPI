@@ -32,7 +32,7 @@ public class Submission extends CanvasModel<Submission>{
 	private ArrayList<Submission> submission_history = new ArrayList<Submission>();
 	private ArrayList<Attachment> attachments = new ArrayList<Attachment>();
 	private String body;
-    private HashMap<String,RubricCriterionRating> rubric_assessment = new HashMap<String, RubricCriterionRating>();
+    private HashMap<String,RubricCriterionRating> rubric_assessment = new HashMap<>();
 	private boolean grade_matches_current_submission;
 	private String workflow_state;
 	private String submission_type;
@@ -53,6 +53,9 @@ public class Submission extends CanvasModel<Submission>{
     //this value could be null. Currently will only be returned when getting the submission for
     //a user when the submission_type is discussion_topic
     private ArrayList<DiscussionEntry> discussion_entries = new ArrayList<DiscussionEntry>();
+
+    // Group Info only available when including groups in the Submissions#index endpoint
+    private Group group;
 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
@@ -245,7 +248,12 @@ public class Submission extends CanvasModel<Submission>{
     public void setIslate(boolean late){
         this.late = late;
     }
-
+    public Group getGroup() {
+        return group;
+    }
+    public void setGroup(Group group) {
+        this.group = group;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -325,6 +333,7 @@ public class Submission extends CanvasModel<Submission>{
         dest.writeLong(this.attempt);
         dest.writeByte(this.excused ? (byte) 1 : (byte) 0);
         dest.writeByte(this.late ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.group, flags);
     }
 
     private Submission(Parcel in) {
@@ -358,6 +367,7 @@ public class Submission extends CanvasModel<Submission>{
         this.attempt = in.readLong();
         this.excused = in.readByte() != 0;
         this.late = in.readByte() != 0;
+        this.group = in.readParcelable(Group.class.getClassLoader());
     }
 
     public static Creator<Submission> CREATOR = new Creator<Submission>() {
