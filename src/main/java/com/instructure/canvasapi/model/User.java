@@ -112,6 +112,10 @@ public class User extends CanvasContext{
     }
 
     public String getBio() { return bio; }
+    
+    public void setBio(String bio){
+        this.bio = bio;
+    }
 
     // User Permissions - defaults to false, returned with UserAPI.getSelfWithPermissions()
     public boolean canUpdateAvatar(){
