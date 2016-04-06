@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         // https://bintray.com/android/android-tools/com.android.tools.build.gradle/view
-        classpath 'com.android.tools.build:gradle:2.0.0-beta6'
+        classpath 'com.android.tools.build:gradle:2.0.0-rc3'
         // https://github.com/JakeWharton/sdk-manager-plugin
         classpath 'com.github.JakeWharton:sdk-manager-plugin:e05218601b1274ea0721e13b33a426f641156f69'
     }
@@ -24,7 +24,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
