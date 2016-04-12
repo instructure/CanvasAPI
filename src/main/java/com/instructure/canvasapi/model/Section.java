@@ -49,6 +49,10 @@ public class Section extends CanvasContext implements Comparable<CanvasContext> 
         return course_id;
     }
 
+    public void setCourseId(long course_id) {
+        this.course_id = course_id;
+    }
+
     public Date getStart_at() {
         return APIHelpers.stringToDate(start_at);
     }
