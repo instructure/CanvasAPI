@@ -58,6 +58,9 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         @PUT("/{context_id}/discussion_topics/{topic_id}")
         void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("title") String title, @Query("message")String message, @Query("published") int isPublished, @Query("discussion_type")String discussion_type, @Body String body, Callback<DiscussionTopicHeader> callback);
+        
+        @PUT("/{context_id}/discussion_topics/{topic_id}")
+        void updateDiscussionTopic(@Path("context_id") long courseId, @Path("topic_id") long topicId, @Query("locked") int locked, @Body String body, Callback<DiscussionTopicHeader> callback);
 
         @POST("/{context_id}/discussion_topics/{discussionId}/entries/{entryId}/rating")
         void rateDiscussionEntry(@Path("context_id") long courseId, @Path("discussionId") long discussionId, @Path("entryId") long entryId, @Query("rating") int rating, @Body String body, Callback<Response> callback);
@@ -234,6 +237,14 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         buildInterface(DiscussionsInterface.class, callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, title, message, publish, type, "", callback);
 
+    }
+    
+    public static void updateDiscussionTopic(CanvasContext canvasContext, long topicId,  boolean locked, CanvasCallback<DiscussionTopicHeader> callback){
+        if (APIHelpers.paramIsNull(callback, locked, canvasContext)) { return; }
+
+        int isLocked = APIHelpers.booleanToInt(locked);
+
+        buildInterface(DiscussionsInterface.class, callback, canvasContext).updateDiscussionTopic(canvasContext.getId(), topicId, isLocked, "", callback);
     }
 
     /**
