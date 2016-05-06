@@ -6,17 +6,16 @@ import java.util.Date;
 
 public class Parent extends CanvasModel<Parent> {
 
-    private String user_full_name;
+    private String password;
     private String username;
-    private String token;
-    private boolean tos_approved;
 
-    public String getUserFullName() {
-        return user_full_name;
+
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserFullName(String user_full_name) {
-        this.user_full_name = user_full_name;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {
@@ -27,25 +26,9 @@ public class Parent extends CanvasModel<Parent> {
         this.username = username;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public boolean isTosApproved() {
-        return tos_approved;
-    }
-
-    public void setTosApproved(boolean tos_approved) {
-        this.tos_approved = tos_approved;
-    }
-
     @Override
-    public long getId() {
-        return 0;
+    public String getComparisonString() {
+        return null;
     }
 
     @Override
@@ -54,9 +37,10 @@ public class Parent extends CanvasModel<Parent> {
     }
 
     @Override
-    public String getComparisonString() {
-        return null;
+    public long getId() {
+        return username.hashCode();
     }
+
 
     @Override
     public int describeContents() {
@@ -65,27 +49,25 @@ public class Parent extends CanvasModel<Parent> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.user_full_name);
+        dest.writeString(this.password);
         dest.writeString(this.username);
-        dest.writeString(this.token);
-        dest.writeByte(tos_approved ? (byte) 1 : (byte) 0);
     }
 
     public Parent() {
     }
 
     protected Parent(Parcel in) {
-        this.user_full_name = in.readString();
+        this.password = in.readString();
         this.username = in.readString();
-        this.token = in.readString();
-        this.tos_approved = in.readByte() != 0;
     }
 
     public static final Creator<Parent> CREATOR = new Creator<Parent>() {
+        @Override
         public Parent createFromParcel(Parcel source) {
             return new Parent(source);
         }
 
+        @Override
         public Parent[] newArray(int size) {
             return new Parent[size];
         }

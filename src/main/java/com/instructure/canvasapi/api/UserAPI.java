@@ -2,6 +2,7 @@ package com.instructure.canvasapi.api;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.instructure.canvasapi.model.Attachment;
 import com.instructure.canvasapi.model.CanvasColor;
 import com.instructure.canvasapi.model.CanvasContext;
@@ -9,15 +10,19 @@ import com.instructure.canvasapi.model.Domain;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.Parent;
+import com.instructure.canvasapi.model.ParentResponse;
 import com.instructure.canvasapi.model.ParentWrapper;
+import com.instructure.canvasapi.model.Student;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 import com.instructure.canvasapi.utilities.Masquerading;
 import com.instructure.canvasapi.utilities.UserCallback;
+
 import java.io.File;
 import java.util.LinkedHashMap;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -105,10 +110,16 @@ public class UserAPI extends BuildInterfaceAPI {
         void removeStudent(@Path("observer_id") long observer_id, @Path("student_id") long student_id, Callback<Response> callback);
 
         @PUT("/newparent")
-        void addParent(@Body ParentWrapper body, Callback<Response> callback);
+        void addParent(@Body ParentWrapper body, Callback<ParentResponse> callback);
 
         @GET("/account/{observer_username}")
         void getParentUserDomain(@Path("observer_username") String email, Callback<Domain> callback);
+
+        @POST("/authenticate")
+        void authenticateParent(@Body Parent body, Callback<ParentResponse> callback);
+
+        @GET("/students/{observer_id}")
+        void getObserveesForParent(@Path("observer_id") String observerId, CanvasCallback<Student[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -335,12 +346,12 @@ public class UserAPI extends BuildInterfaceAPI {
      * @param body
      * @param callback
      */
-    public static void addParent(Parent body, CanvasCallback<Response> callback) {
+    public static void addParent(Parent body, CanvasCallback<ParentResponse> callback) {
         if(APIHelpers.paramIsNull(body, callback)) { return; }
         ParentWrapper parentWrapper = new ParentWrapper();
         parentWrapper.setParent(body);
 
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).addParent(parentWrapper, callback);
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).addParent(parentWrapper, callback);
     }
 
     /**
@@ -352,6 +363,22 @@ public class UserAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(email, callback)) { return; }
 
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getParentUserDomain(email, callback);
+    }
+
+    public static void authenticateParent(String email, String password, CanvasCallback<ParentResponse> callback) {
+        if(APIHelpers.paramIsNull(email, password, callback)) { return; }
+
+        Parent parent = new Parent();
+        parent.setUsername(email);
+        parent.setPassword(password);
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).authenticateParent(parent, callback);
+    }
+
+    public static void getObserveesForParent(String parentId, CanvasCallback<Student[]> callback) {
+        if(APIHelpers.paramIsNull(parentId, callback)) { return; }
+
+        buildCacheInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
