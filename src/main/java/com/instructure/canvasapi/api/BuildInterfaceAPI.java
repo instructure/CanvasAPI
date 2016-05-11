@@ -77,6 +77,12 @@ public class BuildInterfaceAPI {
         return restAdapter.create(clazz);
     }
 
+    public static <T> T buildInterfaceNoRedirects(Class<T> clazz, String domain, CanvasCallback callback, boolean perPageQueryParam) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildAdapterNoRedirects(callback, domain, null, false, perPageQueryParam);
+        restAdapter.setLogLevel(LOG_LEVEL);
+        return restAdapter.create(clazz);
+    }
+
     public static <T> T buildInterface(Class<T> clazz, CanvasCallback callback, CanvasContext canvasContext, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(callback, canvasContext, false, perPageQueryParam);
         restAdapter.setLogLevel(LOG_LEVEL);

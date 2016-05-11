@@ -120,6 +120,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @GET("/students/{observer_id}")
         void getObserveesForParent(@Path("observer_id") String observerId, CanvasCallback<Student[]> callback);
+
+        @GET("/add_student/{observer_id}")
+        void addStudentToParent(@Path("observer_id") String observerId, @Query(value = "student_domain", encodeValue = false) String studentDomain, CanvasCallback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -379,6 +382,19 @@ public class UserAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
+    }
+
+    /**
+     * Add a student to a parent's account so the parent can observe the student
+     *
+     * @param parentId - ID of the parent
+     * @param studentDomain - Domain of the student
+     * @param callback
+     */
+    public static void addStudentToParent(String parentId, String studentDomain, CanvasCallback<Response> callback) {
+        if(APIHelpers.paramIsNull(parentId, studentDomain, callback)) { return; }
+
+        buildInterfaceNoRedirects(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).addStudentToParent(parentId, studentDomain, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls

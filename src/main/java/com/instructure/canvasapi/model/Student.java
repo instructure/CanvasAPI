@@ -23,6 +23,9 @@ public class Student extends CanvasModel<Student> {
     @SerializedName("student_domain")
     private String studentDomain;
 
+    @SerializedName("avatar_url")
+    private String avatarUrl;
+
     public String getParentId() {
         return parentId;
     }
@@ -55,6 +58,14 @@ public class Student extends CanvasModel<Student> {
         this.studentDomain = studentDomain;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     @Override
     public String getComparisonString() {
         return null;
@@ -82,6 +93,7 @@ public class Student extends CanvasModel<Student> {
         dest.writeString(this.studentId);
         dest.writeString(this.studentName);
         dest.writeString(this.studentDomain);
+        dest.writeString(this.avatarUrl);
     }
 
     public Student() {
@@ -92,6 +104,7 @@ public class Student extends CanvasModel<Student> {
         this.studentId = in.readString();
         this.studentName = in.readString();
         this.studentDomain = in.readString();
+        this.avatarUrl = in.readString();
     }
 
     public static final Creator<Student> CREATOR = new Creator<Student>() {

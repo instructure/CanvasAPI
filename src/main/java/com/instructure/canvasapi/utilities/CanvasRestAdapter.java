@@ -77,6 +77,13 @@ public class CanvasRestAdapter {
         return okHttpClient;
     }
 
+    private static OkClient getOkHttpNoRedirects(Context context) {
+        CanvasOkClient client = (CanvasOkClient)getOkHttp(context);
+        client.getClient().setFollowRedirects(false);
+
+        return client;
+    }
+
     /**
      * Returns a RestAdapter Instance that points at :domain/api/v1
      *
@@ -197,6 +204,56 @@ public class CanvasRestAdapter {
         return buildAdapterHelper(callback.getContext(), domain, canvasContext, isOnlyReadFromCache, addPerPageQueryParam);
     }
 
+    /**
+     * Returns a RestAdapter instance that points at :domain/groups or :domain/courses depending on the CanvasContext
+     *
+     * If CanvasContext is null, it returns an instance that simply points to :domain/api/v1/
+     * @param callback A Canvas Callback
+     * @param domain Domain that you want to use for the API call
+     * @param canvasContext A Canvas Context
+     * @param isOnlyReadFromCache Specify if you only want to read from cache
+     * @param addPerPageQueryParam Specify if you want to add the per page query param
+     * @return
+     */
+    public static RestAdapter buildAdapterNoRedirects(CanvasCallback callback, String domain, CanvasContext canvasContext, boolean isOnlyReadFromCache, boolean addPerPageQueryParam) {
+        callback.setFinished(false);
+        //Check for null values or invalid CanvasContext types.
+        if(callback.getContext() == null) {
+            return null;
+        }
+
+        if (callback.getContext() instanceof APIStatusDelegate) {
+            ((APIStatusDelegate)callback.getContext()).onCallbackStarted();
+        }
+
+        //Can make this check as we KNOW that the setter doesn't allow empty strings.
+        if (domain == null || domain.equals("")) {
+            Log.d(APIHelpers.LOG_TAG, "The RestAdapter hasn't been set up yet. Call setupInstance(context,token,domain)");
+            return new RestAdapter.Builder().setEndpoint("http://invalid.domain.com").build();
+        }
+
+        String apiContext = "";
+        if (canvasContext != null) {
+            if (canvasContext.getType() == CanvasContext.Type.COURSE) {
+                apiContext = "courses/";
+            } else if (canvasContext.getType() == CanvasContext.Type.GROUP) {
+                apiContext = "groups/";
+            } else if (canvasContext.getType() == CanvasContext.Type.SECTION) {
+                apiContext = "sections/";
+            } else {
+                apiContext = "users/";
+            }
+        }
+
+        GsonConverter gsonConverter = new GsonConverter(getGSONParser());
+
+        //Sets the auth token, user agent, and handles masquerading.
+        return new RestAdapter.Builder()
+                .setEndpoint(domain + apiContext) // The base API endpoint.
+                .setRequestInterceptor(new CanvasRequestInterceptor(callback.getContext(), addPerPageQueryParam, isOnlyReadFromCache))
+                .setConverter(gsonConverter)
+                .setClient(getOkHttpNoRedirects(callback.getContext())).build();
+    }
     /**
      * Returns a RestAdapter instance that points at :domain/api/v1/groups or :domain/api/v1/courses depending on the CanvasContext
      *
@@ -445,7 +502,7 @@ public class CanvasRestAdapter {
 
             //Authenticate if possible
             if(!shouldIgnoreToken && token != null && !token.equals("")){
-                requestFacade.addHeader("Authorization", "Bearer " + token);
+                requestFacade.addHeader("Authorization", token);
             }
 
             if (isForcedCache) {
