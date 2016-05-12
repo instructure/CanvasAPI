@@ -7,7 +7,6 @@ import com.instructure.canvasapi.model.Course;
 import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.model.FileUploadParams;
-import com.instructure.canvasapi.model.GradingPeriod;
 import com.instructure.canvasapi.model.GradingPeriodResponse;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
@@ -86,6 +85,15 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         @GET("/{next}")
         void getNextPageCoursesForUser(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
+
+        @GET("/canvas/{parentId}/{studentId}/courses?include[]=total_scores&include[]=syllabus_body")
+        void getCoursesForUserAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, CanvasCallback<Course[]> callback);
+
+        @GET("/canvas/{parentId}/{studentId}/courses/{courseId}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public&include[]=permissions")
+        void getCourseWithSyllabusAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, @Path("courseId") long courseId, CanvasCallback<Course> callback);
+
+        @GET("/canvas/{parentId}/{studentId}/courses/{courseId}?include[]=term&include[]=permissions&include[]=license&include[]=is_public&include[]=needs_grading_count&include[]=total_scores&include[]=current_grading_period_scores")
+        void getCourseWithGradeAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, @Path("courseId") long courseId, CanvasCallback<Course> callback);
 
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
@@ -274,6 +282,36 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(CoursesInterface.class, callback).getNextPageCoursesForUser(nextURL, callback);
         buildInterface(CoursesInterface.class, callback).getNextPageCoursesForUser(nextURL, callback);
+    }
+
+    public static void getCoursesForUserAirwolf(String parentId, String studentId, CanvasCallback<Course[]> callback) {
+        if(APIHelpers.paramIsNull(parentId, studentId, callback)) { return; }
+
+        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCoursesForUserAirwolf(parentId, studentId, callback);
+        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCoursesForUserAirwolf(parentId, studentId, callback);
+    }
+
+    public static void getNextPageCoursesForUserAirwolf(String nextURL, CanvasCallback<Course[]> callback) {
+        if (APIHelpers.paramIsNull(nextURL, callback)) { return; }
+
+        callback.setIsNextPage(true);
+
+        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getNextPageCoursesForUser(nextURL, callback);
+        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getNextPageCoursesForUser(nextURL, callback);
+    }
+
+    public static void getCourseWithSyllabusAirwolf(String parentId, String studentId, long courseId, CanvasCallback<Course> callback) {
+        if (APIHelpers.paramIsNull(parentId, studentId, callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
+        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
+    }
+
+    public static void getCourseWithGradeAirwolf(String parentId, String studentId, long courseId, CanvasCallback<Course> callback) {
+        if (APIHelpers.paramIsNull(parentId, studentId, callback)) return;
+
+        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
+        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
     }
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
