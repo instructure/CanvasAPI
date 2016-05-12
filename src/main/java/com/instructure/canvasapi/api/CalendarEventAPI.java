@@ -123,6 +123,15 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
                 @Query("end_date") String endDate,
                 @EncodedQuery("context_codes[]") String contextCodes,
                 Callback<ScheduleItem[]> callback);
+
+        @GET("/canvas/{parent_id}/{parent_id}/calendar_events?include[]=submission")
+        void getCalendarEventsWithSubmissionsAirwolf(
+                @Path("parent_id") long parentId,
+                @Path("student_id") long studentId,
+                @Query("start_date") String startDate,
+                @Query("end_date") String endDate,
+                @EncodedQuery("context_codes[]") String contextCodes,
+                Callback<ScheduleItem[]> callback);
         /////////////////////////////////////////////////////////////////////////////
         // Synchronous
         /////////////////////////////////////////////////////////////////////////////
@@ -235,6 +244,20 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUserWithSubmissions(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
         buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUserWithSubmissions(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
+    }
+
+    public static void getAllCalendarEventsWithSubmissionsExhaustiveAirwolf(long parentId, long studentId, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+        CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
+            @Override
+            public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
+                if(callback.isCancelled()) { return; }
+
+                CalendarEventAPI.getNextPageCalendarEventsChained(nextURL, bridgeCallback, isCached);
+            }
+        });
+
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
