@@ -107,7 +107,7 @@ public class UserAPI extends BuildInterfaceAPI {
         void removeObservee(@Path("observee_id") long observee_id, Callback<User> callback);
 
         @DELETE("/student/{observer_id}/{student_id}")
-        void removeStudent(@Path("observer_id") long observer_id, @Path("student_id") long student_id, Callback<Response> callback);
+        void removeStudent(@Path("observer_id") String observer_id, @Path("student_id") String student_id, Callback<Response> callback);
 
         @PUT("/newparent")
         void addParent(@Body ParentWrapper body, Callback<ParentResponse> callback);
@@ -338,7 +338,7 @@ public class UserAPI extends BuildInterfaceAPI {
      * @param studentId
      * @param callback - 200 if successful
      */
-    public static void removeStudent(long observerId, long studentId, CanvasCallback<Response> callback) {
+    public static void removeStudent(String observerId, String studentId, CanvasCallback<Response> callback) {
         if(APIHelpers.paramIsNull(callback)) { return; }
 
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).removeStudent(observerId, studentId, callback);
@@ -380,8 +380,8 @@ public class UserAPI extends BuildInterfaceAPI {
     public static void getObserveesForParent(String parentId, CanvasCallback<Student[]> callback) {
         if(APIHelpers.paramIsNull(parentId, callback)) { return; }
 
-        buildCacheInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getObserveesForParent(parentId, callback);
+        buildCacheInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getObserveesForParent(parentId, callback);
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getObserveesForParent(parentId, callback);
     }
 
     /**
