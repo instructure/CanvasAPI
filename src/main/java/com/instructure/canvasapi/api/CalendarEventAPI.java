@@ -124,10 +124,10 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
                 @EncodedQuery("context_codes[]") String contextCodes,
                 Callback<ScheduleItem[]> callback);
 
-        @GET("/canvas/{parent_id}/{parent_id}/calendar_events?include[]=submission")
+        @GET("/canvas/{parent_id}/{student_id}/calendar_events?include[]=submission")
         void getCalendarEventsWithSubmissionsAirwolf(
-                @Path("parent_id") long parentId,
-                @Path("student_id") long studentId,
+                @Path("parent_id") String parentId,
+                @Path("student_id") String studentId,
                 @Query("start_date") String startDate,
                 @Query("end_date") String endDate,
                 @EncodedQuery("context_codes[]") String contextCodes,
@@ -246,7 +246,7 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
         buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsForUserWithSubmissions(userId, EVENT_TYPE.getEventTypeName(eventType), startDate, endDate, buildContextArray(canvasContextIds), bridge);
     }
 
-    public static void getAllCalendarEventsWithSubmissionsExhaustiveAirwolf(long parentId, long studentId, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
+    public static void getAllCalendarEventsWithSubmissionsExhaustiveAirwolf(String parentId, String studentId, String startDate, String endDate, ArrayList<String> canvasContextIds, final CanvasCallback<ScheduleItem[]> callback) {
         CanvasCallback<ScheduleItem[]> bridge = new ExhaustiveBridgeCallback<>(ScheduleItem.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
             @Override
             public void performApiCallWithExhaustiveCallback(CanvasCallback bridgeCallback, String nextURL, boolean isCached) {
@@ -256,8 +256,8 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
             }
         });
 
-        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
-        buildInterface(CalendarEventsInterface.class, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildCacheInterface(CalendarEventsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildInterface(CalendarEventsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){
