@@ -502,7 +502,7 @@ public class CanvasRestAdapter {
 
             //Authenticate if possible
             if(!shouldIgnoreToken && token != null && !token.equals("")){
-                requestFacade.addHeader("Authorization", token);
+                requestFacade.addHeader("Authorization", "Bearer " + token);
             }
 
             if (isForcedCache) {
