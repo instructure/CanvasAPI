@@ -21,19 +21,19 @@ public class AlertAPI extends BuildInterfaceAPI {
     public static final String AIRWOLF_DOMAIN = "https://airwolf-beta.inseng.net/";
 
     interface AlertInterface {
-        @GET("/alerts/student/{observerId}/{studentId}")
-        void getFirstPageOfAlertsForStudent(@Path("observerId") long observerId, @Path("studentId") long studentId, Callback<Alert[]> callback);
+        @GET("/alerts/student/{parentId}/{studentId}")
+        void getFirstPageOfAlertsForStudent(@Path("parentId") String parentId, @Path("studentId") String studentId, Callback<Alert[]> callback);
 
         @GET("/{next}")
         void getNextPageOfAlertsForStudent(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Alert[]> callback);
 
         @FormUrlEncoded
-        @POST("/alert/{observerId}/{alertId}")
-        void markAlertAsRead(@Path("observerId") long observerId, @Path("alertId") String alertId, @Field("read") String isRead, CanvasCallback<Response> callback);
+        @POST("/alert/{parentId}/{alertId}")
+        void markAlertAsRead(@Path("parentId") String parentId, @Path("alertId") String alertId, @Field("read") String isRead, CanvasCallback<Response> callback);
 
         @FormUrlEncoded
-        @POST("/alert/{observerId}/{alertId}")
-        void markAlertAsDismissed(@Path("observerId") long observerId, @Path("alertId") String alertId, @Field("dismissed") String isDismissed, CanvasCallback<Response> callback);
+        @POST("/alert/{parentId}/{alertId}")
+        void markAlertAsDismissed(@Path("parentId") String parentId, @Path("alertId") String alertId, @Field("dismissed") String isDismissed, CanvasCallback<Response> callback);
 
     }
 
@@ -41,7 +41,7 @@ public class AlertAPI extends BuildInterfaceAPI {
     // API Calls
     /////////////////////////////////////////////////////////////////////////
 
-    public static void getAllAlertsForStudent(long observerId, long studentId, final CanvasCallback<Alert[]> callback){
+    public static void getAllAlertsForStudent(String parentId, String studentId, final CanvasCallback<Alert[]> callback){
         if(APIHelpers.paramIsNull(callback)) { return; }
 
         CanvasCallback<Alert[]> bridge = new ExhaustiveBridgeCallback<>(Alert.class, callback, new ExhaustiveBridgeCallback.ExhaustiveBridgeEvents() {
@@ -53,8 +53,8 @@ public class AlertAPI extends BuildInterfaceAPI {
             }
         });
 
-        buildCacheInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(observerId, studentId, bridge);
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(observerId, studentId, bridge);
+        buildCacheInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
+        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
     }
 
     public static void getNextPageAlertsChained(CanvasCallback<Alert[]> callback, String nextURL, boolean isCached) {
@@ -68,16 +68,16 @@ public class AlertAPI extends BuildInterfaceAPI {
         }
     }
 
-    public static void markAlertAsRead(long observerId, String alertId, CanvasCallback<Response> callback) {
+    public static void markAlertAsRead(String parentId, String alertId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
 
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsRead(observerId, alertId, "true", callback);
+        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsRead(parentId, alertId, "true", callback);
     }
 
-    public static void markAlertAsDismissed(long observerId, String alertId, CanvasCallback<Response> callback) {
+    public static void markAlertAsDismissed(String parentId, String alertId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsDismissed(observerId, alertId, "true", callback);
+        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsDismissed(parentId, alertId, "true", callback);
     }
 }
