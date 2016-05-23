@@ -38,6 +38,9 @@ public class DiscussionAPI extends BuildInterfaceAPI {
         @GET("/{context_id}/discussion_topics/{discussionid}")
         void getDetailedDiscussion(@Path("context_id") long courseId, @Path("discussionid") long discussionId, Callback<DiscussionTopicHeader> callback);
 
+        @GET("/canvas/{parentId}/{studentId}/courses/{courseId}/discussion_topics/{discussionTopicId}")
+        void getDetailedDiscussionAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, @Path("courseId") String courseId, @Path("discussionTopicId") String discussionTopicId, Callback<DiscussionTopicHeader> callback);
+
         @GET("/{context_id}/discussion_topics/{discussionid}/view")
         void getFullDiscussionTopic(@Path("context_id") long courseId, @Path("discussionid") long discussionId, Callback<DiscussionTopic> callback);
 
@@ -152,6 +155,13 @@ public class DiscussionAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(DiscussionsInterface.class, callback, canvasContext).getDetailedDiscussion(canvasContext.getId(), discussion_id, callback);
         buildInterface(DiscussionsInterface.class, callback, canvasContext).getDetailedDiscussion(canvasContext.getId(), discussion_id, callback);
+    }
+
+    public static void getDetailedDiscussionAirwolf(String parentId, String studentId, String courseId, String discussionTopicId, CanvasCallback<DiscussionTopicHeader> callback) {
+        if (APIHelpers.paramIsNull(callback, parentId, studentId, courseId, discussionTopicId)) { return; }
+
+        buildCacheInterface(DiscussionsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
+        buildInterface(DiscussionsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
     }
 
     public static void getFullDiscussionTopicChained(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopic> callback, boolean isCached) {

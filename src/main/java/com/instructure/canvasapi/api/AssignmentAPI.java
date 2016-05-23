@@ -2,7 +2,6 @@ package com.instructure.canvasapi.api;
 
 import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.AssignmentGroup;
-import com.instructure.canvasapi.model.AssignmentWithListSubmission;
 import com.instructure.canvasapi.model.RubricCriterion;
 import com.instructure.canvasapi.model.ScheduleItem;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -49,9 +48,6 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         @GET("/courses/{course_id}/assignments/{assignmentid}?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
         void getAssignment(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<Assignment> callback);
 
-        @GET("/courses/{course_id}/assignments/{assignmentid}?include[]=submission&include[]=rubric_assessment&include[]=all_dates&include[]=observed_users")
-        void getAssignmentForObservedUsers(@Path("course_id") long course_id, @Path("assignmentid") long assignment_id, Callback<AssignmentWithListSubmission> callback);
-
         @GET("/courses/{course_id}/assignments?include[]=submission&include[]=rubric_assessment&needs_grading_count_by_section=true&include[]=all_dates")
         void getAssignmentsList(@Path("course_id") long course_id, Callback<Assignment[]> callback);
 
@@ -72,6 +68,9 @@ public class AssignmentAPI extends BuildInterfaceAPI {
 
         @GET("/courses/{course_id}/assignment_groups?include[]=assignments&include[]=discussion_topic&include[]=submission&override_assignment_dates=true")
         void getAssignmentGroupListScoped(@Path("course_id") long course_id, @Query("grading_period_id") long grading_period_id, @Query("scope_assignments_to_student") boolean isScoped, Callback<AssignmentGroup[]> callback);
+
+        @GET("/canvas/{parentId}/{studentId}/courses/{courseId}/assignments/{assignmentId}?include[]=submission")
+        void getAssignmentAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, @Path("courseId") String courseId, @Path("assignmentId") String assignmentId, Callback<Assignment> callback);
 
         @GET("/calendar_events/{event_id}")
         void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
@@ -113,20 +112,6 @@ public class AssignmentAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
         buildInterface(AssignmentsInterface.class, callback, null).getAssignment(courseID, assignmentID, callback);
-    }
-
-    /**
-     * Note that this call requires AssignmentWithListSubmission object callback, see said model object
-     * for explanation
-     * @param courseID
-     * @param assignmentID
-     * @param callback
-     */
-    public static void getAssignmentForObservedUsers(long courseID, long assignmentID, final CanvasCallback<AssignmentWithListSubmission> callback) {
-        if (APIHelpers.paramIsNull(callback)) { return; }
-
-        buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentForObservedUsers(courseID, assignmentID, callback);
-        buildInterface(AssignmentsInterface.class, callback, null).getAssignmentForObservedUsers(courseID, assignmentID, callback);
     }
 
     public static void getAllAssignmentsExhaustive(long courseID, final CanvasCallback<Assignment[]> callback) {
@@ -220,6 +205,13 @@ public class AssignmentAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(callback)) return;
         buildCacheInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListScoped(courseID, gradingPeriodID, isScoped, callback);
         buildInterface(AssignmentsInterface.class, callback, null).getAssignmentGroupListScoped(courseID, gradingPeriodID, isScoped, callback);
+    }
+
+    public static void getAssignmentAirwolf(String parentId, String studentId, String courseId, String assignmentId, final CanvasCallback<Assignment> callback) {
+        if (APIHelpers.paramIsNull(parentId, studentId, courseId, assignmentId, callback)) return;
+
+        buildCacheInterface(AssignmentsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
+        buildInterface(AssignmentsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
     }
 
     /*

@@ -67,6 +67,9 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
         @GET("/calendar_events/{event_id}")
         void getCalendarEvent(@Path("event_id") long event_id, Callback<ScheduleItem> callback);
 
+        @GET("/canvas/{parentId}/{studentId}/calendar_events/{eventId}")
+        void getCalendarEventAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, @Path("eventId") String eventId, Callback<ScheduleItem> callback);
+
         @GET("/calendar_events?start_date=1990-01-01&end_date=2099-12-31")
         void getCalendarEvents(@Query("context_codes[]") String context_id, Callback<ScheduleItem[]> callback);
 
@@ -149,6 +152,13 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
 
         buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEvent(calendarEventId, callback);
         buildInterface(CalendarEventsInterface.class, callback).getCalendarEvent(calendarEventId, callback);
+    }
+
+    public static void getCalendarEventAirwolf(String parentId, String studentId, String eventId, final CanvasCallback<ScheduleItem> callback) {
+        if (APIHelpers.paramIsNull(callback)) { return; }
+
+        buildCacheInterface(CalendarEventsInterface.class, callback).getCalendarEventAirwolf(parentId, studentId, eventId, callback);
+        buildInterface(CalendarEventsInterface.class, callback).getCalendarEventAirwolf(parentId, studentId, eventId, callback);
     }
 
     public static void getCalendarEvents(CanvasContext canvasContext, final CanvasCallback<ScheduleItem[]> callback) {

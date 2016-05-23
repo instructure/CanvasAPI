@@ -31,8 +31,8 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
         void getAlertThresholdById(@Path("parentId") String parentId, @Path("thresholdId") long thresholdId, Callback<AlertThreshold> callback);
 
         @FormUrlEncoded
-        @PUT("/alertthreshold")
-        void createAlertThreshold(@Field("observer_id") String parentId, @Field("student_id") String studentId, @Field("alert_type") String alertType, @Field("threshold") String threshold, CanvasCallback<AlertThreshold> callback);
+        @PUT("/alertthreshold/{parentId}")
+        void createAlertThreshold(@Path("parentId") String parentId, @Field("student_id") String studentId, @Field("alert_type") String alertType, @Field("threshold") String threshold, CanvasCallback<AlertThreshold> callback);
 
         @FormUrlEncoded
         @POST("/alertthreshold/{parentId}/{thresholdId}")
@@ -40,8 +40,8 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
 
         //threshold field is optional
         @FormUrlEncoded
-        @PUT("/alertthreshold")
-        void createAlertThreshold(@Field("observer_id") String parentId, @Field("student_id") String studentId, @Field("alert_type") String alertType, CanvasCallback<AlertThreshold> callback);
+        @PUT("/alertthreshold/{parentId}")
+        void createAlertThreshold(@Path("parentId") String parentId, @Field("student_id") String studentId, @Field("alert_type") String alertType, CanvasCallback<AlertThreshold> callback);
 
         //threshold field is optional
         @FormUrlEncoded
