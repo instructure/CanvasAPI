@@ -123,6 +123,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @GET("/add_student/{observer_id}")
         void addStudentToParent(@Path("observer_id") String observerId, @Query(value = "student_domain", encodeValue = false) String studentDomain, CanvasCallback<Response> callback);
+
+        @POST("/send_password_reset/{userName}")
+        void sendPasswordResetForParent(@Path(value = "userName", encode = false) String userName, @Body String body, CanvasCallback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -395,6 +398,13 @@ public class UserAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(parentId, studentDomain, callback)) { return; }
 
         buildInterfaceNoRedirects(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).addStudentToParent(parentId, studentDomain, callback);
+    }
+
+
+    public static void sendPasswordResetForParent(String userName, CanvasCallback<Response> callback) {
+        if(APIHelpers.paramIsNull(userName, callback)) { return; }
+
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).sendPasswordResetForParent(userName, "", callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
