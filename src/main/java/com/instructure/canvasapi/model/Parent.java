@@ -2,12 +2,18 @@ package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class Parent extends CanvasModel<Parent> {
 
     private String password;
     private String username;
+    @SerializedName("first_name")
+    private String firstName;
+    @SerializedName("last_name")
+    private String lastName;
 
 
     public String getPassword() {
@@ -24,6 +30,22 @@ public class Parent extends CanvasModel<Parent> {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
@@ -51,6 +73,8 @@ public class Parent extends CanvasModel<Parent> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.password);
         dest.writeString(this.username);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
     }
 
     public Parent() {
@@ -59,6 +83,8 @@ public class Parent extends CanvasModel<Parent> {
     protected Parent(Parcel in) {
         this.password = in.readString();
         this.username = in.readString();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
     }
 
     public static final Creator<Parent> CREATOR = new Creator<Parent>() {
