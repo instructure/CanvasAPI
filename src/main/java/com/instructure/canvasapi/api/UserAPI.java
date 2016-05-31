@@ -20,6 +20,8 @@ import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 import com.instructure.canvasapi.utilities.Masquerading;
 import com.instructure.canvasapi.utilities.UserCallback;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 
@@ -125,7 +127,7 @@ public class UserAPI extends BuildInterfaceAPI {
         void addStudentToParent(@Path("observer_id") String observerId, @Query(value = "student_domain", encodeValue = false) String studentDomain, CanvasCallback<Response> callback);
 
         @POST("/send_password_reset/{userName}")
-        void sendPasswordResetForParent(@Path(value = "userName", encode = false) String userName, @Body String body, CanvasCallback<Response> callback);
+        void sendPasswordResetForParent(@Path(value = "userName", encode = false) String userName, @Body JSONObject body, CanvasCallback<Response> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -401,10 +403,20 @@ public class UserAPI extends BuildInterfaceAPI {
     }
 
 
+    /**
+     * Let the user request a password if they forgot it.
+     *
+     * Will return a 404 if there is no record of the e-mail address.
+     *
+     * @param userName The user's email address
+     * @param callback
+     */
     public static void sendPasswordResetForParent(String userName, CanvasCallback<Response> callback) {
         if(APIHelpers.paramIsNull(userName, callback)) { return; }
 
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).sendPasswordResetForParent(userName, "", callback);
+        //include an empty json object to pass the parsing on airwolf. It doesn't like an empty string.
+        JSONObject object = new JSONObject();
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).sendPasswordResetForParent(userName, object, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls
