@@ -12,6 +12,7 @@ import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.Parent;
 import com.instructure.canvasapi.model.ParentResponse;
 import com.instructure.canvasapi.model.ParentWrapper;
+import com.instructure.canvasapi.model.ResetParent;
 import com.instructure.canvasapi.model.Student;
 import com.instructure.canvasapi.model.User;
 import com.instructure.canvasapi.utilities.APIHelpers;
@@ -128,6 +129,9 @@ public class UserAPI extends BuildInterfaceAPI {
 
         @POST("/send_password_reset/{userName}")
         void sendPasswordResetForParent(@Path(value = "userName", encode = false) String userName, @Body JSONObject body, CanvasCallback<Response> callback);
+
+        @POST("/reset_password")
+        void resetParentPassword(@Body Parent parent, CanvasCallback<ResetParent> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -417,6 +421,22 @@ public class UserAPI extends BuildInterfaceAPI {
         //include an empty json object to pass the parsing on airwolf. It doesn't like an empty string.
         JSONObject object = new JSONObject();
         buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).sendPasswordResetForParent(userName, object, callback);
+    }
+
+    /**
+     * The API call to actually reset the parent's password to the one they just created.
+     *
+     * @param userName
+     * @param password
+     * @param callback
+     */
+    public static void resetParentPassword(String userName, String password, CanvasCallback<ResetParent> callback) {
+        if(APIHelpers.paramIsNull(userName, password, callback)) { return; }
+
+        Parent parent = new Parent();
+        parent.setUsername(userName);
+        parent.setPassword(password);
+        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).resetParentPassword(parent, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls

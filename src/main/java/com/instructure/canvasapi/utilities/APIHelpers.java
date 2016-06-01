@@ -437,6 +437,19 @@ public class APIHelpers {
     }
 
     /**
+     * resetToken sets the OAuth token to an empty string
+     * @param context
+     * @return
+     */
+    public static boolean resetToken(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SHARED_PREFERENCES_TOKEN, "");
+        return editor.commit();
+    }
+
+    /**
      * getToken returns the OAuth token or "" if there isn't one.
      * @param context
      * @return
