@@ -1,11 +1,9 @@
 package com.instructure.canvasapi.api;
 
 import android.content.Context;
-
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
-
 import retrofit.RestAdapter;
 
 public class BuildInterfaceAPI {
