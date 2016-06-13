@@ -62,6 +62,9 @@ public class Assignment extends CanvasModel<Assignment>{
 
     private List<AssignmentDueDate> all_dates = new ArrayList<AssignmentDueDate>();
 
+    @SerializedName("user_submitted")
+    private boolean userSubmitted;
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
     ///////////////////////////////////////////////////////////////////////////
@@ -329,6 +332,15 @@ public class Assignment extends CanvasModel<Assignment>{
     public void setGradeGroupsIndividually(boolean isGradeGroupsIndividually) {
         this.isGradeGroupsIndividually = isGradeGroupsIndividually;
     }
+
+    public void setUserSubmitted(boolean userSubmitted) {
+        this.userSubmitted = userSubmitted;
+    }
+
+    public boolean hasUserSubmitted() {
+        return userSubmitted;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Required Overrides
     ///////////////////////////////////////////////////////////////////////////
@@ -693,6 +705,7 @@ public class Assignment extends CanvasModel<Assignment>{
         dest.writeByte(this.muted ? (byte)1 : (byte) 0);
         dest.writeByte(this.locked_for_user ? (byte)1 : (byte) 0);
         dest.writeByte(this.isGradeGroupsIndividually ? (byte)1 : (byte) 0);
+        dest.writeByte(this.userSubmitted ? (byte) 1 : (byte) 0);
     }
 
     public Assignment createDeepCopy(Assignment in) {
@@ -765,6 +778,7 @@ public class Assignment extends CanvasModel<Assignment>{
         this.muted = in.readByte() != 0;
         this.locked_for_user = in.readByte() != 0;
         this.isGradeGroupsIndividually = in.readByte() != 0;
+        this.userSubmitted = in.readByte() != 0;
     }
 
     public static Creator<Assignment> CREATOR = new Creator<Assignment>() {

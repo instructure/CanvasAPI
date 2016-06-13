@@ -2,6 +2,8 @@ package com.instructure.canvasapi.model;
 
 import android.content.Context;
 import android.os.Parcel;
+
+import com.google.gson.annotations.SerializedName;
 import com.instructure.canvasapi.R;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.DateHelpers;
@@ -34,6 +36,8 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
     private String context_code;
     private String effective_context_code;
     private boolean hidden;
+    @SerializedName("assignment_overrides")
+    private List<AssignmentOverride> assignmentOverrides;
 
     // helper variables
     private CanvasContext.Type contextType;
@@ -65,21 +69,26 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
             return Long.parseLong(id);
         }
         catch(NumberFormatException e) {
-            //it's a string with assignment_ as a prefix...hopefully
-            try {
-                String stringId = id;
-                String tempId = stringId.replace("assignment_", "");
-                long assignmentId = Long.parseLong(tempId);
-                setId(assignmentId);
-                return assignmentId;
-            }
-            catch (Exception e1) {
-                setId(-1);
-                return -1L;
+            if(assignmentOverrides != null && !assignmentOverrides.isEmpty()) {
+                long id = assignmentOverrides.get(0).id;
+                setId(id);
+                return id;
+            } else {
+                //it's a string with assignment_ as a prefix...hopefully
+                try {
+                    String stringId = id;
+                    String tempId = stringId.replace("assignment_", "");
+                    long assignmentId = Long.parseLong(tempId);
+                    setId(assignmentId);
+                    return assignmentId;
+                } catch (Exception e1) {
+                    setId(-1L);
+                    return -1L;
+                }
             }
         }
         catch(Exception e) {
-            setId(-1);
+            setId(-1L);
             return -1L;
         }
     }
@@ -244,6 +253,17 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
 
     public boolean isHidden() {
         return hidden;
+    }
+
+    public List<AssignmentOverride> getAssignmentOverrides() {
+        if(assignmentOverrides == null) {
+            assignmentOverrides = new ArrayList<>();
+        }
+        return assignmentOverrides;
+    }
+
+    public boolean hasAssignmentOverrides() {
+        return assignmentOverrides != null && !assignmentOverrides.isEmpty();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -443,6 +463,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         dest.writeParcelable(this.assignment, flags);
         dest.writeLong(startDate != null ? startDate.getTime() : -1);
         dest.writeByte(hidden ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.assignmentOverrides);
 
     }
 
@@ -484,6 +505,7 @@ public class ScheduleItem extends CanvasModel<ScheduleItem> {
         long tmpStartDate = in.readLong();
         this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
         this.hidden = in.readByte() != 0;
+        this.assignmentOverrides = in.createTypedArrayList(AssignmentOverride.CREATOR);
 
     }
 
