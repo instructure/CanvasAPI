@@ -15,6 +15,7 @@ import retrofit.http.Query;
  */
 public class ErrorReportAPI {
 
+    private static final String DEFAULT_DOMAIN = "https://canvas.instructure.com";
     public interface ErrorReportInterface {
         @POST("/error_reports.json")
         void postErrorReport(@Query("error[subject]") String subject, @Query("error[url]") String url, @Query("error[email]") String email, @Query("error[comments]") String comments, @Query("error[user_perceived_severity") String userPerceivedSeverity, @Body String body, CanvasCallback<ErrorReportResult> callback);
@@ -32,9 +33,28 @@ public class ErrorReportAPI {
         return restAdapter.create(ErrorReportInterface.class);
     }
 
+    /**
+     * Used when we don't want to use the user's domain
+     * @param callback
+     * @return
+     */
+    private static ErrorReportInterface buildGenericInterface(CanvasCallback<?> callback) {
+        //we don't want to use the normal buildAdapter method because the user might not always be logged in
+        //when they use this method (like when they are on the login page) and the normal buildAdapter method prepends a
+        // /api/v1 and requires a token.
+        RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(DEFAULT_DOMAIN);
+        return restAdapter.create(ErrorReportInterface.class);
+    }
+
     public static void postErrorReport(String subject, String url, String email, String comments, String userPerceivedSeverity, CanvasCallback<ErrorReportResult> callback) {
         if(APIHelpers.paramIsNull(callback, subject, url, email, comments, userPerceivedSeverity)) return;
 
         buildInterface(callback).postErrorReport(subject, url, email, comments, userPerceivedSeverity, "", callback);
+    }
+
+    public static void postGenericErrorReport(String subject, String url, String email, String comments, String userPerceivedSeverity, CanvasCallback<ErrorReportResult> callback) {
+        if(APIHelpers.paramIsNull(callback, subject, url, email, comments, userPerceivedSeverity)) return;
+
+        buildGenericInterface(callback).postErrorReport(subject, url, email, comments, userPerceivedSeverity, "", callback);
     }
 }
