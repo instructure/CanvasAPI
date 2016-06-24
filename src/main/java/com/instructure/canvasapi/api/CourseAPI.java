@@ -86,7 +86,7 @@ public class CourseAPI extends BuildInterfaceAPI {
         @GET("/{next}")
         void getNextPageCoursesForUser(@Path(value = "next", encode = false) String nextURL, CanvasCallback<Course[]> callback);
 
-        @GET("/canvas/{parentId}/{studentId}/courses?include[]=total_scores&include[]=syllabus_body")
+        @GET("/canvas/{parentId}/{studentId}/courses?include[]=total_scores&include[]=syllabus_body&include[]=current_grading_period_scores")
         void getCoursesForUserAirwolf(@Path("parentId") String parentId, @Path("studentId") String studentId, CanvasCallback<Course[]> callback);
 
         @GET("/canvas/{parentId}/{studentId}/courses/{courseId}?include[]=syllabus_body&include[]=term&include[]=license&include[]=is_public&include[]=permissions")
