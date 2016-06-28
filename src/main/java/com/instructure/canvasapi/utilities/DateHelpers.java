@@ -66,6 +66,14 @@ public class DateHelpers {
         return format.format(date.getTime());
     }
 
+    public static String getDayMonthDateStringUniversal(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        Format format = getDayMonthDateFormatUniversal(context);
+        return format.format(date.getTime());
+    }
+
     public static String getMessageDateString(Context context, Date date) {
         if(context == null) {
             return null;
@@ -100,6 +108,11 @@ public class DateHelpers {
         if(DateFormat.is24HourFormat(context)) {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
         }
+        return new SimpleDateFormat("MMM d", Locale.getDefault());
+    }
+
+
+    public static SimpleDateFormat getDayMonthDateFormatUniversal(Context context) {
         return new SimpleDateFormat("MMM d", Locale.getDefault());
     }
 
@@ -186,5 +199,18 @@ public class DateHelpers {
             return null;
         }
         return getDayMonthDateString(context, date) + " " + getFormattedTime(context, date);
+    }
+
+    /**
+     * Behaves the same regardless of 24hr format
+     * @param context
+     * @param date
+     * @return
+     */
+    public static String getShortDateTimeStringUniversal(Context context, Date date) {
+        if(context == null) {
+            return null;
+        }
+        return getDayMonthDateStringUniversal(context, date) + " " + getFormattedTime(context, date);
     }
 }
