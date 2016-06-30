@@ -30,15 +30,17 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
     private List<Enrollment> enrollments = new ArrayList<Enrollment>();
     private long needs_grading_count;
     private boolean apply_assignment_group_weights;
-
     // Helper variables
     private Double currentScore;
+
     private Double finalScore;
     private boolean checkedCurrentGrade;
     private boolean checkedFinalGrade;
     private String currentGrade;
     private String finalGrade;
     private boolean is_favorite;
+    private boolean access_restricted_by_date;
+    private boolean restrict_enrollments_to_course_dates;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters and Setters
@@ -116,6 +118,13 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.is_favorite = isFavorite;
     }
 
+    public boolean isAccessRestrictedByDate() {
+        return access_restricted_by_date;
+    }
+
+    public void setAccessRestrictedByDate(boolean accessRestrictedByDate) {
+        this.access_restricted_by_date = accessRestrictedByDate;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
     ///////////////////////////////////////////////////////////////////////////
@@ -385,6 +394,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         dest.writeParcelable(this.permissions, flags);
         dest.writeLong(this.needs_grading_count);
         dest.writeByte(apply_assignment_group_weights ? (byte) 1 : (byte) 0);
+        dest.writeByte(access_restricted_by_date ? (byte) 1 : (byte) 0);
     }
 
     private Course(Parcel in) {
@@ -412,6 +422,7 @@ public class Course extends CanvasContext implements Comparable<CanvasContext>{
         this.permissions = in.readParcelable(CanvasContextPermission.class.getClassLoader());
         this.needs_grading_count = in.readLong();
         this.apply_assignment_group_weights = in.readByte() != 0;
+        this.access_restricted_by_date = in.readByte() != 0;
     }
 
     public static Creator<Course> CREATOR = new Creator<Course>() {
