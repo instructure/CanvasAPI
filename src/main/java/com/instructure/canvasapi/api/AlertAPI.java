@@ -18,7 +18,7 @@ import retrofit.http.Path;
  */
 public class AlertAPI extends BuildInterfaceAPI {
 
-    public static final String AIRWOLF_DOMAIN = "https://airwolf-beta.inseng.net/";
+    public static final String AIRWOLF_DOMAIN = "https://airwolf-iad-prod.instructure.com/";
 
     interface AlertInterface {
         @GET("/alerts/student/{parentId}/{studentId}")
