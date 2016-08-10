@@ -18,6 +18,15 @@ import retrofit.http.Path;
  */
 public class AlertAPI extends BuildInterfaceAPI {
 
+    public static final String AIRWOLF_DOMAIN_AMERICA = "https://airwolf-iad-prod.instructure.com/";
+    public static final String AIRWOLF_DOMAIN_DUBLIN = "https://airwolf-dub-prod.instructure.com/";
+    public static final String AIRWOLF_DOMAIN_FRANCE = "https://airwolf-fra-prod.instructure.com/";
+    public static final String AIRWOLF_DOMAIN_SYDNEY = "https://airwolf-syd-prod.instructure.com/";
+    public static final String AIRWOLF_DOMAIN_SINGAPORE = "https://airwolf-sin-prod.instructure.com/";
+
+    public static final String[] AIRWOLF_DOMAIN_LIST = { AIRWOLF_DOMAIN_AMERICA, AIRWOLF_DOMAIN_DUBLIN, AIRWOLF_DOMAIN_FRANCE,
+            AIRWOLF_DOMAIN_SYDNEY, AIRWOLF_DOMAIN_SINGAPORE };
+
     public static final String AIRWOLF_DOMAIN = "https://airwolf-iad-prod.instructure.com/";
 
     interface AlertInterface {
@@ -53,8 +62,8 @@ public class AlertAPI extends BuildInterfaceAPI {
             }
         });
 
-        buildCacheInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
+        buildCacheInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
+        buildInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getFirstPageOfAlertsForStudent(parentId, studentId, bridge);
     }
 
     public static void getNextPageAlertsChained(CanvasCallback<Alert[]> callback, String nextURL, boolean isCached) {
@@ -62,9 +71,9 @@ public class AlertAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
         if (isCached) {
-            buildCacheInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).getNextPageOfAlertsForStudent(nextURL, callback);
+            buildCacheInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getNextPageOfAlertsForStudent(nextURL, callback);
         } else {
-            buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).getNextPageOfAlertsForStudent(nextURL, callback);
+            buildInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getNextPageOfAlertsForStudent(nextURL, callback);
         }
     }
 
@@ -72,12 +81,12 @@ public class AlertAPI extends BuildInterfaceAPI {
         if (APIHelpers.paramIsNull(callback)) return;
 
 
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsRead(parentId, alertId, "true", callback);
+        buildInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).markAlertAsRead(parentId, alertId, "true", callback);
     }
 
     public static void markAlertAsDismissed(String parentId, String alertId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(callback)) return;
 
-        buildInterface(AlertInterface.class, AIRWOLF_DOMAIN, callback, false).markAlertAsDismissed(parentId, alertId, "true", callback);
+        buildInterface(AlertInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).markAlertAsDismissed(parentId, alertId, "true", callback);
     }
 }

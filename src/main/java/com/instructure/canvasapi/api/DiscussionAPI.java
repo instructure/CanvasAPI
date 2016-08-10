@@ -6,15 +6,16 @@ import com.instructure.canvasapi.model.DiscussionTopic;
 import com.instructure.canvasapi.model.DiscussionTopicHeader;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
-import com.instructure.canvasapi.utilities.CanvasRestAdapter;
 import com.instructure.canvasapi.utilities.ExhaustiveBridgeCallback;
 
-import java.util.Dictionary;
-
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
-import retrofit.http.*;
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  *
@@ -160,8 +161,8 @@ public class DiscussionAPI extends BuildInterfaceAPI {
     public static void getDetailedDiscussionAirwolf(String parentId, String studentId, String courseId, String discussionTopicId, CanvasCallback<DiscussionTopicHeader> callback) {
         if (APIHelpers.paramIsNull(callback, parentId, studentId, courseId, discussionTopicId)) { return; }
 
-        buildCacheInterface(DiscussionsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
-        buildInterface(DiscussionsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
+        buildCacheInterface(DiscussionsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
+        buildInterface(DiscussionsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getDetailedDiscussionAirwolf(parentId, studentId, courseId, discussionTopicId, callback);
     }
 
     public static void getFullDiscussionTopicChained(CanvasContext canvasContext, long discussion_id, CanvasCallback<DiscussionTopic> callback, boolean isCached) {

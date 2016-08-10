@@ -350,7 +350,7 @@ public class UserAPI extends BuildInterfaceAPI {
     public static void removeStudent(String observerId, String studentId, CanvasCallback<Response> callback) {
         if(APIHelpers.paramIsNull(callback)) { return; }
 
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).removeStudent(observerId, studentId, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).removeStudent(observerId, studentId, callback);
     }
 
     /**
@@ -363,7 +363,7 @@ public class UserAPI extends BuildInterfaceAPI {
         ParentWrapper parentWrapper = new ParentWrapper();
         parentWrapper.setParent(body);
 
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).addParent(parentWrapper, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).addParent(parentWrapper, callback);
     }
 
     /**
@@ -374,7 +374,7 @@ public class UserAPI extends BuildInterfaceAPI {
     public static void getParentUserDomain(String email, CanvasCallback<Domain> callback) {
         if(APIHelpers.paramIsNull(email, callback)) { return; }
 
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getParentUserDomain(email, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getParentUserDomain(email, callback);
     }
 
     public static void authenticateParent(String email, String password, CanvasCallback<ParentResponse> callback) {
@@ -383,14 +383,14 @@ public class UserAPI extends BuildInterfaceAPI {
         Parent parent = new Parent();
         parent.setUsername(email);
         parent.setPassword(password);
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).authenticateParent(parent, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).authenticateParent(parent, callback);
     }
 
     public static void getObserveesForParent(String parentId, CanvasCallback<Student[]> callback) {
         if(APIHelpers.paramIsNull(parentId, callback)) { return; }
 
-        buildCacheInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getObserveesForParent(parentId, callback);
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getObserveesForParent(parentId, callback);
+        buildCacheInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getObserveesForParent(parentId, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getObserveesForParent(parentId, callback);
     }
 
     /**
@@ -403,7 +403,7 @@ public class UserAPI extends BuildInterfaceAPI {
     public static void addStudentToParent(String parentId, String studentDomain, CanvasCallback<Response> callback) {
         if(APIHelpers.paramIsNull(parentId, studentDomain, callback)) { return; }
 
-        buildInterfaceNoRedirects(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).addStudentToParent(parentId, studentDomain, callback);
+        buildInterfaceNoRedirects(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).addStudentToParent(parentId, studentDomain, callback);
     }
 
 
@@ -420,7 +420,7 @@ public class UserAPI extends BuildInterfaceAPI {
 
         //include an empty json object to pass the parsing on airwolf. It doesn't like an empty string.
         JSONObject object = new JSONObject();
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).sendPasswordResetForParent(userName, object, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).sendPasswordResetForParent(userName, object, callback);
     }
 
     /**
@@ -436,7 +436,7 @@ public class UserAPI extends BuildInterfaceAPI {
         Parent parent = new Parent();
         parent.setUsername(userName);
         parent.setPassword(password);
-        buildInterface(UsersInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).resetParentPassword(parent, callback);
+        buildInterface(UsersInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).resetParentPassword(parent, callback);
     }
     /////////////////////////////////////////////////////////////////////////
     // Synchronous Calls

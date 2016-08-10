@@ -287,8 +287,8 @@ public class CourseAPI extends BuildInterfaceAPI {
     public static void getCoursesForUserAirwolf(String parentId, String studentId, CanvasCallback<Course[]> callback) {
         if(APIHelpers.paramIsNull(parentId, studentId, callback)) { return; }
 
-        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCoursesForUserAirwolf(parentId, studentId, callback);
-        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCoursesForUserAirwolf(parentId, studentId, callback);
+        buildCacheInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getCoursesForUserAirwolf(parentId, studentId, callback);
+        buildInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getCoursesForUserAirwolf(parentId, studentId, callback);
     }
 
     public static void getNextPageCoursesForUserAirwolf(String nextURL, CanvasCallback<Course[]> callback) {
@@ -296,22 +296,22 @@ public class CourseAPI extends BuildInterfaceAPI {
 
         callback.setIsNextPage(true);
 
-        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getNextPageCoursesForUser(nextURL, callback);
-        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getNextPageCoursesForUser(nextURL, callback);
+        buildCacheInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getNextPageCoursesForUser(nextURL, callback);
+        buildInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getNextPageCoursesForUser(nextURL, callback);
     }
 
     public static void getCourseWithSyllabusAirwolf(String parentId, String studentId, long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(parentId, studentId, callback)) return;
 
-        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
-        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
+        buildCacheInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
+        buildInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getCourseWithSyllabusAirwolf(parentId, studentId, courseId, callback);
     }
 
     public static void getCourseWithGradeAirwolf(String parentId, String studentId, long courseId, CanvasCallback<Course> callback) {
         if (APIHelpers.paramIsNull(parentId, studentId, callback)) return;
 
-        buildCacheInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
-        buildInterface(CoursesInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
+        buildCacheInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
+        buildInterface(CoursesInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).getCourseWithGradeAirwolf(parentId, studentId, courseId, callback);
     }
     /////////////////////////////////////////////////////////////////////////////
     // Helper Methods
