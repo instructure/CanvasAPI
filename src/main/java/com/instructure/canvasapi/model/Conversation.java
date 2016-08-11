@@ -204,11 +204,11 @@ public class Conversation extends CanvasModel<Conversation> {
     public Date getComparisonDate() {
         //sent messages have a last_authored_message_at that other messages won't. In that case last_message_at can be null,
         //but last_authored_message isn't
-        if(last_message_at != null) {
-            return getLastMessageSent();
+        if(last_authored_message_at != null) {
+            return getLastAuthoredMessageSent();
         }
         else {
-            return getLastAuthoredMessageSent();
+            return getLastMessageSent();
         }
     }
 
