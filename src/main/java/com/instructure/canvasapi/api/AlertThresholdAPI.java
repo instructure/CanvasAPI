@@ -61,45 +61,45 @@ public class AlertThresholdAPI extends BuildInterfaceAPI {
         if(APIHelpers.paramIsNull(callback)) { return; }
 
 
-        buildCacheInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAlertThresholdsForStudent(observerId, studentId, callback);
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAlertThresholdsForStudent(observerId, studentId, callback);
+        buildCacheInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAlertThresholdsForStudent(observerId, studentId, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAlertThresholdsForStudent(observerId, studentId, callback);
     }
 
     public static void getAlertThresholdById(String parentId, long thresholdId, final CanvasCallback<AlertThreshold> callback){
         if(APIHelpers.paramIsNull(callback)) { return; }
 
 
-        buildCacheInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAlertThresholdById(parentId, thresholdId, callback);
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAlertThresholdById(parentId, thresholdId, callback);
+        buildCacheInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAlertThresholdById(parentId, thresholdId, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAlertThresholdById(parentId, thresholdId, callback);
     }
 
 
     public static void createAlertThreshold(String parentId, String studentId, String alertType, String threshold, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(callback, alertType, threshold)) return;
 
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).createAlertThreshold(parentId, studentId, alertType, threshold, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).createAlertThreshold(parentId, studentId, alertType, threshold, callback);
     }
 
     public static void updateAlertThreshold(String parentId, String thresholdId, String alertType, String threshold, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(parentId, callback, alertType, threshold)) return;
 
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).updateAlertThreshold(parentId, thresholdId, parentId, thresholdId, alertType, threshold, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).updateAlertThreshold(parentId, thresholdId, parentId, thresholdId, alertType, threshold, callback);
     }
 
     public static void createAlertThreshold(String parentId, String studentId, String alertType, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(parentId, callback, alertType)) return;
 
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).createAlertThreshold(parentId, studentId, alertType, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).createAlertThreshold(parentId, studentId, alertType, callback);
     }
 
     public static void updateAlertThreshold(String parentId, String thresholdId, String alertType, CanvasCallback<AlertThreshold> callback) {
         if (APIHelpers.paramIsNull(parentId, callback, alertType)) return;
 
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).updateAlertThreshold(parentId, thresholdId, parentId, thresholdId, alertType, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).updateAlertThreshold(parentId, thresholdId, parentId, thresholdId, alertType, callback);
     }
     public static void deleteAlertThreshold(String parentId, String thresholdId, CanvasCallback<Response> callback) {
         if (APIHelpers.paramIsNull(parentId, callback)) return;
 
-        buildInterface(AlertThresholdInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback, false).deleteAlertThreshold(parentId, thresholdId, callback);
+        buildInterface(AlertThresholdInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback, false).deleteAlertThreshold(parentId, thresholdId, callback);
     }
 }

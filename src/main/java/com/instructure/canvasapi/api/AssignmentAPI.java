@@ -210,8 +210,8 @@ public class AssignmentAPI extends BuildInterfaceAPI {
     public static void getAssignmentAirwolf(String parentId, String studentId, String courseId, String assignmentId, final CanvasCallback<Assignment> callback) {
         if (APIHelpers.paramIsNull(parentId, studentId, courseId, assignmentId, callback)) return;
 
-        buildCacheInterface(AssignmentsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
-        buildInterface(AssignmentsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
+        buildCacheInterface(AssignmentsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
+        buildInterface(AssignmentsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getAssignmentAirwolf(parentId, studentId, courseId, assignmentId, callback);
     }
 
     /*

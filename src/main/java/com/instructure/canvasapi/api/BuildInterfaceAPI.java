@@ -4,6 +4,8 @@ import android.content.Context;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
+
+import retrofit.Profiler;
 import retrofit.RestAdapter;
 
 public class BuildInterfaceAPI {
@@ -125,6 +127,12 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildUploadInterface(Class<T> clazz, String hostURL) {
         RestAdapter restAdapter = CanvasRestAdapter.getGenericHostAdapter(hostURL);
+        restAdapter.setLogLevel(LOG_LEVEL);
+        return restAdapter.create(clazz);
+    }
+
+    public static <T> T buildPingInterface(Class<T> clazz, String hostURL, Profiler profiler) {
+        RestAdapter restAdapter = CanvasRestAdapter.buildPingRestAdapter(hostURL, profiler);
         restAdapter.setLogLevel(LOG_LEVEL);
         return restAdapter.create(clazz);
     }

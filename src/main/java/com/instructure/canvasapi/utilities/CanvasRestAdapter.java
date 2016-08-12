@@ -3,6 +3,7 @@ package com.instructure.canvasapi.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import retrofit.Profiler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -457,6 +459,23 @@ public class CanvasRestAdapter {
                 .build();
 
         return restAdapter;
+    }
+
+    /**
+     * Creates a RestAdapter to ping an endpoint so we can get elapsed time of API calls
+     * @param url
+     * @return
+     */
+    public static RestAdapter buildPingRestAdapter(String url, Profiler profiler) {
+        if(TextUtils.isEmpty(url)) {
+            return null;
+        }
+
+        RetrofitCounter.increment();
+
+        return new RestAdapter.Builder()
+                .setEndpoint(url)
+                .setProfiler(profiler).build();
     }
     /**
      * Class that's used as to inject the user agent, token, and handles masquerading.

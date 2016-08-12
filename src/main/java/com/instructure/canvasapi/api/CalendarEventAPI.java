@@ -266,8 +266,8 @@ public class CalendarEventAPI extends BuildInterfaceAPI {
             }
         });
 
-        buildCacheInterface(CalendarEventsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
-        buildInterface(CalendarEventsInterface.class, AlertAPI.AIRWOLF_DOMAIN, callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildCacheInterface(CalendarEventsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
+        buildInterface(CalendarEventsInterface.class, APIHelpers.getAirwolfDomain(callback.getContext()), callback).getCalendarEventsWithSubmissionsAirwolf(parentId, studentId, startDate, endDate, buildContextArray(canvasContextIds), bridge);
     }
 
     private static String buildContextArray(ArrayList<String> canvasContextIds){

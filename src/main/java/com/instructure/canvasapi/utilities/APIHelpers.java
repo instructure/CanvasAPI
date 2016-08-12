@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.instructure.canvasapi.api.AlertAPI;
 import com.instructure.canvasapi.model.User;
 
 import java.io.BufferedReader;
@@ -46,6 +47,7 @@ public class APIHelpers {
     private final static String SHARED_PREFERENCES_KALTURA_PROTOCOL = "kaltura_protocol";
     private final static String SHARED_PREFERENCES_ERROR_DELEGATE_CLASS_NAME = "error_delegate_class_name";
     private final static String SHARED_PREFERENCES_DISMISSED_NETWORK_ERROR = "dismissed_network_error";
+    private final static String SHARED_PREFERENCES_AIRWOLF_DOMAIN = "airwolf_domain";
 
 
     /**
@@ -406,6 +408,62 @@ public class APIHelpers {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SHARED_PREFERENCES_KALTURA_DOMAIN, kalturaDomain);
+        return editor.commit();
+    }
+
+    /**
+     * Check to see if the Airwolf domain is set. We don't want to return an empty domain, so this check
+     * will return whether the user has set a domain.
+     *
+     * @param context
+     * @return True if an Airwolf domain has been set, false otherwise
+     */
+    public static boolean isAirwolfDomainSet(Context context) {
+        if(context == null){
+            return false;
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        //if the shared preference here is empty, that means a domain hasn't been set
+        return !TextUtils.isEmpty(sharedPreferences.getString(SHARED_PREFERENCES_AIRWOLF_DOMAIN, ""));
+    }
+
+    /**
+     * Get the Airwolf region to use. This will be set when the user first opens the app depending on which region is fastest
+     *
+     * If no region is set it will use the American Region as default
+     *
+     * @param context
+     * @return Domain to use for Airwolf API calls
+     */
+    public static String getAirwolfDomain(Context context) {
+        if(context == null){
+            return "";
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //make america the default region
+        return sharedPreferences.getString(SHARED_PREFERENCES_AIRWOLF_DOMAIN, AlertAPI.AIRWOLF_DOMAIN_AMERICA);
+    }
+
+    /**
+     * Sets the current Airwolf domain
+     *
+     * @param context
+     * @param airwolfDomain
+     * @return True if saved successfully, false otherwise
+     */
+
+    public static boolean setAirwolfDomain(Context context, String airwolfDomain) {
+
+        if(airwolfDomain == null || airwolfDomain.equals("")){
+            return false;
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SHARED_PREFERENCES_AIRWOLF_DOMAIN, airwolfDomain);
         return editor.commit();
     }
 
