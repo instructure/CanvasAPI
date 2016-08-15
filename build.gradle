@@ -1,0 +1,158 @@
+// This needs to be at the top in order to build on Jenkins
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        // https://bintray.com/android/android-tools/com.android.tools.build.gradle/view
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        // https://github.com/JakeWharton/sdk-manager-plugin
+        classpath 'com.github.JakeWharton:sdk-manager-plugin:e05218601b1274ea0721e13b33a426f641156f69'
+    }
+}
+
+apply plugin: 'android-sdk-manager'
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.3'
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+    productFlavors {
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    compile('com.mobprofs:retrofit-simplexmlconverter:1.0') {
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }
+
+    //Okhttp
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.1'
+    compile 'com.squareup.okio:okio:1.9.0'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5'
+    compile (group: 'org.apache.httpcomponents' , name: 'httpmime' , version: '4.3.5') {
+        exclude module: 'org.apache.httpcomponents:httpclient'
+    }
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.0'
+}
+// Do some maven stuff
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+version = "2.0.1"
+group = "com.instructure"
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+}
+
+signing {
+    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        //Remove everything below this for maven builds.
+        //repository(url: sonatypeRepo) {
+        //    authentication(userName: sonatypeUsername,
+        //            password: sonatypePassword)
+        //}
+        //Remove everything above this for maven builds.
+
+        pom.project {
+            name 'CanvasAPI'
+            packaging 'aar'
+            description 'CanvasAPI is a library that will help you integrate your own third party app with Canvas by Instructure.'
+            url 'https://github.com/instructure/CanvasAPI'
+
+            scm {
+                url 'git@github.com:instructure/CanvasAPI.git'
+                connection 'scm:git:git@github.com:instructure/CanvasAPI.git'
+                developerConnection 'scm:git:git@github.com:instructure/CanvasAPI.git'
+            }
+
+            licenses {
+                license {
+                    name 'MIT License'
+                    url 'http://opensource.org/licenses/MIT'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'tneedham'
+                    name 'Trevor Needham'
+                    email 'tneedham@instructure.com'
+                }
+                developer {
+                    id 'brady'
+                    name 'Brady Larson'
+                    email 'brady@instructure.com'
+                }
+                developer {
+                    id 'jmarshall'
+                    name 'Jordan Marshall'
+                    email 'jmarshall@instructure.com'
+                }
+                developer {
+                    id 'mrice'
+                    name 'Matthew Rice'
+                    email 'mrice@instructure.com'
+                }
+            }
+        }
+    }
+}

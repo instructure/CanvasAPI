@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <!--Modules-->
+  <string name="mustComplete">Primeiro tem de completar:</string>
+  <string name="unlockedAt">Vai ser desbloqueado a:</string>
+  <string name="goToModules">Ir Para Módulos</string>
+  <!--Events-->
+  <string name="Starts">Começa</string>
+  <string name="Ends">Termina</string>
+  <string name="allDayEvent">Evento de Dia Completo</string>
+  <string name="at">em</string>
+  <string name="to">para</string>
+  <!--StreamItems-->
+  <string name="Message">Mensagem</string>
+  <string name="Loading">Carregando...</string>
+  <string name="Deleted">Apagado</string>
+  <!--Assignment Module-->
+  <string name="canvasAPI_online">Online</string>
+  <string name="canvasAPI_onPaper">No Papel</string>
+  <string name="canvasAPI_discussion">Discussão</string>
+  <string name="canvasAPI_quiz">Teste</string>
+  <string name="canvasAPI_externalTool">Ferramenta Externa</string>
+  <string name="canvasAPI_none">Nenhum</string>
+  <string name="canvasAPI_passFail">Chumbado</string>
+  <string name="canvasAPI_percent">Percentagem</string>
+  <string name="canvasAPI_letterGrade">Carta de Classificação</string>
+  <string name="canvasAPI_points">Pontos</string>
+  <string name="canvasAPI_gpaScale">Escala GPA</string>
+  <string name="canvasAPI_notGraded">Não classificado</string>
+  <string name="canvasAPI_onlineQuiz">Questionário Online</string>
+  <string name="canvasAPI_discussionTopic">Tópico de Discussão</string>
+  <string name="canvasAPI_onlineUpload">Carregamento Online</string>
+  <string name="canvasAPI_onlineTextEntry">Entrada de Texto Online</string>
+  <string name="canvasAPI_onlineURL">URL Online</string>
+  <string name="canvasAPI_mediaRecording">Gravação Multimédia</string>
+  <string name="canvasAPI_attendance">Assiduidade</string>
+</resources>
