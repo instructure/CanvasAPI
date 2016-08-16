@@ -205,8 +205,8 @@ public class Alert extends CanvasModel<Alert>{
     }
 
     private Alert(Parcel parcel){
-        this.alert_criteria_id = parcel.readString();
         this.id = parcel.readString();
+        this.alert_criteria_id = parcel.readString();
         this.marked_read = parcel.readByte() != 0;
         this.dismissed = parcel.readByte() != 0;
         this.alert_type = parcel.readString();
