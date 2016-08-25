@@ -34,6 +34,30 @@ public class ModuleItemUnitTest extends Assert {
         }
     }
 
+    @Test
+    public void testModuleItemMasteryPath() {
+        Gson gson = CanvasRestAdapter.getGSONParser();
+        ModuleItem[] moduleItems = gson.fromJson(moduleItemWithMasteryPath, ModuleItem[].class);
+
+        for (ModuleItem moduleItem : moduleItems){
+            assertTrue(moduleItem.getId() > 0);
+
+            assertNotNull(moduleItem.getType());
+
+            assertNotNull(moduleItem.getTitle());
+
+            assertNotNull(moduleItem.getHtml_url());
+
+            assertNotNull(moduleItem.getUrl());
+
+            if(moduleItem.getId() == 1) {
+                //first module item has a mastery paths
+                assertNotNull(moduleItem.getMasteryPaths());
+            } else {
+                assertNull(moduleItem.getMasteryPaths());
+            }
+        }
+    }
     String moduleItemJSON = "[\n" +
             "{\n" +
             "\"id\": 9012239,\n" +
@@ -98,4 +122,97 @@ public class ModuleItemUnitTest extends Assert {
             "}\n" +
             "]";
 
+
+    String moduleItemWithMasteryPath =
+            "[\n" +
+            "  {\n" +
+            "    \"id\": 1,\n" +
+            "    \"title\": \"Assignment 1~1\",\n" +
+            "    \"position\": 1,\n" +
+            "    \"indent\": 0,\n" +
+            "    \"type\": \"Assignment\",\n" +
+            "    \"module_id\": 1,\n" +
+            "    \"html_url\": \"http://canvas.docker/courses/1/modules/items/1\",\n" +
+            "    \"content_id\": 1,\n" +
+            "    \"url\": \"http://canvas.docker/api/v1/courses/1/assignments/1\",\n" +
+            "    \"mastery_paths\": {\n" +
+            "      \"locked\": false,\n" +
+            "      \"assignment_sets\": [\n" +
+            "        {\n" +
+            "          \"id\": 2,\n" +
+            "          \"scoring_range_id\": 2,\n" +
+            "          \"created_at\": \"2016-08-03T19:04:44.860Z\",\n" +
+            "          \"updated_at\": \"2016-08-03T19:04:44.860Z\",\n" +
+            "          \"position\": 1,\n" +
+            "          \"assignments\": [\n" +
+            "            {\n" +
+            "              \"id\": 2,\n" +
+            "              \"assignment_id\": \"5\",\n" +
+            "              \"created_at\": \"2016-08-03T19:04:44.865Z\",\n" +
+            "              \"updated_at\": \"2016-08-03T19:04:44.865Z\",\n" +
+            "              \"override_id\": 8,\n" +
+            "              \"assignment_set_id\": 2,\n" +
+            "              \"position\": 1,\n" +
+            "              \"model\": {\n" +
+            "                \"id\": 5,\n" +
+            "                \"title\": \"Quiz 1~1\",\n" +
+            "                \"description\": \"\",\n" +
+            "                \"due_at\": null,\n" +
+            "                \"unlock_at\": null,\n" +
+            "                \"lock_at\": null,\n" +
+            "                \"points_possible\": 0,\n" +
+            "                \"min_score\": null,\n" +
+            "                \"max_score\": null,\n" +
+            "                \"grading_type\": \"points\",\n" +
+            "                \"submission_types\": [\n" +
+            "                   \"online_quiz\"],\n" +
+            "                \"workflow_state\": \"published\",\n" +
+            "                \"context_id\": 1,\n" +
+            "                \"context_type\": \"Course\",\n" +
+            "                \"updated_at\": \"2016-08-11T17:32:34Z\",\n" +
+            "                \"context_code\": \"course_1\"\n" +
+            "              }\n" +
+            "            }\n" +
+            "          ]\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"id\": 5,\n" +
+            "    \"title\": \"Quiz 1~1\",\n" +
+            "    \"position\": 3,\n" +
+            "    \"indent\": 0,\n" +
+            "    \"type\": \"Quiz\",\n" +
+            "    \"module_id\": 1,\n" +
+            "    \"html_url\": \"http://canvas.docker/courses/1/modules/items/5\",\n" +
+            "    \"content_id\": 1,\n" +
+            "    \"url\": \"http://canvas.docker/api/v1/courses/1/quizzes/1\",\n" +
+            "    \"mastery_paths\": null\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"id\": 7,\n" +
+            "    \"title\": \"Discussion 1~1\",\n" +
+            "    \"position\": 5,\n" +
+            "    \"indent\": 0,\n" +
+            "    \"type\": \"Discussion\",\n" +
+            "    \"module_id\": 1,\n" +
+            "    \"html_url\": \"http://canvas.docker/courses/1/modules/items/7\",\n" +
+            "    \"content_id\": 1,\n" +
+            "    \"url\": \"http://canvas.docker/api/v1/courses/1/discussion_topics/1\",\n" +
+            "    \"mastery_paths\": null\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"id\": 8,\n" +
+            "    \"title\": \"Assignment 1~2\",\n" +
+            "    \"position\": 6,\n" +
+            "    \"indent\": 0,\n" +
+            "    \"type\": \"Assignment\",\n" +
+            "    \"module_id\": 1,\n" +
+            "    \"html_url\": \"http://canvas.docker/courses/1/modules/items/8\",\n" +
+            "    \"content_id\": 2,\n" +
+            "    \"url\": \"http://canvas.docker/api/v1/courses/1/assignments/2\",\n" +
+            "    \"mastery_paths\": null\n" +
+            "  }\n" +
+            "]";
 }

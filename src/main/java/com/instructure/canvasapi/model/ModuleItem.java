@@ -2,6 +2,8 @@ package com.instructure.canvasapi.model;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -67,6 +69,9 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     private String url;
     private CompletionRequirement completion_requirement;
     private ModuleContentDetails content_details;
+
+    @SerializedName("mastery_paths")
+    private MasteryPath masteryPaths;
 
     public class CompletionRequirement implements Serializable {
 
@@ -154,6 +159,14 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         return content_details;
     }
 
+    public MasteryPath getMasteryPaths() {
+        return masteryPaths;
+    }
+
+    public void setMasteryPaths(MasteryPath masteryPaths) {
+        this.masteryPaths = masteryPaths;
+    }
+
     public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool}
 
     public ModuleItem() {}
@@ -183,6 +196,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         dest.writeString(this.html_url);
         dest.writeString(this.url);
         dest.writeSerializable(this.completion_requirement);
+        dest.writeSerializable(this.masteryPaths);
     }
 
     private ModuleItem(Parcel in) {
@@ -195,6 +209,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         this.html_url = in.readString();
         this.url = in.readString();
         this.completion_requirement = (CompletionRequirement) in.readSerializable();
+        this.masteryPaths = (MasteryPath) in.readSerializable();
     }
 
     public static Creator<ModuleItem> CREATOR = new Creator<ModuleItem>() {
