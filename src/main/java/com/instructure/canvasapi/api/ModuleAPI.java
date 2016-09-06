@@ -28,10 +28,10 @@ public class ModuleAPI extends BuildInterfaceAPI {
         @GET("/{next}")
         void getNextPageModuleObjectList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleObject[]> callback);
 
-        @GET("/{context_id}/modules/{module_id}/items?include[]=content_details")
+        @GET("/{context_id}/modules/{module_id}/items?include[]=content_details&include[]=mastery_paths")
         void getFirstPageModuleItems(@Path("context_id") long context_id, @Path("module_id") long moduleID, Callback<ModuleItem[]> callback);
 
-        @GET("/{next}?include[]=content_details")
+        @GET("/{next}?include[]=content_details&include[]=mastery_paths")
         void getNextPageModuleItemList(@Path(value = "next", encode = false) String nextURL, Callback<ModuleItem[]> callback);
 
         @POST("/{context_id}/modules/{module_id}/items/{item_id}/mark_read")
