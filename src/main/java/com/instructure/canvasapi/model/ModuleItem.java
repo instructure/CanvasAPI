@@ -167,7 +167,7 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         this.masteryPaths = masteryPaths;
     }
 
-    public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool}
+    public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool, Locked}
 
     public ModuleItem() {}
 
