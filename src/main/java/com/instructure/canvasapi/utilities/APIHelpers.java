@@ -447,7 +447,7 @@ public class APIHelpers {
         return sharedPreferences.getString(SHARED_PREFERENCES_AIRWOLF_DOMAIN, AlertAPI.AIRWOLF_DOMAIN_AMERICA);
     }
 
-    public static boolean airewolfDomainExists(Context context) {
+    public static boolean airwolfDomainExists(Context context) {
         if(context == null){
             return false;
         }
