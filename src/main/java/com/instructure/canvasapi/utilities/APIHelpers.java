@@ -447,6 +447,15 @@ public class APIHelpers {
         return sharedPreferences.getString(SHARED_PREFERENCES_AIRWOLF_DOMAIN, AlertAPI.AIRWOLF_DOMAIN_AMERICA);
     }
 
+    public static boolean airewolfDomainExists(Context context) {
+        if(context == null){
+            return false;
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.contains(SHARED_PREFERENCES_AIRWOLF_DOMAIN);
+    }
+
     /**
      * Sets the current Airwolf domain
      *

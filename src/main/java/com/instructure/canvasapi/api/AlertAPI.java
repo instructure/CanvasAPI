@@ -20,14 +20,11 @@ public class AlertAPI extends BuildInterfaceAPI {
 
     public static final String AIRWOLF_DOMAIN_AMERICA = "https://airwolf-iad-prod.instructure.com/";
     public static final String AIRWOLF_DOMAIN_DUBLIN = "https://airwolf-dub-prod.instructure.com/";
-    public static final String AIRWOLF_DOMAIN_FRANCE = "https://airwolf-fra-prod.instructure.com/";
     public static final String AIRWOLF_DOMAIN_SYDNEY = "https://airwolf-syd-prod.instructure.com/";
     public static final String AIRWOLF_DOMAIN_SINGAPORE = "https://airwolf-sin-prod.instructure.com/";
 
-    public static final String[] AIRWOLF_DOMAIN_LIST = { AIRWOLF_DOMAIN_AMERICA, AIRWOLF_DOMAIN_DUBLIN, AIRWOLF_DOMAIN_FRANCE,
+    public static final String[] AIRWOLF_DOMAIN_LIST = { AIRWOLF_DOMAIN_AMERICA, AIRWOLF_DOMAIN_DUBLIN,
             AIRWOLF_DOMAIN_SYDNEY, AIRWOLF_DOMAIN_SINGAPORE };
-
-    public static final String AIRWOLF_DOMAIN = "https://airwolf-iad-prod.instructure.com/";
 
     interface AlertInterface {
         @GET("/alerts/student/{parentId}/{studentId}")
