@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.google.gson.Gson;
 import com.instructure.canvasapi.api.AlertAPI;
@@ -280,9 +281,7 @@ public class APIHelpers {
 
     /**
      * getFullDomain returns the protocol plus the domain.
-     *
-     * Returns "" if context is null or if the domain/token isn't set.
-     * @return
+     * @return "" if context is null or if the domain/token isn't set.
      */
     public static String getFullDomain(Context context){
         String protocol = loadProtocol(context);
@@ -290,6 +289,11 @@ public class APIHelpers {
 
         if (protocol == null || domain == null || protocol.equals("") || domain.equals("") ){
             return "";
+        }
+
+        if(URLUtil.isHttpsUrl(domain) || URLUtil.isHttpUrl(domain)) {
+            //already begins with https or http
+            return domain;
         }
 
         return protocol + "://" + domain;
