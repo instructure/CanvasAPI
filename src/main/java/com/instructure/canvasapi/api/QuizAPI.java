@@ -77,6 +77,9 @@ public class QuizAPI extends BuildInterfaceAPI {
         @POST("/quiz_submissions/{quiz_submission_id}/questions")
         void postQuizQuestionEssay(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
 
+        @POST("/quiz_submissions/{quiz_submission_id}/questions")
+        void postQuizQuestionFileUpload(@Path("quiz_submission_id") long quizSubmissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Query("quiz_questions[][id]") long questionId, @Query("quiz_questions[][answer]") String answer, @Body String body, Callback<QuizSubmissionQuestionResponse> callback);
+
         @POST("/{context_id}/quizzes/{quiz_id}/submissions/{submission_id}/complete")
         void postQuizSubmit(@Path("context_id") long context_id, @Path("quiz_id") long quizId, @Path("submission_id") long submissionId, @Query("attempt") int attempt, @Query("validation_token") String token, @Body String body, Callback<QuizSubmissionResponse> callback);
 
@@ -228,6 +231,12 @@ public class QuizAPI extends BuildInterfaceAPI {
 
         //we don't to append the per_page parameter because we're building the query parameters ourselves, so use the different interface
         buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionMatching(quizSubmission.getId(), buildMatchingList(quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, answers), "", callback);
+    }
+
+    public static void postQuizQuestionFileUpload(QuizSubmission quizSubmission, long answer, long questionId, CanvasCallback<QuizSubmissionQuestionResponse> callback){
+        if (APIHelpers.paramIsNull(callback, quizSubmission, quizSubmission.getSubmissionId(), quizSubmission.getValidationToken())) { return; }
+
+        buildInterface(QuizzesInterface.class, callback, null, false).postQuizQuestionFileUpload(quizSubmission.getId(), quizSubmission.getAttempt(), quizSubmission.getValidationToken(), questionId, (answer == -1) ? "" : Long.toString(answer), "", callback);
     }
 
     private static String buildMultiAnswerList(int attempt, String validationToken, long questionId, ArrayList<Long> answers) {
