@@ -16,6 +16,9 @@ public class MasteryPath extends CanvasModel<MasteryPath> {
     @SerializedName("assignment_sets")
     private AssignmentSet[] assignmentSets;
 
+    @SerializedName("selected_set_id")
+    private long selectedSetId;
+
     public boolean isLocked() {
         return locked;
     }
@@ -30,6 +33,14 @@ public class MasteryPath extends CanvasModel<MasteryPath> {
 
     public void setAssignmentSets(AssignmentSet[] assignmentSets) {
         this.assignmentSets = assignmentSets;
+    }
+
+    public long getSelectedSetId() {
+        return selectedSetId;
+    }
+
+    public void setSelectedSetId(long selectedSetId) {
+        this.selectedSetId = selectedSetId;
     }
 
     @Override
@@ -57,6 +68,7 @@ public class MasteryPath extends CanvasModel<MasteryPath> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.locked ? (byte) 1 : (byte) 0);
         dest.writeTypedArray(this.assignmentSets, flags);
+        dest.writeLong(this.selectedSetId);
     }
 
     public MasteryPath() {
@@ -65,6 +77,7 @@ public class MasteryPath extends CanvasModel<MasteryPath> {
     protected MasteryPath(Parcel in) {
         this.locked = in.readByte() != 0;
         this.assignmentSets = in.createTypedArray(AssignmentSet.CREATOR);
+        this.selectedSetId = in.readLong();
     }
 
     public static final Creator<MasteryPath> CREATOR = new Creator<MasteryPath>() {

@@ -73,6 +73,11 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
     @SerializedName("mastery_paths")
     private MasteryPath masteryPaths;
 
+    //when we display the "Choose Assignment Group" when an assignment uses Mastery Paths we create a new row to display.
+    //We still need the module item id to select the assignment group that we want, but if we use the same id as the root
+    //module item both items wouldn't display (because they would have the same id at that point).
+    private long masteryPathsItemId;
+
     public class CompletionRequirement implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -167,7 +172,15 @@ public class ModuleItem extends CanvasModel<ModuleItem> {
         this.masteryPaths = masteryPaths;
     }
 
-    public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool, Locked}
+    public long getMasteryPathsItemId() {
+        return masteryPathsItemId;
+    }
+
+    public void setMasteryPathsItemId(long masteryPathsItemId) {
+        this.masteryPathsItemId = masteryPathsItemId;
+    }
+
+    public enum TYPE {Assignment, Discussion, File, Page, SubHeader, Quiz, ExternalUrl, ExternalTool, Locked, ChooseAssignmentGroup}
 
     public ModuleItem() {}
 
