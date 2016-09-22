@@ -1,5 +1,6 @@
 package com.instructure.canvasapi.api;
 
+import com.instructure.canvasapi.model.Assignment;
 import com.instructure.canvasapi.model.CanvasContext;
 import com.instructure.canvasapi.model.ModuleItem;
 import com.instructure.canvasapi.model.ModuleObject;
@@ -15,6 +16,7 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Copyright (c) 2016 Instructure. All rights reserved.
@@ -42,6 +44,9 @@ public class ModuleAPI extends BuildInterfaceAPI {
 
         @DELETE("/{context_id}/modules/{module_id}/items/{item_id}/done")
         void markModuleAsNotDone(@Path("context_id") long context_id, @Path("module_id") long module_id, @Path("item_id") long item_id, Callback<Response> callback);
+
+        @POST("/{context_id}/modules/{module_id}/items/{item_id}/select_mastery_path")
+        void selectMasteryPath(@Path("context_id") long contextId, @Path("module_id") long moduleId, @Path("item_id") long itemId, @Query("assignment_set_id") long assignmentSetId, @Body String body, Callback<Assignment[]> callback);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -127,5 +132,13 @@ public class ModuleAPI extends BuildInterfaceAPI {
         }
 
         buildInterface(ModulesInterface.class, callback, canvasContext, false).markModuleAsNotDone(canvasContext.getId(), moduleId, itemId, callback);
+    }
+
+    public static void selectMasteryPath(CanvasContext canvasContext, long moduleId, long itemId, long assignmentSetId, CanvasCallback<Assignment[]> callback){
+        if(APIHelpers.paramIsNull(callback, canvasContext)){
+            return;
+        }
+
+        buildInterface(ModulesInterface.class, callback, canvasContext, false).selectMasteryPath(canvasContext.getId(), moduleId, itemId, assignmentSetId, "", callback);
     }
 }
