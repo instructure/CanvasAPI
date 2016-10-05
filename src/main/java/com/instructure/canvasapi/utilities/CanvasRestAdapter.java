@@ -16,6 +16,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.Profiler;
@@ -544,7 +545,18 @@ public class CanvasRestAdapter {
                 //Sets the per_page count so we can get back more items with less round-trip calls.
                 requestFacade.addQueryParam("per_page", Integer.toString(numberOfItemsPerPage));
             }
+
+            //Add Accept-Language header for a11y
+            requestFacade.addHeader("accept-language", getAcceptedLanguageString());
         }
+    }
+
+    public static String getAcceptedLanguageString() {
+        String language = Locale.getDefault().getLanguage();
+        //This is kinda gross, but Android is terrible and doesn't use the standard for lang strings...
+        String language3 = Locale.getDefault().toString().replace("_", "-");
+
+        return language3 + "," + language;
     }
 
     public static boolean isNetworkAvaliable(Context context) {
