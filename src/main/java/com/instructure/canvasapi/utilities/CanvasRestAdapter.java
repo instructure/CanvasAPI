@@ -559,6 +559,10 @@ public class CanvasRestAdapter {
         return language3 + "," + language;
     }
 
+    public static String getSessionLocaleString() {
+        return "?session_locale=" + Locale.getDefault().getLanguage();
+    }
+
     public static boolean isNetworkAvaliable(Context context) {
         ConnectivityManager connectivity =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
