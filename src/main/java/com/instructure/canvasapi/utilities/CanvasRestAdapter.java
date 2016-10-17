@@ -551,12 +551,29 @@ public class CanvasRestAdapter {
         }
     }
 
-    public static String getAcceptedLanguageString() {
-        String language = Locale.getDefault().getLanguage();
-        //This is kinda gross, but Android is terrible and doesn't use the standard for lang strings...
-        String language3 = Locale.getDefault().toString().replace("_", "-");
+    public static String getLocale() {
+        // This is kinda gross, but Android is terrible and doesn't use the standard for lang strings...
+        return Locale.getDefault().toString().replace("_", "-");
+    }
 
-        return language3 + "," + language;
+    public static String getAcceptedLanguageString() {
+        return getLocale() + "," + Locale.getDefault().getLanguage();
+    }
+
+    public static String getSessionLocaleString() {
+        String lang = getLocale();
+
+        // Canvas supports Chinese (Traditional) and Chinese (Simplified)
+        if (lang.equalsIgnoreCase("zh-hk") || lang.equalsIgnoreCase("zh-tw") || lang.equalsIgnoreCase("zh-hant-hk") || lang.equalsIgnoreCase("zh-hant-tw")) {
+            lang = "zh-Hant";
+        } else if (lang.equalsIgnoreCase("zh") || lang.equalsIgnoreCase("zh-cn") || lang.equalsIgnoreCase("zh-hans-cn")) {
+            lang = "zh-Hans";
+        } else if (!lang.equalsIgnoreCase("pt-BR") && !lang.equalsIgnoreCase("en-AU") && !lang.equalsIgnoreCase("en-GB")) {
+            // Canvas only supports 3 region tags (not including Chinese), remove any other tags
+            lang = Locale.getDefault().getLanguage();
+        }
+
+        return "?session_locale=" + lang;
     }
 
     public static boolean isNetworkAvaliable(Context context) {
