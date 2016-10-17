@@ -91,13 +91,13 @@ public class BuildInterfaceAPI {
 
     public static <T> T buildInterface(Class<T> clazz, Context context) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        restAdapter.setLogLevel(LOG_LEVEL);
         return restAdapter.create(clazz);
     }
 
     public static <T> T buildInterface(Class<T> clazz, Context context, boolean perPageQueryParam) {
         RestAdapter restAdapter = CanvasRestAdapter.buildAdapter(context, perPageQueryParam);
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        restAdapter.setLogLevel(LOG_LEVEL);
         return restAdapter.create(clazz);
     }
 
