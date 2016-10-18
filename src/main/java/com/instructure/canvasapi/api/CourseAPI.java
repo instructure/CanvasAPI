@@ -8,6 +8,7 @@ import com.instructure.canvasapi.model.Enrollment;
 import com.instructure.canvasapi.model.Favorite;
 import com.instructure.canvasapi.model.FileUploadParams;
 import com.instructure.canvasapi.model.GradingPeriodResponse;
+import com.instructure.canvasapi.model.kaltura.FileUploadParamsWrapper;
 import com.instructure.canvasapi.utilities.APIHelpers;
 import com.instructure.canvasapi.utilities.CanvasCallback;
 import com.instructure.canvasapi.utilities.CanvasRestAdapter;
@@ -107,9 +108,16 @@ public class CourseAPI extends BuildInterfaceAPI {
         @POST("/courses/{courseId}/files")
         FileUploadParams getFileUploadParams(@Path("courseId") long courseId, @Query("parent_folder_id") Long parentFolderId, @Query("size") long size, @Query("name") String fileName, @Query("content_type") String content_type, @Body String body);
 
+        @POST("/courses/{courseId}/quizzes/{quizId}/submissions/self/files")
+        FileUploadParamsWrapper getQuizFileUploadParams(@Query("name") String name, @Query("duplicate_name") String duplicateName, @Path("courseId") long courseId, @Path("quizId") long quizId, @Body String body);
+
         @Multipart
         @POST("/")
         Attachment uploadCourseFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
+
+        @Multipart
+        @POST("/")
+        Attachment uploadQuizFile(@PartMap LinkedHashMap<String, String> params, @Part("file") TypedFile file);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -409,7 +417,15 @@ public class CourseAPI extends BuildInterfaceAPI {
         return buildInterface(CoursesInterface.class, context).getFileUploadParams(courseId, parentFolderId, size, fileName, contentType, "");
     }
 
+    public static FileUploadParams getQuizFileUploadParams(Context context, long courseId, long quizId, String name, String duplicateName){
+        return buildInterface(CoursesInterface.class, context, false).getQuizFileUploadParams(name, duplicateName, courseId, quizId, "").getUploadParams().get(0);
+    }
+
     public static Attachment uploadCourseFile(Context context, String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
         return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadCourseFile(uploadParams, new TypedFile(mimeType, file));
+    }
+
+    public static Attachment uploadQuizFile(String uploadUrl, LinkedHashMap<String,String> uploadParams, String mimeType, File file){
+        return buildUploadInterface(CoursesInterface.class, uploadUrl).uploadQuizFile(uploadParams, new TypedFile(mimeType, file));
     }
 }
